@@ -142,36 +142,59 @@ import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfTransfusion;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfWarding;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.AssassinsBlade;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.BattleAxe;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Bayonet;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Chainwhip;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Crabclaw;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Crossbow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Cudgel;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dagger;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Daggeraxe;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dinnerknife;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dirk;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Doublesword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Flail;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Fork;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Gauntlet;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Glaive;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Gloves;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Greataxe;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Greatshield;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Greatsword;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Halberd;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.HandAxe;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Ironbar;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Katana;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.KiteShield;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Longassassinsblade;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Longrunicblade;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Longsword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Mace;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Nunchaku;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Quarterstaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Rapier;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Roguedagger;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RoundShield;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RunicBlade;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sai;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Scimitar;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Shangfang;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Shortrunicblade;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Shortspear;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Shortsword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sickle;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Smallshield;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Spear;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Stonesword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sword;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Twobroadaxe;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Vineshield;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WarHammer;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WarScythe;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Whip;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Wicker;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Wolftailgrassspear;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WornShortsword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Bolas;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.FishingSpear;
@@ -224,6 +247,7 @@ public class Generator {
 		WEP_T3	( 0, 0, MeleeWeapon.class),
 		WEP_T4	( 0, 0, MeleeWeapon.class),
 		WEP_T5	( 0, 0, MeleeWeapon.class),
+		WEP_T6  ( 0, 0, MeleeWeapon.class),
 		
 		ARMOR	( 2, 1, Armor.class ),
 		
@@ -418,9 +442,14 @@ public class Generator {
 					Dagger.class,
 					Gloves.class,
 					Rapier.class,
+					Smallshield.class,
+					Stonesword.class,
+					Shortspear.class,
+					Fork.class,
+					Dinnerknife.class,
 					Cudgel.class,
 			};
-			WEP_T1.defaultProbs = new float[]{ 2, 0, 2, 2, 2, 2 };
+			WEP_T1.defaultProbs = new float[]{ 2, 0, 2, 2, 2, 2, 2, 2, 2, 2 };
 			WEP_T1.probs = WEP_T1.defaultProbs.clone();
 			
 			WEP_T2.classes = new Class<?>[]{
@@ -430,9 +459,13 @@ public class Generator {
 					Quarterstaff.class,
 					Dirk.class,
 					Sickle.class,
+					Wicker.class,
+					Nunchaku.class,
+					Vineshield.class,
+					Crabclaw.class,
 					Pickaxe.class
 			};
-			WEP_T2.defaultProbs = new float[]{ 2, 2, 2, 2, 2, 2, 0 };
+			WEP_T2.defaultProbs = new float[]{ 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0 };
 			WEP_T2.probs = WEP_T2.defaultProbs.clone();
 			
 			WEP_T3.classes = new Class<?>[]{
@@ -441,10 +474,14 @@ public class Generator {
 					Scimitar.class,
 					RoundShield.class,
 					Sai.class,
-					Whip.class
+					Whip.class,
+					Daggeraxe.class,
+					Bayonet.class,
+					Roguedagger.class,
+					Shortrunicblade.class,
 			};
-			WEP_T3.defaultProbs = new float[]{ 2, 2, 2, 2, 2, 2 };
-			WEP_T3.probs = WEP_T1.defaultProbs.clone();
+			WEP_T3.defaultProbs = new float[]{ 2, 2, 2, 2, 2, 2, 2, 2, 2, 2 };
+			WEP_T3.probs = WEP_T3.defaultProbs.clone();   //WEP_T1
 			
 			WEP_T4.classes = new Class<?>[]{
 					Longsword.class,
@@ -453,23 +490,38 @@ public class Generator {
 					RunicBlade.class,
 					AssassinsBlade.class,
 					Crossbow.class,
-					Katana.class
+					Katana.class,
+					Halberd.class,
+					KiteShield.class,
+					Twobroadaxe.class,
+					Wolftailgrassspear.class,
 			};
-			WEP_T4.defaultProbs = new float[]{ 2, 2, 2, 2, 2, 2, 2 };
+			WEP_T4.defaultProbs = new float[]{ 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2 };
 			WEP_T4.probs = WEP_T4.defaultProbs.clone();
 			
 			WEP_T5.classes = new Class<?>[]{
 					Greatsword.class,
 					WarHammer.class,
 					Glaive.class,
-					Greataxe.class,
 					Greatshield.class,
 					Gauntlet.class,
-					WarScythe.class
+					WarScythe.class,
+					Chainwhip.class,
+					Ironbar.class,
+					Longassassinsblade.class,
+					Longrunicblade.class,
 			};
-			WEP_T5.defaultProbs = new float[]{ 2, 2, 2, 2, 2, 2, 2 };
+			WEP_T5.defaultProbs = new float[]{ 2, 2, 2, 2, 2, 2, 2, 2, 2, 2 };
 			WEP_T5.probs = WEP_T5.defaultProbs.clone();
-			
+
+			WEP_T6.classes = new Class<?>[]{
+					Greataxe.class,
+					Shangfang.class,
+					Doublesword.class,
+			};
+			WEP_T6.defaultProbs = new float[]{ 2, 2, 2 };
+			WEP_T6.probs = WEP_T6.defaultProbs.clone();
+
 			//see Generator.randomArmor
 			ARMOR.classes = new Class<?>[]{
 					ClothArmor.class,
@@ -605,11 +657,11 @@ public class Generator {
 	}
 
 	private static final float[][] floorSetTierProbs = new float[][] {
-			{0, 75, 20,  4,  1},
-			{0, 25, 50, 20,  5},
-			{0,  0, 40, 50, 10},
-			{0,  0, 20, 40, 40},
-			{0,  0,  0, 20, 80}
+			{0, 75, 20,  4,  1,  0},
+			{0, 25, 45, 20,  5,  5},
+			{0,  0, 35, 45, 10, 10},
+			{0,  0, 20, 30, 30, 20},
+			{0,  0,  0, 20, 50, 30}
 	};
 
 	private static boolean usingFirstDeck = false;
@@ -784,7 +836,8 @@ public class Generator {
 			Category.WEP_T2,
 			Category.WEP_T3,
 			Category.WEP_T4,
-			Category.WEP_T5
+			Category.WEP_T5,
+			Category.WEP_T6,
 	};
 
 	public static MeleeWeapon randomWeapon(){

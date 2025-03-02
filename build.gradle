@@ -15,15 +15,15 @@ allprojects {
 
     ext {
         appName = 'Shattered Pixel Dungeon'
-        appPackageName = 'com.shatteredpixel.shatteredpixeldungeon'
+        appPackageName = 'com.xun.xunspixeldungeon'
 
         appVersionCode = 831
-        appVersionName = '3.0.0'
+        appVersionName = '3.0.0based_0.0.1'
 
         appJavaCompatibility = JavaVersion.VERSION_1_8
 
         appAndroidCompileSDK = 34
-        appAndroidMinSDK = 14
+        appAndroidMinSDK = 16
         appAndroidTargetSDK = 34
 
         gdxVersion = '1.12.1'
