@@ -37,27 +37,27 @@ import com.watabou.utils.Callback;
 
 import java.util.ArrayList;
 
-public class Chainwhip extends MeleeWeapon {
+public class Etherealsword extends MeleeWeapon {
 
     {
-        image = ItemSpriteSheet.Chainwhip;
+        image = ItemSpriteSheet.Etherealsword;
         hitSound = Assets.Sounds.HIT;
         hitSoundPitch = 1f;
 
-        tier = 5;
+        tier = 6;
         RCH = 3;    //lots of extra reach
     }
 
     @Override
     public int max(int lvl) {
-        return  3*(tier+2) +      //21 base, down from 30
-                lvl*(tier-1);     //+4 per level, down from +6
+        return  3*(tier+2) +      //24 base, down from 35
+                lvl*(tier-1);     //+5 per level, down from +7
     }
 
     @Override
     protected void duelistAbility(Hero hero, Integer target) {
         //-2 damage, roughly -2 base dmg, no scaling
-        int dmgBoost = augment.damageFactor(-2);
+        int dmgBoost = augment.damageFactor(-3);
 
         ArrayList<Char> targets = new ArrayList<>();
         Char closest = null;
@@ -88,7 +88,7 @@ public class Chainwhip extends MeleeWeapon {
             public void call() {
                 beforeAbilityUsed(hero, finalClosest);
                 for (Char ch : targets) {
-                    //ability does 2 less damage
+                    //ability does 3 less damage
                     hero.attack(ch, 1, dmgBoost, Char.INFINITE_ACCURACY);
                     if (!ch.isAlive()){
                         onAbilityKill(hero, ch);
@@ -103,7 +103,7 @@ public class Chainwhip extends MeleeWeapon {
 
     @Override
     public String abilityInfo() {
-        int dmgBoost = -2;
+        int dmgBoost = -3;
         if (levelKnown){
             return Messages.get(this, "ability_desc", augment.damageFactor(min()+dmgBoost), augment.damageFactor(max()+dmgBoost));
         } else {
@@ -112,7 +112,7 @@ public class Chainwhip extends MeleeWeapon {
     }
 
     public String upgradeAbilityStat(int level){
-        int dmgBoost = -2;
+        int dmgBoost = -3;
         return augment.damageFactor(min(level)+dmgBoost) + "-" + augment.damageFactor(max(level)+dmgBoost);
     }
 

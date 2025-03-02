@@ -31,25 +31,25 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
-public class Ironbar extends MeleeWeapon {
+public class Jingubang extends MeleeWeapon {
 
     {
-        image = ItemSpriteSheet.Ironbar;
+        image = ItemSpriteSheet.Jingubang;
         hitSound = Assets.Sounds.HIT_CRUSH;
-        hitSoundPitch = 1f;
+        hitSoundPitch = 0.9f;
 
-        tier = 5;
+        tier = 6;
     }
 
     @Override
     public int max(int lvl) {
-        return  4*(tier+1) +    //24 base, down from 30
+        return  4*(tier+1) +    //28 base, down from 35
                 lvl*(tier+1);   //scaling unchanged
     }
 
     @Override
     public int defenseFactor( Char owner ) {
-        return 5;	//5 extra defence
+        return 6;	//6 extra defence
     }
 
     @Override

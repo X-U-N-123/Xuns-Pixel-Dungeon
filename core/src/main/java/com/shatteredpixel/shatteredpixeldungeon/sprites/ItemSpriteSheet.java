@@ -344,13 +344,17 @@ public class ItemSpriteSheet {
 	}
 
 	private static final int WEP_TIER6 = xy(1, 37);   //16 slots
-	public static final int Shangfang   = WEP_TIER6+0;
-	public static final int GREATAXE    = WEP_TIER6+1;
-	public static final int Doublesword = WEP_TIER6+5;
+	public static final int Shangfang     = WEP_TIER6+0;
+	public static final int GREATAXE      = WEP_TIER6+1;
+	public static final int Doublesword   = WEP_TIER6+5;
+	public static final int Etherealsword = WEP_TIER3+6;
+	public static final int Jingubang     = WEP_TIER6+8;
 	static{
-		assignItemRect(GREATAXE,    12, 16);
-		assignItemRect(Shangfang,   16, 16);
-		assignItemRect(Doublesword, 15, 14);
+		assignItemRect(GREATAXE,     12, 16);
+		assignItemRect(Shangfang,    16, 16);
+		assignItemRect(Doublesword,  15, 14);
+		assignItemRect(Jingubang,    16, 16);
+		assignItemRect(Etherealsword,16, 16);
 	}
 
 	private static final int MISSILE_WEP    =                               xy(1, 10);  //16 slots. 3 per tier + bow

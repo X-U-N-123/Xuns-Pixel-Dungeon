@@ -53,7 +53,7 @@ public class Jiewan extends  MeleeWeapon {
 
     @Override
     public int max(int lvl) {
-        return  Math.round(4f*tier) +    //8 base, up from 15
+        return  Math.round(2f*tier+2) +    //8 base, up from 15
                 lvl*(tier);                    //2 scaling, down from 3
     }
 
