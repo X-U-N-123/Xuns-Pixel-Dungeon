@@ -29,8 +29,8 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vulnerable;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
@@ -41,25 +41,25 @@ import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Callback;
 
-public class Dinnerknife extends MeleeWeapon {
+public class Greatknife extends MeleeWeapon {
 
     {
-        image = ItemSpriteSheet.Dinnerknife;
+        image = ItemSpriteSheet.Jiewan;
         hitSound = Assets.Sounds.HIT_SLASH;
-        hitSoundPitch = 1.3f;
+        hitSoundPitch = 1.2f;
 
-        tier = 1;
+        tier = 5;
     }
 
     @Override
     public int max(int lvl) {
-        return  Math.round(2.5f*(tier+1)) +    //5 base, up from 10
-                lvl*(tier);                    //1 scaling, down from 2
+        return  Math.round(2.5f*(tier+1)) +    //15 base, up from 30
+                lvl*(tier);                    //1 scaling, down from 3
     }
 
     @Override
     public int proc(Char attacker, Char defender, int damage) {
-        Buff.affect(defender, Bleeding.class).set(0.75f*damage);
+        Buff.affect(defender, Bleeding.class).set(0.55f*damage);
         return super.proc( attacker, defender, damage );
     }
 
@@ -102,10 +102,10 @@ public class Dinnerknife extends MeleeWeapon {
                 }
 
                 Invisibility.dispel();
-                int debuffDuration = 6 + wep.buffedLvl();
+                int debuffDuration = 4 + wep.buffedLvl();
                 hero.spendAndNext(hero.attackDelay());
                 //if (enemy.properties().contains(Char.Property.BOSS) || enemy.properties().contains(Char.Property.MINIBOSS)) {
-                    //multi = 0.05f;
+                //multi = 0.05f;
                 //}
                 if (!enemy.isAlive()){
                     wep.onAbilityKill(hero, enemy);
@@ -120,7 +120,7 @@ public class Dinnerknife extends MeleeWeapon {
 
     @Override
     public String abilityInfo() {
-        int debuffDuration = levelKnown ? Math.round(6f + buffedLvl()) : 6;
+        int debuffDuration = levelKnown ? Math.round(4f + buffedLvl()) : 4;
         if (levelKnown){
             return Messages.get(this, "ability_desc", augment.damageFactor(Math.round(min()*1f)), augment.damageFactor(Math.round(max()*1f)), debuffDuration);
         } else {
@@ -130,7 +130,7 @@ public class Dinnerknife extends MeleeWeapon {
 
     @Override
     public String upgradeAbilityStat(int level) {
-        return Integer.toString(6+level);
+        return Integer.toString(5+level);
     }
 
 }

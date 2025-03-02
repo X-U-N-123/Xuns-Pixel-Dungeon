@@ -1097,9 +1097,6 @@ public class CursedWand {
 			//appears to crash the game (actually just closes it)
 			try {
 				Dungeon.saveAll();
-				if(Messages.lang() != Languages.ENGLISH){
-					return false;
-				} else {
 					ShatteredPixelDungeon.runOnRenderThread(
 							new Callback() {
 								@Override
@@ -1127,7 +1124,6 @@ public class CursedWand {
 							}
 					);
 					return false;
-				}
 			} catch(IOException e){
 				ShatteredPixelDungeon.reportException(e);
 				//maybe don't kill the game if the save failed, just do nothing

@@ -250,6 +250,7 @@ public class ItemSpriteSheet {
 	public static final int SICKLE          = WEP_TIER2+7;
 	public static final int QUARTERSTAFF    = WEP_TIER2+8;
 	public static final int DIRK            = WEP_TIER2+9;
+	public static final int Jiewan          = WEP_TIER2+12;
 	static{
 		assignItemRect(SHORTSWORD,      13, 13);
 		assignItemRect(HAND_AXE,        12, 14);
@@ -261,6 +262,7 @@ public class ItemSpriteSheet {
 		assignItemRect(Vineshield,      15, 15);
 		assignItemRect(Crabclaw,        15, 13);
 		assignItemRect(Wicker,          14, 14);
+		assignItemRect(Jiewan,          12, 11);
 	}
 
 	private static final int WEP_TIER3      = xy(1, 34);   //16 slots

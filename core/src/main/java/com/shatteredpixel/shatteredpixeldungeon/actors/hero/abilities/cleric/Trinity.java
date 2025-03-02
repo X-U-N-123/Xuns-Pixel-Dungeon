@@ -148,7 +148,7 @@ public class Trinity extends ArmorAbility {
 					if (Dungeon.hero.belongings.weapon() != null) {
 						btnBody.icon(new ItemSprite(Dungeon.hero.belongings.weapon().image, ((Weapon.Enchantment) bodyForm).glowing()));
 					} else {
-						btnBody.icon(new ItemSprite(ItemSpriteSheet.WORN_SHORTSWORD, ((Weapon.Enchantment) bodyForm).glowing()));
+						btnBody.icon(new ItemSprite(ItemSpriteSheet.Stonesword, ((Weapon.Enchantment) bodyForm).glowing()));
 					}
 				} else if (bodyForm instanceof Armor.Glyph){
 					btnBody = new RedButton(Messages.get(WndUseTrinity.class, "body",

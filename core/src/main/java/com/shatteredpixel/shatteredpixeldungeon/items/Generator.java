@@ -449,7 +449,7 @@ public class Generator {
 					Dinnerknife.class,
 					Cudgel.class,
 			};
-			WEP_T1.defaultProbs = new float[]{ 2, 0, 2, 2, 2, 2, 2, 2, 2, 2 };
+			WEP_T1.defaultProbs = new float[]{ 2, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2 };
 			WEP_T1.probs = WEP_T1.defaultProbs.clone();
 			
 			WEP_T2.classes = new Class<?>[]{
