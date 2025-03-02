@@ -334,9 +334,7 @@ public class Bomb extends Item {
 			Bomb bomb = new Bomb();
 			bomb.quantity(2);
 			if (bomb.doPickUp(hero, pos)) {
-				//isaaaaac.... (don't bother doing this when not in english)
-				if (SPDSettings.language() == Languages.ENGLISH)
-					hero.sprite.showStatus(CharSprite.NEUTRAL, "1+1 free!");
+					hero.sprite.showStatus(CharSprite.NEUTRAL, "pickup");
 				return true;
 			}
 			return false;

@@ -1098,8 +1098,6 @@ public class CursedWand {
 			try {
 				Dungeon.saveAll();
 				if(Messages.lang() != Languages.ENGLISH){
-					//Don't bother doing this joke to none-english speakers, I doubt it would translate.
-					//we still consider the effect valid here though as it's cosmetic anyway
 					return false;
 				} else {
 					ShatteredPixelDungeon.runOnRenderThread(
@@ -1108,8 +1106,8 @@ public class CursedWand {
 								public void call() {
 									GameScene.show(
 											new WndOptions(Icons.get(Icons.WARNING),
-													"CURSED WAND ERROR",
-													"this application will now self-destruct",
+													"errtitle",
+													"errdesc",
 													"abort",
 													"retry",
 													"fail") {
