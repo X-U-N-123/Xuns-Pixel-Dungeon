@@ -44,7 +44,7 @@ import com.watabou.utils.Callback;
 public class Knife extends MeleeWeapon {
 
     {
-        image = ItemSpriteSheet.Jiewan;
+        image = ItemSpriteSheet.Knife;
         hitSound = Assets.Sounds.HIT_SLASH;
         hitSoundPitch = 1.2f;
 

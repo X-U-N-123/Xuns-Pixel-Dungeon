@@ -276,6 +276,7 @@ public class ItemSpriteSheet {
 	public static final int Bayonet         = WEP_TIER3+8;
 	public static final int Roguedagger     = WEP_TIER3+9;
 	public static final int Shortrunicblade = WEP_TIER3+10;
+	public static final int Knife           = WEP_TIER3+10;
 	static{
 		assignItemRect(SWORD,           14, 14);
 		assignItemRect(MACE,            15, 15);
@@ -287,6 +288,7 @@ public class ItemSpriteSheet {
 		assignItemRect(Roguedagger,     15, 14);
 		assignItemRect(Shortrunicblade, 13, 13);
 		assignItemRect(Daggeraxe,       15, 16);
+		assignItemRect(Knife,           15, 14);
 	}
 
 	private static final int WEP_TIER4         = xy(1, 35);   //16 slots
@@ -326,6 +328,7 @@ public class ItemSpriteSheet {
 	public static final int Ironbar            = WEP_TIER5+8;
 	public static final int Longassassinsblade = WEP_TIER5+9;
 	public static final int Longrunicblade     = WEP_TIER5+11;
+	public static final int Greatknife         = WEP_TIER5+12;
 	static{
 		assignItemRect(GREATSWORD,        16, 16);
 		assignItemRect(WAR_HAMMER,        16, 16);
@@ -337,6 +340,7 @@ public class ItemSpriteSheet {
 		assignItemRect(Ironbar,           16, 16);
 		assignItemRect(Longassassinsblade,16, 16);
 		assignItemRect(Longrunicblade,    15, 15);
+		assignItemRect(Greatknife,        14, 16);
 	}
 
 	private static final int WEP_TIER6 = xy(1, 37);   //16 slots

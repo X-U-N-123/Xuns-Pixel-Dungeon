@@ -46,7 +46,7 @@ public class Greatknife extends MeleeWeapon {
     {
         image = ItemSpriteSheet.Jiewan;
         hitSound = Assets.Sounds.HIT_SLASH;
-        hitSoundPitch = 1.2f;
+        hitSoundPitch = 1.1f;
 
         tier = 5;
     }
@@ -130,7 +130,7 @@ public class Greatknife extends MeleeWeapon {
 
     @Override
     public String upgradeAbilityStat(int level) {
-        return Integer.toString(5+level);
+        return Integer.toString(4+level);
     }
 
 }
