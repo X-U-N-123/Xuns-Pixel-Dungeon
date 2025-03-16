@@ -32,25 +32,25 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
-public class Greatknife extends MeleeWeapon {
+public class Ripperclaw extends MeleeWeapon {
 
     {
-        image = ItemSpriteSheet.Jiewan;
-        hitSound = Assets.Sounds.HIT_SLASH;
-        hitSoundPitch = 1.1f;
+        image = ItemSpriteSheet.Ripperclaw;
+        hitSound = Assets.Sounds.HIT_STAB;
+        hitSoundPitch = 0.9f;
 
-        tier = 5;
+        tier = 6;
     }
 
     @Override
     public int max(int lvl) {
-        return  Math.round(2.5f*(tier+1)) +    //15 base, down from 30
-                lvl*(tier-2);                    //+3 scaling, down from +6
+        return  Math.round(3f*(tier)) +    //18 base, down from 35
+                lvl*(tier-2);                    //+4 scaling, down from +7
     }
 
     @Override
     public int proc(Char attacker, Char defender, int damage) {
-        Buff.affect(defender, Bleeding.class).set(0.56f*damage);
+        Buff.affect(defender, Bleeding.class).set(0.5f*damage);
         return super.proc( attacker, defender, damage );
     }
 
@@ -61,12 +61,12 @@ public class Greatknife extends MeleeWeapon {
 
     @Override
     protected void duelistAbility(Hero hero, Integer target) {
-        Dinnerknife.cutAbility(hero, target, 0f, this, 3+buffedLvl());
+        Dinnerknife.cutAbility(hero, target, 0f, this, 2+buffedLvl());
     }
 
     @Override
     public String abilityInfo() {
-        int debuffDuration = levelKnown ? Math.round(3f + buffedLvl()) : 3;
+        int debuffDuration = levelKnown ? Math.round(2f + buffedLvl()) : 2;
         if (levelKnown){
             return Messages.get(this, "ability_desc", augment.damageFactor(Math.round(min()*1f)), augment.damageFactor(Math.round(max()*1f)), debuffDuration);
         } else {
@@ -76,7 +76,7 @@ public class Greatknife extends MeleeWeapon {
 
     @Override
     public String upgradeAbilityStat(int level) {
-        return Integer.toString(3+level);
+        return Integer.toString(2+level);
     }
 
 }

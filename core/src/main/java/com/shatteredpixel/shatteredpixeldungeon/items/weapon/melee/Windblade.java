@@ -30,6 +30,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
+import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
@@ -37,27 +39,25 @@ import com.watabou.utils.Callback;
 
 import java.util.ArrayList;
 
-public class Wicker extends MeleeWeapon {
+public class Windblade extends MeleeWeapon {
 
     {
-        image = ItemSpriteSheet.Wicker;
-        hitSound = Assets.Sounds.HIT;
-        hitSoundPitch = 1.1f;
+        image = ItemSpriteSheet.Jiewan;
+        hitSound = Assets.Sounds.HIT_SLASH;
+        hitSoundPitch = 1.3f;
 
-        tier = 2;
-        RCH = 3;    //lots of extra reach
+        tier = 3;
+        RCH = 65535;    //nearly infinity reach
     }
 
     @Override
     public int max(int lvl) {
-        return  4*(tier+1) +      //12 base, down from 15
-                lvl*(tier);     //+2 per level, down from +3
+        return  Math.round(2f*(tier+1)) +    //8 base, up from 20
+                lvl*(tier-1);                //+2 scaling, down from +4
     }
 
     @Override
     protected void duelistAbility(Hero hero, Integer target) {
-        //+(1+lvl) damage, roughly +14.3% base dmg, +67% scaling
-        int dmgBoost = augment.damageFactor(1 + buffedLvl());
 
         ArrayList<Char> targets = new ArrayList<>();
         Char closest = null;
@@ -88,9 +88,16 @@ public class Wicker extends MeleeWeapon {
             public void call() {
                 beforeAbilityUsed(hero, finalClosest);
                 for (Char ch : targets) {
-                    //ability does a little extra damage
-                    hero.attack(ch, 1, dmgBoost, Char.INFINITE_ACCURACY);
-                    if (!ch.isAlive()){
+                    //ability does 50% less damage
+                    hero.attack(ch, 0.5f, 0, Char.INFINITE_ACCURACY);
+                    if (ch.isAlive()) {
+                        //trace a ballistica to our target (which will also extend past them
+                        Ballistica trajectory = new Ballistica(hero.pos, ch.pos, Ballistica.STOP_TARGET);
+                        //trim it to just be the part that goes past them
+                        trajectory = new Ballistica(trajectory.collisionPos, trajectory.path.get(trajectory.path.size() - 1), Ballistica.PROJECTILE);
+                        //knock them back along that ballistica
+                        WandOfBlastWave.throwChar(ch, trajectory, 114514, true, false, hero);
+                    } else {
                         onAbilityKill(hero, ch);
                     }
                 }
@@ -103,17 +110,15 @@ public class Wicker extends MeleeWeapon {
 
     @Override
     public String abilityInfo() {
-        int dmgBoost = levelKnown ? 1 + buffedLvl() : 1;
         if (levelKnown){
-            return Messages.get(this, "ability_desc", augment.damageFactor(min()+dmgBoost), augment.damageFactor(max()+dmgBoost));
+            return Messages.get(this, "ability_desc", augment.damageFactor(min()), augment.damageFactor(max()));
         } else {
-            return Messages.get(this, "typical_ability_desc", min(0)+dmgBoost, max(0)+dmgBoost);
+            return Messages.get(this, "typical_ability_desc", min(0), max(0));
         }
     }
 
     public String upgradeAbilityStat(int level){
-        int dmgBoost = 1 + level;
-        return augment.damageFactor(min(level)+dmgBoost) + "-" + augment.damageFactor(max(level)+dmgBoost);
+        return augment.damageFactor(min(level)) + "-" + augment.damageFactor(max(level));
     }
-    //The first weapon written by me. Yeah :)
+
 }

@@ -25,33 +25,25 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
-public class Greatknife extends MeleeWeapon {
+public class Scythe extends MeleeWeapon {
 
     {
-        image = ItemSpriteSheet.Jiewan;
+        image = ItemSpriteSheet.Scythe;
         hitSound = Assets.Sounds.HIT_SLASH;
-        hitSoundPitch = 1.1f;
+        hitSoundPitch = 1f;
 
-        tier = 5;
+        tier = 3;
+        ACC = 0.76f; //24% penalty to accuracy
     }
 
     @Override
     public int max(int lvl) {
-        return  Math.round(2.5f*(tier+1)) +    //15 base, down from 30
-                lvl*(tier-2);                    //+3 scaling, down from +6
-    }
-
-    @Override
-    public int proc(Char attacker, Char defender, int damage) {
-        Buff.affect(defender, Bleeding.class).set(0.56f*damage);
-        return super.proc( attacker, defender, damage );
+        return  Math.round(9f*(tier)) +    //27 base, up from 20
+                lvl*(tier+1);                   //scaling unchanged
     }
 
     @Override
@@ -61,22 +53,24 @@ public class Greatknife extends MeleeWeapon {
 
     @Override
     protected void duelistAbility(Hero hero, Integer target) {
-        Dinnerknife.cutAbility(hero, target, 0f, this, 3+buffedLvl());
+        //replaces damage with 20+3*lvl bleed, roughly 133% avg base dmg, 129% avg scaling
+        int bleedAmt = augment.damageFactor(Math.round(20f + 3f*buffedLvl()));
+        Sickle.harvestAbility(hero, target, 0f, bleedAmt, this);
     }
 
     @Override
     public String abilityInfo() {
-        int debuffDuration = levelKnown ? Math.round(3f + buffedLvl()) : 3;
+        int bleedAmt = levelKnown ? Math.round(20f + 3f*buffedLvl()) : 20;
         if (levelKnown){
-            return Messages.get(this, "ability_desc", augment.damageFactor(Math.round(min()*1f)), augment.damageFactor(Math.round(max()*1f)), debuffDuration);
+            return Messages.get(this, "ability_desc", augment.damageFactor(bleedAmt));
         } else {
-            return Messages.get(this, "typical_ability_desc", Math.round(min(0)*1f), Math.round(max(0)*1f), debuffDuration);
+            return Messages.get(this, "typical_ability_desc", bleedAmt);
         }
     }
 
     @Override
     public String upgradeAbilityStat(int level) {
-        return Integer.toString(3+level);
+        return Integer.toString(augment.damageFactor(Math.round(20f + 4.5f*level)));
     }
 
 }

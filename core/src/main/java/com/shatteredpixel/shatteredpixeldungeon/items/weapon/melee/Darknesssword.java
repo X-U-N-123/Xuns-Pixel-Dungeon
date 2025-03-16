@@ -26,32 +26,46 @@ package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
-public class Greatknife extends MeleeWeapon {
+public class Darknesssword extends MeleeWeapon {
 
     {
-        image = ItemSpriteSheet.Jiewan;
+        image = ItemSpriteSheet.Darknesssword;
         hitSound = Assets.Sounds.HIT_SLASH;
-        hitSoundPitch = 1.1f;
+        hitSoundPitch = 1f;
 
-        tier = 5;
+        tier = 6;
     }
 
     @Override
     public int max(int lvl) {
-        return  Math.round(2.5f*(tier+1)) +    //15 base, down from 30
-                lvl*(tier-2);                    //+3 scaling, down from +6
+        return  4*(tier+1) +    //28 base, down from 35
+                lvl*(tier+1);   //scaling unchanged
     }
 
     @Override
-    public int proc(Char attacker, Char defender, int damage) {
-        Buff.affect(defender, Bleeding.class).set(0.56f*damage);
-        return super.proc( attacker, defender, damage );
+    public int damageRoll(Char owner) {
+        if (owner instanceof Hero) {
+            Hero hero = (Hero)owner;
+            Char enemy = hero.enemy();
+            if (enemy instanceof Mob && ((Mob) enemy).surprisedBy(hero)) {
+                //deals 45% toward max to max on surprise, instead of min to max.
+                int diff = max() - min();
+                int damage = augment.damageFactor(Hero.heroDamageIntRange(
+                        min() + Math.round(diff*0.45f),
+                        max()));
+                int exStr = hero.STR() - STRReq();
+                if (exStr > 0) {
+                    damage += Hero.heroDamageIntRange(0, exStr);
+                }
+                return damage;
+            }
+        }
+        return super.damageRoll(owner);
     }
 
     @Override
@@ -59,24 +73,27 @@ public class Greatknife extends MeleeWeapon {
         return Messages.get(this, "prompt");
     }
 
+    public boolean useTargeting(){
+        return false;
+    }
+
     @Override
     protected void duelistAbility(Hero hero, Integer target) {
-        Dinnerknife.cutAbility(hero, target, 0f, this, 3+buffedLvl());
+        Dagger.sneakAbility(hero, target, 2, 2+buffedLvl(), this);
     }
 
     @Override
     public String abilityInfo() {
-        int debuffDuration = levelKnown ? Math.round(3f + buffedLvl()) : 3;
         if (levelKnown){
-            return Messages.get(this, "ability_desc", augment.damageFactor(Math.round(min()*1f)), augment.damageFactor(Math.round(max()*1f)), debuffDuration);
+            return Messages.get(this, "ability_desc", 2+buffedLvl());
         } else {
-            return Messages.get(this, "typical_ability_desc", Math.round(min(0)*1f), Math.round(max(0)*1f), debuffDuration);
+            return Messages.get(this, "typical_ability_desc", 2);
         }
     }
 
     @Override
     public String upgradeAbilityStat(int level) {
-        return Integer.toString(3+level);
+        return Integer.toString(2+level);
     }
 
 }

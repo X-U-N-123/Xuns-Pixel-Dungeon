@@ -273,10 +273,11 @@ public class ItemSpriteSheet {
 	public static final int ROUND_SHIELD    = WEP_TIER3+4;
 	public static final int SAI             = WEP_TIER3+5;
 	public static final int WHIP            = WEP_TIER3+6;
+	public static final int Scythe          = WEP_TIER3+7;
 	public static final int Bayonet         = WEP_TIER3+8;
 	public static final int Roguedagger     = WEP_TIER3+9;
 	public static final int Shortrunicblade = WEP_TIER3+10;
-	public static final int Knife           = WEP_TIER3+10;
+	public static final int Knife           = WEP_TIER3+12;
 	static{
 		assignItemRect(SWORD,           14, 14);
 		assignItemRect(MACE,            15, 15);
@@ -289,6 +290,7 @@ public class ItemSpriteSheet {
 		assignItemRect(Shortrunicblade, 13, 13);
 		assignItemRect(Daggeraxe,       15, 16);
 		assignItemRect(Knife,           15, 14);
+		assignItemRect(Scythe,          12, 13);
 	}
 
 	private static final int WEP_TIER4         = xy(1, 35);   //16 slots
@@ -298,10 +300,12 @@ public class ItemSpriteSheet {
 	public static final int Kiteshield         = WEP_TIER4+4;
 	public static final int Twobroadaxe        = WEP_TIER4+5;
 	public static final int Wolftailgrassspear = WEP_TIER4+6;
+	public static final int Hoe                = WEP_TIER4+7;
 	public static final int KATANA             = WEP_TIER4+8;
 	public static final int ASSASSINS_BLADE    = WEP_TIER4+9;
 	public static final int FLAIL              = WEP_TIER4+10;
 	public static final int RUNIC_BLADE        = WEP_TIER4+11;
+	public static final int Jieniu             = WEP_TIER4+12;
 	public static final int CROSSBOW           = WEP_TIER4+13;
 	static{
 		assignItemRect(LONGSWORD,         15, 15);
@@ -315,6 +319,8 @@ public class ItemSpriteSheet {
 		assignItemRect(Kiteshield,        13, 16);
 		assignItemRect(Twobroadaxe,       16, 16);
 		assignItemRect(Wolftailgrassspear,16, 16);
+		assignItemRect(Hoe,               13, 15);
+		assignItemRect(Jieniu,            15, 15);
 	}
 
 	private static final int WEP_TIER5         = xy(1, 36);   //16 slots
@@ -348,13 +354,19 @@ public class ItemSpriteSheet {
 	public static final int GREATAXE      = WEP_TIER6+1;
 	public static final int Doublesword   = WEP_TIER6+5;
 	public static final int Etherealsword = WEP_TIER3+6;
+	public static final int Rake          = WEP_TIER6+7;
 	public static final int Jingubang     = WEP_TIER6+8;
+	public static final int Darknesssword = WEP_TIER6+9;
+	public static final int Ripperclaw    = WEP_TIER6+12;
 	static{
 		assignItemRect(GREATAXE,     12, 16);
 		assignItemRect(Shangfang,    16, 16);
 		assignItemRect(Doublesword,  15, 14);
 		assignItemRect(Jingubang,    16, 16);
 		assignItemRect(Etherealsword,16, 16);
+		assignItemRect(Darknesssword,16, 16);
+		assignItemRect(Ripperclaw,   15, 16);
+		assignItemRect(Rake,         15, 16);
 	}
 
 	private static final int MISSILE_WEP    =                               xy(1, 10);  //16 slots. 3 per tier + bow

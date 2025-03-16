@@ -149,6 +149,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Crossbow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Cudgel;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dagger;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Daggeraxe;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Darknesssword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dinnerknife;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dirk;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Doublesword;
@@ -164,7 +165,9 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Greatshield;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Greatsword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Halberd;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.HandAxe;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Hoe;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Ironbar;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Jieniu;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Jiewan;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Jingubang;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Katana;
@@ -178,12 +181,15 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Nunchaku;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Quarterstaff;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Rake;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Rapier;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Ripperclaw;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Roguedagger;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RoundShield;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RunicBlade;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sai;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Scimitar;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Scythe;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Shangfang;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Shortrunicblade;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Shortspear;
@@ -485,9 +491,10 @@ public class Generator {
 					Bayonet.class,
 					Roguedagger.class,
 					Shortrunicblade.class,
-					Knife.class
+					Knife.class,
+					Scythe.class
 			};
-			WEP_T3.defaultProbs = new float[]{ 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2 };
+			WEP_T3.defaultProbs = new float[]{ 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2 };
 			WEP_T3.probs = WEP_T3.defaultProbs.clone();   //WEP_T1
 			
 			WEP_T4.classes = new Class<?>[]{
@@ -502,8 +509,10 @@ public class Generator {
 					KiteShield.class,
 					Twobroadaxe.class,
 					Wolftailgrassspear.class,
+					Hoe.class,
+					Jieniu.class
 			};
-			WEP_T4.defaultProbs = new float[]{ 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2 };
+			WEP_T4.defaultProbs = new float[]{ 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2 };
 			WEP_T4.probs = WEP_T4.defaultProbs.clone();
 			
 			WEP_T5.classes = new Class<?>[]{
@@ -528,8 +537,11 @@ public class Generator {
 					Doublesword.class,
 					Jingubang.class,
 					Etherealsword.class,
+					Darknesssword.class,
+					Ripperclaw.class,
+					Rake.class
 			};
-			WEP_T6.defaultProbs = new float[]{ 2, 2, 2, 2, 2 };
+			WEP_T6.defaultProbs = new float[]{ 2, 2, 2, 2, 2, 2, 2, 2 };
 			WEP_T6.probs = WEP_T6.defaultProbs.clone();
 
 			//see Generator.randomArmor

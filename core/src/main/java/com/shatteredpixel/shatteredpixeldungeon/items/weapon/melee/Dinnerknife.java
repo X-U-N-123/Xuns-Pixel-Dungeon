@@ -54,12 +54,12 @@ public class Dinnerknife extends MeleeWeapon {
     @Override
     public int max(int lvl) {
         return  Math.round(2.5f*(tier+1)) +    //5 base, up from 10
-                lvl*(tier);                    //1 scaling, down from 2
+                lvl*(tier);                    //+1 scaling, down from +2
     }
 
     @Override
     public int proc(Char attacker, Char defender, int damage) {
-        Buff.affect(defender, Bleeding.class).set(0.75f*damage);
+        Buff.affect(defender, Bleeding.class).set(0.8f*damage);
         return super.proc( attacker, defender, damage );
     }
 
@@ -70,10 +70,10 @@ public class Dinnerknife extends MeleeWeapon {
 
     @Override
     protected void duelistAbility(Hero hero, Integer target) {
-        dinnerknifeAbility(hero, target, 0f, this);
+        cutAbility(hero, target, 0f, this, 5+buffedLvl());
     }
 
-    public static void dinnerknifeAbility(Hero hero, Integer target, float bleedingAmt, MeleeWeapon wep){
+    public static void cutAbility(Hero hero, Integer target, float bleedingAmt, MeleeWeapon wep, int debuffDuration){
         if (target == null) {
             return;
         }
@@ -102,7 +102,6 @@ public class Dinnerknife extends MeleeWeapon {
                 }
 
                 Invisibility.dispel();
-                int debuffDuration = 6 + wep.buffedLvl();
                 hero.spendAndNext(hero.attackDelay());
                 //if (enemy.properties().contains(Char.Property.BOSS) || enemy.properties().contains(Char.Property.MINIBOSS)) {
                     //multi = 0.05f;
@@ -120,7 +119,7 @@ public class Dinnerknife extends MeleeWeapon {
 
     @Override
     public String abilityInfo() {
-        int debuffDuration = levelKnown ? Math.round(6f + buffedLvl()) : 6;
+        int debuffDuration = levelKnown ? Math.round(5f + buffedLvl()) : 5;
         if (levelKnown){
             return Messages.get(this, "ability_desc", augment.damageFactor(Math.round(min()*1f)), augment.damageFactor(Math.round(max()*1f)), debuffDuration);
         } else {
@@ -130,7 +129,7 @@ public class Dinnerknife extends MeleeWeapon {
 
     @Override
     public String upgradeAbilityStat(int level) {
-        return Integer.toString(6+level);
+        return Integer.toString(5+level);
     }
 
 }

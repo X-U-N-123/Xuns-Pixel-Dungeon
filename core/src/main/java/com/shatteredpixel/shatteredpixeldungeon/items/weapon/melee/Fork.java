@@ -37,7 +37,7 @@ public class Fork extends MeleeWeapon {
         hitSoundPitch = 1.1f;
 
         tier = 1;
-        ACC = 0.64f; //36% penalty to accuracy
+        ACC = 0.84f; //16% penalty to accuracy
     }
 
     @Override

@@ -32,25 +32,25 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
-public class Greatknife extends MeleeWeapon {
+public class Jieniu extends MeleeWeapon {
 
     {
-        image = ItemSpriteSheet.Jiewan;
+        image = ItemSpriteSheet.Jieniu;
         hitSound = Assets.Sounds.HIT_SLASH;
         hitSoundPitch = 1.1f;
 
-        tier = 5;
+        tier = 4;
     }
 
     @Override
     public int max(int lvl) {
-        return  Math.round(2.5f*(tier+1)) +    //15 base, down from 30
-                lvl*(tier-2);                    //+3 scaling, down from +6
+        return  Math.round(2f*(tier+2)+1) +    //13 base, down from 25
+                lvl*(tier-1);                    //+3 scaling, down from +5
     }
 
     @Override
     public int proc(Char attacker, Char defender, int damage) {
-        Buff.affect(defender, Bleeding.class).set(0.56f*damage);
+        Buff.affect(defender, Bleeding.class).set(0.62f*damage);
         return super.proc( attacker, defender, damage );
     }
 
