@@ -297,6 +297,7 @@ public class ItemSpriteSheet {
 	public static final int LONGSWORD          = WEP_TIER4+0;
 	public static final int BATTLE_AXE         = WEP_TIER4+1;
 	public static final int Halberd            = WEP_TIER4+2;
+	public static final int Crystalsword       = WEP_TIER4+3;
 	public static final int Kiteshield         = WEP_TIER4+4;
 	public static final int Twobroadaxe        = WEP_TIER4+5;
 	public static final int Wolftailgrassspear = WEP_TIER4+6;
@@ -321,6 +322,7 @@ public class ItemSpriteSheet {
 		assignItemRect(Wolftailgrassspear,16, 16);
 		assignItemRect(Hoe,               13, 15);
 		assignItemRect(Jieniu,            15, 15);
+		assignItemRect(Crystalsword,      15, 15);
 	}
 
 	private static final int WEP_TIER5         = xy(1, 36);   //16 slots
@@ -352,6 +354,7 @@ public class ItemSpriteSheet {
 	private static final int WEP_TIER6 = xy(1, 37);   //16 slots
 	public static final int Shangfang     = WEP_TIER6+0;
 	public static final int GREATAXE      = WEP_TIER6+1;
+	public static final int Canopy        = WEP_TIER6+4;
 	public static final int Doublesword   = WEP_TIER6+5;
 	public static final int Etherealsword = WEP_TIER3+6;
 	public static final int Rake          = WEP_TIER6+7;
@@ -367,9 +370,10 @@ public class ItemSpriteSheet {
 		assignItemRect(Darknesssword,16, 16);
 		assignItemRect(Ripperclaw,   15, 16);
 		assignItemRect(Rake,         15, 16);
+		assignItemRect(Canopy,       16, 16);
 	}
 
-	private static final int MISSILE_WEP    =                               xy(1, 10);  //16 slots. 3 per tier + bow
+	private static final int MISSILE_WEP    =                               xy(1, 8);  //16 slots. 3 per tier + bow
 	public static final int SPIRIT_BOW      = MISSILE_WEP+0;
 	
 	public static final int THROWING_SPIKE  = MISSILE_WEP+1;
@@ -391,6 +395,9 @@ public class ItemSpriteSheet {
 	public static final int TRIDENT         = MISSILE_WEP+13;
 	public static final int THROWING_HAMMER = MISSILE_WEP+14;
 	public static final int FORCE_CUBE      = MISSILE_WEP+15;
+
+	public static final int Scorpiospear    = MISSILE_WEP+16;
+	public static final int Ironball        = MISSILE_WEP+17;
 	
 	static{
 		assignItemRect(SPIRIT_BOW,      16, 16);
@@ -414,6 +421,9 @@ public class ItemSpriteSheet {
 		assignItemRect(TRIDENT,         16, 16);
 		assignItemRect(THROWING_HAMMER, 12, 12);
 		assignItemRect(FORCE_CUBE,      11, 12);
+
+		assignItemRect(Scorpiospear,    16, 16);
+		assignItemRect(Ironball,        12, 12);
 	}
 	
 	public static final int DARTS    =                                      xy(1, 11);  //16 slots

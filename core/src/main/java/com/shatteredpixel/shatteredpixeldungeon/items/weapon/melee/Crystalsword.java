@@ -26,24 +26,26 @@ package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 
-public class Nunchaku extends MeleeWeapon {
+public class Crystalsword extends MeleeWeapon {
 
     {
-        image = ItemSpriteSheet.Nunchaku;
-        hitSound = Assets.Sounds.HIT_CRUSH;
+        image = ItemSpriteSheet.Crystalsword;
+        hitSound = Assets.Sounds.HIT_SLASH;
         hitSoundPitch = 1.1f;
 
-        tier = 2;
+        tier = 4;
         DLY = 0.8f; //1.25x speed
     }
 
     @Override
     public int max(int lvl) {
-        return  4*(tier+1) +    //12 base, down from 15
+        return  4*(tier+1) +    //20 base, down from 25
                 lvl*(tier+1);   //scaling unchanged
     }
 
@@ -51,7 +53,7 @@ public class Nunchaku extends MeleeWeapon {
     protected void duelistAbility(Hero hero, Integer target) {
         beforeAbilityUsed(hero, null);
         //1 turn less as using the ability is instant
-        Buff.prolong(hero, Scimitar.SwordDance.class, 3+buffedLvl());
+        Buff.prolong(hero, Scimitar.SwordDance.class, 2+buffedLvl());
         hero.sprite.operate(hero.pos);
         hero.next();
         afterAbilityUsed(hero);
@@ -60,15 +62,15 @@ public class Nunchaku extends MeleeWeapon {
     @Override
     public String abilityInfo() {
         if (levelKnown){
-            return Messages.get(this, "ability_desc", 4+buffedLvl());
+            return Messages.get(this, "ability_desc", 3+buffedLvl());
         } else {
-            return Messages.get(this, "typical_ability_desc", 4);
+            return Messages.get(this, "typical_ability_desc", 3);
         }
     }
 
     @Override
     public String upgradeAbilityStat(int level) {
-        return Integer.toString(4+level);
+        return Integer.toString(3+level);
     }
 
 }

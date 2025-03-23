@@ -30,7 +30,6 @@ public class Greatshield extends MeleeWeapon {
 
 	{
 		image = ItemSpriteSheet.GREATSHIELD;
-
 		tier = 5;
 	}
 

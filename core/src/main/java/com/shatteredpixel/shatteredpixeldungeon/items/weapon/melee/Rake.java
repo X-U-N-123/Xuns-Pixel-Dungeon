@@ -36,7 +36,7 @@ public class Rake extends MeleeWeapon{
         hitSound = Assets.Sounds.HIT_SLASH;
         hitSoundPitch = 0.9f;
 
-        tier = 5;
+        tier = 6;
         ACC = 0.64f; //36% penalty to accuracy
     }
 
