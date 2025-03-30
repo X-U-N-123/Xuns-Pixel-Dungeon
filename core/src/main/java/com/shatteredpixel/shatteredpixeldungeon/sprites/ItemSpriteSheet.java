@@ -243,7 +243,7 @@ public class ItemSpriteSheet {
 		assignItemRect(Dinnerknife,     12, 12);
 		assignItemRect(Shovel,          16, 16);
 	}
-//now all the weapon's sprite are moved into right side except tier 1 to have more space for new weapons
+//now all the weapon's sprite are moved into the bottom except tier 1 to have more space for new weapons
 	private static final int WEP_TIER2      = xy(1, 33);   //16 slots
 	public static final int SHORTSWORD      = WEP_TIER2+0;
 	public static final int HAND_AXE        = WEP_TIER2+1;
