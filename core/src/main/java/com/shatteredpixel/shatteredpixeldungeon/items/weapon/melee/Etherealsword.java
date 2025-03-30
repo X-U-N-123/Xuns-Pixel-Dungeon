@@ -41,7 +41,7 @@ public class Etherealsword extends MeleeWeapon {
 
     {
         image = ItemSpriteSheet.Etherealsword;
-        hitSound = Assets.Sounds.HIT;
+        hitSound = Assets.Sounds.HIT_SLASH;
         hitSoundPitch = 1f;
 
         tier = 6;

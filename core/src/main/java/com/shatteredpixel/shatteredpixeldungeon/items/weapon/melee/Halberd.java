@@ -54,19 +54,19 @@ public class Halberd extends MeleeWeapon {
 
     @Override
     protected void duelistAbility(Hero hero, Integer target) {
-        //+(12+2*lvl) damage, roughly +64.86% base damage, +50% scaling
-        int dmgBoost = augment.damageFactor(12 + Math.round(2f*buffedLvl()));
+        //+(12+2*lvl) damage, roughly +64.9% base damage, +62.5% scaling
+        int dmgBoost = augment.damageFactor(11 + Math.round(2.5f*buffedLvl()));
         Spear.spikeAbility(hero, target, 1, dmgBoost, this);
     }
 
     public String upgradeAbilityStat(int level){
-        int dmgBoost = 12 + Math.round(2f*level);
+        int dmgBoost = 11 + Math.round(2.5f*level);
         return augment.damageFactor(min(level)+dmgBoost) + "-" + augment.damageFactor(max(level)+dmgBoost);
     }
 
     @Override
     public String abilityInfo() {
-        int dmgBoost = levelKnown ? 12 + Math.round(2f*buffedLvl()) : 12;
+        int dmgBoost = levelKnown ? 11 + Math.round(2.5f*buffedLvl()) : 11;
         if (levelKnown){
             return Messages.get(this, "ability_desc", augment.damageFactor(min()+dmgBoost), augment.damageFactor(max()+dmgBoost));
         } else {

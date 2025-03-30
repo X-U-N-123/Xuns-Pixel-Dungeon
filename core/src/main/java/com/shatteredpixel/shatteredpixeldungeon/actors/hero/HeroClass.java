@@ -47,6 +47,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.En
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.HeroicLeap;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.Shockwave;
 import com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal;
+import com.shatteredpixel.shatteredpixeldungeon.items.Goldarrow;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.Waterskin;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
@@ -114,6 +115,9 @@ public enum HeroClass {
 
 		Waterskin waterskin = new Waterskin();
 		waterskin.collect();
+
+		Goldarrow goldarrow = new Goldarrow();
+		goldarrow.collect();
 
 		new ScrollOfIdentify().identify();
 
@@ -330,6 +334,9 @@ public enum HeroClass {
 	public boolean isUnlocked(){
 		//always unlock on debug builds
 		if (DeviceCompat.isDebug()) return true;
+		if (DeviceCompat.isAndroid()) return true;
+		if (DeviceCompat.isDesktop()) return true;
+		if (DeviceCompat.isiOS()) return true;
 
 		switch (this){
 			case WARRIOR: default:

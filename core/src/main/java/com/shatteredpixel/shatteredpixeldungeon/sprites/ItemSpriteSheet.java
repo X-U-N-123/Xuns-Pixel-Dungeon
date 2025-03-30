@@ -153,6 +153,7 @@ public class ItemSpriteSheet {
 	public static final int BROKEN_HILT     = MISC_CONSUMABLE +20;
 	public static final int TORN_PAGE       = MISC_CONSUMABLE +21;
 	public static final int TRINKET_CATA    = MISC_CONSUMABLE +22;
+	public static final int Goldarrow       = MISC_CONSUMABLE +23;
 
 	static{
 		assignItemRect(ANKH,            10, 16);
@@ -182,6 +183,8 @@ public class ItemSpriteSheet {
 		assignItemRect(TORN_PAGE,       11, 13);
 
 		assignItemRect(TRINKET_CATA,    12, 11);
+
+		assignItemRect(Goldarrow,       16, 16 );
 	}
 	
 	private static final int BOMBS          =                               xy(1, 6);   //16 slots
@@ -217,6 +220,7 @@ public class ItemSpriteSheet {
 	public static final int Stonesword      = WEP_TIER1+0;
 	public static final int CUDGEL          = WEP_TIER1+1;
 	public static final int Shortspear      = WEP_TIER1+2;
+	public static final int Shovel          = WEP_TIER1+3;
 	public static final int Smallshield     = WEP_TIER1+4;
 	public static final int GLOVES          = WEP_TIER1+5;
 	public static final int WORN_SHORTSWORD = WEP_TIER1+6;
@@ -237,6 +241,7 @@ public class ItemSpriteSheet {
 		assignItemRect(Shortspear,      15, 15);
 		assignItemRect(Fork,            15, 15);
 		assignItemRect(Dinnerknife,     12, 12);
+		assignItemRect(Shovel,          16, 16);
 	}
 //now all the weapon's sprite are moved into right side except tier 1 to have more space for new weapons
 	private static final int WEP_TIER2      = xy(1, 33);   //16 slots
@@ -329,6 +334,7 @@ public class ItemSpriteSheet {
 	public static final int GREATSWORD         = WEP_TIER5+0;
 	public static final int WAR_HAMMER         = WEP_TIER5+1;
 	public static final int GLAIVE             = WEP_TIER5+2;
+	public static final int Miaoblade          = WEP_TIER5+3;
 	public static final int GREATSHIELD        = WEP_TIER5+4;
 	public static final int GAUNTLETS          = WEP_TIER5+5;
 	public static final int Chainwhip          = WEP_TIER5+6;
@@ -348,15 +354,18 @@ public class ItemSpriteSheet {
 		assignItemRect(Ironbar,           16, 16);
 		assignItemRect(Longassassinsblade,16, 16);
 		assignItemRect(Longrunicblade,    15, 15);
-		assignItemRect(Greatknife,        14, 16);
+		assignItemRect(Greatknife,        13, 16);
+		assignItemRect(Miaoblade,         13, 16);
 	}
 
 	private static final int WEP_TIER6 = xy(1, 37);   //16 slots
 	public static final int Shangfang     = WEP_TIER6+0;
 	public static final int GREATAXE      = WEP_TIER6+1;
+	public static final int Erlangknife   = WEP_TIER6+2;
+	public static final int Dwarvessword  = WEP_TIER6+3;
 	public static final int Canopy        = WEP_TIER6+4;
 	public static final int Doublesword   = WEP_TIER6+5;
-	public static final int Etherealsword = WEP_TIER3+6;
+	public static final int Etherealsword = WEP_TIER6+6;
 	public static final int Rake          = WEP_TIER6+7;
 	public static final int Jingubang     = WEP_TIER6+8;
 	public static final int Darknesssword = WEP_TIER6+9;
@@ -366,11 +375,13 @@ public class ItemSpriteSheet {
 		assignItemRect(Shangfang,    16, 16);
 		assignItemRect(Doublesword,  15, 14);
 		assignItemRect(Jingubang,    16, 16);
-		assignItemRect(Etherealsword,16, 16);
+		assignItemRect(Etherealsword,15, 15);
 		assignItemRect(Darknesssword,16, 16);
 		assignItemRect(Ripperclaw,   15, 16);
 		assignItemRect(Rake,         15, 16);
 		assignItemRect(Canopy,       16, 16);
+		assignItemRect(Dwarvessword, 16, 16);
+		assignItemRect(Erlangknife,  16, 16);
 	}
 
 	private static final int MISSILE_WEP    =                               xy(1, 8);  //16 slots. 3 per tier + bow

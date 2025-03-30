@@ -143,6 +143,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfWarding;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.AssassinsBlade;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.BattleAxe;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Bayonet;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Canopy;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Chainwhip;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Crabclaw;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Crossbow;
@@ -154,6 +155,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Darknesssword
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dinnerknife;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dirk;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Doublesword;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dwarvessword;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Erlangknife;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Etherealsword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Flail;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Fork;
@@ -180,6 +183,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Longsword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Mace;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Miaoblade;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Nunchaku;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Quarterstaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Rake;
@@ -531,9 +535,10 @@ public class Generator {
 					Ironbar.class,
 					Longassassinsblade.class,
 					Longrunicblade.class,
-					Greatknife.class
+					Greatknife.class,
+					Miaoblade.class
 			};
-			WEP_T5.defaultProbs = new float[]{ 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2 };
+			WEP_T5.defaultProbs = new float[]{ 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2 };
 			WEP_T5.probs = WEP_T5.defaultProbs.clone();
 
 			WEP_T6.classes = new Class<?>[]{
@@ -544,9 +549,12 @@ public class Generator {
 					Etherealsword.class,
 					Darknesssword.class,
 					Ripperclaw.class,
-					Rake.class
+					Rake.class,
+					Canopy.class,
+					Dwarvessword.class,
+					Erlangknife.class
 			};
-			WEP_T6.defaultProbs = new float[]{ 2, 2, 2, 2, 2, 2, 2, 2 };
+			WEP_T6.defaultProbs = new float[]{ 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2 };
 			WEP_T6.probs = WEP_T6.defaultProbs.clone();
 
 			//see Generator.randomArmor
@@ -871,7 +879,7 @@ public class Generator {
 			Category.WEP_T3,
 			Category.WEP_T4,
 			Category.WEP_T5,
-			Category.WEP_T6,
+			Category.WEP_T6
 	};
 
 	public static MeleeWeapon randomWeapon(){
@@ -885,7 +893,6 @@ public class Generator {
 	public static MeleeWeapon randomWeapon(boolean useDefaults) {
 		return randomWeapon(Dungeon.depth / 5, useDefaults);
 	}
-	
 	public static MeleeWeapon randomWeapon(int floorSet, boolean useDefaults) {
 
 		floorSet = (int)GameMath.gate(0, floorSet, floorSetTierProbs.length-1);

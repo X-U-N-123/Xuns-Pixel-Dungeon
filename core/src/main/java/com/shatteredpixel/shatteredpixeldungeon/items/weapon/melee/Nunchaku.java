@@ -51,7 +51,7 @@ public class Nunchaku extends MeleeWeapon {
     protected void duelistAbility(Hero hero, Integer target) {
         beforeAbilityUsed(hero, null);
         //1 turn less as using the ability is instant
-        Buff.prolong(hero, Scimitar.SwordDance.class, 3+buffedLvl());
+        Buff.prolong(hero, Scimitar.SwordDance.class, 4+buffedLvl());
         hero.sprite.operate(hero.pos);
         hero.next();
         afterAbilityUsed(hero);
@@ -60,15 +60,15 @@ public class Nunchaku extends MeleeWeapon {
     @Override
     public String abilityInfo() {
         if (levelKnown){
-            return Messages.get(this, "ability_desc", 4+buffedLvl());
+            return Messages.get(this, "ability_desc", 5+buffedLvl());
         } else {
-            return Messages.get(this, "typical_ability_desc", 4);
+            return Messages.get(this, "typical_ability_desc", 5);
         }
     }
 
     @Override
     public String upgradeAbilityStat(int level) {
-        return Integer.toString(4+level);
+        return Integer.toString(5+level);
     }
 
 }

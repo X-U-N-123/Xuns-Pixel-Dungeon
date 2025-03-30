@@ -35,7 +35,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 public class Greatknife extends MeleeWeapon {
 
     {
-        image = ItemSpriteSheet.Jiewan;
+        image = ItemSpriteSheet.Greatknife;
         hitSound = Assets.Sounds.HIT_SLASH;
         hitSoundPitch = 1.1f;
 

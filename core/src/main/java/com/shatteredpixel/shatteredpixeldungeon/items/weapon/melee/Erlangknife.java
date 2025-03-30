@@ -25,50 +25,53 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
-public class Crystalsword extends MeleeWeapon {
+public class Erlangknife extends MeleeWeapon {
 
     {
-        image = ItemSpriteSheet.Crystalsword;
+        image = ItemSpriteSheet.Erlangknife;
         hitSound = Assets.Sounds.HIT_SLASH;
-        hitSoundPitch = 1.1f;
+        hitSoundPitch = 0.8f;
 
-        tier = 4;
-        DLY = 0.8f; //1.25x speed
+        tier = 6;
+        DLY = 1.5f; //0.67x speed
+        RCH = 2;    //extra reach
     }
 
     @Override
     public int max(int lvl) {
-        return  4*(tier+1) +    //20 base, down from 25
-                lvl*(tier+1);   //scaling unchanged
+        return  (8*tier-1) +    //47 base, up from 35
+                lvl*(tier+3); //+9 per level, up from +7
+    }
+
+    @Override
+    public String targetingPrompt() {
+        return Messages.get(this, "prompt");
     }
 
     @Override
     protected void duelistAbility(Hero hero, Integer target) {
-        beforeAbilityUsed(hero, null);
-        //1 turn less as using the ability is instant
-        Buff.prolong(hero, Scimitar.SwordDance.class, 3+buffedLvl());
-        hero.sprite.operate(hero.pos);
-        hero.next();
-        afterAbilityUsed(hero);
+        //+(12+2.5*lvl) damage, roughly +45% base damage, +50% scaling
+        int dmgBoost = augment.damageFactor(13 + Math.round(2.5f*buffedLvl()));
+        Spear.spikeAbility(hero, target, 1, dmgBoost, this);
+    }
+
+    public String upgradeAbilityStat(int level){
+        int dmgBoost = 13 + Math.round(2.5f*level);
+        return augment.damageFactor(min(level)+dmgBoost) + "-" + augment.damageFactor(max(level)+dmgBoost);
     }
 
     @Override
     public String abilityInfo() {
+        int dmgBoost = levelKnown ? 13 + Math.round(2.5f*buffedLvl()) : 13;
         if (levelKnown){
-            return Messages.get(this, "ability_desc", 4+buffedLvl());
+            return Messages.get(this, "ability_desc", augment.damageFactor(min()+dmgBoost), augment.damageFactor(max()+dmgBoost));
         } else {
-            return Messages.get(this, "typical_ability_desc", 4);
+            return Messages.get(this, "typical_ability_desc", min(0)+dmgBoost, max(0)+dmgBoost);
         }
-    }
-
-    @Override
-    public String upgradeAbilityStat(int level) {
-        return Integer.toString(4+level);
     }
 
 }

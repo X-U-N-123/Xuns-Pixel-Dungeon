@@ -58,9 +58,9 @@ public class Canopy extends  MeleeWeapon {
 
     public String statsInfo(){
         if (isIdentified()){
-            return Messages.get(this, "stats_desc", 6+2*buffedLvl());
+            return Messages.get(this, "stats_desc", 7+3*buffedLvl());
         } else {
-            return Messages.get(this, "typical_stats_desc", 6);
+            return Messages.get(this, "typical_stats_desc", 7);
         }
     }
 
