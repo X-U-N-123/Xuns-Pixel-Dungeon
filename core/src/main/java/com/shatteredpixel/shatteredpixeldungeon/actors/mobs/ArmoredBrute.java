@@ -27,8 +27,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.LamellarArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.PlateArmor;
-import com.shatteredpixel.shatteredpixeldungeon.items.armor.ScaleArmor;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ShieldedSprite;
@@ -62,10 +62,10 @@ public class ArmoredBrute extends Brute {
 	
 	@Override
 	public Item createLoot() {
-		if (Random.Int( 4 ) == 0) {
-			return new PlateArmor().random();
+		if (Random.Int( 3 ) == 0) {
+			return new LamellarArmor().random();
 		}
-		return new ScaleArmor().random();
+		return new PlateArmor().random();
 	}
 	
 	//similar to regular brute rate, but deteriorates much slower. 60 turns to death total.

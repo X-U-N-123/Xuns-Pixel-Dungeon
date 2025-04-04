@@ -227,7 +227,9 @@ public class ItemSpriteSheet {
 	public static final int Fork            = WEP_TIER1+7;
 	public static final int RAPIER          = WEP_TIER1+8;
 	public static final int DAGGER          = WEP_TIER1+9;
+	public static final int Wornrunicblade  = WEP_TIER1+11;
 	public static final int Dinnerknife     = WEP_TIER1+12;
+	public static final int Woodsword       = WEP_TIER1+14;
 	public static final int MAGES_STAFF     = WEP_TIER1+15;
 	static{
 		assignItemRect(WORN_SHORTSWORD, 14, 14);
@@ -242,6 +244,8 @@ public class ItemSpriteSheet {
 		assignItemRect(Fork,            15, 15);
 		assignItemRect(Dinnerknife,     12, 12);
 		assignItemRect(Shovel,          16, 16);
+		assignItemRect(Wornrunicblade,  11, 11);
+		assignItemRect(Woodsword,       13, 13);
 	}
 //now all the weapon's sprite are moved into the bottom except tier 1 to have more space for new weapons
 	private static final int WEP_TIER2      = xy(1, 33);   //16 slots
@@ -255,6 +259,7 @@ public class ItemSpriteSheet {
 	public static final int SICKLE          = WEP_TIER2+7;
 	public static final int QUARTERSTAFF    = WEP_TIER2+8;
 	public static final int DIRK            = WEP_TIER2+9;
+	public static final int Smallrunicblade = WEP_TIER2+11;
 	public static final int Jiewan          = WEP_TIER2+12;
 	static{
 		assignItemRect(SHORTSWORD,      13, 13);
@@ -268,6 +273,7 @@ public class ItemSpriteSheet {
 		assignItemRect(Crabclaw,        15, 13);
 		assignItemRect(Wicker,          14, 14);
 		assignItemRect(Jiewan,          12, 11);
+		assignItemRect(Smallrunicblade, 12, 12);
 	}
 
 	private static final int WEP_TIER3      = xy(1, 34);   //16 slots
@@ -281,7 +287,7 @@ public class ItemSpriteSheet {
 	public static final int Scythe          = WEP_TIER3+7;
 	public static final int Bayonet         = WEP_TIER3+8;
 	public static final int Roguedagger     = WEP_TIER3+9;
-	public static final int Shortrunicblade = WEP_TIER3+10;
+	public static final int Shortrunicblade = WEP_TIER3+11;
 	public static final int Knife           = WEP_TIER3+12;
 	static{
 		assignItemRect(SWORD,           14, 14);
@@ -359,32 +365,34 @@ public class ItemSpriteSheet {
 	}
 
 	private static final int WEP_TIER6 = xy(1, 37);   //16 slots
-	public static final int Shangfang     = WEP_TIER6+0;
-	public static final int GREATAXE      = WEP_TIER6+1;
-	public static final int Erlangknife   = WEP_TIER6+2;
-	public static final int Dwarvessword  = WEP_TIER6+3;
-	public static final int Canopy        = WEP_TIER6+4;
-	public static final int Doublesword   = WEP_TIER6+5;
-	public static final int Etherealsword = WEP_TIER6+6;
-	public static final int Rake          = WEP_TIER6+7;
-	public static final int Jingubang     = WEP_TIER6+8;
-	public static final int Darknesssword = WEP_TIER6+9;
-	public static final int Ripperclaw    = WEP_TIER6+12;
+	public static final int Shangfang       = WEP_TIER6+0;
+	public static final int GREATAXE        = WEP_TIER6+1;
+	public static final int Erlangknife     = WEP_TIER6+2;
+	public static final int Dwarvessword    = WEP_TIER6+3;
+	public static final int Canopy          = WEP_TIER6+4;
+	public static final int Doublesword     = WEP_TIER6+5;
+	public static final int Etherealsword   = WEP_TIER6+6;
+	public static final int Rake            = WEP_TIER6+7;
+	public static final int Jingubang       = WEP_TIER6+8;
+	public static final int Darknesssword   = WEP_TIER6+9;
+	public static final int Greatrunicblade = WEP_TIER6+11;
+	public static final int Ripperclaw      = WEP_TIER6+12;
 	static{
-		assignItemRect(GREATAXE,     12, 16);
-		assignItemRect(Shangfang,    16, 16);
-		assignItemRect(Doublesword,  15, 14);
-		assignItemRect(Jingubang,    16, 16);
-		assignItemRect(Etherealsword,15, 15);
-		assignItemRect(Darknesssword,16, 16);
-		assignItemRect(Ripperclaw,   15, 16);
-		assignItemRect(Rake,         15, 16);
-		assignItemRect(Canopy,       16, 16);
-		assignItemRect(Dwarvessword, 16, 16);
-		assignItemRect(Erlangknife,  16, 16);
+		assignItemRect(GREATAXE,       12, 16);
+		assignItemRect(Shangfang,      16, 16);
+		assignItemRect(Doublesword,    15, 14);
+		assignItemRect(Jingubang,      16, 16);
+		assignItemRect(Etherealsword,  15, 15);
+		assignItemRect(Darknesssword,  16, 16);
+		assignItemRect(Ripperclaw,     15, 16);
+		assignItemRect(Rake,           15, 16);
+		assignItemRect(Canopy,         16, 16);
+		assignItemRect(Dwarvessword,   16, 16);
+		assignItemRect(Erlangknife,    16, 16);
+		assignItemRect(Greatrunicblade,16, 16);
 	}
 
-	private static final int MISSILE_WEP    =                               xy(1, 8);  //16 slots. 3 per tier + bow
+	private static final int MISSILE_WEP    = xy(1, 8);  //16 slots. 3 per tier + bow
 	public static final int SPIRIT_BOW      = MISSILE_WEP+0;
 	
 	public static final int THROWING_SPIKE  = MISSILE_WEP+1;
@@ -468,6 +476,7 @@ public class ItemSpriteSheet {
 	public static final int ARMOR_HUNTRESS  = ARMOR+8;
 	public static final int ARMOR_DUELIST   = ARMOR+9;
 	public static final int ARMOR_CLERIC    = ARMOR+10;
+	public static final int ARMOR_LAMELLAR  = ARMOR+11;
 	static{
 		assignItemRect(ARMOR_CLOTH,     15, 12);
 		assignItemRect(ARMOR_LEATHER,   14, 13);
@@ -480,9 +489,10 @@ public class ItemSpriteSheet {
 		assignItemRect(ARMOR_HUNTRESS,  13, 15);
 		assignItemRect(ARMOR_DUELIST,   12, 13);
 		assignItemRect(ARMOR_CLERIC,    13, 14);
+		assignItemRect(ARMOR_LAMELLAR,  12, 12);
 	}
 
-	                                                                                    //16 free slots
+	//16 free slots
 
 	private static final int WANDS              =                           xy(1, 14);  //16 slots
 	public static final int WAND_MAGIC_MISSILE  = WANDS+0;

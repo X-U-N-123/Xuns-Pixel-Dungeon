@@ -72,7 +72,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Cudgel;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dagger;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dinnerknife;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Gloves;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Rapier;
@@ -334,9 +333,9 @@ public enum HeroClass {
 	public boolean isUnlocked(){
 		//always unlock on debug builds
 		if (DeviceCompat.isDebug()) return true;
-		if (DeviceCompat.isAndroid()) return true;
-		if (DeviceCompat.isDesktop()) return true;
-		if (DeviceCompat.isiOS()) return true;
+		//if (DeviceCompat.isAndroid()) return true;
+		//if (DeviceCompat.isDesktop()) return true;
+		//if (DeviceCompat.isiOS()) return true;
 
 		switch (this){
 			case WARRIOR: default:
