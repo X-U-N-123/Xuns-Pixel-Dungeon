@@ -38,20 +38,20 @@ import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Callback;
 
-public class Longrunicblade extends MeleeWeapon {
+public class Smallrunicblade extends MeleeWeapon {
 
     {
-        image = ItemSpriteSheet.Longrunicblade;
+        image = ItemSpriteSheet.Smallrunicblade;
         hitSound = Assets.Sounds.HIT_SLASH;
-        hitSoundPitch = 1f;
+        hitSoundPitch = 1.1f;
 
-        tier = 5;
+        tier = 2;
     }
 
     @Override
     public int max(int lvl) {
-        return  5*(tier) +                	//24 base, down from 30
-                Math.round(lvl*(tier+2));	//+7 per level, up from +6
+        return  4*(tier+1) +                	//12 base, down from 15
+                Math.round(lvl*(tier+2));	//+4 per level, up from +3
     }
 
     @Override
@@ -73,7 +73,7 @@ public class Longrunicblade extends MeleeWeapon {
 
         //we apply here because of projecting
         RunicBlade.RunicSlashTracker tracker = Buff.affect(hero, RunicBlade.RunicSlashTracker.class);
-        tracker.boost = 2.5f + 0.50f*buffedLvl();
+        tracker.boost = 4f + 0.50f*buffedLvl();
         hero.belongings.abilityWeapon = this;
         if (!hero.canAttack(enemy)){
             GLog.w(Messages.get(this, "ability_target_range"));
@@ -105,15 +105,15 @@ public class Longrunicblade extends MeleeWeapon {
     @Override
     public String abilityInfo() {
         if (levelKnown){
-            return Messages.get(this, "ability_desc", 250+50*buffedLvl());
+            return Messages.get(this, "ability_desc", 400+50*buffedLvl());
         } else {
-            return Messages.get(this, "typical_ability_desc", 250);
+            return Messages.get(this, "typical_ability_desc", 400);
         }
     }
 
     @Override
     public String upgradeAbilityStat(int level) {
-        return "+" + (250+50*level) + "%";
+        return "+" + (400+50*level) + "%";
     }
 
 }

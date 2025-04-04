@@ -28,9 +28,9 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.AttackIndicator;
@@ -38,20 +38,28 @@ import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Callback;
 
-public class Longrunicblade extends MeleeWeapon {
+public class Woodsword extends MeleeWeapon {
 
     {
-        image = ItemSpriteSheet.Longrunicblade;
+        image = ItemSpriteSheet.Woodsword;
         hitSound = Assets.Sounds.HIT_SLASH;
-        hitSoundPitch = 1f;
+        hitSoundPitch = 1.3f;
 
-        tier = 5;
+        tier = 1;
     }
 
     @Override
-    public int max(int lvl) {
-        return  5*(tier) +                	//24 base, down from 30
-                Math.round(lvl*(tier+2));	//+7 per level, up from +6
+    public int max(int lvl){
+        return 3*(tier+1) +
+                lvl*tier;
+    }
+
+    @Override
+    public int proc(Char attacker, Char defender, int damage) {
+        if (damage >= 3+buffedLvl()){attacker.HP += 1+buffedLvl();
+        attacker.sprite.emitter().start( Speck.factory( Speck.HEALING ), 0.33f, 2+buffedLvl() );}
+        if (attacker.HP > attacker.HT){attacker.HP = attacker.HT;}
+        return super.proc( attacker, defender, damage );
     }
 
     @Override
@@ -67,17 +75,13 @@ public class Longrunicblade extends MeleeWeapon {
 
         Char enemy = Actor.findChar(target);
         if (enemy == null || enemy == hero || hero.isCharmedBy(enemy) || !Dungeon.level.heroFOV[target]) {
-            GLog.w(Messages.get(this, "ability_no_target"));
+            GLog.w(Messages.get(this,"ability_no_target"));
             return;
         }
 
-        //we apply here because of projecting
-        RunicBlade.RunicSlashTracker tracker = Buff.affect(hero, RunicBlade.RunicSlashTracker.class);
-        tracker.boost = 2.5f + 0.50f*buffedLvl();
         hero.belongings.abilityWeapon = this;
         if (!hero.canAttack(enemy)){
             GLog.w(Messages.get(this, "ability_target_range"));
-            tracker.detach();
             hero.belongings.abilityWeapon = null;
             return;
         }
@@ -88,13 +92,13 @@ public class Longrunicblade extends MeleeWeapon {
             public void call() {
                 beforeAbilityUsed(hero, enemy);
                 AttackIndicator.target(enemy);
-                if (hero.attack(enemy, 1f, 0, Char.INFINITE_ACCURACY)){
+                if (hero.attack(enemy, 1, 1+buffedLvl(), Char.INFINITE_ACCURACY)){
                     Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG);
-                    if (!enemy.isAlive()){
-                        onAbilityKill(hero, enemy);
-                    }
+                    Dungeon.hero.HP += 1+buffedLvl();
+                    Dungeon.hero.sprite.emitter().start( Speck.factory( Speck.HEALING ), 0.25f, 2*(1+buffedLvl()));
+                    if (Dungeon.hero.HP > Dungeon.hero.HT){Dungeon.hero.HP = Dungeon.hero.HT;}
                 }
-                tracker.detach();
+
                 Invisibility.dispel();
                 hero.spendAndNext(hero.attackDelay());
                 afterAbilityUsed(hero);
@@ -102,18 +106,26 @@ public class Longrunicblade extends MeleeWeapon {
         });
     }
 
-    @Override
-    public String abilityInfo() {
-        if (levelKnown){
-            return Messages.get(this, "ability_desc", 250+50*buffedLvl());
-        } else {
-            return Messages.get(this, "typical_ability_desc", 250);
-        }
+    @Override public String statsInfo () {
+        int Healing = levelKnown ? 1 +buffedLvl() : 1;
+        return Messages.get(this, "stats_desc",Healing);
     }
 
     @Override
-    public String upgradeAbilityStat(int level) {
-        return "+" + (250+50*level) + "%";
+    public String abilityInfo() {
+        int dmgBoost = levelKnown ? 1 + buffedLvl() : 1;
+        int Healingboost = levelKnown ? 1 + buffedLvl() : 1;
+        if (levelKnown){
+            return Messages.get(this, "ability_desc", augment.damageFactor(min()+dmgBoost), augment.damageFactor(max()+dmgBoost), Healingboost);
+        } else {
+            return Messages.get(this, "typical_ability_desc", min(0)+dmgBoost, max(0)+dmgBoost, Healingboost);
+        }
+    }
+
+    public String upgradeAbilityStat(int level){
+        int dmgBoost = 1 + level;
+        int Healingboost = buffedLvl();
+        return augment.damageFactor(min(level)+dmgBoost) + "-" + augment.damageFactor(max(level)+dmgBoost);
     }
 
 }

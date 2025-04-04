@@ -29,7 +29,6 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -44,13 +43,10 @@ public class Shortrunicblade extends MeleeWeapon {
     {
         image = ItemSpriteSheet.Shortrunicblade;
         hitSound = Assets.Sounds.HIT_SLASH;
-        hitSoundPitch = 1f;
+        hitSoundPitch = 1.1f;
 
         tier = 3;
     }
-
-    //Essentially it's a tier 3 weapon, with 16 base max damage, and tier 4 scaling.
-    //equal to tier 3 in damage at +3
 
     @Override
     public int max(int lvl) {
@@ -77,7 +73,7 @@ public class Shortrunicblade extends MeleeWeapon {
 
         //we apply here because of projecting
         RunicBlade.RunicSlashTracker tracker = Buff.affect(hero, RunicBlade.RunicSlashTracker.class);
-        tracker.boost = 3f + 0.50f*buffedLvl();
+        tracker.boost = 3.5f + 0.50f*buffedLvl();
         hero.belongings.abilityWeapon = this;
         if (!hero.canAttack(enemy)){
             GLog.w(Messages.get(this, "ability_target_range"));
@@ -119,12 +115,5 @@ public class Shortrunicblade extends MeleeWeapon {
     public String upgradeAbilityStat(int level) {
         return "+" + (350+50*level) + "%";
     }
-
-
-    public static class RunicSlashTracker extends FlavourBuff{
-
-        public float boost = 2f;
-
-    };
 
 }
