@@ -73,7 +73,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Cudgel;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dagger;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Gloves;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Havoc;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Rapier;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WornShortsword;
@@ -119,7 +118,7 @@ public enum HeroClass {
 		if (DeviceCompat.isDebug()){
 			Goldarrow goldarrow = new Goldarrow();
 			goldarrow.collect();}
-		new Havoc().collect();
+		//new Havoc().collect();
 
 		new ScrollOfIdentify().identify();
 

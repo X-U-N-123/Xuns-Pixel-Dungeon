@@ -154,12 +154,14 @@ public class ItemSpriteSheet {
 	public static final int TORN_PAGE       = MISC_CONSUMABLE +21;
 	public static final int TRINKET_CATA    = MISC_CONSUMABLE +22;
 	public static final int Goldarrow       = MISC_CONSUMABLE +23;
+    public static final int INTACT_SEAL     = MISC_CONSUMABLE +24;
 
 	static{
 		assignItemRect(ANKH,            10, 16);
 		assignItemRect(STYLUS,          12, 13);
 		
 		assignItemRect(SEAL,            9,  15);
+        assignItemRect(INTACT_SEAL,     9,  15);
 		assignItemRect(TORCH,           12, 15);
 		assignItemRect(BEACON,          16, 15);
 		
@@ -261,6 +263,7 @@ public class ItemSpriteSheet {
 	public static final int DIRK            = WEP_TIER2+9;
 	public static final int Smallrunicblade = WEP_TIER2+11;
 	public static final int Jiewan          = WEP_TIER2+12;
+	public static final int Havoc           = WEP_TIER2+14;
 	static{
 		assignItemRect(SHORTSWORD,      13, 13);
 		assignItemRect(HAND_AXE,        12, 14);
@@ -274,6 +277,7 @@ public class ItemSpriteSheet {
 		assignItemRect(Wicker,          14, 14);
 		assignItemRect(Jiewan,          12, 11);
 		assignItemRect(Smallrunicblade, 12, 12);
+		assignItemRect(Havoc,           14, 14);
 	}
 
 	private static final int WEP_TIER3      = xy(1, 34);   //16 slots
@@ -319,6 +323,7 @@ public class ItemSpriteSheet {
 	public static final int RUNIC_BLADE        = WEP_TIER4+11;
 	public static final int Jieniu             = WEP_TIER4+12;
 	public static final int CROSSBOW           = WEP_TIER4+13;
+	public static final int Darkgoldsword      = WEP_TIER4+15;
 	static{
 		assignItemRect(LONGSWORD,         15, 15);
 		assignItemRect(BATTLE_AXE,        16, 16);
@@ -334,6 +339,7 @@ public class ItemSpriteSheet {
 		assignItemRect(Hoe,               13, 15);
 		assignItemRect(Jieniu,            15, 15);
 		assignItemRect(Crystalsword,      15, 15);
+		assignItemRect(Darkgoldsword,     15, 15);
 	}
 
 	private static final int WEP_TIER5         = xy(1, 36);   //16 slots
@@ -829,6 +835,7 @@ public class ItemSpriteSheet {
 	public static final int VANILLA_CAKE    = HOLIDAY_FOOD+7;
 	public static final int CANDY_CANE      = HOLIDAY_FOOD+8;
 	public static final int SPARKLING_POTION= HOLIDAY_FOOD+9;
+	public static final int MOONCAKE        = HOLIDAY_FOOD+10;
 	static{
 		assignItemRect(STEAMED_FISH,    16, 12);
 		assignItemRect(FISH_LEFTOVER,   16, 12);
@@ -840,6 +847,7 @@ public class ItemSpriteSheet {
 		assignItemRect(VANILLA_CAKE,    14, 13);
 		assignItemRect(CANDY_CANE,      13, 16);
 		assignItemRect(SPARKLING_POTION, 7, 16);
+		assignItemRect(MOONCAKE,        16, 12);
 	}
 
 	private static final int QUEST  =                                       xy(1, 30);  //16 slots
