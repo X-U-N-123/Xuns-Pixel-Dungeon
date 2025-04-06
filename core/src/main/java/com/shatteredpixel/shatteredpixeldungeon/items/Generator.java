@@ -510,7 +510,7 @@ public class Generator {
 			WEP_T3.defaultProbs = new float[]{ 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2 };
 			WEP_T3.probs = WEP_T3.defaultProbs.clone();   //WEP_T1
 			
-			WEP_T4.classes = new Class<?>[]{
+			WEP_T4.classes = new Class<?>[]{//15 Weapons
 					Longsword.class,
 					BattleAxe.class,
 					Flail.class,

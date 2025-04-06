@@ -74,6 +74,9 @@ public class Pasty extends Food {
 			case SHATTEREDPD_BIRTHDAY:
 				image = ItemSpriteSheet.SHATTERED_CAKE;
 				break;
+			//case MID_AUTUMN:
+				//image = ItemSpriteSheet.MOONCAKE;
+			//break;
 			case HALLOWEEN:
 				image = ItemSpriteSheet.PUMPKIN_PIE;
 				break;
@@ -152,6 +155,9 @@ public class Pasty extends Food {
 				hero.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(expToGive), FloatingText.EXPERIENCE);
 				hero.earnExp(expToGive, PotionOfExperience.class);
 				break;
+			//case MID_AUTUMN:
+
+				//break;
 			case HALLOWEEN:
 				//heals for 5% max hp, min of 3
 				int toHeal = Math.max(3, hero.HT/20);
@@ -188,6 +194,8 @@ public class Pasty extends Food {
 				return Messages.get(this, "shattered_name");
 			case HALLOWEEN:
 				return Messages.get(this, "pie_name");
+			//case MID_AUTUMN:
+				//return Messages.get(this, "mooncake_name");
 			case PD_BIRTHDAY:
 				return Messages.get(this, "vanilla_name");
 			case WINTER_HOLIDAYS:
@@ -214,6 +222,8 @@ public class Pasty extends Food {
 				return Messages.get(this, "shattered_desc");
 			case HALLOWEEN:
 				return Messages.get(this, "pie_desc");
+			//case MID_AUTUMN:
+				//return Messages.get(this, "mooncake_desc");
 			case PD_BIRTHDAY:
 				return Messages.get(this, "vanilla_desc");
 			case WINTER_HOLIDAYS:
