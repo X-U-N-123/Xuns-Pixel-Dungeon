@@ -53,7 +53,9 @@ public class BrokenSeal extends Item {
 	public static final String AC_INFO = "INFO_WINDOW";
 
 	{
-		image = ItemSpriteSheet.SEAL;
+		if (Dungeon.hero.pointsInTalent(Talent.INTACT_SEAL) >= 0)
+		{image = ItemSpriteSheet.INTACT_SEAL;}
+		else {image = ItemSpriteSheet.SEAL;}
 
 		cursedKnown = levelKnown = true;
 		unique = true;
@@ -218,8 +220,9 @@ public class BrokenSeal extends Item {
 		@Override
 		public synchronized boolean act() {
 			if (Regeneration.regenOn() && shielding() < maxShield()) {
-				partialShield += 1/30f;
-			}
+				partialShield += 2+Dungeon.hero.pointsInTalent(Talent.INTACT_SEAL)/60f;//让战士再次伟大！——迅
+				}
+
 			
 			while (partialShield >= 1){
 				incShield();

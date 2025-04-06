@@ -31,13 +31,13 @@ public enum Holiday {
 	LUNAR_NEW_YEAR,         //Varies, sometime in late Jan to Late Feb              (7 days)
 	APRIL_FOOLS,            //April 1st, can override easter                        (1 day)
 	EASTER,                 //Varies, sometime in Late Mar to Late Apr              (6-7 days)
-	//Nothing in May
+	//5月无事发生
 	PRIDE,                  //Jun 24th to Jun 30th                                  (7 days)
-	//Nothing in Jul
+	//7月无事发生
 	SHATTEREDPD_BIRTHDAY,   //Aug 1st to Aug 7th                                    (7 days)
-	//Nothing in Sept
+	MID_AUTUMN,             //Varies, sometime in early Sep to early Oct            (7 days)
 	HALLOWEEN,              //Oct 24th to Oct 31st                                  (7 days)
-	//Nothing in Nov
+	//11月无事发生
 	PD_BIRTHDAY,            //Dec 1st to Dec 7th                                    (7 days)
 	WINTER_HOLIDAYS,        //Dec 15th to Dec 26th                                  (12 days)
 	NEW_YEARS;              //Dec 27th to Jan 2nd                                   (7 days)
@@ -92,6 +92,12 @@ public enum Holiday {
 			return SHATTEREDPD_BIRTHDAY;
 		}
 
+		//Mid-Autumn
+		if (isMidAutumn(cal.get(Calendar.YEAR),
+				cal.get(Calendar.DAY_OF_YEAR))){
+			return MID_AUTUMN;
+		}
+
 		//Halloween
 		if (cal.get(Calendar.MONTH) == Calendar.OCTOBER
 				&& cal.get(Calendar.DAY_OF_MONTH) >= 24){
@@ -125,6 +131,7 @@ public enum Holiday {
 		int lunarNewYearDayOfYear;
 		switch (year){
 			//yes, I really did hardcode this all the way from 2020 to 2100
+			//Evan 居然用这种方式判断春节——X_U_N
 			default:   lunarNewYearDayOfYear = 31+5; break;     //defaults to February 5th
 			case 2020: lunarNewYearDayOfYear = 25; break;       //January 25th
 			case 2021: lunarNewYearDayOfYear = 31+12; break;    //February 12th
@@ -211,6 +218,98 @@ public enum Holiday {
 
 		//celebrate for 7 days total, with Lunar New Year on the 5th day
 		return dayOfYear >= lunarNewYearDayOfYear-4 && dayOfYear <= lunarNewYearDayOfYear+2;
+	}
+	public static boolean isMidAutumn(int year, int dayOfYear){
+		int MidAutumnDayOfYear;
+		//Sep 1st is the 244th day, Oct 1st is the 274th day
+		switch (year){
+			//但这是最好的办法——X_U_N
+			default:   MidAutumnDayOfYear = 243+20; break;     //defaults to September 20th
+			case 2020: MidAutumnDayOfYear = 273+1+1; break;       //Oct 1st,Leap
+			case 2021: MidAutumnDayOfYear = 243+21; break;    //Sep 21st
+			case 2022: MidAutumnDayOfYear = 243+10; break;     //Sep 10th
+			case 2023: MidAutumnDayOfYear = 243+29; break;       //Sep 29th
+			case 2024: MidAutumnDayOfYear = 243+17+1; break;    //Sep 17th,Leap
+			case 2025: MidAutumnDayOfYear = 273+6; break;       //Oct 6th
+			case 2026: MidAutumnDayOfYear = 243+25; break;    //Sep 25th
+			case 2027: MidAutumnDayOfYear = 243+15; break;     //Sep 15th
+			case 2028: MidAutumnDayOfYear = 273+3+1; break;       //Oct 3rd,Leap
+			case 2029: MidAutumnDayOfYear = 243+22; break;    //Sep 22nd
+			case 2030: MidAutumnDayOfYear = 243+12; break;     //Sep 12th
+			case 2031: MidAutumnDayOfYear = 273+1; break;       //Oct 1st
+			case 2032: MidAutumnDayOfYear = 243+19+1; break;    //Sep 9th,Leap
+			case 2033: MidAutumnDayOfYear = 273+7; break;       //Oct 7th
+			case 2034: MidAutumnDayOfYear = 243+27; break;    //Sep 27th
+			case 2035: MidAutumnDayOfYear = 243+16; break;     //Sep 16th
+			case 2036: MidAutumnDayOfYear = 273+4+1; break;       //Oct 4th,Leap
+			case 2037: MidAutumnDayOfYear = 243+24; break;    //Sep 24th
+			case 2038: MidAutumnDayOfYear = 243+13; break;     //Sep 13th
+			case 2039: MidAutumnDayOfYear = 273+2; break;       //Oct 2nd
+			case 2040: MidAutumnDayOfYear = 243+20+1; break;    //Sep 20th,Leap
+			case 2041: MidAutumnDayOfYear = 243+10; break;     //Sep 10th
+			case 2042: MidAutumnDayOfYear = 243+28; break;       //Sep 28th
+			case 2043: MidAutumnDayOfYear = 243+17; break;    //Sep 1th
+			case 2044: MidAutumnDayOfYear = 273+5+1; break;       //Oct 5th,Leap
+			case 2045: MidAutumnDayOfYear = 243+25; break;    //Sep 25th
+			case 2046: MidAutumnDayOfYear = 243+15; break;     //Sep 15th
+			case 2047: MidAutumnDayOfYear = 273+4; break;       //Oct 4th
+			case 2048: MidAutumnDayOfYear = 243+22+1; break;    //Sep 22nd,Leap
+			case 2049: MidAutumnDayOfYear = 243+11; break;     //Sep 11th
+			case 2050: MidAutumnDayOfYear = 243+1; break;       //Sep 1st
+			//case 2051: MidAutumnDayOfYear = 243+11; break;    //February 11th
+			//case 2052: MidAutumnDayOfYear = 243+1; break;     //February 1st
+			//case 2053: MidAutumnDayOfYear = 243+19; break;    //February 19th
+			//case 2054: MidAutumnDayOfYear = 243+8; break;     //February 8th
+			//case 2055: MidAutumnDayOfYear = 28; break;       //January 28th
+			//case 2056: MidAutumnDayOfYear = 243+15; break;    //February 15th
+			//case 2057: MidAutumnDayOfYear = 243+4; break;     //February 4th
+			//case 2058: MidAutumnDayOfYear = 24; break;       //January 24th
+			//case 2059: MidAutumnDayOfYear = 243+12; break;    //February 12th
+			//case 2060: MidAutumnDayOfYear = 243+2; break;     //February 2nd
+			//case 2061: MidAutumnDayOfYear = 21; break;       //January 21st
+			//case 2062: MidAutumnDayOfYear = 243+9; break;     //February 9th
+			//case 2063: MidAutumnDayOfYear = 29; break;       //January 29th
+			//case 2064: MidAutumnDayOfYear = 243+17; break;    //February 17th
+			//case 2065: MidAutumnDayOfYear = 243+5; break;     //February 5th
+			//case 2066: MidAutumnDayOfYear = 26; break;       //January 26th
+			//case 2067: MidAutumnDayOfYear = 243+14; break;    //February 14th
+			//case 2068: MidAutumnDayOfYear = 243+3; break;     //February 3rd
+			//case 2069: MidAutumnDayOfYear = 23; break;       //January 23rd
+			//case 2070: MidAutumnDayOfYear = 243+11; break;    //February 11th
+			//case 2071: MidAutumnDayOfYear = 243; break;       //January 243st
+			//case 2072: MidAutumnDayOfYear = 243+19; break;    //February 19th
+			//case 2073: MidAutumnDayOfYear = 243+7; break;     //February 7th
+			//case 2074: MidAutumnDayOfYear = 27; break;       //January 27th
+			//case 2075: MidAutumnDayOfYear = 243+15; break;    //February 15th
+			//case 2076: MidAutumnDayOfYear = 243+5; break;     //February 5th
+			//case 2077: MidAutumnDayOfYear = 24; break;       //January 24th
+			//case 2078: MidAutumnDayOfYear = 243+12; break;    //February 12th
+			//case 2079: MidAutumnDayOfYear = 243+2; break;     //February 2nd
+			//case 2080: MidAutumnDayOfYear = 22; break;       //January 22nd
+			//case 2081: MidAutumnDayOfYear = 243+9; break;     //February 9th
+			//case 2082: MidAutumnDayOfYear = 29; break;       //January 29th
+			//case 2083: MidAutumnDayOfYear = 243+17; break;    //February 17th
+			//case 2084: MidAutumnDayOfYear = 243+6; break;     //February 6th
+			//case 2085: MidAutumnDayOfYear = 26; break;       //January 26th
+			//case 2086: MidAutumnDayOfYear = 243+14; break;    //February 14th
+			//case 2087: MidAutumnDayOfYear = 243+3; break;     //February 3rd
+			//case 2088: MidAutumnDayOfYear = 24; break;       //January 24th
+			//case 2089: MidAutumnDayOfYear = 243+10; break;    //February 10th
+			//case 2090: MidAutumnDayOfYear = 30; break;       //January 30th
+			//case 2091: MidAutumnDayOfYear = 243+18; break;    //February 18th
+			//case 2092: MidAutumnDayOfYear = 243+7; break;     //February 7th
+			//case 2093: MidAutumnDayOfYear = 27; break;       //January 27th
+			//case 2094: MidAutumnDayOfYear = 243+15; break;    //February 15th
+			//case 2095: MidAutumnDayOfYear = 243+5; break;     //February 5th
+			//case 2096: MidAutumnDayOfYear = 25; break;       //January 25th
+			//case 2097: MidAutumnDayOfYear = 243+12; break;    //February 12th
+			//case 2098: MidAutumnDayOfYear = 243+1; break;     //February 1st
+			//case 2099: MidAutumnDayOfYear = 21; break;       //January 21st
+			//case 2100: MidAutumnDayOfYear = 243+9; break;     //February 9th
+		}
+
+		//celebrate for 7 days total, with Mid-Autumn on the 5th day
+		return dayOfYear >= MidAutumnDayOfYear-4 && dayOfYear <= MidAutumnDayOfYear+2;
 	}
 
 	//has to be algorithmically computed =S

@@ -48,7 +48,9 @@ public class Goldarrow extends Item {
 
     {
         defaultAction = AC_TELEPORT;
-        image = ItemSpriteSheet.Goldarrow;
+        image = ItemSpriteSheet.Goldarrow;cursedKnown = levelKnown = true;
+        unique = true;
+        bones = false;
     }
 
     @Override

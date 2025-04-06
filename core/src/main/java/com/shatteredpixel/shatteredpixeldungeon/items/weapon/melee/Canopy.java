@@ -24,6 +24,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
 
+import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -33,6 +34,9 @@ public class Canopy extends  MeleeWeapon {
 
     {
         image = ItemSpriteSheet.Canopy;
+        hitSound = Assets.Sounds.HIT_CRUSH;
+        hitSoundPitch = 1f;
+
         tier = 6;
     }
 

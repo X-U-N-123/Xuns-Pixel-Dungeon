@@ -46,7 +46,7 @@ public class Dinnerknife extends MeleeWeapon {
     {
         image = ItemSpriteSheet.Dinnerknife;
         hitSound = Assets.Sounds.HIT_SLASH;
-        hitSoundPitch = 1.3f;
+        hitSoundPitch = 1.2f;
 
         tier = 1;
     }
