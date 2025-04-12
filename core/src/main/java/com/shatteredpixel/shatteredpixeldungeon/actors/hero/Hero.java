@@ -904,8 +904,15 @@ public class Hero extends Char {
 			}
 		}
 		
-		if(hasTalent(Talent.BARKSKIN) && Dungeon.level.map[pos] == Terrain.FURROWED_GRASS){
+		if(hasTalent(Talent.BARKSKIN) && (Dungeon.level.map[Dungeon.hero.pos] == Terrain.HIGH_GRASS
+				|| Dungeon.level.map[pos] == Terrain.FURROWED_GRASS)){
 			Barkskin.conditionallyAppend(this, (lvl*pointsInTalent(Talent.BARKSKIN))/2, 1 );
+		}
+		boolean HeroposTerr = Dungeon.level.map[Dungeon.hero.pos] == Terrain.HIGH_GRASS
+				|| Dungeon.level.map[Dungeon.hero.pos] == Terrain.GRASS
+				|| Dungeon.level.map[Dungeon.hero.pos] == Terrain.FURROWED_GRASS;
+		if(hasTalent(Talent.NATURES_AID) && HeroposTerr){
+			Buff.affect(Dungeon.hero, Talent.NaturesaidTracker.class);
 		}
 		
 		return actResult;
