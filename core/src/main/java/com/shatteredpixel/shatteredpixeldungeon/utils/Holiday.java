@@ -131,7 +131,7 @@ public enum Holiday {
 		int lunarNewYearDayOfYear;
 		switch (year){
 			//yes, I really did hardcode this all the way from 2020 to 2100
-			//Evan 居然用这种方式判断春节——X_U_N
+			//Evan 居然用这种方式判断春节
 			default:   lunarNewYearDayOfYear = 31+5; break;     //defaults to February 5th
 			case 2020: lunarNewYearDayOfYear = 25; break;       //January 25th
 			case 2021: lunarNewYearDayOfYear = 31+12; break;    //February 12th
@@ -223,7 +223,7 @@ public enum Holiday {
 		int MidAutumnDayOfYear;
 		//Sep 1st is the 244th day, Oct 1st is the 274th day
 		switch (year){
-			//但这是最好的办法——X_U_N
+			//但这是最好的办法
 			default:   MidAutumnDayOfYear = 243+20; break;     //defaults to September 20th
 			case 2020: MidAutumnDayOfYear = 273+1+1; break;       //Oct 1st,Leap
 			case 2021: MidAutumnDayOfYear = 243+21; break;    //Sep 21st

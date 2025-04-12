@@ -49,8 +49,8 @@ public class WornShortsword extends MeleeWeapon {
 
 	@Override
 	public int max(int lvl) {
-		return  Math.round(4f*tier+1) +    //8 base, up from 10
-				lvl*(tier+1);                    //scaling unchanged
+		return  4*(tier+1) +    //8 base, up from 10
+				lvl*(tier+1);   //scaling unchanged
 	}
 
 	@Override

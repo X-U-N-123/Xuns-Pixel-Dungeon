@@ -33,7 +33,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 public class Shovel extends MeleeWeapon{
 
     {
-        image = ItemSpriteSheet.Shovel;
+        image = ItemSpriteSheet.SHOVEL;
         hitSound = Assets.Sounds.HIT_SLASH;
         hitSoundPitch = 1.2f;
 
