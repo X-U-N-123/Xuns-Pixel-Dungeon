@@ -23,22 +23,17 @@ package com.shatteredpixel.shatteredpixeldungeon.items.food;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
-import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ArtifactRecharge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Charm;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
-import com.shatteredpixel.shatteredpixeldungeon.effects.particles.RainbowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfExperience;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRecharging;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
-import com.shatteredpixel.shatteredpixeldungeon.ui.TargetHealthIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.utils.Holiday;
 import com.watabou.noosa.audio.Sample;
 
@@ -68,9 +63,9 @@ public class Pasty extends Food {
 			case EASTER:
 				image = ItemSpriteSheet.EASTER_EGG;
 				break;
-			case PRIDE:
+			/*case PRIDE:
 				image = ItemSpriteSheet.RAINBOW_POTION;
-				break;
+				break;*/
 			case SHATTEREDPD_BIRTHDAY:
 				image = ItemSpriteSheet.SHATTERED_CAKE;
 				break;
@@ -95,7 +90,7 @@ public class Pasty extends Food {
 	@Override
 	protected void eatSFX() {
 		switch(Holiday.getCurrentHoliday()){
-			case PRIDE:
+			//case PRIDE:
 			case NEW_YEARS:
 				Sample.INSTANCE.play( Assets.Sounds.DRINK );
 				return;
@@ -128,7 +123,7 @@ public class Pasty extends Food {
 				ArtifactRecharge.chargeArtifacts(hero, 2f);
 				ScrollOfRecharging.charge( hero );
 				break;
-			case PRIDE:
+			/*case PRIDE:
 				Char target = null;
 
 				//charms an adjacent non-boss enemy, prioritizing the one the hero is focusing on
@@ -147,7 +142,7 @@ public class Pasty extends Food {
 					Buff.affect(target, Charm.class, 5f).object = hero.id();
 				}
 				hero.sprite.emitter().burst(RainbowParticle.BURST, 15);
-				break;
+				break;*/
 			case SHATTEREDPD_BIRTHDAY:
 			case PD_BIRTHDAY:
 				//gives 10% of level in exp, min of 2
@@ -156,7 +151,6 @@ public class Pasty extends Food {
 				hero.earnExp(expToGive, PotionOfExperience.class);
 				break;
 			//case MID_AUTUMN:
-
 				//break;
 			case HALLOWEEN:
 				//heals for 5% max hp, min of 3
