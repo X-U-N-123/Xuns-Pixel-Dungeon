@@ -785,7 +785,7 @@ public class v1_X_Changes {
 				"_- Scroll of Foresight_ now increases detection range to 8 (from 2), but lasts 250 turns (from 600)\n" +
 				"_- Scroll of Prismatic Image_ hp +2 and damage +20%"));
 
-		changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.ARTIFACT_TOOLKIT), "Artifact Buffs",
+		changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.ARTIFACT_TOOLKIT3), "Artifact Buffs",
 				"The _Alchemist's Toolkit_ has received some minor changes to go along with the energy system adjustments:\n" +
 				"_-_ Toolkit indirectly buffed by energy now being more valuable\n" +
 				"_-_ Energy required to level up toolkit halved, kit can now be levelled anywhere\n" +

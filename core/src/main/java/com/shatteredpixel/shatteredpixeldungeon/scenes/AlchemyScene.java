@@ -430,7 +430,7 @@ public class AlchemyScene extends PixelScene {
 		energyLeft.hardlight(0x44CCFF);
 		add(energyLeft);
 
-		energyIcon = new ItemSprite( toolkit != null ? ItemSpriteSheet.ARTIFACT_TOOLKIT : ItemSpriteSheet.ENERGY);
+		energyIcon = new ItemSprite( toolkit != null ? ItemSpriteSheet.ARTIFACT_TOOLKIT3 : ItemSpriteSheet.ENERGY);
 		energyIcon.x = energyLeft.left() - energyIcon.width();
 		energyIcon.y = energyLeft.top() - (energyIcon.height() - energyLeft.height())/2;
 		align(energyIcon);

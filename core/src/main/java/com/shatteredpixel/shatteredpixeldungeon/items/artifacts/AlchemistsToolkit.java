@@ -45,7 +45,7 @@ import java.util.ArrayList;
 public class AlchemistsToolkit extends Artifact {
 
 	{
-		image = ItemSpriteSheet.ARTIFACT_TOOLKIT;
+		image = ItemSpriteSheet.ARTIFACT_TOOLKIT3;
 		defaultAction = AC_BREW;
 
 		levelCap = 10;
@@ -165,6 +165,10 @@ public class AlchemistsToolkit extends Artifact {
 		while (partialCharge >= 1){
 			partialCharge--;
 			charge++;
+			/*if (charge >= 30)       image = ItemSpriteSheet.ARTIFACT_TOOLKIT3;
+			else if (charge >= 20)  image = ItemSpriteSheet.ARTIFACT_TOOLKIT2;
+			else if (charge >= 10)  image = ItemSpriteSheet.ARTIFACT_TOOLKIT1;
+			else                    image = ItemSpriteSheet.ARTIFACT_TOOLKIT0;*/
 			updateQuickslot();
 		}
 	}

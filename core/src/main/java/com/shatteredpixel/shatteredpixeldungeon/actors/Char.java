@@ -640,8 +640,8 @@ public abstract class Char extends Actor {
 		if (Dungeon.hero.heroClass != HeroClass.CLERIC
 				&& Dungeon.hero.hasTalent(Talent.BLESS)
 				&& attacker.alignment == Alignment.ALLY){
-			// + 3%/5%
-			acuRoll *= 1.01f + 0.02f*Dungeon.hero.pointsInTalent(Talent.BLESS);
+			// + 4%/6%
+			acuRoll *= 1.02f + 0.02f*Dungeon.hero.pointsInTalent(Talent.BLESS);
 		}
 		
 		float defRoll = Random.Float( defStat );
@@ -655,8 +655,8 @@ public abstract class Char extends Actor {
 		if (Dungeon.hero.heroClass != HeroClass.CLERIC
 				&& Dungeon.hero.hasTalent(Talent.BLESS)
 				&& defender.alignment == Alignment.ALLY){
-			// + 3%/5%
-			defRoll *= 1.01f + 0.02f*Dungeon.hero.pointsInTalent(Talent.BLESS);
+			// + 4%/6%
+			defRoll *= 1.02f + 0.02f*Dungeon.hero.pointsInTalent(Talent.BLESS);
 		}
 		
 		return (acuRoll * accMulti) >= defRoll;

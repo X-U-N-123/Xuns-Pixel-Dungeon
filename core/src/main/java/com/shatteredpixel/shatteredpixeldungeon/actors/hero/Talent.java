@@ -21,14 +21,13 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.hero;
 
-import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.HIGH_GRASS;
-
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Adrenaline;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ArtifactRecharge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
@@ -97,7 +96,7 @@ import java.util.LinkedHashMap;
 public enum Talent {
 
 	//Warrior T1
-	HEARTY_MEAL(0), VETERANS_INTUITION(1), PROVOKED_ANGER(2), IRON_WILL(3),
+	HEARTY_MEAL(0), VETERANS_INTUITION(1), PROVOKED_ANGER(2), IRON_WILL(3), TESTED_REVIVE(28),
 	//Warrior T2
 	IRON_STOMACH(4), LIQUID_WILLPOWER(5), RUNIC_TRANSFERENCE(6), LETHAL_MOMENTUM(7), IMPROVISED_PROJECTILES(8),
 	//Warrior T3
@@ -114,7 +113,7 @@ public enum Talent {
 	SUSTAINED_RETRIBUTION(23, 4), SHRUG_IT_OFF(24, 4), EVEN_THE_ODDS(25, 4),
 
 	//Mage T1
-	EMPOWERING_MEAL(32), SCHOLARS_INTUITION(33), LINGERING_MAGIC(34), BACKUP_BARRIER(35),
+	EMPOWERING_MEAL(32), SCHOLARS_INTUITION(33), LINGERING_MAGIC(34), BACKUP_BARRIER(35), TESTED_HYPOTHESIS(60),
 	//Mage T2
 	ENERGIZING_MEAL(36), INSCRIBED_POWER(37), WAND_PRESERVATION(38), ARCANE_VISION(39), SHIELD_BATTERY(40),
 	//Mage T3
@@ -131,7 +130,7 @@ public enum Talent {
 	TELEFRAG(55, 4), REMOTE_BEACON(56, 4), LONGRANGE_WARP(57, 4),
 
 	//Rogue T1
-	CACHED_RATIONS(64), THIEFS_INTUITION(65), SUCKER_PUNCH(66), PROTECTIVE_SHADOWS(67),
+	CACHED_RATIONS(64), THIEFS_INTUITION(65), SUCKER_PUNCH(66), PROTECTIVE_SHADOWS(67), TESTED_MYST(92),
 	//Rogue T2
 	MYSTICAL_MEAL(68), INSCRIBED_STEALTH(69), WIDE_SEARCH(70), SILENT_STEPS(71), ROGUES_FORESIGHT(72),
 	//Rogue T3
@@ -148,7 +147,7 @@ public enum Talent {
 	SHADOW_BLADE(87, 4), CLONED_ARMOR(88, 4), PERFECT_COPY(89, 4),
 
 	//Huntress T1
-	NATURES_BOUNTY(96), SURVIVALISTS_INTUITION(97), FOLLOWUP_STRIKE(98), NATURES_AID(99),
+	NATURES_BOUNTY(96), SURVIVALISTS_INTUITION(97), FOLLOWUP_STRIKE(98), NATURES_AID(99), TESTED_ADRENALINE(124),
 	//Huntress T2
 	INVIGORATING_MEAL(100), LIQUID_NATURE(101), REJUVENATING_STEPS(102), HEIGHTENED_SENSES(103), DURABLE_PROJECTILES(104),
 	//Huntress T3
@@ -165,7 +164,7 @@ public enum Talent {
 	EAGLE_EYE(119, 4), GO_FOR_THE_EYES(120, 4), SWIFT_SPIRIT(121, 4),
 
 	//Duelist T1
-	STRENGTHENING_MEAL(128), ADVENTURERS_INTUITION(129), PATIENT_STRIKE(130), AGGRESSIVE_BARRIER(131),
+	STRENGTHENING_MEAL(128), ADVENTURERS_INTUITION(129), PATIENT_STRIKE(130), AGGRESSIVE_BARRIER(131), TESTED_CHARGE(156),
 	//Duelist T2
 	FOCUSED_MEAL(132), LIQUID_AGILITY(133), WEAPON_RECHARGING(134), LETHAL_HASTE(135), SWIFT_EQUIP(136),
 	//Duelist T3
@@ -182,7 +181,7 @@ public enum Talent {
 	FEIGNED_RETREAT(151, 4), EXPOSE_WEAKNESS(152, 4), COUNTER_ABILITY(153, 4),
 
 	//Cleric T1
-	SATIATED_SPELLS(160), HOLY_INTUITION(161), SEARING_LIGHT(162), SHIELD_OF_LIGHT(163),
+	SATIATED_SPELLS(160), HOLY_INTUITION(161), SEARING_LIGHT(162), SHIELD_OF_LIGHT(163), TESTED_HOLINESS(188),
 	//Cleric T2
 	ENLIGHTENING_MEAL(164), RECALL_INSCRIPTION(165), SUNRAY(166), DIVINE_SENSE(167), BLESS(168),
 	//Cleric T3
@@ -531,6 +530,50 @@ public enum Talent {
 		return Messages.get(this, name() + ".desc");
 	}
 
+	public static void onItemIdentified( Hero hero, Item item ){
+		if (hero.hasTalent(TESTED_REVIVE)){
+			//heal for 2/3 HP
+			hero.HP = Math.min(hero.HP + 1 + hero.pointsInTalent(TESTED_REVIVE), hero.HT);
+			if (hero.sprite != null) {
+				hero.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(1 + hero.pointsInTalent(TESTED_REVIVE)), FloatingText.HEALING);
+			}
+		}
+		if (hero.hasTalent(TESTED_HYPOTHESIS)){
+			//2/3 turns of wand recharging
+			Buff.affect(hero, Recharging.class, 1f + hero.pointsInTalent(TESTED_HYPOTHESIS));
+			ScrollOfRecharging.charge(hero);
+		}
+		if (hero.hasTalent(TESTED_MYST)){
+			//2/3 turns of artifact recharging
+			Buff.affect(hero, ArtifactRecharge.class)
+					.set(1f + hero.pointsInTalent(TESTED_MYST)).ignoreHornOfPlenty = false;
+		}
+		if (hero.hasTalent(TESTED_ADRENALINE)){
+			//2/3 turns of adrenaline
+			Buff.affect(hero, Adrenaline.class, 1f + hero.pointsInTalent(TESTED_ADRENALINE));
+		}
+		if (hero.hasTalent(TESTED_HOLINESS)){
+			if (hero.heroClass == HeroClass.CLERIC) {
+				//0.4/0.7 point of tome charge
+				HolyTome tome = hero.belongings.getItem(HolyTome.class);
+				if (tome != null) {
+					tome.directCharge( 0.1f + 0.3f*(+hero.pointsInTalent(ENLIGHTENING_MEAL)));
+					ScrollOfRecharging.charge(hero);
+				}
+			} else {
+				//1/2 turns of recharging
+				ArtifactRecharge buff = Buff.affect( hero, ArtifactRecharge.class);
+				if (buff.left() < 1 + (hero.pointsInTalent(ENLIGHTENING_MEAL))){
+					Buff.affect( hero, ArtifactRecharge.class)
+							.set(hero.pointsInTalent(ENLIGHTENING_MEAL)).ignoreHornOfPlenty = false;
+				}
+				Buff.prolong( hero, Recharging.class, hero.pointsInTalent(ENLIGHTENING_MEAL));
+				ScrollOfRecharging.charge( hero );
+				SpellSprite.show(hero, SpellSprite.CHARGE);
+			}
+		}
+	}
+
 	public static void onTalentUpgraded( Hero hero, Talent talent ){
 		//for metamorphosis
 		if (talent == IRON_WILL && hero.heroClass != HeroClass.WARRIOR){
@@ -626,8 +669,8 @@ public enum Talent {
 
 	public static void onFoodEaten( Hero hero, float foodVal, Item foodSource ){
 		if (hero.hasTalent(HEARTY_MEAL)){
-			//3/5 HP healed, when hero is below 30% health
-			if (hero.HP/(float)hero.HT <= 0.3f) {
+			//3/5 HP healed, when hero is below 40% health
+			if (hero.HP/(float)hero.HT <= 0.4f) {
 				int healing = 1 + 2 * hero.pointsInTalent(HEARTY_MEAL);
 				hero.HP = Math.min(hero.HP + healing, hero.HT);
 				hero.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(healing), FloatingText.HEALING);
@@ -1005,22 +1048,22 @@ public enum Talent {
 		//tier 1
 		switch (cls){
 			case WARRIOR: default:
-				Collections.addAll(tierTalents, HEARTY_MEAL, VETERANS_INTUITION, PROVOKED_ANGER, IRON_WILL);
+				Collections.addAll(tierTalents, HEARTY_MEAL, VETERANS_INTUITION, TESTED_REVIVE, PROVOKED_ANGER, IRON_WILL);
 				break;
 			case MAGE:
-				Collections.addAll(tierTalents, EMPOWERING_MEAL, SCHOLARS_INTUITION, LINGERING_MAGIC, BACKUP_BARRIER);
+				Collections.addAll(tierTalents, EMPOWERING_MEAL, SCHOLARS_INTUITION, TESTED_HYPOTHESIS, LINGERING_MAGIC, BACKUP_BARRIER);
 				break;
 			case ROGUE:
-				Collections.addAll(tierTalents, CACHED_RATIONS, THIEFS_INTUITION, SUCKER_PUNCH, PROTECTIVE_SHADOWS);
+				Collections.addAll(tierTalents, CACHED_RATIONS, THIEFS_INTUITION, TESTED_MYST, SUCKER_PUNCH, PROTECTIVE_SHADOWS);
 				break;
 			case HUNTRESS:
-				Collections.addAll(tierTalents, NATURES_BOUNTY, SURVIVALISTS_INTUITION, FOLLOWUP_STRIKE, NATURES_AID);
+				Collections.addAll(tierTalents, NATURES_BOUNTY, SURVIVALISTS_INTUITION, TESTED_ADRENALINE, FOLLOWUP_STRIKE, NATURES_AID);
 				break;
 			case DUELIST:
-				Collections.addAll(tierTalents, STRENGTHENING_MEAL, ADVENTURERS_INTUITION, PATIENT_STRIKE, AGGRESSIVE_BARRIER);
+				Collections.addAll(tierTalents, STRENGTHENING_MEAL, ADVENTURERS_INTUITION, TESTED_CHARGE, PATIENT_STRIKE, AGGRESSIVE_BARRIER);
 				break;
 			case CLERIC:
-				Collections.addAll(tierTalents, SATIATED_SPELLS, HOLY_INTUITION, SEARING_LIGHT, SHIELD_OF_LIGHT);
+				Collections.addAll(tierTalents, SATIATED_SPELLS, HOLY_INTUITION, TESTED_HOLINESS, SEARING_LIGHT, SHIELD_OF_LIGHT);
 				break;
 		}
 		for (Talent talent : tierTalents){
@@ -1195,15 +1238,15 @@ public enum Talent {
 
 	private static final HashSet<String> removedTalents = new HashSet<>();
 	static{
-		//v2.4.0
-		removedTalents.add("TEST_SUBJECT");
-		removedTalents.add("TESTED_HYPOTHESIS");
 		//v2.2.0
 		removedTalents.add("EMPOWERING_SCROLLS");
 	}
 
 	private static final HashMap<String, String> renamedTalents = new HashMap<>();
 	static{
+		//X_U_N v0.1.0
+		renamedTalents.put("TEST_SUBJECT",              "TESTED_REVIVE");
+		renamedTalents.put("HOLD_FAST",                 "INTACT_SEAL");
 		//v2.4.0
 		renamedTalents.put("SECONDARY_CHARGE",          "VARIED_CHARGE");
 

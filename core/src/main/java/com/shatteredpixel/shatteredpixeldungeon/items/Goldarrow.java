@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2024 Evan Debenham
  *
+ * Xun's Pixel Dungeon
+ * Copyright (C) 2025-2025 Jiarun Chen
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -22,6 +25,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.items;
 
 import static com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMagicMapping.discover;
+
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
@@ -43,7 +47,8 @@ public class Goldarrow extends Item {
 
     {
         defaultAction = AC_TELEPORT;
-        image = ItemSpriteSheet.GOLDARROW;cursedKnown = levelKnown = true;
+        image = ItemSpriteSheet.GOLDARROW;
+        cursedKnown = levelKnown = true;
         unique = true;
         bones = false;
     }
@@ -86,7 +91,6 @@ public class Goldarrow extends Item {
                     }
                 }
             }
-            GameScene.updateFog();
         }
         if (action.equals(AC_RETURN)) {
             InterlevelScene.mode = InterlevelScene.Mode.RETURN;
