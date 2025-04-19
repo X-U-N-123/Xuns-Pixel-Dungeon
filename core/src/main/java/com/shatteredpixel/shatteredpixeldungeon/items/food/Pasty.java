@@ -60,12 +60,12 @@ public class Pasty extends Food {
 			case APRIL_FOOLS:
 				image = ItemSpriteSheet.CHOC_AMULET;
 				break;
+			case XUNS_BIRTHDAY:
+				image = ItemSpriteSheet.XUNS_CAKE;
+				break;
 			case EASTER:
 				image = ItemSpriteSheet.EASTER_EGG;
 				break;
-			/*case PRIDE:
-				image = ItemSpriteSheet.RAINBOW_POTION;
-				break;*/
 			case SHATTEREDPD_BIRTHDAY:
 				image = ItemSpriteSheet.SHATTERED_CAKE;
 				break;
@@ -90,7 +90,6 @@ public class Pasty extends Food {
 	@Override
 	protected void eatSFX() {
 		switch(Holiday.getCurrentHoliday()){
-			//case PRIDE:
 			case NEW_YEARS:
 				Sample.INSTANCE.play( Assets.Sounds.DRINK );
 				return;
@@ -144,6 +143,7 @@ public class Pasty extends Food {
 				hero.sprite.emitter().burst(RainbowParticle.BURST, 15);
 				break;*/
 			case SHATTEREDPD_BIRTHDAY:
+			case XUNS_BIRTHDAY:
 			case PD_BIRTHDAY:
 				//gives 10% of level in exp, min of 2
 				int expToGive = Math.max(2, hero.maxExp()/10);
@@ -182,8 +182,8 @@ public class Pasty extends Food {
 				return Messages.get(this, "amulet_name");
 			case EASTER:
 				return Messages.get(this, "egg_name");
-			case PRIDE:
-				return Messages.get(this, "rainbow_name");
+			case XUNS_BIRTHDAY:
+				return Messages.get(this, "xuns_name");
 			case SHATTEREDPD_BIRTHDAY:
 				return Messages.get(this, "shattered_name");
 			case HALLOWEEN:
@@ -210,8 +210,8 @@ public class Pasty extends Food {
 				return Messages.get(this, "amulet_desc");
 			case EASTER:
 				return Messages.get(this, "egg_desc");
-			case PRIDE:
-				return Messages.get(this, "rainbow_desc");
+			case XUNS_BIRTHDAY:
+				return Messages.get(this, "xuns_desc");
 			case SHATTEREDPD_BIRTHDAY:
 				return Messages.get(this, "shattered_desc");
 			case HALLOWEEN:

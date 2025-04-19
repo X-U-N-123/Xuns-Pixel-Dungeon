@@ -31,8 +31,9 @@ public enum Holiday {
 	LUNAR_NEW_YEAR,         //Varies, sometime in late Jan to Late Feb              (7 days)
 	APRIL_FOOLS,            //April 1st, can override easter                        (1 day)
 	EASTER,                 //Varies, sometime in Late Mar to Late Apr              (6-7 days)
+	XUNS_BIRTHDAY,          //Apr 15th to 21st                                      (7 days)
 	//5月无事发生
-	PRIDE,                  //Jun 24th to Jun 30th                                  (7 days)
+	//6月无事发生
 	//7月无事发生
 	SHATTEREDPD_BIRTHDAY,   //Aug 1st to Aug 7th                                    (7 days)
 	MID_AUTUMN,             //Varies, sometime in early Sep to early Oct            (7 days)
@@ -73,17 +74,15 @@ public enum Holiday {
 			return APRIL_FOOLS;
 		}
 
-		//Easter
-		if (isEaster(cal.get(Calendar.YEAR),
+		//X_U_NPD's Birthday(优先) and Easter
+		if (cal.get(Calendar.MONTH) == Calendar.APRIL
+				&& cal.get(Calendar.DAY_OF_MONTH) >= 15
+				&& cal.get(Calendar.DAY_OF_MONTH) <= 21){
+			return XUNS_BIRTHDAY;
+		} else if (isEaster(cal.get(Calendar.YEAR),
 				cal.get(Calendar.DAY_OF_YEAR),
 				cal.getActualMaximum(Calendar.DAY_OF_YEAR) == 366)){
 			return EASTER;
-		}
-
-		//Pride
-		if (cal.get(Calendar.MONTH) == Calendar.JUNE
-				&& cal.get(Calendar.DAY_OF_MONTH) >= 24){
-			return PRIDE;
 		}
 
 		//Shattered's Birthday
