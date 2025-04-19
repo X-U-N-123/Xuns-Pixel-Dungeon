@@ -24,7 +24,7 @@ android {
     buildTypes {
         debug {
             applicationIdSuffix ""
-            versionNameSuffix '-beta'
+            versionNameSuffix ''
             dependencies {
                 debugImplementation project(':services:updates:debugUpdates')
                 debugImplementation project(':services:news:debugNews')
