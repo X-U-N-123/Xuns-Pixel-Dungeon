@@ -664,7 +664,7 @@ public class ItemSpriteSheet {
 		assignItemRect(ARCANE_RESIN   , 12, 11);
 	}
 	
-	private static final int EXOTIC_SCROLLS = xy(1, 14);  //16 slots
+	private static final int EXOTIC_SCROLLS = xy(17, 13);  //16 slots
 	public static final int EXOTIC_KAUNAN   = EXOTIC_SCROLLS+0;
 	public static final int EXOTIC_SOWILO   = EXOTIC_SCROLLS+1;
 	public static final int EXOTIC_LAGUZ    = EXOTIC_SCROLLS+2;
@@ -700,7 +700,7 @@ public class ItemSpriteSheet {
 			assignItemRect(i, 14, 12);
 	}
 
-	private static final int POTIONS        = xy(17, 13);  //16 slots
+	private static final int POTIONS        = xy(1, 14);  //16 slots
 	public static final int POTION_CRIMSON  = POTIONS+0;
 	public static final int POTION_AMBER    = POTIONS+1;
 	public static final int POTION_GOLDEN   = POTIONS+2;
@@ -747,7 +747,7 @@ public class ItemSpriteSheet {
 	public static final int SEED_ICECAP         = SEEDS+4;
 	public static final int SEED_STORMVINE      = SEEDS+5;
 	public static final int SEED_SORROWMOSS     = SEEDS+6;
-	public static final int SEED_MAGEROYAL = SEEDS+7;
+	public static final int SEED_MAGEROYAL      = SEEDS+7;
 	public static final int SEED_EARTHROOT      = SEEDS+8;
 	public static final int SEED_STARFLOWER     = SEEDS+9;
 	public static final int SEED_FADELEAF       = SEEDS+10;
