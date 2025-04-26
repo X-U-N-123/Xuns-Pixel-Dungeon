@@ -53,10 +53,15 @@ public class BrokenSeal extends Item {
 	public static final String AC_INFO = "INFO_WINDOW";
 
 	{
-		/*if (Dungeon.hero.pointsInTalent(Talent.INTACT_SEAL) >= 0)
-		{image = ItemSpriteSheet.INTACT_SEAL;}
-		else {image = ItemSpriteSheet.SEAL;}*/
-		image = ItemSpriteSheet.SEAL;
+		if (Dungeon.hero != null){
+			if (Dungeon.hero.hasTalent(Talent.INTACT_SEAL)) {
+				image = ItemSpriteSheet.INTACT_SEAL;
+			} else {
+				image = ItemSpriteSheet.SEAL;
+			}
+		} else {
+			image = ItemSpriteSheet.SEAL;
+		}
 
 		cursedKnown = levelKnown = true;
 		unique = true;
@@ -118,10 +123,23 @@ public class BrokenSeal extends Item {
 			GameScene.show(new WndUseItem(null, this));
 		}
 	}
-
+	/*
 	@Override
 	public String name() {
 		return glyph != null ? glyph.name( super.name() ) : super.name();
+	}*/
+
+	@Override
+	public String name() {
+		if (Dungeon.hero != null){
+			if (Dungeon.hero.hasTalent(Talent.INTACT_SEAL)) {
+				return glyph != null ? glyph.name(Messages.get(this, "intact_name")) : Messages.get(this, "intact_name");
+			} else {
+				return glyph != null ? glyph.name( super.name() ) : super.name();
+			}
+		} else {
+			return glyph != null ? glyph.name( super.name() ) : super.name();
+		}
 	}
 
 	@Override
@@ -263,6 +281,19 @@ public class BrokenSeal extends Item {
 			} else {
 				return 0;
 			}
+		}
+	}
+
+	@Override
+	public String desc() {
+		if (Dungeon.hero != null){
+			if (Dungeon.hero.hasTalent(Talent.INTACT_SEAL)) {
+				return Messages.get(this, "intact_desc");
+			} else {
+				return super.desc();
+			}
+		} else {
+			return super.desc();
 		}
 	}
 }
