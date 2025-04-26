@@ -332,7 +332,7 @@ public class Bomb extends Item {
 			Bomb bomb = new Bomb();
 			bomb.quantity(2);
 			if (bomb.doPickUp(hero, pos)) {
-					hero.sprite.showStatus(CharSprite.NEUTRAL, "pickup");
+					hero.sprite.showStatus(CharSprite.NEUTRAL, "dopickup");
 				return true;
 			}
 			return false;

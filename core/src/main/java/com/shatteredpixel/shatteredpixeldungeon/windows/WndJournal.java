@@ -810,11 +810,11 @@ public class WndJournal extends WndTabbed {
 				Weapon.Enchantment ench = (Weapon.Enchantment) Reflection.newInstance(itemClass);
 
 				if (seen){
-					sprite = new ItemSprite(ItemSpriteSheet.Stonesword, ench.glowing());
+					sprite = new ItemSprite(ItemSpriteSheet.WORN_SHORTSWORD, ench.glowing());
 					title = Messages.titleCase(ench.name());
 					desc = ench.desc();
 				} else {
-					sprite = new ItemSprite(ItemSpriteSheet.Stonesword);
+					sprite = new ItemSprite(ItemSpriteSheet.WORN_SHORTSWORD);
 					sprite.lightness(0f);
 					title = "???";
 					desc = Messages.get(CatalogTab.class, "not_seen_enchantment");

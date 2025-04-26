@@ -54,9 +54,22 @@ public class Bag extends Item implements Iterable<Item> {
 	public int capacity(){
 		return 20; // default container size
 	}
-	
+
+	//if an item is being quick-used from the bag, the bag should take on its targeting properties
+	public Item quickUseItem;
+
+	@Override
+	public int targetingPos(Hero user, int dst) {
+		if (quickUseItem != null){
+			return quickUseItem.targetingPos(user, dst);
+		} else {
+			return super.targetingPos(user, dst);
+		}
+	}
+
 	@Override
 	public void execute( Hero hero, String action ) {
+		quickUseItem = null;
 
 		super.execute( hero, action );
 

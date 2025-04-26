@@ -69,8 +69,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ShardOfOblivion;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Gloves;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Woodsword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
@@ -554,18 +554,18 @@ public enum Talent {
 		}
 		if (hero.hasTalent(TESTED_HOLINESS)){
 			if (hero.heroClass == HeroClass.CLERIC) {
-				//0.4/0.7 point of tome charge
+				//0.4/0.6 point of tome charge
 				HolyTome tome = hero.belongings.getItem(HolyTome.class);
 				if (tome != null) {
-					tome.directCharge( 0.1f + 0.3f*(+hero.pointsInTalent(ENLIGHTENING_MEAL)));
+					tome.directCharge( 0.2f + 0.2f*(+hero.pointsInTalent(TESTED_HOLINESS)));
 					ScrollOfRecharging.charge(hero);
 				}
 			} else {
 				//1/2 turns of recharging
 				ArtifactRecharge buff = Buff.affect( hero, ArtifactRecharge.class);
-				if (buff.left() < 1 + (hero.pointsInTalent(ENLIGHTENING_MEAL))){
+				if (buff.left() < 1 + (hero.pointsInTalent(TESTED_HOLINESS))){
 					Buff.affect( hero, ArtifactRecharge.class)
-							.set(hero.pointsInTalent(ENLIGHTENING_MEAL)).ignoreHornOfPlenty = false;
+							.set(hero.pointsInTalent(TESTED_HOLINESS)).ignoreHornOfPlenty = false;
 				}
 				Buff.prolong( hero, Recharging.class, hero.pointsInTalent(ENLIGHTENING_MEAL));
 				ScrollOfRecharging.charge( hero );
@@ -642,7 +642,7 @@ public enum Talent {
 			if (!toGive.collect()){
 				Dungeon.level.drop(toGive, hero.pos).sprite.drop();
 			}
-			toGive = new Woodsword().identify();
+			toGive = new Gloves().identify();
 			if (!toGive.collect()){
 				Dungeon.level.drop(toGive, hero.pos).sprite.drop();
 			}
@@ -669,8 +669,8 @@ public enum Talent {
 
 	public static void onFoodEaten( Hero hero, float foodVal, Item foodSource ){
 		if (hero.hasTalent(HEARTY_MEAL)){
-			//3/5 HP healed, when hero is below 40% health
-			if (hero.HP/(float)hero.HT <= 0.4f) {
+			//3/5 HP healed, when hero is below 75% health
+			if (hero.HP/(float)hero.HT <= 0.75f) {
 				int healing = 1 + 2 * hero.pointsInTalent(HEARTY_MEAL);
 				hero.HP = Math.min(hero.HP + healing, hero.HT);
 				hero.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(healing), FloatingText.HEALING);
@@ -906,7 +906,9 @@ public enum Talent {
 					removed = true;
 				}
 			}
-			if (removed) new Flare( 6, 32 ).color(0xFF4CD2, true).show( Dungeon.hero.sprite, 2f );
+			if (removed && Dungeon.hero.sprite != null) {
+				new Flare( 6, 32 ).color(0xFF4CD2, true).show( Dungeon.hero.sprite, 2f );
+			}
 		}
 	}
 
@@ -1249,19 +1251,6 @@ public enum Talent {
 		renamedTalents.put("HOLD_FAST",                 "INTACT_SEAL");
 		//v2.4.0
 		renamedTalents.put("SECONDARY_CHARGE",          "VARIED_CHARGE");
-
-		//v2.2.0
-		renamedTalents.put("RESTORED_WILLPOWER",        "LIQUID_WILLPOWER");
-		renamedTalents.put("ENERGIZING_UPGRADE",        "INSCRIBED_POWER");
-		renamedTalents.put("MYSTICAL_UPGRADE",          "INSCRIBED_STEALTH");
-		renamedTalents.put("RESTORED_NATURE",           "LIQUID_NATURE");
-		renamedTalents.put("RESTORED_AGILITY",          "LIQUID_AGILITY");
-		//v2.1.0
-		renamedTalents.put("LIGHTWEIGHT_CHARGE",        "PRECISE_ASSAULT");
-		//v2.0.0 BETA
-		renamedTalents.put("LIGHTLY_ARMED",             "UNENCUMBERED_SPIRIT");
-		//v2.0.0
-		renamedTalents.put("ARMSMASTERS_INTUITION",     "VETERANS_INTUITION");
 	}
 
 	public static void restoreTalentsFromBundle( Bundle bundle, Hero hero ){

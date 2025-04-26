@@ -590,7 +590,7 @@ public class Generator {
 					RogueArmor.class,
 					HuntressArmor.class,
 					DuelistArmor.class,
-					ClericArmor.class,
+					ClericArmor.class
 			};
 			ARMOR.probs = new float[]{ 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0 };
 			
@@ -933,7 +933,7 @@ public class Generator {
 			Category.MIS_T3,
 			Category.MIS_T4,
 			Category.MIS_T5,
-			Category.MIS_T6,
+			Category.MIS_T6
 	};
 	
 	public static MissileWeapon randomMissile(){

@@ -104,14 +104,6 @@ public class SpectralNecromancer extends Necromancer {
 	public void summonMinion() {
 		if (Actor.findChar(summoningPos) != null) {
 
-			//cancel if character cannot be moved
-			if (Char.hasProp(Actor.findChar(summoningPos), Property.IMMOVABLE)){
-				summoning = false;
-				((SpectralNecromancerSprite)sprite).finishSummoning();
-				spend(TICK);
-				return;
-			}
-
 			int pushPos = pos;
 			for (int c : PathFinder.NEIGHBOURS8) {
 				if (Actor.findChar(summoningPos + c) == null

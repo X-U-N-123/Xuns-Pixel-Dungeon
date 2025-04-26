@@ -733,6 +733,7 @@ public class Hero extends Char {
 		if (w instanceof Flail)                 return false;
 		if (w instanceof HeavyFlail)            return false;
 		if (w instanceof Fetter)                return false;
+
 		return super.canSurpriseAttack();
 	}
 
@@ -1601,8 +1602,8 @@ public class Hero extends Char {
 		dmg = (int)Math.ceil(dmg * RingOfTenacity.damageMultiplier( this ));
 
 		if (buff(Talent.WarriorFoodImmunity.class) != null){
-			if (pointsInTalent(Talent.IRON_STOMACH) == 1)       dmg = Math.round(dmg*0.25f);
-			else if (pointsInTalent(Talent.IRON_STOMACH) == 2)  dmg = Math.round(dmg*0.00f);
+			if (pointsInTalent(Talent.IRON_STOMACH) == 1)       dmg /= 4f;
+			else if (pointsInTalent(Talent.IRON_STOMACH) == 2)  dmg = 0;
 		}
 
 		int preHP = HP + shielding();

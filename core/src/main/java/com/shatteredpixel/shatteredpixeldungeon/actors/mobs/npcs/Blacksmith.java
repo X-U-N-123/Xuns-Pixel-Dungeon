@@ -144,55 +144,7 @@ public class Blacksmith extends NPC {
 			
 		} else if (!Quest.completed) {
 
-			if (Quest.type == Quest.OLD) {
-				if (Quest.alternative) {
-
-					Pickaxe pick = Dungeon.hero.belongings.getItem(Pickaxe.class);
-					if (pick == null) {
-						tell(Messages.get(this, "lost_pick"));
-					} else if (!pick.bloodStained) {
-						tell(Messages.get(this, "blood_2"));
-					} else {
-						if (pick.isEquipped(Dungeon.hero)) {
-							boolean wasCursed = pick.cursed;
-							pick.cursed = false; //so that it can always be removed
-							pick.doUnequip(Dungeon.hero, false);
-							pick.cursed = wasCursed;
-						}
-						pick.detach(Dungeon.hero.belongings.backpack);
-						Quest.pickaxe = pick;
-						tell(Messages.get(this, "completed"));
-
-						Quest.completed = true;
-						Statistics.questScores[2] = 3000;
-					}
-
-				} else {
-
-					Pickaxe pick = Dungeon.hero.belongings.getItem(Pickaxe.class);
-					DarkGold gold = Dungeon.hero.belongings.getItem(DarkGold.class);
-					if (pick == null) {
-						tell(Messages.get(this, "lost_pick"));
-					} else if (gold == null || gold.quantity() < 15) {
-						tell(Messages.get(this, "gold_2"));
-					} else {
-						if (pick.isEquipped(Dungeon.hero)) {
-							boolean wasCursed = pick.cursed;
-							pick.cursed = false; //so that it can always be removed
-							pick.doUnequip(Dungeon.hero, false);
-							pick.cursed = wasCursed;
-						}
-						pick.detach(Dungeon.hero.belongings.backpack);
-						Quest.pickaxe = pick;
-						gold.detachAll(Dungeon.hero.belongings.backpack);
-						tell(Messages.get(this, "completed"));
-
-						Quest.completed = true;
-						Statistics.questScores[2] = 3000;
-					}
-
-				}
-			} else {
+			if (Quest.type != Quest.OLD) {
 
 				String msg = Messages.get(this, "reminder") + "\n\n";
 				switch (Quest.type){

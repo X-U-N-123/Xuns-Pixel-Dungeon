@@ -425,7 +425,10 @@ public class PrisonBossLevel extends Level {
 				tengu.pos = tenguPos;
 				GameScene.add( tengu );
 				tengu.notice();
-				
+
+				CellEmitter.get( tengu.pos ).burst( Speck.factory( Speck.WOOL ), 6 );
+				Sample.INSTANCE.play( Assets.Sounds.PUFF );
+
 				state = State.FIGHT_START;
 
 				Game.runOnRenderThread(new Callback() {
@@ -470,7 +473,9 @@ public class PrisonBossLevel extends Level {
 				GameScene.add(tengu);
 				tengu.timeToNow();
 				tengu.notice();
-				
+
+				CellEmitter.get( tengu.pos ).burst( Speck.factory( Speck.WOOL ), 6 );
+
 				GameScene.flash(0x80FFFFFF);
 				Sample.INSTANCE.play(Assets.Sounds.BLAST);
 				
