@@ -327,13 +327,24 @@ public class Armor extends EquipableItem {
 	public final int DRMax(){
 		return DRMax(buffedLvl());
 	}
-
+	//双层 if 是为让程序在 hero == null 时跳过职业检查，防止崩溃
 	public int DRMax(int lvl){
-		if (Dungeon.isChallenged(Challenges.NO_ARMOR)){
-			return 1 + tier + lvl + augment.defenseFactor(lvl);
+		if (Dungeon.isChallenged(Challenges.NO_ARMOR)) {
+			if (Dungeon.hero != null){
+				if (Dungeon.hero.heroClass != HeroClass.WARRIOR){
+					return 1 + tier + lvl + augment.defenseFactor(lvl) + 2 * Dungeon.hero.pointsInTalent(Talent.INTACT_SEAL);
+				}
+			} else {
+				return 1 + tier + lvl + augment.defenseFactor(lvl);
+			}
 		}
 
 		int max = tier * (2 + lvl) + augment.defenseFactor(lvl);
+		if (Dungeon.hero != null){
+			if (Dungeon.hero.heroClass != HeroClass.WARRIOR){
+				max += 2 * Dungeon.hero.pointsInTalent(Talent.INTACT_SEAL);
+			}
+		}
 		if (lvl > max){
 			return ((lvl - max)+1)/2;
 		} else {
@@ -347,10 +358,19 @@ public class Armor extends EquipableItem {
 
 	public int DRMin(int lvl){
 		if (Dungeon.isChallenged(Challenges.NO_ARMOR)){
-			return 0;
+			if (Dungeon.hero != null) {
+				if (Dungeon.hero.heroClass != HeroClass.WARRIOR){
+					return Dungeon.hero.pointsInTalent(Talent.INTACT_SEAL);
+				}
+			} else { return 0;}
 		}
 
 		int max = DRMax(lvl);
+		if (Dungeon.hero != null){
+			if (Dungeon.hero.heroClass != HeroClass.WARRIOR){
+				max += Dungeon.hero.pointsInTalent(Talent.INTACT_SEAL);
+			}
+		}
 		if (lvl >= max){
 			return (lvl - max);
 		} else {
