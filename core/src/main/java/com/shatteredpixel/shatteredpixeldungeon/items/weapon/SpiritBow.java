@@ -132,10 +132,13 @@ public class SpiritBow extends Weapon {
 
 		}
 
-		if (Dungeon.level.map[defender.pos] == Terrain.FURROWED_GRASS
+		if ((Dungeon.level.map[defender.pos] == Terrain.FURROWED_GRASS
 			|| Dungeon.level.map[defender.pos] == Terrain.GRASS
-			|| Dungeon.level.map[defender.pos] ==Terrain.HIGH_GRASS) {
-			Buff.affect(defender, Roots.class, 1f+Dungeon.hero.pointsInTalent());
+			|| Dungeon.level.map[defender.pos] ==Terrain.HIGH_GRASS)
+			&& attacker.buff(Talent.IvybindCooldown.class) == null
+			&& Dungeon.hero.hasTalent(Talent.IVY_BIND)) {
+			Buff.affect(defender, Roots.class, 1f+2*Dungeon.hero.pointsInTalent(Talent.IVY_BIND));
+			Buff.affect(attacker, Talent.IvybindCooldown.class, 50);
 		}
 
 		return super.proc(attacker, defender, damage);

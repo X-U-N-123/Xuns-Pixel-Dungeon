@@ -29,6 +29,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Momentum;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.PinCushion;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RevealedArea;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Roots;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
@@ -40,6 +41,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Projecting;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Dart;
+import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
@@ -267,6 +269,16 @@ abstract public class MissileWeapon extends Weapon {
 					damage = bow.enchantment.proc(this, attacker, defender, damage);
 				}
 			}
+		}
+
+		if ((Dungeon.level.map[defender.pos] == Terrain.FURROWED_GRASS
+				|| Dungeon.level.map[defender.pos] == Terrain.GRASS
+				|| Dungeon.level.map[defender.pos] ==Terrain.HIGH_GRASS)
+				&& curUser.heroClass != HeroClass.HUNTRESS
+				&& Dungeon.hero.buff(Talent.IvybindCooldown.class) == null
+				&& Dungeon.hero.hasTalent(Talent.IVY_BIND)) {
+			Buff.affect(defender, Roots.class, 1f+2*Dungeon.hero.pointsInTalent(Talent.IVY_BIND));
+			Buff.affect(attacker, Talent.IvybindCooldown.class, 50);
 		}
 
 		return super.proc(attacker, defender, damage);
