@@ -108,7 +108,11 @@ public enum Rankings {
 			rec.depth = Statistics.highestAscent;
 			rec.ascending = true;
 		}
-		rec.score       = calculateScore();
+		if (Dungeon.isChallenged(Challenges.X_U_NS_POWER)){
+			rec.score   = 0;
+		} else {
+			rec.score   = calculateScore();
+		}
 		rec.customSeed  = Dungeon.customSeedText;
 		rec.daily       = Dungeon.daily;
 
@@ -222,6 +226,10 @@ public enum Rankings {
 
 		Statistics.chalMultiplier = (float)Math.pow(1.25, Challenges.activeChallenges());
 		Statistics.chalMultiplier = Math.round(Statistics.chalMultiplier*20f)/20f;
+
+		if (Dungeon.isChallenged(Challenges.X_U_NS_POWER)){
+			Statistics.chalMultiplier *= 0;
+		}
 
 		Statistics.totalScore = Statistics.progressScore + Statistics.treasureScore + Statistics.exploreScore
 					+ Statistics.totalBossScore + Statistics.totalQuestScore;

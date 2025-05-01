@@ -21,6 +21,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.hero;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.X_U_NS_POWER;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
@@ -51,8 +53,12 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Waterskin;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HolyTome;
+import com.shatteredpixel.shatteredpixeldungeon.items.bags.MagicalHolster;
+import com.shatteredpixel.shatteredpixeldungeon.items.bags.PotionBandolier;
+import com.shatteredpixel.shatteredpixeldungeon.items.bags.ScrollHolder;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.VelvetPouch;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfExperience;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfInvisibility;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLiquidFlame;
@@ -80,6 +86,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingSt
 import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.watabou.utils.DeviceCompat;
+import com.zrp200.scrollofdebug.ScrollOfDebug;
 
 public enum HeroClass {
 
@@ -113,9 +120,26 @@ public enum HeroClass {
 		Waterskin waterskin = new Waterskin();
 		waterskin.collect();
 
-		if (DeviceCompat.isDebug()){
+		if (Dungeon.isChallenged(X_U_NS_POWER)){
 			Goldarrow goldarrow = new Goldarrow();
-			goldarrow.collect();}
+			goldarrow.collect();
+			ScrollOfDebug scrollofdebug = new ScrollOfDebug();
+			scrollofdebug.collect();
+
+			new ScrollHolder().collect();
+			Dungeon.LimitedDrops.SCROLL_HOLDER.drop();
+			new MagicalHolster().collect();
+			Dungeon.LimitedDrops.MAGICAL_HOLSTER.drop();
+			new PotionBandolier().collect();
+			Dungeon.LimitedDrops.POTION_BANDOLIER.drop();
+
+			PotionOfStrength potionofstrength = new PotionOfStrength();
+			potionofstrength.quantity(10).collect();
+			PotionOfExperience potionofexperience = new PotionOfExperience();
+			potionofexperience.quantity(29).collect();
+			new PotionOfExperience().identify();
+			new PotionOfStrength().identify();
+		}
 
 		new ScrollOfIdentify().identify();
 
@@ -152,8 +176,8 @@ public enum HeroClass {
 					break;
 				}
 			}
-		}*/
-
+		}
+		*/
 	}
 
 	public Badges.Badge masteryBadge() {

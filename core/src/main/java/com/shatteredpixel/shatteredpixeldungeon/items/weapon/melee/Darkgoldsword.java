@@ -27,7 +27,9 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.AttackIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
@@ -52,9 +54,15 @@ public class Darkgoldsword extends MeleeWeapon{
 
     @Override
     public int proc(Char attacker, Char defender, int damage) {
-        if (defender.HT <= damage) {
-            defender.die(defender);//在最大生命值小于伤害值时使敌人死亡
-        } else {defender.HT -= damage;}
+        if (defender != Dungeon.hero &&
+                !(defender.properties().contains(Char.Property.BOSS) || defender.properties().contains(Char.Property.MINIBOSS))){
+            if (defender.HT <= damage) {
+                defender.sprite.showStatusWithIcon(CharSprite.NEGATIVE, Integer.toString(damage), FloatingText.PHYS_DMG);
+                defender.die(defender);//在最大生命值小于伤害值时使敌人死亡
+            } else {
+                defender.HT -= damage;
+            }
+        }
         return super.proc(attacker, defender, damage);
     }
 

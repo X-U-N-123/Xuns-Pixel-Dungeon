@@ -18,7 +18,7 @@ public class Havoc extends MeleeWeapon {
     {
         image = ItemSpriteSheet.Havoc;
         hitSound = Assets.Sounds.HIT_SLASH;
-        hitSoundPitch = 1.1f;
+        hitSoundPitch = 1.2f;
 
         tier = 2;
     }
@@ -27,14 +27,16 @@ public class Havoc extends MeleeWeapon {
     public int max(int lvl) {
         return  4*(tier) +    //8 base, down from 15
                 lvl*(tier-1) + //+1 scaling, down from +3
-                Enemieskilled;//eve
+                Enemieskilled;//every killed enemy increase its maxdmg by 1 point
     }
 
     int Enemieskilled = 0;
 
     @Override
     public int proc(Char attacker, Char defender, int damage) {
-        if(!defender.isAlive()){Enemieskilled++;}
+        if(defender.HP <= damage && defender.HP != 0){//prevent gnoll brute from increase it a lot
+            Enemieskilled++;
+        }
         return super.proc( attacker, defender, damage );
     }
 
@@ -48,8 +50,8 @@ public class Havoc extends MeleeWeapon {
 
     @Override
     protected void duelistAbility(Hero hero, Integer target) {
-        //+(3+lvl) damage, roughly +60% base dmg, +100% scaling
-        int dmgBoost = augment.damageFactor(4 + buffedLvl());
+        //+(2+lvl) damage, roughly +40% base dmg, +100% scaling
+        int dmgBoost = augment.damageFactor(2 + buffedLvl());
         if (target == null) {
             return;
         }
@@ -75,7 +77,6 @@ public class Havoc extends MeleeWeapon {
                 AttackIndicator.target(enemy);
                 if (hero.attack(enemy, 1, dmgBoost, Char.INFINITE_ACCURACY)){
                     Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG);
-                    Enemieskilled ++;
                 }
 
                 Invisibility.dispel();
@@ -83,6 +84,8 @@ public class Havoc extends MeleeWeapon {
                 if (!enemy.isAlive()){
                     hero.next();
                     onAbilityKill(hero, enemy);
+                } else {
+                    Enemieskilled ++;
                 }
                 hero.spendAndNext(hero.attackDelay());
 
@@ -93,7 +96,7 @@ public class Havoc extends MeleeWeapon {
 
     @Override
     public String abilityInfo() {
-        int dmgBoost = levelKnown ? 3 + buffedLvl() : 3;
+        int dmgBoost = levelKnown ? 2 + buffedLvl() : 2;
         if (levelKnown){
             return Messages.get(this, "ability_desc", augment.damageFactor(min()+dmgBoost), augment.damageFactor(max()+dmgBoost));
         } else {
@@ -102,7 +105,7 @@ public class Havoc extends MeleeWeapon {
     }
 
     public String upgradeAbilityStat(int level){
-        int dmgBoost = 3 + level;
+        int dmgBoost = 2 + level;
         return augment.damageFactor(min(level)+dmgBoost) + "-" + augment.damageFactor(max(level)+dmgBoost);
     }
 

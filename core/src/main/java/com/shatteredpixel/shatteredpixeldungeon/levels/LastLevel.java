@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
@@ -166,7 +167,9 @@ public class LastLevel extends Level {
 
 	@Override
 	protected void createItems() {
-		drop( new Amulet(), AMULET_POS );
+		if (!Dungeon.isChallenged(Challenges.X_U_NS_POWER)){
+			drop( new Amulet(), AMULET_POS );
+		}
 	}
 
 	@Override
