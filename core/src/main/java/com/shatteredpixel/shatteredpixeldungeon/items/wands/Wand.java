@@ -30,6 +30,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Degrade;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Recharging;
@@ -46,6 +47,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.GuidingLight;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
+import com.shatteredpixel.shatteredpixeldungeon.effects.SpellSprite;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TalismanOfForesight;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
@@ -62,6 +64,7 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.QuickSlotButton;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
@@ -746,6 +749,17 @@ public abstract class Wand extends Item {
 							}
 						}
 					}
+
+					if (curUser.hasTalent(Talent.RESERVED_ENERGY)
+						&& curWand.curCharges == curWand.chargesPerCast()
+						&& curWand.charger != null && curWand.charger.target == curUser
+						&& curUser.buff(Wand.ReservedenergyCooldown.class) == null
+						&& curWand.isIdentified()){
+						curWand.curCharges = Math.min(3 , curWand.maxCharges+1);
+						Sample.INSTANCE.play( Assets.Sounds.CHARGEUP );
+						SpellSprite.show( curUser, SpellSprite.CHARGE );
+						Buff.affect(curUser, ReservedenergyCooldown.class, 110 - 30f*(curUser.pointsInTalent(Talent.RESERVED_ENERGY)));
+					}
 					
 					if (curWand.cursed){
 						if (!curWand.cursedKnown){
@@ -876,5 +890,9 @@ public abstract class Wand extends Item {
 		private void setScaleFactor(float value){
 			this.scalingFactor = value;
 		}
+	}
+	public static class ReservedenergyCooldown extends FlavourBuff {
+		public int icon() { return BuffIndicator.RECHARGING; }
+		public float iconFadePercent() { return Math.max(0, visualcooldown() / 80); }
 	}
 }

@@ -25,6 +25,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.SaltCube;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Document;
@@ -90,6 +91,9 @@ public class Hunger extends Buff implements Hero.Doom {
 					hungerDelay *= 1.5f;
 				}
 				hungerDelay /= SaltCube.hungerGainMultiplier();
+				if (Dungeon.hero.hasTalent(Talent.STEALTH_METABOLISM) && Dungeon.hero.invisible > 0){
+					hungerDelay *= 1+Dungeon.hero.pointsInTalent(Talent.STEALTH_METABOLISM);
+				}
 
 				float newLevel = level + (1f/hungerDelay);
 				if (newLevel >= STARVING) {

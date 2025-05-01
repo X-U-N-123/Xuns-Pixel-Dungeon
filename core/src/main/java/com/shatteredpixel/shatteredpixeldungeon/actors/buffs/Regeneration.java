@@ -23,6 +23,7 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.SpiritForm;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ChaliceOfBlood;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfEnergy;
@@ -74,6 +75,9 @@ public class Regeneration extends Buff {
 						delay -= 1.33f + chaliceLevel*0.667f;
 						delay /= RingOfEnergy.artifactChargeMultiplier(target);
 					}
+				}
+				if (Dungeon.hero.hasTalent(Talent.STEALTH_METABOLISM) && Dungeon.hero.invisible > 0){
+					delay /= 1+0.5f*Dungeon.hero.pointsInTalent(Talent.STEALTH_METABOLISM);
 				}
 
 				//salt cube is turned off while regen is disabled.
