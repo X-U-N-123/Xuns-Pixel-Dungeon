@@ -421,24 +421,25 @@ public class ItemSpriteSheet {
 	public static final int THROWING_KNIFE  = MISSILE_WEP+2;
 	public static final int THROWING_STONE  = MISSILE_WEP+3;
 	
-	public static final int FISHING_SPEAR   = MISSILE_WEP+4;
-	public static final int SHURIKEN        = MISSILE_WEP+5;
-	public static final int THROWING_CLUB   = MISSILE_WEP+6;
+	public static final int FISHING_SPEAR   = MISSILE_WEP+6;
+	public static final int SHURIKEN        = MISSILE_WEP+7;
+	public static final int THROWING_CLUB   = MISSILE_WEP+8;
 	
-	public static final int THROWING_SPEAR  = MISSILE_WEP+7;
-	public static final int BOLAS           = MISSILE_WEP+8;
-	public static final int KUNAI           = MISSILE_WEP+9;
+	public static final int THROWING_SPEAR  = MISSILE_WEP+11;
+	public static final int BOLAS           = MISSILE_WEP+12;
+	public static final int KUNAI           = MISSILE_WEP+13;
 	
-	public static final int JAVELIN         = MISSILE_WEP+10;
-	public static final int TOMAHAWK        = MISSILE_WEP+11;
-	public static final int BOOMERANG       = MISSILE_WEP+12;
+	public static final int JAVELIN         = MISSILE_WEP+16;
+	public static final int TOMAHAWK        = MISSILE_WEP+17;
+	public static final int BOOMERANG       = MISSILE_WEP+18;
 	
-	public static final int TRIDENT         = MISSILE_WEP+13;
-	public static final int THROWING_HAMMER = MISSILE_WEP+14;
-	public static final int FORCE_CUBE      = MISSILE_WEP+15;
+	public static final int TRIDENT         = MISSILE_WEP+21;
+	public static final int THROWING_HAMMER = MISSILE_WEP+22;
+	public static final int FORCE_CUBE      = MISSILE_WEP+23;
 
-	public static final int Scorpiospear    = MISSILE_WEP+16;
-	public static final int Ironball        = MISSILE_WEP+17;
+	public static final int Scorpiospike = MISSILE_WEP+26;
+	public static final int Ironball        = MISSILE_WEP+27;
+	public static final int Anti_matter     = MISSILE_WEP+28;
 	
 	static{
 		assignItemRect(SPIRIT_BOW,      16, 16);
@@ -463,8 +464,9 @@ public class ItemSpriteSheet {
 		assignItemRect(THROWING_HAMMER, 12, 12);
 		assignItemRect(FORCE_CUBE,      11, 12);
 
-		assignItemRect(Scorpiospear,    16, 16);
+		assignItemRect(Scorpiospike,    16, 16);
 		assignItemRect(Ironball,        12, 12);
+		assignItemRect(Anti_matter,     12, 11);
 	}
 	
 	public static final int DARTS           = xy(17, 4);  //16 slots

@@ -345,7 +345,7 @@ abstract public class MissileWeapon extends Weapon {
 		return durabilityPerUse(true);
 	}
 
-	protected final float durabilityPerUse( boolean rounded){
+	protected float durabilityPerUse( boolean rounded){
 		float usages = baseUses * (float)(Math.pow(3, level()));
 
 		//+50%/75% durability

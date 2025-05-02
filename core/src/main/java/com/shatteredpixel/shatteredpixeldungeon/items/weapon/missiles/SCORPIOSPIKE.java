@@ -24,10 +24,10 @@ package com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
-public class Scorpiospear extends MissileWeapon {
+public class SCORPIOSPIKE extends MissileWeapon {
 
     {
-        image = ItemSpriteSheet.Scorpiospear;
+        image = ItemSpriteSheet.Scorpiospike;
         hitSound = Assets.Sounds.HIT_STAB;
         hitSoundPitch = 0.9f;
 

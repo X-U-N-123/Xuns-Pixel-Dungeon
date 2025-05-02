@@ -224,6 +224,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Wolftailgrass
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Woodsword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WornShortsword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Wornrunicblade;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Antimatter;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Bolas;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.FishingSpear;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ForceCube;
@@ -232,7 +233,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Ironball;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Javelin;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Kunai;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Scorpiospear;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.SCORPIOSPIKE;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Shuriken;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingClub;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingHammer;
@@ -643,10 +644,11 @@ public class Generator {
 			MIS_T5.probs = MIS_T5.defaultProbs.clone();
 
 			MIS_T6.classes = new Class<?>[]{
-					Scorpiospear.class,
-					Ironball.class
+					SCORPIOSPIKE.class,
+					Ironball.class,
+					Antimatter.class
 			};
-			MIS_T6.defaultProbs = new float[]{ 3, 3 };
+			MIS_T6.defaultProbs = new float[]{ 3, 3, 3 };
 			MIS_T6.probs = MIS_T6.defaultProbs.clone();
 			
 			FOOD.classes = new Class<?>[]{
