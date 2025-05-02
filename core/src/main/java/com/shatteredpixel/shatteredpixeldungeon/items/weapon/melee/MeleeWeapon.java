@@ -473,9 +473,9 @@ public class MeleeWeapon extends Weapon {
 		public int chargeCap(){
 			//caps at level 19 with 8 or 10 charges
 			if (Dungeon.hero.subClass == HeroSubClass.CHAMPION){
-				return Math.min(10, 4 + (Dungeon.hero.lvl - 1) / 3);
+				return Math.min(10, 4 + (Dungeon.hero.lvl - 1) / 3) + Dungeon.hero.pointsInTalent(Talent.POWER_ACCUMULATION);
 			} else {
-				return Math.min(8, 2 + (Dungeon.hero.lvl - 1) / 3);
+				return Math.min(8, 2 + (Dungeon.hero.lvl - 1) / 3) + Dungeon.hero.pointsInTalent(Talent.POWER_ACCUMULATION);
 			}
 		}
 

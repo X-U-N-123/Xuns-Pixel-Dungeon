@@ -243,8 +243,8 @@ public class BrokenSeal extends Item {
 		@Override
 		public synchronized boolean act() {
 			if (Regeneration.regenOn() && shielding() < maxShield()) {
-				partialShield += 1/30f;
-				partialShield += Dungeon.hero.pointsInTalent(Talent.INTACT_SEAL)/60f;//让战士再次伟大！——迅
+				partialShield += (1 + Dungeon.hero.pointsInTalent(Talent.INTACT_SEAL))/20f;
+				//让战士再次伟大！——迅
 			}
 			
 			while (partialShield >= 1){
