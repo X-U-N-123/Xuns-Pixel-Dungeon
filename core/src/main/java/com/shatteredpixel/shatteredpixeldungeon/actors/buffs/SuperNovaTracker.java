@@ -40,7 +40,7 @@ import com.watabou.utils.Bundle;
 import com.watabou.utils.Point;
 import com.watabou.utils.PointF;
 
-public class SuperNovaTracker extends Buff {
+public class SuperNovaTracker extends Buff {//超新星
 
 	public int pos;
 	private int depth = Dungeon.depth;

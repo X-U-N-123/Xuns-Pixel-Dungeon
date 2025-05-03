@@ -21,28 +21,17 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles;
 
-import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.BARRICADE;
-import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.BOOKSHELF;
-import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.DOOR;
-import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.EMBERS;
-import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.FURROWED_GRASS;
-import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.GRASS;
-import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.HIGH_GRASS;
-import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.MINE_BOULDER;
-import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.MINE_CRYSTAL;
-import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.OPEN_DOOR;
-import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.WATER;
-
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
+import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.TenguDartTrap;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
@@ -63,12 +52,12 @@ public class Antimatter extends MissileWeapon{
 
     @Override
     public int min() {
-        return Math.max(0 , min( buffedLvl() ));
+        return Math.max(0 , min( buffedLvl() ));//不能被神射加强
     }
 
     @Override
     public int max() {
-        return Math.max(0 , max( buffedLvl() ));
+        return Math.max(0 , max( buffedLvl() ));//不能被神射加强
     }
 
     @Override
@@ -98,18 +87,18 @@ public class Antimatter extends MissileWeapon{
         for (int i : PathFinder.NEIGHBOURS25){
             if (!(Dungeon.level.traps.get(cell+i) instanceof TenguDartTrap)) Dungeon.level.pressCell(cell+i);
             if ((Actor.findChar(cell + i) != null) && i != 0) targets.add(Actor.findChar(cell + i));
-            boolean HeroposTerr = Dungeon.level.map[cell + i] == HIGH_GRASS
-                    || Dungeon.level.map[cell + i] == GRASS
-                    || Dungeon.level.map[cell + i] == FURROWED_GRASS
-                    || Dungeon.level.map[cell + i] == WATER
-                    || Dungeon.level.map[cell + i] == BOOKSHELF
-                    || Dungeon.level.map[cell + i] == BARRICADE
-                    || Dungeon.level.map[cell + i] == MINE_CRYSTAL
-                    || Dungeon.level.map[cell + i] == MINE_BOULDER
-                    || Dungeon.level.map[cell + i] == DOOR
-                    || Dungeon.level.map[cell + i] == OPEN_DOOR;
-            if (HeroposTerr){
-                Level.set(cell + i, EMBERS);
+            if (Dungeon.level.map[cell + i] == Terrain.HIGH_GRASS
+                    || Dungeon.level.map[cell + i] == Terrain.GRASS
+                    || Dungeon.level.map[cell + i] == Terrain.FURROWED_GRASS
+                    || Dungeon.level.map[cell + i] == Terrain.WATER
+                    || Dungeon.level.map[cell + i] == Terrain.BOOKSHELF
+                    || Dungeon.level.map[cell + i] == Terrain.BARRICADE
+                    || Dungeon.level.map[cell + i] == Terrain.MINE_CRYSTAL
+                    || Dungeon.level.map[cell + i] == Terrain.MINE_BOULDER
+                    || Dungeon.level.map[cell + i] == Terrain.DOOR
+                    || Dungeon.level.map[cell + i] == Terrain.OPEN_DOOR
+                    || Dungeon.level.map[cell + i] == Terrain.PEDESTAL){
+                Level.set(cell + i, Terrain.EMPTY);
                 GameScene.updateMap(cell + i);
             }
         }
@@ -122,9 +111,10 @@ public class Antimatter extends MissileWeapon{
                 GLog.n(Messages.get(this, "ondeath"));
             }
         }
-
-        WandOfBlastWave.BlastWave.blast(cell);
-        Sample.INSTANCE.play( Assets.Sounds.BLAST );
+        PixelScene.shake( 5, 1.5f );
+        for (int j = 0; j < 3; j++){
+            Sample.INSTANCE.play(Assets.Sounds.BLAST);
+        }
     }
 
     @Override
