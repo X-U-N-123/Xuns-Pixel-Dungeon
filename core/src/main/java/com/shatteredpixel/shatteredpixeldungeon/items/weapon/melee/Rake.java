@@ -50,14 +50,14 @@ public class Rake extends MeleeWeapon{
 
     @Override
     protected void duelistAbility(Hero hero, Integer target) {
-        //replaces damage with 30+4.5*lvl bleed, roughly 133% avg base dmg, 129% avg scaling
-        int bleedAmt = augment.damageFactor(Math.round(35f + 5f*buffedLvl()));
+        //replaces damage with 21+4*lvl bleed, roughly 79% avg base dmg, 100% avg scaling
+        int bleedAmt = augment.damageFactor(Math.round(21f + 4f*buffedLvl()));
         Sickle.harvestAbility(hero, target, 0f, bleedAmt, this);
     }
 
     @Override
     public String abilityInfo() {
-        int bleedAmt = levelKnown ? Math.round(35f + 5f*buffedLvl()) : 35;
+        int bleedAmt = levelKnown ? Math.round(21f + 4f*buffedLvl()) : 21;
         if (levelKnown){
             return Messages.get(this, "ability_desc", augment.damageFactor(bleedAmt));
         } else {
@@ -67,7 +67,7 @@ public class Rake extends MeleeWeapon{
 
     @Override
     public String upgradeAbilityStat(int level) {
-        return Integer.toString(augment.damageFactor(Math.round(35f + 5f*level)));
+        return Integer.toString(augment.damageFactor(Math.round(21f + 4f*level)));
     }
 
 }

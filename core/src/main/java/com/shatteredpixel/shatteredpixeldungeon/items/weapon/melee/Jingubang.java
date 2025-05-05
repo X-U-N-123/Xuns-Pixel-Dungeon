@@ -40,7 +40,7 @@ public class Jingubang extends MeleeWeapon {
 
     @Override
     public int max(int lvl) {
-        return  4*(tier+1) +    //28 base, down from 35
+        return  4*(tier) + 2 +    //26 base, down from 35
                 lvl*(tier+1);   //scaling unchanged
     }
 

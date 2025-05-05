@@ -22,7 +22,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
@@ -89,19 +88,10 @@ public class LightFlail extends MeleeWeapon{
     }
 
     @Override
-    protected int baseChargeUse(Hero hero, Char target){
-        if (Dungeon.hero.buff(Flail.SpinAbilityTracker.class) != null){
-            return 0;
-        } else {
-            return 1;
-        }
-    }
-
-    @Override
     protected void duelistAbility(Hero hero, Integer target) {
 
         Flail.SpinAbilityTracker spin = hero.buff(Flail.SpinAbilityTracker.class);
-        if (spin != null && spin.spins >= 3){
+        if (spin != null && spin.spins >= 2){
             GLog.w(Messages.get(this, "spin_warn"));
             return;
         }

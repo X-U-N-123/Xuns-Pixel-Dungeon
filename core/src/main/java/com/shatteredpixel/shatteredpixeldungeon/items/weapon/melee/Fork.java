@@ -31,7 +31,7 @@ public class Fork extends MeleeWeapon {
     {
         image = ItemSpriteSheet.Fork;
         hitSound = Assets.Sounds.HIT_STAB;
-        hitSoundPitch = 1.1f;
+        hitSoundPitch = 1.2f;
 
         tier = 1;
         ACC = 0.84f; //16% penalty to accuracy
@@ -39,7 +39,7 @@ public class Fork extends MeleeWeapon {
 
     @Override
     public int max(int lvl) {
-        return  Math.round(7f*(tier+1)) +    //14 base, up from 10
+        return  Math.round(7f*(tier+1)) +    //13 base, up from 10
                 lvl*(tier+1);                //scaling unchanged
     }
 
@@ -50,14 +50,14 @@ public class Fork extends MeleeWeapon {
 
     @Override
     protected void duelistAbility(Hero hero, Integer target) {
-        //replaces damage with 10+2*lvl bleed, roughly 133% avg base dmg, 133% avg scaling
-        int bleedAmt = augment.damageFactor(Math.round(10f + 2f*buffedLvl()));
+        //replaces damage with 7+1.5*lvl bleed, roughly 100% avg base dmg, 100% avg scaling
+        int bleedAmt = augment.damageFactor(Math.round(7f + 1.5f*buffedLvl()));
         Sickle.harvestAbility(hero, target, 0f, bleedAmt, this);
     }
 
     @Override
     public String abilityInfo() {
-        int bleedAmt = levelKnown ? Math.round(10f + 2f*buffedLvl()) : 10;
+        int bleedAmt = levelKnown ? Math.round(7f + 1.5f*buffedLvl()) : 7;
         if (levelKnown){
             return Messages.get(this, "ability_desc", augment.damageFactor(bleedAmt));
         } else {
@@ -67,7 +67,7 @@ public class Fork extends MeleeWeapon {
 
     @Override
     public String upgradeAbilityStat(int level) {
-        return Integer.toString(augment.damageFactor(Math.round(10f + 2f*level)));
+        return Integer.toString(augment.damageFactor(Math.round(7f + 1.5f*level)));
     }
 
 }

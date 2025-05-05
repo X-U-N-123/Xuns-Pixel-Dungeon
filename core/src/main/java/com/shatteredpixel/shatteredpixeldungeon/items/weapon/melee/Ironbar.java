@@ -40,7 +40,7 @@ public class Ironbar extends MeleeWeapon {
 
     @Override
     public int max(int lvl) {
-        return  4*(tier+1) +    //24 base, down from 30
+        return  4*(tier) + 2 +    //22 base, down from 30
                 lvl*(tier+1);   //scaling unchanged
     }
 
