@@ -21,12 +21,11 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.hero;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Challenges.X_U_NS_POWER;
-
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.ArmorAbility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.cleric.AscendedForm;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.cleric.PowerOfMany;
@@ -120,7 +119,7 @@ public enum HeroClass {
 		Waterskin waterskin = new Waterskin();
 		waterskin.collect();
 
-		if (Dungeon.isChallenged(X_U_NS_POWER)){
+		if (Dungeon.isChallenged(Challenges.X_U_NS_POWER)){
 			Goldarrow goldarrow = new Goldarrow();
 			goldarrow.collect();
 			ScrollOfDebug scrollofdebug = new ScrollOfDebug();
@@ -134,11 +133,15 @@ public enum HeroClass {
 			Dungeon.LimitedDrops.POTION_BANDOLIER.drop();
 
 			PotionOfStrength potionofstrength = new PotionOfStrength();
-			potionofstrength.quantity(10).collect();
+			potionofstrength.quantity(127).collect();
 			PotionOfExperience potionofexperience = new PotionOfExperience();
 			potionofexperience.quantity(29).collect();
+			ScrollOfUpgrade scrollOfUpgrade = new ScrollOfUpgrade();
+			scrollOfUpgrade.quantity(65520).collect();
 			new PotionOfExperience().identify();
 			new PotionOfStrength().identify();
+			new ScrollOfUpgrade().identify();
+			Hunger.level = 0f;
 		}
 
 		new ScrollOfIdentify().identify();

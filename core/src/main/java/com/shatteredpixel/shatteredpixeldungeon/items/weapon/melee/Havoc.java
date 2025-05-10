@@ -11,6 +11,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.AttackIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
 
 public class Havoc extends MeleeWeapon {
@@ -24,17 +25,22 @@ public class Havoc extends MeleeWeapon {
     }
 
     @Override
+    public int min(int lvl) {
+        int MIN = 1 + Math.round(Enemieskilled / 2f);//every 2 killed enemy increase its min dmg by 1 point, no scaling
+        return Math.min(MIN, max());
+    }
+
+    @Override
     public int max(int lvl) {
-        return  4*(tier) +    //8 base, down from 15
-                lvl*(tier-1) + //+1 scaling, down from +3
-                Enemieskilled;//every killed enemy increase its maxdmg by 1 point
+        return  4*tier +    //9 base, down from 15
+                lvl*(tier); //+2 scaling, down from +3
     }
 
     int Enemieskilled = 0;
 
     @Override
     public int proc(Char attacker, Char defender, int damage) {
-        if(defender.HP <= damage && defender.HP != 0){//prevent gnoll brute from increase it a lot
+        if(defender.HP <= damage && defender.HP != 0){//prevent gnoll brute from increasing it a lot
             Enemieskilled++;
         }
         return super.proc( attacker, defender, damage );
@@ -107,6 +113,20 @@ public class Havoc extends MeleeWeapon {
     public String upgradeAbilityStat(int level){
         int dmgBoost = 2 + level;
         return augment.damageFactor(min(level)+dmgBoost) + "-" + augment.damageFactor(max(level)+dmgBoost);
+    }
+
+    private static final String ENEMIESKILLED = "Enemies_Killed";
+
+    @Override
+    public void storeInBundle( Bundle bundle ) {
+        super.storeInBundle( bundle );
+        bundle.put( ENEMIESKILLED, Enemieskilled );
+    }
+
+    @Override
+    public void restoreFromBundle( Bundle bundle ) {
+        super.restoreFromBundle( bundle );
+        Enemieskilled = Math.round(bundle.getFloat(ENEMIESKILLED));
     }
 
 }

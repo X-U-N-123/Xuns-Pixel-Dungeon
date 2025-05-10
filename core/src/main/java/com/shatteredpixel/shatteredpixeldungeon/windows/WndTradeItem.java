@@ -25,6 +25,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Shopkeeper;
 import com.shatteredpixel.shatteredpixeldungeon.items.EquipableItem;
@@ -38,6 +39,7 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
+import com.watabou.utils.Random;
 
 public class WndTradeItem extends WndInfoItem {
 
@@ -267,16 +269,22 @@ public class WndTradeItem extends WndInfoItem {
 			}
 		}
 	}
-	
+
 	private void buy( Heap heap ) {
-		
+
 		Item item = heap.pickUp();
 		if (item == null) return;
-		
+
 		int price = Shopkeeper.sellPrice( item );
-		Dungeon.gold -= price;
-		Catalog.countUses(Gold.class, price);
-		
+		float chanceToPay=1f;
+		if (Dungeon.hero.hasTalent(Talent.ROGUES_INSTINCT)) {
+			chanceToPay -= Dungeon.hero.pointsInTalent(Talent.ROGUES_INSTINCT) * 0.1f;
+		}
+		if (Random.Float() <= chanceToPay) {
+			Dungeon.gold -= price;
+			Catalog.countUses(Gold.class, price);
+			//Messages.get(WndTradeItem.class, "instinct");
+		}
 		if (!item.doPickUp( Dungeon.hero )) {
 			Dungeon.level.drop( item, heap.pos ).sprite.drop();
 		}
