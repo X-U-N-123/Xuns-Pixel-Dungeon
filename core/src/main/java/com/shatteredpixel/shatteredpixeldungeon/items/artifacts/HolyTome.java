@@ -292,8 +292,10 @@ public class HolyTome extends Artifact {
 					if (level() > 7) missing += 5*(level() - 7)/3f;
 					float turnsToCharge = (45 - missing);
 					turnsToCharge /= RingOfEnergy.artifactChargeMultiplier(target);
-					turnsToCharge /= (Hunger.level / Hunger.STARVING)
+					if (Dungeon.hero.hasTalent(Talent.ASCETICISM)){
+					turnsToCharge /= (Dungeon.hero.buff(Hunger.class).level / Hunger.STARVING)
 						* (1f + Dungeon.hero.pointsInTalent(Talent.ASCETICISM) * 0.1f);
+					}
 					float chargeToGain = (1f / turnsToCharge);
 					if (!isEquipped(Dungeon.hero)){
 						chargeToGain *= 0.75f*Dungeon.hero.pointsInTalent(Talent.LIGHT_READING)/3f;

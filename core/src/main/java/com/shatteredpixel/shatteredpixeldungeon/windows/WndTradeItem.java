@@ -278,7 +278,7 @@ public class WndTradeItem extends WndInfoItem {
 		int price = Shopkeeper.sellPrice( item );
 		float chanceToPay=1f;
 		if (Dungeon.hero.hasTalent(Talent.ROGUES_INSTINCT)) {
-			chanceToPay -= Dungeon.hero.pointsInTalent(Talent.ROGUES_INSTINCT) * 0.1f;
+			chanceToPay -= 0.05f + Dungeon.hero.pointsInTalent(Talent.ROGUES_INSTINCT) * 0.1f;
 		}
 		if (Random.Float() <= chanceToPay) {
 			Dungeon.gold -= price;
