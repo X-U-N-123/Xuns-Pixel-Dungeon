@@ -71,6 +71,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Gloves;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Woodsword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
@@ -100,7 +101,7 @@ public enum Talent {
 	//Warrior T2
 	IRON_STOMACH(4), LIQUID_WILLPOWER(5), RUNIC_TRANSFERENCE(6), LETHAL_MOMENTUM(7), IMPROVISED_PROJECTILES(8),
 	//Warrior T3
-	INTACT_SEAL(9, 3),STRONGMAN(10, 3),
+	INTACT_SEAL(9, 3), STRONGMAN(10, 3), OVERWHELMING(29, 3),
 	//Berserker T3
 	ENDLESS_RAGE(11, 3), DEATHLESS_FURY(12, 3), ENRAGED_CATALYST(13, 3),
 	//Gladiator T3
@@ -117,7 +118,7 @@ public enum Talent {
 	//Mage T2
 	ENERGIZING_MEAL(36), INSCRIBED_POWER(37), WAND_PRESERVATION(38), ARCANE_VISION(39), SHIELD_BATTERY(40), RESERVED_ENERGY(60),
 	//Mage T3
-	DESPERATE_POWER(41, 3), ALLY_WARP(42, 3),
+	DESPERATE_POWER(41, 3), ALLY_WARP(42, 3), ARCANE_ARMOR(61, 3),
 	//Battlemage T3
 	EMPOWERED_STRIKE(43, 3), MYSTICAL_CHARGE(44, 3), EXCESS_CHARGE(45, 3),
 	//Warlock T3
@@ -638,7 +639,8 @@ public enum Talent {
 		}
 
 		if (talent == TWIN_UPGRADES || talent == DESPERATE_POWER
-				|| talent == STRONGMAN || talent == DURABLE_PROJECTILES){
+				|| talent == STRONGMAN || talent == DURABLE_PROJECTILES
+				|| talent == POWER_ACCUMULATION){
 			Item.updateQuickslot();
 		}
 
@@ -647,7 +649,7 @@ public enum Talent {
 			if (!toGive.collect()){
 				Dungeon.level.drop(toGive, hero.pos).sprite.drop();
 			}
-			toGive = new Gloves().identify();
+			toGive = new Woodsword().identify();
 			if (!toGive.collect()){
 				Dungeon.level.drop(toGive, hero.pos).sprite.drop();
 			}
@@ -1113,10 +1115,10 @@ public enum Talent {
 		//tier 3
 		switch (cls){
 			case WARRIOR: default:
-				Collections.addAll(tierTalents, INTACT_SEAL, STRONGMAN);
+				Collections.addAll(tierTalents, INTACT_SEAL, STRONGMAN, OVERWHELMING);
 				break;
 			case MAGE:
-				Collections.addAll(tierTalents, DESPERATE_POWER, ALLY_WARP);
+				Collections.addAll(tierTalents, DESPERATE_POWER, ALLY_WARP, ARCANE_ARMOR);
 				break;
 			case ROGUE:
 				Collections.addAll(tierTalents, ENHANCED_RINGS, LIGHT_CLOAK);

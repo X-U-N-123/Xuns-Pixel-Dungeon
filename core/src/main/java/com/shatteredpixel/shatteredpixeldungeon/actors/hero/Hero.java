@@ -542,6 +542,10 @@ public class Hero extends Char {
 		if (buff(Scimitar.SwordDance.class) != null){
 			accuracy *= 1.50f;
 		}
+
+		if(attackDelay() >1 && hasTalent(Talent.OVERWHELMING)){
+			accuracy += accuracy * Math.max (attackDelay()-1f * ( 1f/3f * pointsInTalent(Talent.STRONGMAN)) ,0.5f);
+		}
 		
 		if (!RingOfForce.fightingUnarmed(this)) {
 			return (int)(attackSkill * accuracy * wep.accuracyFactor( this, target ));
@@ -672,6 +676,10 @@ public class Hero extends Char {
 				&& hasTalent(Talent.WEAPON_RECHARGING)
 				&& (buff(Recharging.class) != null || buff(ArtifactRecharge.class) != null)){
 			dmg = Math.round(dmg * 1.025f + (.025f*pointsInTalent(Talent.WEAPON_RECHARGING)));
+		}
+
+		if( attackDelay() >1 && hasTalent(Talent.OVERWHELMING)){
+			dmg += (int) (dmg * Math.max((attackDelay()-1f) * (pointsInTalent(Talent.STRONGMAN)/4f),0.4f));
 		}
 
 		if (dmg < 0) dmg = 0;
