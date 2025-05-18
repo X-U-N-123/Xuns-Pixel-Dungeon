@@ -1124,7 +1124,7 @@ public class Badges {
 	
 	private static void displayBadge( Badge badge ) {
 
-		if (badge == null || (badge.type != BadgeType.JOURNAL && !Dungeon.customSeedText.isEmpty())) {
+		if (badge == null || (badge.type != BadgeType.JOURNAL && !Dungeon.customSeedText.isEmpty()) || Dungeon.isChallenged(Challenges.X_U_NS_POWER)) {
 			return;
 		}
 		
@@ -1161,7 +1161,8 @@ public class Badges {
 	}
 	
 	public static void unlock( Badge badge ){
-		if (!isUnlocked(badge) && (badge.type == BadgeType.JOURNAL || Dungeon.customSeedText.isEmpty())){
+		if (!isUnlocked(badge) && (badge.type == BadgeType.JOURNAL ||
+				Dungeon.customSeedText.isEmpty() ||!Dungeon.isChallenged(Challenges.X_U_NS_POWER))){
 			global.add( badge );
 			saveNeeded = true;
 		}

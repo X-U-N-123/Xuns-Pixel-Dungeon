@@ -52,7 +52,7 @@ public class Amulet extends Item {
 		ArrayList<String> actions = super.actions( hero );
 		if (hero.buff(AscensionChallenge.class) != null){
 			actions.clear();
-		} else {
+		} else if (!Dungeon.isChallenged(Challenges.X_U_NS_POWER)){
 			actions.add(AC_END);
 		}
 		return actions;
@@ -63,7 +63,7 @@ public class Amulet extends Item {
 
 		super.execute( hero, action );
 
-		if (action.equals(AC_END)) {
+		if (action.equals(AC_END) && !Dungeon.isChallenged(Challenges.X_U_NS_POWER)) {
 			showAmuletScene( false );
 		}
 	}
@@ -72,7 +72,7 @@ public class Amulet extends Item {
 	public boolean doPickUp(Hero hero, int pos) {
 		if (super.doPickUp( hero, pos )) {
 			
-			if (!Statistics.amuletObtained) {
+			if (!Statistics.amuletObtained && !Dungeon.isChallenged(Challenges.X_U_NS_POWER)) {
 				Statistics.amuletObtained = true;
 				hero.spend(-hero.cooldown());
 
@@ -99,6 +99,7 @@ public class Amulet extends Item {
 	}
 	
 	private void showAmuletScene( boolean showText ) {
+		if (!Dungeon.isChallenged(Challenges.X_U_NS_POWER)){
 		AmuletScene.noText = !showText;
 		Game.switchScene( AmuletScene.class, new Game.SceneChangeCallback() {
 			@Override
@@ -117,7 +118,7 @@ public class Amulet extends Item {
 					ShatteredPixelDungeon.reportException(e);
 				}
 			}
-		});
+		});}
 	}
 	
 	@Override

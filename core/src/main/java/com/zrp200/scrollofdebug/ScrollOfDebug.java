@@ -91,40 +91,38 @@ public class ScrollOfDebug extends Scroll {
     private enum Command {
         HELP(null, // ...
                 "[COMMAND | all]",
-                "Gives more information on commands",
+                "给予指定命令的更多信息。",
                 "Specifying a command after the help will give an explanation for how to use that command."),
         // todo add more debug-oriented commands
-        CHANGES(null, "", "Gives a history of changes to Scroll of Debug."),
+        CHANGES(null, "", "给出调试卷轴的改动历史。"),
         // generation commands.
         GIVE(Item.class,
                 "<item> [+<level>] [x<quantity>] [-f|--force] [<method> [<args..>] ]",
-                "Creates and puts into your inventory the generated item",
+                "创造生成的物品并将其放入你的背包。",
                 "Any method specified will be called prior to collection.",
                 "Specifying _level_ will set the level of the item to the indicated amount using Item#level. This is the method called when restoring items from a save file. If it's not giving you want you want, please try passing \"upgrade\" <level> as your method.",
                 "_--force_ (or _-f_ for short) will disable all on-pickup logic (specifically Item#doPickUp) that may be affecting how the item gets collected into your inventory."),
         SPAWN(Mob.class,
                 "<mob> [x<quantity>|(-p|--place)] [<method>]",
-                "Creates the indicated mob and places them on the depth.",
+                "生成指定的生物并将其放在层内。",
                 "Specifying [quantity] will attempt to spawn that many mobs ",
                 "_-p_ allows manual placement, though it cannot be combined with a quantity argument."),
         SET(Trap.class,
-                "<trap>",
-                "Sets a trap at an indicated position"),
+                "<trap>", "在指定位置设置一个陷阱。"),
         AFFECT(Buff.class,
                 "<buff> [<duration>] [<method> [<args..>]]",
-                "Allows you to attach a buff to a character in sight.",
+                "允许你给予视野内生物一个状态效果。",
                 "This can be potentially hazardous if a buff is applied to something that it was not designed for.",
                 "Specifying _duration_ will attempt to set the duration of the buff. In the cases of buffs that are active in nature (e.g. buffs.Burning), you may need to call a method to properly set its duration.",
                 "The method is called after the buff is attached, or on the existing buff if one existed already. This means you can say \"affect doom detach\" to remove doom from that character."),
         SEED(Blob.class,
-                "<blob> [<amount>]",
-                "Seed a blob of the specified amount to a targeted tile"),
-        USE(Object.class, "<object> method [args]", "Use a specified method from a desired class.",
+                "<blob> [<amount>]", "在指定地块生成一种地形效果。"),
+        USE(Object.class, "<object> method [args]", "使用期望类中的一个特定方法。",
                 "It may be handy to see _inspect_ to see usable methods for your object",
                 "If you set a variable from this command, the return value of the method will be stored into the variable."),
-        INSPECT(Object.class, "<object>", "Gives a list of supported methods for the indicated class."),
-        GOTO(null, "<depth>", "Sends your character to the indicated depth."),
-        WARP(null, "[<cell>]", "Targeted teleportation. Optionally takes a cell location, most easily assigned by variable"),
+        INSPECT(Object.class, "<object>", "列出期望类中支持的方法。"),
+        GOTO(null, "<depth>", "将英雄传送到指定楼层。"),
+        WARP(null, "[<cell>]", "指定位置的传送。需要一格位置，易于被变量指定。"),
         MACRO(null, "<name>",
                 "Store a sequence of scroll of debug commands to a single name",
                 "Macros are a way to store and reproduce multiple scroll of debug commands at once.",
@@ -174,7 +172,7 @@ public class ScrollOfDebug extends Scroll {
                 else for(String note : notes) documentation += "\n_-_ " + note;
             }
             if(showClasses && paramClass != null && !paramClass.isPrimitive() && paramClass != Object.class) {
-                documentation += "\n\n_Valid Classes_:" + listAllClasses(trie,paramClass);
+                documentation += "\n\n_有效的类_：" + listAllClasses(trie,paramClass);
             }
             return documentation;
         }
@@ -232,8 +230,8 @@ public class ScrollOfDebug extends Scroll {
     @Override
     public void doRead() {
         collect(); // you don't lose scroll of debug.
-        GameScene.show(new WndTextInput("Enter Command:", null, "", 100, false,
-                "Execute", "Cancel") {
+        GameScene.show(new WndTextInput("输入命令：", null, "", 100, false,
+                "执行", "取消") {
 
             private String[] handleVariables(String[] input) {
                 storeLocation = null;
@@ -364,7 +362,7 @@ public class ScrollOfDebug extends Scroll {
                     if (handleMacro(input)) {
                         return true; // dig your own grave...
                     }
-                    GLog.w("\"" + input[0] + "\" is not a valid command.");
+                    GLog.w("\"" + input[0] + "\" 不是可用命令。");
                     return false;
                 }
 
@@ -452,7 +450,7 @@ public class ScrollOfDebug extends Scroll {
 
                             @Override
                             public String prompt() {
-                                return "Choose a location to teleport";
+                                return "选择一个传送位置";
                             }
                         });
                     }
@@ -468,7 +466,7 @@ public class ScrollOfDebug extends Scroll {
                         else try {
                             gotoDepth(Integer.parseInt(input[1]));
                         } catch (NumberFormatException e) {
-                            GLog.w("Invalid depth provided: " + input[1]);
+                            GLog.w("不可用楼层：" + input[1]);
                             // should I report this exception too?
                             // false to stop at failure
                             return false;
@@ -610,14 +608,14 @@ public class ScrollOfDebug extends Scroll {
                                                 || level.solid[cell]
                                                 || !level.openSpace[cell] && mob.properties().contains(Char.Property.LARGE)
                                         ) {
-                                            GLog.w("You cannot place %s here.", mob.name());
+                                            GLog.w("你不能把%s放在这里。", mob.name());
                                             return;
                                         }
                                         mob.pos = cell;
                                         GameScene.add(mob);
                                         // doing this means that I can't actually let you select cells for methods; it'll be immediately cancelled.
                                         executeMethod(mob,input,3);
-                                        GLog.w("Spawned " + mob.name());
+                                        GLog.w("生成了" + mob.name());
                                     }
                                 });
                                 return false; // DO NOT USE THIS IN MACROS DO NOT USE THIS IN MACROS
@@ -633,7 +631,7 @@ public class ScrollOfDebug extends Scroll {
                                     if(canExecute) canExecute = executeMethod(m, input, qSpecified?3:2);
                                 }
                                 spawned--;
-                                GLog.w("Spawned "
+                                GLog.w("生成了"
                                         + mob.name()
                                         + (spawned == 1 ? "" : " x" + spawned)
                                 );
@@ -650,7 +648,7 @@ public class ScrollOfDebug extends Scroll {
                                     Level.set(cell, Terrain.TRAP);
                                 }
                                 @Override public String prompt() {
-                                    return "Select location of trap:";
+                                    return "选择陷阱位置：";
                                 }
                             });
                             return false; // game selectors do not stack well
@@ -706,7 +704,7 @@ public class ScrollOfDebug extends Scroll {
                             // fixme perhaps have special logic for when additional arguments in general are passed to non-flavor buffs.
                             GameScene.selectCell(new CellSelector.Listener() {
                                 @Override public String prompt() {
-                                    return "Select the character to apply the buff to:";
+                                    return "选择要给予状态效果的生物：";
                                 }
                                 @Override public void onSelect(Integer cell) {
                                     Char target;
@@ -779,7 +777,7 @@ public class ScrollOfDebug extends Scroll {
                             final int amount = a;
                             GameScene.selectCell(new CellSelector.Listener() {
                                 @Override public String prompt() {
-                                    return "Select the tile to seed the blob:";
+                                    return "选择放置地形效果的地块：";
                                 }
                                 @Override public void onSelect(Integer cell) {
                                     if(cell == null) return;

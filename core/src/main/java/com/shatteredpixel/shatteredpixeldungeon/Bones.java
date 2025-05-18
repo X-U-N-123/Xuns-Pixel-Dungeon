@@ -86,9 +86,9 @@ public class Bones {
 	private static Item pickItem(Hero hero){
 		Item item = null;
 
-		//seeded runs don't leave items
+		//seeded runs or dev mode don't leave items
 		//This is to prevent using specific seeds to transport items to regular runs
-		if (!Dungeon.customSeedText.isEmpty()){
+		if (!Dungeon.customSeedText.isEmpty() || Dungeon.isChallenged(Challenges.X_U_NS_POWER)){
 			return null;
 		}
 
