@@ -135,10 +135,13 @@ public enum HeroClass {
 			potionofstrength.quantity(127).collect();
 			PotionOfExperience potionofexperience = new PotionOfExperience();
 			potionofexperience.quantity(29).collect();
+			PotionOfHealing potionofhealing = new PotionOfHealing();
+			potionofhealing.quantity(127).collect();
 			ScrollOfUpgrade scrollOfUpgrade = new ScrollOfUpgrade();
 			scrollOfUpgrade.quantity(65520).collect();
 			new PotionOfExperience().identify();
 			new PotionOfStrength().identify();
+			new PotionOfHealing().identify();
 			new ScrollOfUpgrade().identify();
 		}
 

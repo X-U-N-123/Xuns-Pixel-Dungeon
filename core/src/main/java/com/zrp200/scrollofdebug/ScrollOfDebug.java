@@ -117,7 +117,7 @@ public class ScrollOfDebug extends Scroll {
                 "The method is called after the buff is attached, or on the existing buff if one existed already. This means you can say \"affect doom detach\" to remove doom from that character."),
         SEED(Blob.class,
                 "<blob> [<amount>]", "在指定地块生成一种地形效果。"),
-        USE(Object.class, "<object> method [args]", "使用期望类中的一个特定方法。",
+        USE(Object.class, "<object> method [args]", "调用期望类中的一个特定方法。",
                 "It may be handy to see _inspect_ to see usable methods for your object",
                 "If you set a variable from this command, the return value of the method will be stored into the variable."),
         INSPECT(Object.class, "<object>", "列出期望类中支持的方法。"),

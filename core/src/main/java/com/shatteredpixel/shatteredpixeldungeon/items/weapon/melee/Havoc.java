@@ -26,14 +26,14 @@ public class Havoc extends MeleeWeapon {
 
     @Override
     public int min(int lvl) {
-        int MIN = 1 + Math.round(Enemieskilled / 2f);//every 2 killed enemy increase its min dmg by 1 point, no scaling
+        int MIN = 1 + (int)(Enemieskilled / 5f);//every 5 killed enemy increase its min dmg by 1 point, no scaling
         return Math.min(MIN, max());
     }
 
     @Override
     public int max(int lvl) {
-        return  4*tier +    //9 base, down from 15
-                lvl*(tier); //+2 scaling, down from +3
+        return  4 * (tier + 1) +    //10 base, down from 15
+                lvl*(tier + 2); //+4 scaling, up from +3
     }
 
     int Enemieskilled = 0;
