@@ -46,7 +46,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRemoveCurs
 import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
@@ -266,7 +265,7 @@ public class Bomb extends Item {
 	}
 
 	//used to track the death from friendly magic badge, if an explosion was conjured by magic
-	public static class ConjuredBomb extends Bomb{};
+	public static class ConjuredBomb extends Bomb{}
 
 	public static class Fuse extends Actor{
 
@@ -331,11 +330,7 @@ public class Bomb extends Item {
 		public boolean doPickUp(Hero hero, int pos) {
 			Bomb bomb = new Bomb();
 			bomb.quantity(2);
-			if (bomb.doPickUp(hero, pos)) {
-					hero.sprite.showStatus(CharSprite.NEUTRAL, "dopickup");
-				return true;
-			}
-			return false;
+			return bomb.doPickUp(hero, pos);
 		}
 	}
 	

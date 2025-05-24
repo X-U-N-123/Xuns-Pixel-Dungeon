@@ -69,7 +69,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ShardOfOblivion;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Gloves;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Woodsword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
@@ -103,7 +102,7 @@ public enum Talent {
 	//Warrior T3
 	INTACT_SEAL(9, 3), STRONGMAN(10, 3), OVERWHELMING(29, 3),
 	//Berserker T3
-	ENDLESS_RAGE(11, 3), DEATHLESS_FURY(12, 3), ENRAGED_CATALYST(13, 3),
+	ENDLESS_RAGE(11, 3), DEATHLESS_FURY(12, 3), ENRAGED_CATALYST(13, 3),BEAR_GRUDGES(30, 3),BLADE_OF_ANGER(31, 3),
 	//Gladiator T3
 	CLEAVE(14, 3), LETHAL_DEFENSE(15, 3), ENHANCED_COMBO(16, 3),
 	//Heroic Leap T4
@@ -133,9 +132,9 @@ public enum Talent {
 	//Rogue T1
 	CACHED_RATIONS(64), THIEFS_INTUITION(65), SUCKER_PUNCH(66), PROTECTIVE_SHADOWS(67), TESTED_MYST(91),
 	//Rogue T2
-	MYSTICAL_MEAL(68), INSCRIBED_STEALTH(69), STEALTH_METABOLISM(70), SILENT_STEPS(71), ROGUES_FORESIGHT(72), ROGUES_INSTINCT(92),
+	MYSTICAL_MEAL(68), INSCRIBED_STEALTH(69), EMERGENCY_CHARGE(70), SILENT_STEPS(71), ROGUES_FORESIGHT(72), ROGUES_INSTINCT(92),
 	//Rogue T3
-	ENHANCED_RINGS(73, 3), LIGHT_CLOAK(74, 3),
+	ENHANCED_RINGS(73, 3), LIGHT_CLOAK(74, 3), STEALTH_METABOLISM(93, 3),
 	//Assassin T3
 	ENHANCED_LETHALITY(75, 3), ASSASSINS_REACH(76, 3), BOUNTY_HUNTER(77, 3),
 	//Freerunner T3
@@ -152,7 +151,7 @@ public enum Talent {
 	//Huntress T2
 	INVIGORATING_MEAL(100), LIQUID_NATURE(101), REJUVENATING_STEPS(102), HEIGHTENED_SENSES(103), DURABLE_PROJECTILES(104), IVY_BIND(124),
 	//Huntress T3
-	POINT_BLANK(105, 3), SEER_SHOT(106, 3),
+	L_M_MASTER(105, 3), SEER_SHOT(106, 3), ORGANIC_FERTILIZER(125, 3),
 	//Sniper T3
 	FARSIGHT(107, 3), SHARED_ENCHANTMENT(108, 3), SHARED_UPGRADES(109, 3),
 	//Warden T3
@@ -169,7 +168,7 @@ public enum Talent {
 	//Duelist T2
 	FOCUSED_MEAL(132), LIQUID_AGILITY(133), WEAPON_RECHARGING(134), LETHAL_HASTE(135), SWIFT_EQUIP(136),POWER_ACCUMULATION(156),
 	//Duelist T3
-	PRECISE_ASSAULT(137, 3), DEADLY_FOLLOWUP(138, 3),
+	PRECISE_ASSAULT(137, 3), DEADLY_FOLLOWUP(138, 3), AGILE_COUNTATK(157, 3),
 	//Champion T3
 	VARIED_CHARGE(139, 3), TWIN_UPGRADES(140, 3), COMBINED_LETHALITY(141, 3),
 	//Monk T3
@@ -186,7 +185,7 @@ public enum Talent {
 	//Cleric T2
 	ENLIGHTENING_MEAL(164), RECALL_INSCRIPTION(165), SUNRAY(166), DIVINE_SENSE(167), BLESS(168), ASCETICISM(188),
 	//Cleric T3
-	CLEANSE(169, 3), LIGHT_READING(170, 3),
+	CLEANSE(169, 3), LIGHT_READING(170, 3),PROTECTING_SPELL(189, 3),
 	//Priest T3
 	HOLY_LANCE(171, 3), HALLOWED_GROUND(172, 3), MNEMONIC_PRAYER(173, 3),
 	//Paladin T3
@@ -305,6 +304,7 @@ public enum Talent {
 		public float iconFadePercent() { return GameMath.gate(0, visualcooldown() / 50, 1); }
 	};
 	public static class RejuvenatingStepsFurrow extends CounterBuff{{revivePersists = true;}};
+	public static class OrganicFertilizerFurrow extends CounterBuff{{revivePersists = true;}};
 	public static class SeerShotCooldown extends FlavourBuff{
 		public int icon() { return target.buff(RevealedArea.class) != null ? BuffIndicator.NONE : BuffIndicator.TIME; }
 		public void tintIcon(Image icon) { icon.hardlight(0.7f, 0.4f, 0.7f); }
@@ -362,6 +362,11 @@ public enum Talent {
 			super.restoreFromBundle(bundle);
 			uses = bundle.getInt(USES);
 		}
+	};
+	public static class AgileCountATKTracker extends FlavourBuff{
+		public int icon() { return BuffIndicator.INVERT_MARK; }
+		public void tintIcon(Image icon) { icon.hardlight(0.7f, 0f, 0f); }
+		public float iconFadePercent() { return Math.max(0, 1f - (visualcooldown()/3)); }
 	};
 	public static class LethalHasteCooldown extends FlavourBuff{
 		public int icon() { return BuffIndicator.TIME; }
@@ -1092,7 +1097,7 @@ public enum Talent {
 				Collections.addAll(tierTalents, ENERGIZING_MEAL, INSCRIBED_POWER, WAND_PRESERVATION, ARCANE_VISION, SHIELD_BATTERY, RESERVED_ENERGY);
 				break;
 			case ROGUE:
-				Collections.addAll(tierTalents, MYSTICAL_MEAL, INSCRIBED_STEALTH, STEALTH_METABOLISM, SILENT_STEPS, ROGUES_FORESIGHT, ROGUES_INSTINCT);
+				Collections.addAll(tierTalents, MYSTICAL_MEAL, INSCRIBED_STEALTH, EMERGENCY_CHARGE, SILENT_STEPS, ROGUES_FORESIGHT, ROGUES_INSTINCT);
 				break;
 			case HUNTRESS:
 				Collections.addAll(tierTalents, INVIGORATING_MEAL, LIQUID_NATURE, REJUVENATING_STEPS, HEIGHTENED_SENSES, DURABLE_PROJECTILES, IVY_BIND);
@@ -1121,16 +1126,16 @@ public enum Talent {
 				Collections.addAll(tierTalents, DESPERATE_POWER, ALLY_WARP, ARCANE_ARMOR);
 				break;
 			case ROGUE:
-				Collections.addAll(tierTalents, ENHANCED_RINGS, LIGHT_CLOAK);
+				Collections.addAll(tierTalents, ENHANCED_RINGS, LIGHT_CLOAK, STEALTH_METABOLISM);
 				break;
 			case HUNTRESS:
-				Collections.addAll(tierTalents, POINT_BLANK, SEER_SHOT);
+				Collections.addAll(tierTalents, L_M_MASTER, SEER_SHOT, ORGANIC_FERTILIZER);
 				break;
 			case DUELIST:
 				Collections.addAll(tierTalents, PRECISE_ASSAULT, DEADLY_FOLLOWUP);
 				break;
 			case CLERIC:
-				Collections.addAll(tierTalents, CLEANSE, LIGHT_READING);
+				Collections.addAll(tierTalents, CLEANSE, LIGHT_READING, PROTECTING_SPELL);
 				break;
 		}
 		for (Talent talent : tierTalents){
@@ -1161,7 +1166,7 @@ public enum Talent {
 		//tier 3
 		switch (cls){
 			case BERSERKER: default:
-				Collections.addAll(tierTalents, ENDLESS_RAGE, DEATHLESS_FURY, ENRAGED_CATALYST);
+				Collections.addAll(tierTalents, ENDLESS_RAGE, DEATHLESS_FURY, ENRAGED_CATALYST, BEAR_GRUDGES);
 				break;
 			case GLADIATOR:
 				Collections.addAll(tierTalents, CLEAVE, LETHAL_DEFENSE, ENHANCED_COMBO);
@@ -1253,6 +1258,8 @@ public enum Talent {
 
 	private static final HashMap<String, String> renamedTalents = new HashMap<>();
 	static{
+		//X_U_N v0.1.4
+		renamedTalents.put("POINT_BLANK",               "LIQUID_METAL_MASTER");
 		//X_U_N v0.1.2
 		renamedTalents.put("SACRED_ARCANE",             "ASCETICISM");
 		//X_U_N v0.1.1

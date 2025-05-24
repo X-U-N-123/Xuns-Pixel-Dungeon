@@ -24,11 +24,13 @@ package com.shatteredpixel.shatteredpixeldungeon.items;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Splash;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.MagicalHolster;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Antimatter;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Dart;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
@@ -125,7 +127,7 @@ public class LiquidMetal extends Item {
 
 		@Override
 		public boolean itemSelectable(Item item) {
-			return item instanceof MissileWeapon && !(item instanceof Dart);
+			return item instanceof MissileWeapon && !(item instanceof Dart) && !(item instanceof Antimatter);
 		}
 
 		@Override
@@ -135,14 +137,20 @@ public class LiquidMetal extends Item {
 
 				int maxToUse = 5*(m.tier+1);
 				maxToUse *= Math.pow(2, m.level());
-
+				int UpgradeToUse = 2 * maxToUse;
 				float durabilityPerMetal = 100 / (float)maxToUse;
 
 				//we remove a tiny amount here to account for rounding errors
 				float percentDurabilityLost = 0.999f - (m.durabilityLeft()/100f);
 				maxToUse = (int)Math.ceil(maxToUse*percentDurabilityLost);
 				float durPerUse = m.durabilityPerUse()/100f;
-				if (maxToUse == 0 ||
+				if(UpgradeToUse<quantity() && !(m instanceof Antimatter)
+				&& Dungeon.hero.pointsInTalent(Talent.L_M_MASTER) >= 3){
+					Catalog.countUses(LiquidMetal.class, UpgradeToUse);
+					GLog.i(Messages.get(LiquidMetal.class, "upgrade", UpgradeToUse));
+					m.upgrade();
+					quantity(quantity()-UpgradeToUse);
+				} else if (maxToUse == 0 ||
 						Math.ceil(m.durabilityLeft()/ m.durabilityPerUse()) >= Math.ceil(m.MAX_DURABILITY/ m.durabilityPerUse()) ){
 					GLog.w(Messages.get(LiquidMetal.class, "already_fixed"));
 					return;
@@ -175,6 +183,9 @@ public class LiquidMetal extends Item {
 				if (!(i instanceof MissileWeapon)){
 					return false;
 				}
+				if (i instanceof Antimatter){
+					return false;
+				}
 			}
 
 			return !ingredients.isEmpty();
@@ -186,7 +197,11 @@ public class LiquidMetal extends Item {
 			for (Item i : ingredients){
 				cost += i.quantity();
 			}
+			if (Dungeon.hero.pointsInTalent(Talent.L_M_MASTER) >= 2){
+				return 0;
+			} else {
 			return cost;
+			}
 		}
 
 		@Override
@@ -211,7 +226,9 @@ public class LiquidMetal extends Item {
 				quantity *= Math.pow(2, Math.min(3, m.level()));
 				metalQuantity += Math.round((5*(m.tier+1))*quantity);
 			}
-
+			if (Dungeon.hero.hasTalent(Talent.L_M_MASTER)){
+				metalQuantity += Math.round(metalQuantity * 0.3f);
+			}
 			return new LiquidMetal().quantity(metalQuantity);
 		}
 	}

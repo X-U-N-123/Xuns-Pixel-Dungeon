@@ -22,6 +22,8 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.artifacts;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
@@ -156,7 +158,7 @@ public class HolyTome extends Artifact {
 			charge--;
 			partialCharge++;
 		}
-
+		Buff.affect(Dungeon.hero, Barrier.class).incShield((int)(3*Dungeon.hero.pointsInTalent(Talent.PROTECTING_SPELL)*chargesSpent));
 		//target hero level is 1 + 2*tome level
 		int lvlDiffFromTarget = Dungeon.hero.lvl - (1+level()*2);
 		//plus an extra one for each level after 6

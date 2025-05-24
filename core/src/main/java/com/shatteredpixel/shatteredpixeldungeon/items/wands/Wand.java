@@ -760,6 +760,10 @@ public abstract class Wand extends Item {
 						SpellSprite.show( curUser, SpellSprite.CHARGE );
 						Buff.affect(curUser, ReservedenergyCooldown.class, 110 - 30f*(curUser.pointsInTalent(Talent.RESERVED_ENERGY)));
 					}
+
+					if (curUser.hasTalent(Talent.PROTECTING_SPELL) && curUser.heroClass != HeroClass.CLERIC){
+						Buff.affect(curUser, Barrier.class).incShield(2*curUser.pointsInTalent(Talent.PROTECTING_SPELL)*curWand.chargesPerCast());
+					}
 					
 					if (curWand.cursed){
 						if (!curWand.cursedKnown){

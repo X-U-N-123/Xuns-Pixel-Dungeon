@@ -236,6 +236,10 @@ public class CloakOfShadows extends Artifact {
 					if (level() > 7) missing += 5*(level() - 7)/3f;
 					float turnsToCharge = (45 - missing);
 					turnsToCharge /= RingOfEnergy.artifactChargeMultiplier(target);
+					if (Dungeon.hero.hasTalent(Talent.EMERGENCY_CHARGE)){
+						turnsToCharge /= 1f + ((float)Dungeon.hero.HP / Dungeon.hero.HT)
+						* Dungeon.hero.pointsInTalent(Talent.EMERGENCY_CHARGE) * 0.1f;
+					}
 					float chargeToGain = (1f / turnsToCharge);
 					if (!isEquipped(Dungeon.hero)){
 						chargeToGain *= 0.75f*Dungeon.hero.pointsInTalent(Talent.LIGHT_CLOAK)/3f;

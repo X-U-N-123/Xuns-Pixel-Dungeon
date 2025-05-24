@@ -57,7 +57,7 @@ public class Berserk extends Buff implements ActionIndicator.Action {
 	private static final float LEVEL_RECOVER_START = 4f;
 	private float levelRecovery;
 
-	private static final int TURN_RECOVERY_START = 100;
+	private static final int TURN_RECOVERY_START = 25;
 	private int turnRecovery;
 
 	public int powerLossBuffer = 0;
@@ -136,7 +136,8 @@ public class Berserk extends Buff implements ActionIndicator.Action {
 			if (powerLossBuffer > 0){
 				powerLossBuffer--;
 			} else {
-				power -= GameMath.gate(0.1f, power, 1f) * 0.067f * Math.pow((target.HP / (float) target.HT), 2);
+				power -= GameMath.gate(0.1f, power, 1f) * 0.067f * Math.pow((target.HP / (float) target.HT), 2)
+						* (1f-Dungeon.hero.pointsInTalent(Talent.BEAR_GRUDGES)*0.2f);
 
 				if (power < 1f){
 					ActionIndicator.clearAction(this);
@@ -166,11 +167,11 @@ public class Berserk extends Buff implements ActionIndicator.Action {
 	}
 
 	public float enchantFactor(float chance){
-		return chance + ((Math.min(1f, power) * 0.15f) * ((Hero) target).pointsInTalent(Talent.ENRAGED_CATALYST));
+		return chance + ((Math.min(1f, power) * 0.25f) * ((Hero) target).pointsInTalent(Talent.ENRAGED_CATALYST));
 	}
 
 	public float damageFactor(float dmg){
-		return dmg * Math.min(1.5f, 1f + (power / 2f));
+		return dmg * Math.min(2f, 1f + (power *2f/3f));
 	}
 
 	public boolean berserking(){
@@ -220,10 +221,10 @@ public class Berserk extends Buff implements ActionIndicator.Action {
 	
 	public void damage(int damage){
 		if (state != State.NORMAL) return;
-		float maxPower = 1f + 0.1667f*((Hero)target).pointsInTalent(Talent.ENDLESS_RAGE);
-		power = Math.min(maxPower, power + (damage/(float)target.HT)/3f );
+		float maxPower = 1f + 0.2f*((Hero)target).pointsInTalent(Talent.ENDLESS_RAGE);
+		power = Math.min(maxPower, power + (damage/(float)target.HT)/2f );
 		BuffIndicator.refreshHero(); //show new power immediately
-		powerLossBuffer = 3; //2 turns until rage starts dropping
+		powerLossBuffer = 1 + (int)Math.pow(3, Dungeon.hero.pointsInTalent(Talent.BEAR_GRUDGES)+1);//3/9/27/81 turns until rage starts dropping
 		if (power >= 1f){
 			ActionIndicator.setAction(this);
 		}
@@ -301,7 +302,7 @@ public class Berserk extends Buff implements ActionIndicator.Action {
 	public float iconFadePercent() {
 		switch (state){
 			case NORMAL: default:
-				float maxPower = 1f + 0.1667f*((Hero)target).pointsInTalent(Talent.ENDLESS_RAGE);
+				float maxPower = 1f + 0.2f*((Hero)target).pointsInTalent(Talent.ENDLESS_RAGE);
 				return (maxPower - power)/maxPower;
 			case BERSERK:
 				return 0f;

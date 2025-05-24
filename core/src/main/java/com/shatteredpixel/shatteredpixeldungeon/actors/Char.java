@@ -64,6 +64,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Ooze;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Poison;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Preparation;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Regeneration;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ShieldBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Sleep;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Slow;
@@ -133,6 +134,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sickle;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.ShockingDart;
+import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.Chasm;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.Door;
@@ -590,6 +592,12 @@ public abstract class Char extends Actor {
 			if (visibleFight) {
 				//TODO enemy.defenseSound? currently miss plays for monks/crab even when they parry
 				Sample.INSTANCE.play(Assets.Sounds.MISS);
+			}
+
+			if (enemy instanceof Hero){
+				if (Dungeon.hero.hasTalent(Talent.AGILE_COUNTATK)){
+					Buff.affect(Dungeon.hero, Talent.AgileCountATKTracker.class, 3f);
+				}
 			}
 			
 			return false;
@@ -1050,6 +1058,28 @@ public abstract class Char extends Actor {
 			if (!flying && Dungeon.level != null && sprite instanceof MobSprite && Dungeon.level.map[pos] == Terrain.CHASM){
 				((MobSprite) sprite).fall();
 			}
+		}
+		if (Dungeon.hero.hasTalent(Talent.ORGANIC_FERTILIZER)){
+			if (Dungeon.level.map[pos] == Terrain.EMBERS || Dungeon.level.map[pos] == Terrain.EMPTY || Dungeon.level.map[pos] == Terrain.EMPTY_DECO){
+				Level.set(pos, Terrain.GRASS);
+			}
+			if ((Dungeon.level.map[Dungeon.hero.pos] == Terrain.EMBERS || Dungeon.level.map[Dungeon.hero.pos] == Terrain.EMPTY
+					|| Dungeon.level.map[Dungeon.hero.pos] == Terrain.EMPTY_DECO || Dungeon.level.map[Dungeon.hero.pos] == Terrain.GRASS)
+					&& Dungeon.hero.pointsInTalent(Talent.ORGANIC_FERTILIZER) >= 2){
+				Level.set(Dungeon.hero.pos, Terrain.GRASS);
+				if (Dungeon.hero.pointsInTalent(Talent.ORGANIC_FERTILIZER) >= 3){
+					if (!Regeneration.regenOn()){
+						Level.set(Dungeon.hero.pos, Terrain.FURROWED_GRASS);
+					} else if (Dungeon.hero.buff(Talent.OrganicFertilizerFurrow.class) != null && Dungeon.hero.buff(Talent.OrganicFertilizerFurrow.class).count() >= 200) {
+						Level.set(Dungeon.hero.pos, Terrain.FURROWED_GRASS);
+					} else {
+						Level.set(Dungeon.hero.pos, Terrain.HIGH_GRASS);
+						Buff.count(Dungeon.hero, Talent.OrganicFertilizerFurrow.class, 3 - Dungeon.hero.pointsInTalent(Talent.ORGANIC_FERTILIZER));
+					}
+				}
+				GameScene.updateMap(Dungeon.hero.pos);
+			}
+			GameScene.updateMap(this.pos);
 		}
 	}
 

@@ -494,7 +494,7 @@ public class Hero extends Char {
 		
 		if (wep instanceof MissileWeapon){
 			if (Dungeon.level.adjacent( pos, target.pos )) {
-				accuracy *= (0.5f + 0.2f*pointsInTalent(Talent.POINT_BLANK));
+				accuracy *= 0.5f;
 			} else {
 				accuracy *= 1.5f;
 			}
@@ -544,7 +544,7 @@ public class Hero extends Char {
 		}
 
 		if(attackDelay() >1 && hasTalent(Talent.OVERWHELMING)){
-			accuracy += accuracy * Math.max (attackDelay()-1f * ( 1f/3f * pointsInTalent(Talent.STRONGMAN)) ,0.5f);
+			accuracy += accuracy * Math.max (attackDelay()-(pointsInTalent(Talent.OVERWHELMING) / 3f),0.5f);
 		}
 		
 		if (!RingOfForce.fightingUnarmed(this)) {
@@ -679,7 +679,7 @@ public class Hero extends Char {
 		}
 
 		if( attackDelay() >1 && hasTalent(Talent.OVERWHELMING)){
-			dmg += (int) (dmg * Math.max((attackDelay()-1f) * (pointsInTalent(Talent.STRONGMAN)/4f),0.4f));
+			dmg += (int) (dmg * Math.max((attackDelay()-1f) * (pointsInTalent(Talent.OVERWHELMING)/4f),0.4f));
 		}
 
 		if (dmg < 0) dmg = 0;
@@ -767,6 +767,18 @@ public class Hero extends Char {
 			return false;
 		}
 	}
+
+	private float TalentDelay() {
+		float delay = 1f;
+		if (buff(Talent.AgileCountATKTracker.class)!=null){
+			buff(Talent.AgileCountATKTracker.class).detach();
+			delay /= (1f + 0.09f*Dungeon.hero.pointsInTalent(Talent.AGILE_COUNTATK));
+		}
+		if (Dungeon.hero.heroClass != HeroClass.DUELIST){
+			 delay /= 1f + 0.05f*Dungeon.hero.pointsInTalent(Talent.POWER_ACCUMULATION);
+		}
+		return delay;
+	}
 	
 	public float attackDelay() {
 		if (buff(Talent.LethalMomentumTracker.class) != null){
@@ -778,7 +790,7 @@ public class Hero extends Char {
 
 		if (!RingOfForce.fightingUnarmed(this)) {
 			
-			return delay * belongings.attackingWeapon().delayFactor( this );
+			return delay * belongings.attackingWeapon().delayFactor(this) * TalentDelay();
 			
 		} else {
 			//Normally putting furor speed on unarmed attacks would be unnecessary
@@ -796,7 +808,7 @@ public class Hero extends Char {
 				delay = ((Weapon)belongings.weapon).augment.delayFactor(delay);
 			}
 
-			return delay/speed;
+			return TalentDelay()*delay/speed;
 		}
 	}
 
@@ -1455,6 +1467,11 @@ public class Hero extends Char {
 	
 	@Override
 	public int attackProc( final Char enemy, int damage ) {
+
+		if (damage > 0 && subClass == HeroSubClass.BERSERKER){
+			Berserk berserk = Buff.affect(this, Berserk.class);
+			berserk.damage((int)(damage*Dungeon.hero.pointsInTalent(Talent.BLADE_OF_ANGER)*0.4f));
+		}
 		damage = super.attackProc( enemy, damage );
 
 		KindOfWeapon wep;
@@ -1971,6 +1988,12 @@ public class Hero extends Char {
 					buff(Talent.RejuvenatingStepsFurrow.class).detach();
 				}
 			}
+			if (buff(Talent.OrganicFertilizerFurrow.class) != null){
+				buff(Talent.OrganicFertilizerFurrow.class).countDown(percent*200f);
+				if (buff(Talent.OrganicFertilizerFurrow.class).count() <= 0){
+					buff(Talent.OrganicFertilizerFurrow.class).detach();
+				}
+			}
 			if (buff(ElementalStrike.ElementalStrikeFurrowCounter.class) != null){
 				buff(ElementalStrike.ElementalStrikeFurrowCounter.class).countDown(percent*20f);
 				if (buff(ElementalStrike.ElementalStrikeFurrowCounter.class).count() <= 0){
@@ -2371,10 +2394,7 @@ public class Hero extends Char {
 		if (!isAlive()) return false;
 		
 		boolean smthFound = false;
-
-		boolean circular = pointsInTalent(Talent.STEALTH_METABOLISM) == 1;
 		int distance = heroClass == HeroClass.ROGUE ? 2 : 1;
-		if (hasTalent(Talent.STEALTH_METABOLISM)) distance++;
 		
 		boolean foresight = buff(Foresight.class) != null;
 		boolean foresightScan = foresight && !Dungeon.level.mapped[pos];
@@ -2385,7 +2405,6 @@ public class Hero extends Char {
 
 		if (foresight) {
 			distance = Foresight.DISTANCE;
-			circular = true;
 		}
 
 		Point c = Dungeon.level.cellToPoint(pos);
@@ -2398,9 +2417,7 @@ public class Hero extends Char {
 		int left, right;
 		int curr;
 		for (int y = Math.max(0, c.y - distance); y <= Math.min(Dungeon.level.height()-1, c.y + distance); y++) {
-			if (!circular){
-				left = c.x - distance;
-			} else if (rounding[Math.abs(c.y - y)] < Math.abs(c.y - y)) {
+			if (rounding[Math.abs(c.y - y)] < Math.abs(c.y - y)) {
 				left = c.x - rounding[Math.abs(c.y - y)];
 			} else {
 				left = distance;
