@@ -119,10 +119,8 @@ public enum HeroClass {
 		waterskin.collect();
 
 		if (Dungeon.isChallenged(Challenges.X_U_NS_POWER)){
-			Goldarrow goldarrow = new Goldarrow();
-			goldarrow.collect();
-			ScrollOfDebug scrollofdebug = new ScrollOfDebug();
-			scrollofdebug.collect();
+			new Goldarrow().collect();
+			new ScrollOfDebug().collect();
 
 			new ScrollHolder().collect();
 			Dungeon.LimitedDrops.SCROLL_HOLDER.drop();
@@ -131,18 +129,10 @@ public enum HeroClass {
 			new PotionBandolier().collect();
 			Dungeon.LimitedDrops.POTION_BANDOLIER.drop();
 
-			PotionOfStrength potionofstrength = new PotionOfStrength();
-			potionofstrength.quantity(127).collect();
-			PotionOfExperience potionofexperience = new PotionOfExperience();
-			potionofexperience.quantity(29).collect();
-			PotionOfHealing potionofhealing = new PotionOfHealing();
-			potionofhealing.quantity(127).collect();
-			ScrollOfUpgrade scrollOfUpgrade = new ScrollOfUpgrade();
-			scrollOfUpgrade.quantity(65520).collect();
-			new PotionOfExperience().identify();
-			new PotionOfStrength().identify();
-			new PotionOfHealing().identify();
-			new ScrollOfUpgrade().identify();
+			new PotionOfStrength().quantity(127).identify().collect();
+			new PotionOfExperience().quantity(29).identify().collect();
+			new PotionOfHealing().quantity(127).identify().collect();
+			new ScrollOfUpgrade().quantity(65520).identify().collect();
 		}
 
 		new ScrollOfIdentify().identify();
