@@ -26,6 +26,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Berserk;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Combo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
@@ -309,12 +310,22 @@ abstract public class Weapon extends KindOfWeapon {
 			multi += 0.6f;
 		}
 
+		if (owner.buff(Talent.AgileCountATKTracker.class)!=null && Dungeon.hero.hasTalent(Talent.AGILE_COUNTATK)){
+			multi += multi * Dungeon.hero.pointsInTalent(Talent.AGILE_COUNTATK)/15f;
+			owner.buff(Talent.AgileCountATKTracker.class).detach();
+		}
+
 		return multi;
 	}
 
 	@Override
 	public int reachFactor(Char owner) {
 		int reach = RCH;
+		if (Dungeon.hero.pointsInTalent(Talent.FAR_STANDOFF)>=2 && owner.buff(Combo.class)!=null){
+			if (65 - 25*Dungeon.hero.pointsInTalent(Talent.FAR_STANDOFF) <= owner.buff(Combo.class).getComboCount()){
+				reach += 1;
+			}
+		}
 		if (owner instanceof Hero && RingOfForce.fightingUnarmed((Hero) owner)){
 			reach = 1; //brawlers stance benefits from enchantments, but not innate reach
 			if (!RingOfForce.unarmedGetsWeaponEnchantment((Hero) owner)){

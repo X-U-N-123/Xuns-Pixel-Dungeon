@@ -154,11 +154,11 @@ public class HolyTome extends Artifact {
 
 	public void spendCharge( float chargesSpent ){
 		partialCharge -= chargesSpent;
+		Buff.affect(Dungeon.hero, Barrier.class).incShield((int)(3*Dungeon.hero.pointsInTalent(Talent.PROTECTING_SPELL)*chargesSpent));
 		while (partialCharge < 0){
 			charge--;
 			partialCharge++;
 		}
-		Buff.affect(Dungeon.hero, Barrier.class).incShield((int)(3*Dungeon.hero.pointsInTalent(Talent.PROTECTING_SPELL)*chargesSpent));
 		//target hero level is 1 + 2*tome level
 		int lvlDiffFromTarget = Dungeon.hero.lvl - (1+level()*2);
 		//plus an extra one for each level after 6

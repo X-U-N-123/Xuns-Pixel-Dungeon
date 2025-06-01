@@ -241,16 +241,38 @@ public class TalentsPane extends ScrollPane {
 					left = title.right() + 2;
 				}
 			}
+			if (buttons.size() >= 7) {
+				int arrayedTalentNumber = 0;
+				int halfTalentNumber = Math.round(buttons.size() / 2f);
+				boolean numberOfTalents = (buttons.size() % 2 == 1);
+				float gap = (width - halfTalentNumber * TalentButton.WIDTH) / (halfTalentNumber + 1);
+				left = x + gap;
+				float firstLeft = (numberOfTalents) ? x + 1.5f * gap + TalentButton.WIDTH / 2f : x + gap;
+				for (TalentButton btn : buttons) {
+					if (arrayedTalentNumber < halfTalentNumber) {
+						btn.setPos(left, title.bottom() + 4);
+						PixelScene.align(btn);
+						left += btn.width() + gap;
+					} else {
+						btn.setPos(firstLeft, title.bottom() + 4 + TalentButton.HEIGHT + 4);
+						PixelScene.align(btn);
+						firstLeft += btn.width() + gap;
+					}
+					arrayedTalentNumber++;
+				}
 
-			float gap = (width - buttons.size()*TalentButton.WIDTH)/(buttons.size()+1);
-			left = x + gap;
-			for (TalentButton btn : buttons){
-				btn.setPos(left, title.bottom() + 4);
-				PixelScene.align(btn);
-				left += btn.width() + gap;
+				height = buttons.get(0).bottom() - y + 30;
+			} else {
+				float gap = (width - buttons.size() * TalentButton.WIDTH) / (buttons.size() + 1);
+				left = x + gap;
+				for (TalentButton btn : buttons) {
+					btn.setPos(left, title.bottom() + 4);
+					PixelScene.align(btn);
+					left += btn.width() + gap;
+				}
+				height = buttons.get(0).bottom() - y;
+
 			}
-
-			height = buttons.get(0).bottom() - y;
 
 		}
 

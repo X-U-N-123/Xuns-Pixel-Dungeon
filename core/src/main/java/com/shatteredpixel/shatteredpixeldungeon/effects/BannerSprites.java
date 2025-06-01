@@ -46,21 +46,21 @@ public class BannerSprites {
 				icon.frame( icon.texture.uvRect( 139, 0, 278, 100 ) );
 				break;
 			case TITLE_LAND:
-				icon.frame( icon.texture.uvRect( 0, 100, 240, 157) );
+				icon.frame( icon.texture.uvRect( 0, 100, 240, 164) );
 				break;
 			case TITLE_GLOW_LAND:
-				icon.frame( icon.texture.uvRect( 240, 100, 480, 157 ) );
+				icon.frame( icon.texture.uvRect( 240, 100, 480, 164 ) );
 				break;
 			case BOSS_SLAIN:
-				icon.frame( icon.texture.uvRect( 0, 157, 128, 192 ) );
+				icon.frame( icon.texture.uvRect( 0, 164, 128, 199 ) );
 				break;
 			case GAME_OVER:
-				icon.frame( icon.texture.uvRect( 0, 192, 128, 227 ) );
+				icon.frame( icon.texture.uvRect( 0, 199, 128, 234 ) );
 				break;
 			case SELECT_YOUR_HERO:
-				icon.frame( icon.texture.uvRect( 0, 227, 128, 248 ) );
+				icon.frame( icon.texture.uvRect( 0, 234, 128, 255 ) );
 				break;
-		}
+		}//move down 7 pixels
 		return icon;
 	}
 }

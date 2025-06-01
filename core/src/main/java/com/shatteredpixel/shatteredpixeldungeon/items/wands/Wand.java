@@ -862,6 +862,10 @@ public abstract class Wand extends Item {
 			float turnsToCharge = (float) (BASE_CHARGE_DELAY
 					+ (SCALING_CHARGE_ADDITION * Math.pow(scalingFactor, missingCharges)));
 
+			if (Dungeon.hero.hasTalent(Talent.POWER_ACCUMULATION) && Dungeon.hero.heroClass != HeroClass.DUELIST){
+				turnsToCharge /= 1f + 0.07f*Dungeon.hero.pointsInTalent(Talent.POWER_ACCUMULATION);
+			}
+
 			if (Regeneration.regenOn())
 				partialCharge += (1f/turnsToCharge) * RingOfEnergy.wandChargeMultiplier(target);
 

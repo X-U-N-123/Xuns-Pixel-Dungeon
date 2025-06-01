@@ -33,6 +33,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.SacrificialFire;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Adrenaline;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AdrenalineSurge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ArtifactRecharge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
@@ -278,7 +279,7 @@ public class Hero extends Char {
 		}
 
 		if (hasTalent(Talent.STRONGMAN)){
-			strBonus += (int)Math.floor(STR * (0.03f + 0.05f*pointsInTalent(Talent.STRONGMAN)));
+			strBonus += (int)Math.floor(STR * (0.04f + 0.05f*pointsInTalent(Talent.STRONGMAN)));
 		}
 
 		return STR + strBonus;
@@ -476,6 +477,9 @@ public class Hero extends Char {
 
 		if (hit && subClass == HeroSubClass.GLADIATOR && wasEnemy){
 			Buff.affect( this, Combo.class ).hit( enemy );
+			if (Dungeon.hero.hasTalent(Talent.FAR_STANDOFF)){
+				Buff.affect( this, Combo.class ).hit( enemy );
+			}
 		}
 
 		if (hit && heroClass == HeroClass.DUELIST && wasEnemy){
@@ -546,11 +550,14 @@ public class Hero extends Char {
 		if(attackDelay() >1 && hasTalent(Talent.OVERWHELMING)){
 			accuracy += accuracy * Math.max (attackDelay()-(pointsInTalent(Talent.OVERWHELMING) / 3f),0.5f);
 		}
-		
+		int comboboost = 0;
+		if (buff(Combo.class) != null){
+			comboboost += buff(Combo.class).getComboCount() * Dungeon.hero.pointsInTalent(Talent.IN_BATTLE);
+		}
 		if (!RingOfForce.fightingUnarmed(this)) {
-			return (int)(attackSkill * accuracy * wep.accuracyFactor( this, target ));
+			return (int)((attackSkill + comboboost) * accuracy * wep.accuracyFactor(this, target));
 		} else {
-			return (int)(attackSkill * accuracy);
+			return (int)((attackSkill + comboboost) * accuracy);
 		}
 	}
 	
@@ -767,18 +774,6 @@ public class Hero extends Char {
 			return false;
 		}
 	}
-
-	private float TalentDelay() {
-		float delay = 1f;
-		if (buff(Talent.AgileCountATKTracker.class)!=null){
-			buff(Talent.AgileCountATKTracker.class).detach();
-			delay /= (1f + 0.09f*Dungeon.hero.pointsInTalent(Talent.AGILE_COUNTATK));
-		}
-		if (Dungeon.hero.heroClass != HeroClass.DUELIST){
-			 delay /= 1f + 0.05f*Dungeon.hero.pointsInTalent(Talent.POWER_ACCUMULATION);
-		}
-		return delay;
-	}
 	
 	public float attackDelay() {
 		if (buff(Talent.LethalMomentumTracker.class) != null){
@@ -788,15 +783,24 @@ public class Hero extends Char {
 
 		float delay = 1f;
 
+		if (buff(Adrenaline.class)!=null){
+			delay /= 1.5f;
+		}
+
 		if (!RingOfForce.fightingUnarmed(this)) {
 			
-			return delay * belongings.attackingWeapon().delayFactor(this) * TalentDelay();
+			return delay * belongings.attackingWeapon().delayFactor( this );
 			
 		} else {
 			//Normally putting furor speed on unarmed attacks would be unnecessary
 			//But there's going to be that one guy who gets a furor+force ring combo
 			//This is for that one guy, you shall get your fists of fury!
 			float speed = RingOfFuror.attackSpeedMultiplier(this);
+
+            if (buff(Talent.AgileCountATKTracker.class)!=null && Dungeon.hero.hasTalent(Talent.AGILE_COUNTATK)){
+				speed += speed * Dungeon.hero.pointsInTalent(Talent.AGILE_COUNTATK)/15f;
+                buff(Talent.AgileCountATKTracker.class).detach();
+            }
 
 			//ditto for furor + sword dance!
 			if (buff(Scimitar.SwordDance.class) != null){
@@ -808,7 +812,7 @@ public class Hero extends Char {
 				delay = ((Weapon)belongings.weapon).augment.delayFactor(delay);
 			}
 
-			return TalentDelay()*delay/speed;
+			return delay/speed;
 		}
 	}
 
@@ -1427,7 +1431,7 @@ public class Hero extends Char {
 					&& (HP / (float)HT) <= 0.25f){
 				Buff.affect(this, Barrier.class).setShield(1+2*(pointsInTalent(Talent.AGGRESSIVE_BARRIER)));
 				sprite.showStatusWithIcon(CharSprite.POSITIVE, String.valueOf(1+2*(pointsInTalent(Talent.AGGRESSIVE_BARRIER))), FloatingText.SHIELDING);
-				Buff.affect(this, Talent.AggressiveBarrierCooldown.class, 50f);
+				Buff.affect(this, Talent.AggressiveBarrierCooldown.class, 25f);
 
 			}
 			sprite.attack( enemy.pos );

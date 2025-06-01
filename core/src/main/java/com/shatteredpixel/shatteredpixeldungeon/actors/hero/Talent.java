@@ -63,6 +63,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRecharging;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfMetamorphosis;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.Runestone;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfIntuition;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ShardOfOblivion;
@@ -98,13 +99,13 @@ public enum Talent {
 	//Warrior T1
 	HEARTY_MEAL(0), VETERANS_INTUITION(1), PROVOKED_ANGER(2), IRON_WILL(3), TESTED_REVIVE(27),
 	//Warrior T2
-	IRON_STOMACH(4), LIQUID_WILLPOWER(5), RUNIC_TRANSFERENCE(6), LETHAL_MOMENTUM(7), IMPROVISED_PROJECTILES(8),
+	IRON_STOMACH(4), LIQUID_WILLPOWER(5), RUNIC_TRANSFERENCE(6), LETHAL_MOMENTUM(7), IMPROVISED_PROJECTILES(8),FIGHTING_BACK(28),
 	//Warrior T3
 	INTACT_SEAL(9, 3), STRONGMAN(10, 3), OVERWHELMING(29, 3),
 	//Berserker T3
 	ENDLESS_RAGE(11, 3), DEATHLESS_FURY(12, 3), ENRAGED_CATALYST(13, 3),BEAR_GRUDGES(30, 3),BLADE_OF_ANGER(31, 3),
 	//Gladiator T3
-	CLEAVE(14, 3), LETHAL_DEFENSE(15, 3), ENHANCED_COMBO(16, 3),
+	CLEAVE(14, 3), LETHAL_DEFENSE(15, 3), ENHANCED_COMBO(16, 3),IN_BATTLE(224, 3),FAR_STANDOFF(225, 3),
 	//Heroic Leap T4
 	BODY_SLAM(17, 4), IMPACT_WAVE(18, 4), DOUBLE_JUMP(19, 4),
 	//Shockwave T4
@@ -340,7 +341,7 @@ public enum Talent {
 	public static class AggressiveBarrierCooldown extends FlavourBuff{
 		public int icon() { return BuffIndicator.TIME; }
 		public void tintIcon(Image icon) { icon.hardlight(0.35f, 0f, 0.7f); }
-		public float iconFadePercent() { return Math.max(0, visualcooldown() / 50); }
+		public float iconFadePercent() { return Math.max(0, visualcooldown() / 25); }
 	};
 	public static class LiquidAgilEVATracker extends FlavourBuff{};
 	public static class LiquidAgilACCTracker extends FlavourBuff{
@@ -673,6 +674,10 @@ public enum Talent {
 		//if we happen to have spirit form applied with a ring of might
 		if (talent == SPIRIT_FORM){
 			Dungeon.hero.updateHT(false);
+		}
+
+		if (talent==FIGHTING_BACK && hero.pointsInTalent(talent)==1){
+			new ScrollOfMetamorphosis().collect();
 		}
 	}
 
@@ -1091,7 +1096,7 @@ public enum Talent {
 		//tier 2
 		switch (cls){
 			case WARRIOR: default:
-				Collections.addAll(tierTalents, IRON_STOMACH, LIQUID_WILLPOWER, RUNIC_TRANSFERENCE, LETHAL_MOMENTUM, IMPROVISED_PROJECTILES);
+				Collections.addAll(tierTalents, IRON_STOMACH, LIQUID_WILLPOWER, RUNIC_TRANSFERENCE, LETHAL_MOMENTUM, IMPROVISED_PROJECTILES, FIGHTING_BACK);
 				break;
 			case MAGE:
 				Collections.addAll(tierTalents, ENERGIZING_MEAL, INSCRIBED_POWER, WAND_PRESERVATION, ARCANE_VISION, SHIELD_BATTERY, RESERVED_ENERGY);
@@ -1132,7 +1137,7 @@ public enum Talent {
 				Collections.addAll(tierTalents, L_M_MASTER, SEER_SHOT, ORGANIC_FERTILIZER);
 				break;
 			case DUELIST:
-				Collections.addAll(tierTalents, PRECISE_ASSAULT, DEADLY_FOLLOWUP);
+				Collections.addAll(tierTalents, PRECISE_ASSAULT, DEADLY_FOLLOWUP, AGILE_COUNTATK);
 				break;
 			case CLERIC:
 				Collections.addAll(tierTalents, CLEANSE, LIGHT_READING, PROTECTING_SPELL);
@@ -1166,10 +1171,10 @@ public enum Talent {
 		//tier 3
 		switch (cls){
 			case BERSERKER: default:
-				Collections.addAll(tierTalents, ENDLESS_RAGE, DEATHLESS_FURY, ENRAGED_CATALYST, BEAR_GRUDGES);
+				Collections.addAll(tierTalents, ENDLESS_RAGE, DEATHLESS_FURY, ENRAGED_CATALYST, BEAR_GRUDGES, FIGHTING_BACK);
 				break;
 			case GLADIATOR:
-				Collections.addAll(tierTalents, CLEAVE, LETHAL_DEFENSE, ENHANCED_COMBO);
+				Collections.addAll(tierTalents, CLEAVE, LETHAL_DEFENSE, ENHANCED_COMBO, IN_BATTLE, FAR_STANDOFF);
 				break;
 			case BATTLEMAGE:
 				Collections.addAll(tierTalents, EMPOWERED_STRIKE, MYSTICAL_CHARGE, EXCESS_CHARGE);
@@ -1259,7 +1264,7 @@ public enum Talent {
 	private static final HashMap<String, String> renamedTalents = new HashMap<>();
 	static{
 		//X_U_N v0.1.4
-		renamedTalents.put("POINT_BLANK",               "LIQUID_METAL_MASTER");
+		renamedTalents.put("POINT_BLANK",               "L_M_MASTER");
 		//X_U_N v0.1.2
 		renamedTalents.put("SACRED_ARCANE",             "ASCETICISM");
 		//X_U_N v0.1.1

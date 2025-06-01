@@ -57,7 +57,7 @@ public class Berserk extends Buff implements ActionIndicator.Action {
 	private static final float LEVEL_RECOVER_START = 4f;
 	private float levelRecovery;
 
-	private static final int TURN_RECOVERY_START = 25;
+	private static final int TURN_RECOVERY_START = 40;
 	private int turnRecovery;
 
 	public int powerLossBuffer = 0;
