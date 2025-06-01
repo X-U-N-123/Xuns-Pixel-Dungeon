@@ -93,6 +93,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.CrystalSpire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DwarfKing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Elemental;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GnollGeomancer;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Necromancer;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Tengu;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.YogDzewa;
@@ -403,8 +404,13 @@ public abstract class Char extends Actor {
 			Preparation prep = buff(Preparation.class);
 			if (prep != null){
 				dmg = prep.damageRoll(this);
-				if (this == Dungeon.hero && Dungeon.hero.hasTalent(Talent.BOUNTY_HUNTER)) {
-					Buff.affect(Dungeon.hero, Talent.BountyHunterTracker.class, 0.0f);
+				if (this == Dungeon.hero && Dungeon.hero.hasTalent(Talent.TERRORIST_ATTACK)) {
+					for (Mob mob : Dungeon.level.mobs.toArray( new Mob[0] )) {
+ 						if (Dungeon.level.heroFOV[mob.pos] && mob.alignment != Alignment.ALLY) {
+							Buff.affect( mob, Terror.class, (float)(1+Dungeon.hero.pointsInTalent(Talent.TERRORIST_ATTACK))).object = Dungeon.hero.id();
+						}
+					}
+
 				}
 			} else {
 				dmg = damageRoll();

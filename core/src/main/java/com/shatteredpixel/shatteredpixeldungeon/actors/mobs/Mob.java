@@ -746,7 +746,7 @@ public abstract class Mob extends Char {
 				Buff.affect(Dungeon.hero, Hunger.class).affectHunger(restoration*Dungeon.hero.pointsInTalent(Talent.SOUL_EATER)/3f);
 
 				if (Dungeon.hero.HP < Dungeon.hero.HT) {
-					int heal = (int)Math.ceil(restoration * 0.4f);
+					int heal = (int)Math.ceil(restoration * (0.4f + 0.1f*Dungeon.hero.pointsInTalent(Talent.CLEAR_YOUR_SOUL)));
 					Dungeon.hero.HP = Math.min(Dungeon.hero.HT, Dungeon.hero.HP + heal);
 					Dungeon.hero.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(heal), FloatingText.HEALING);
 				}
@@ -923,10 +923,10 @@ public abstract class Mob extends Char {
 		if (bhTracker != null){
 			Preparation prep = Dungeon.hero.buff(Preparation.class);
 			if (prep != null){
-				// 2/4/8/16% per prep level, multiplied by talent points
+				/* 2/4/8/16% per prep level, multiplied by talent points
 				float bhBonus = 0.02f * (float)Math.pow(2, prep.attackLevel()-1);
-				bhBonus *= Dungeon.hero.pointsInTalent(Talent.BOUNTY_HUNTER);
-				dropBonus += bhBonus;
+					bhBonus *= Dungeon.hero.pointsInTalent(Talent.BOUNTY_HUNTER);
+				dropBonus += bhBonus;*/
 			}
 		}
 

@@ -6,6 +6,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Ghoul;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.AttackIndicator;
@@ -40,7 +41,7 @@ public class Havoc extends MeleeWeapon {
 
     @Override
     public int proc(Char attacker, Char defender, int damage) {
-        if(defender.HP <= damage && defender.HP != 0){//prevent gnoll brute from increasing it a lot
+        if(defender.HP<=damage && defender.HP!=0 && defender.buff(Ghoul.Revivetracker.class)==null){//preventting brute and ghoul
             Enemieskilled++;
         }
         return super.proc( attacker, defender, damage );

@@ -1474,7 +1474,7 @@ public class Hero extends Char {
 
 		if (damage > 0 && subClass == HeroSubClass.BERSERKER){
 			Berserk berserk = Buff.affect(this, Berserk.class);
-			berserk.damage((int)(damage*Dungeon.hero.pointsInTalent(Talent.BLADE_OF_ANGER)*0.4f));
+			berserk.damage((int)(damage*Dungeon.hero.pointsInTalent(Talent.BLADE_OF_ANGER)/3f));
 		}
 		damage = super.attackProc( enemy, damage );
 
@@ -2398,6 +2398,8 @@ public class Hero extends Char {
 		if (!isAlive()) return false;
 		
 		boolean smthFound = false;
+
+		boolean circular = false;
 		int distance = heroClass == HeroClass.ROGUE ? 2 : 1;
 		
 		boolean foresight = buff(Foresight.class) != null;
@@ -2409,6 +2411,7 @@ public class Hero extends Char {
 
 		if (foresight) {
 			distance = Foresight.DISTANCE;
+			circular = true;
 		}
 
 		Point c = Dungeon.level.cellToPoint(pos);
@@ -2421,7 +2424,9 @@ public class Hero extends Char {
 		int left, right;
 		int curr;
 		for (int y = Math.max(0, c.y - distance); y <= Math.min(Dungeon.level.height()-1, c.y + distance); y++) {
-			if (rounding[Math.abs(c.y - y)] < Math.abs(c.y - y)) {
+			if (!circular){
+				left = c.x - distance;
+			} else if (rounding[Math.abs(c.y - y)] < Math.abs(c.y - y)) {
 				left = c.x - rounding[Math.abs(c.y - y)];
 			} else {
 				left = distance;

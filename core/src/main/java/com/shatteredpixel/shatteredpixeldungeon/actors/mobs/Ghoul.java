@@ -86,7 +86,6 @@ public class Ghoul extends Mob {
 
 	private static final String PARTNER_ID = "partner_id";
 	private static final String TIMES_DOWNED = "times_downed";
-	
 	@Override
 	public void storeInBundle( Bundle bundle ) {
 		super.storeInBundle( bundle );
@@ -287,6 +286,7 @@ public class Ghoul extends Mob {
 					}
 				}
 				ghoul.HP = Math.round(ghoul.HT/10f);
+				Buff.affect(ghoul, Revivetracker.class);
 				ghoul.beingLifeLinked = false;
 				Actor.add(ghoul);
 				ghoul.timeToNow();
@@ -371,4 +371,6 @@ public class Ghoul extends Mob {
 			return null;
 		}
 	}
+
+	public class Revivetracker extends Buff{}
 }

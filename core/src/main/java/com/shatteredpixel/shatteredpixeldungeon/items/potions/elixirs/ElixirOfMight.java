@@ -52,9 +52,9 @@ public class ElixirOfMight extends Elixir {
 		hero.STR++;
 		hero.sprite.showStatusWithIcon(CharSprite.POSITIVE, "1", FloatingText.STRENGTH);
 		
-		Buff.affect(hero, HTBoost.class).reset();
+		Buff.affect(hero, HTBoost.class).reset(5);
 		HTBoost boost = Buff.affect(hero, HTBoost.class);
-		boost.reset();
+		boost.reset(5);
 		
 		hero.updateHT( true );
 		GLog.p( Messages.get(this, "msg", hero.STR()) );
@@ -89,8 +89,8 @@ public class ElixirOfMight extends Elixir {
 		
 		private int left;
 		
-		public void reset(){
-			left = 5;
+		public void reset(int lvl){
+			left = lvl;
 		}
 		
 		public int boost(){
