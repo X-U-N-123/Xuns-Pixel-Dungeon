@@ -33,7 +33,7 @@ public enum Holiday {
 	EASTER,                 //Varies, sometime in Late Mar to Late Apr              (6-7 days)
 	XUNS_BIRTHDAY,          //Apr 15th to 21st                                      (7 days)
 	//5月无事发生
-	//6月无事发生
+	DRAGON_BOAT,            //Varies, sometime in late May to late Jun              (7 days)
 	//7月无事发生
 	SHATTEREDPD_BIRTHDAY,   //Aug 1st to Aug 7th                                    (7 days)
 	MID_AUTUMN,             //Varies, sometime in early Sep to early Oct            (7 days)
@@ -43,7 +43,7 @@ public enum Holiday {
 	WINTER_HOLIDAYS,        //Dec 15th to Dec 26th                                  (12 days)
 	NEW_YEARS;              //Dec 27th to Jan 2nd                                   (7 days)
 
-	//total of 61-62 festive days each year, mainly concentrated in Late Oct to Early Feb
+	//total of 78-79 festive days each year, mainly concentrated in Late Oct to Early Feb
 
 	//we cache the holiday here so that holiday logic doesn't suddenly shut off mid-game
 	//this gets cleared on game launch (of course), and whenever leaving a game scene
@@ -83,6 +83,12 @@ public enum Holiday {
 				cal.get(Calendar.DAY_OF_YEAR),
 				cal.getActualMaximum(Calendar.DAY_OF_YEAR) == 366)){
 			return EASTER;
+		}
+
+		//Mid-Autumn
+		if (isDragonBoat(cal.get(Calendar.YEAR),
+				cal.get(Calendar.DAY_OF_YEAR))){
+			return DRAGON_BOAT;
 		}
 
 		//Shattered's Birthday
@@ -129,8 +135,7 @@ public enum Holiday {
 	public static boolean isLunarNewYear(int year, int dayOfYear){
 		int lunarNewYearDayOfYear;
 		switch (year){
-			//yes, I really did hardcode this all the way from 2020 to 2100
-			//Evan 居然用这种方式判断春节
+			//yes, I really did hardcode this all the way from 2020 to 2100  Evan 居然用这种方式判断春节
 			default:   lunarNewYearDayOfYear = 31+5; break;     //defaults to February 5th
 			case 2020: lunarNewYearDayOfYear = 25; break;       //January 25th
 			case 2021: lunarNewYearDayOfYear = 31+12; break;    //February 12th
@@ -218,6 +223,7 @@ public enum Holiday {
 		//celebrate for 7 days total, with Lunar New Year on the 5th day
 		return dayOfYear >= lunarNewYearDayOfYear-4 && dayOfYear <= lunarNewYearDayOfYear+2;
 	}
+
 	public static boolean isMidAutumn(int year, int dayOfYear){
 		int MidAutumnDayOfYear;
 		//Sep 1st is the 244th day, Oct 1st is the 274th day
@@ -247,7 +253,7 @@ public enum Holiday {
 			case 2040: MidAutumnDayOfYear = 243+20+1; break;    //Sep 20th,Leap
 			case 2041: MidAutumnDayOfYear = 243+10; break;     //Sep 10th
 			case 2042: MidAutumnDayOfYear = 243+28; break;       //Sep 28th
-			case 2043: MidAutumnDayOfYear = 243+17; break;    //Sep 1th
+			case 2043: MidAutumnDayOfYear = 243+17; break;    //Sep 1st
 			case 2044: MidAutumnDayOfYear = 273+5+1; break;       //Oct 5th,Leap
 			case 2045: MidAutumnDayOfYear = 243+25; break;    //Sep 25th
 			case 2046: MidAutumnDayOfYear = 243+15; break;     //Sep 15th
@@ -255,60 +261,53 @@ public enum Holiday {
 			case 2048: MidAutumnDayOfYear = 243+22+1; break;    //Sep 22nd,Leap
 			case 2049: MidAutumnDayOfYear = 243+11; break;     //Sep 11th
 			case 2050: MidAutumnDayOfYear = 243+1; break;       //Sep 1st
-			//case 2051: MidAutumnDayOfYear = 243+11; break;    //February 11th
-			//case 2052: MidAutumnDayOfYear = 243+1; break;     //February 1st
-			//case 2053: MidAutumnDayOfYear = 243+19; break;    //February 19th
-			//case 2054: MidAutumnDayOfYear = 243+8; break;     //February 8th
-			//case 2055: MidAutumnDayOfYear = 28; break;       //January 28th
-			//case 2056: MidAutumnDayOfYear = 243+15; break;    //February 15th
-			//case 2057: MidAutumnDayOfYear = 243+4; break;     //February 4th
-			//case 2058: MidAutumnDayOfYear = 24; break;       //January 24th
-			//case 2059: MidAutumnDayOfYear = 243+12; break;    //February 12th
-			//case 2060: MidAutumnDayOfYear = 243+2; break;     //February 2nd
-			//case 2061: MidAutumnDayOfYear = 21; break;       //January 21st
-			//case 2062: MidAutumnDayOfYear = 243+9; break;     //February 9th
-			//case 2063: MidAutumnDayOfYear = 29; break;       //January 29th
-			//case 2064: MidAutumnDayOfYear = 243+17; break;    //February 17th
-			//case 2065: MidAutumnDayOfYear = 243+5; break;     //February 5th
-			//case 2066: MidAutumnDayOfYear = 26; break;       //January 26th
-			//case 2067: MidAutumnDayOfYear = 243+14; break;    //February 14th
-			//case 2068: MidAutumnDayOfYear = 243+3; break;     //February 3rd
-			//case 2069: MidAutumnDayOfYear = 23; break;       //January 23rd
-			//case 2070: MidAutumnDayOfYear = 243+11; break;    //February 11th
-			//case 2071: MidAutumnDayOfYear = 243; break;       //January 243st
-			//case 2072: MidAutumnDayOfYear = 243+19; break;    //February 19th
-			//case 2073: MidAutumnDayOfYear = 243+7; break;     //February 7th
-			//case 2074: MidAutumnDayOfYear = 27; break;       //January 27th
-			//case 2075: MidAutumnDayOfYear = 243+15; break;    //February 15th
-			//case 2076: MidAutumnDayOfYear = 243+5; break;     //February 5th
-			//case 2077: MidAutumnDayOfYear = 24; break;       //January 24th
-			//case 2078: MidAutumnDayOfYear = 243+12; break;    //February 12th
-			//case 2079: MidAutumnDayOfYear = 243+2; break;     //February 2nd
-			//case 2080: MidAutumnDayOfYear = 22; break;       //January 22nd
-			//case 2081: MidAutumnDayOfYear = 243+9; break;     //February 9th
-			//case 2082: MidAutumnDayOfYear = 29; break;       //January 29th
-			//case 2083: MidAutumnDayOfYear = 243+17; break;    //February 17th
-			//case 2084: MidAutumnDayOfYear = 243+6; break;     //February 6th
-			//case 2085: MidAutumnDayOfYear = 26; break;       //January 26th
-			//case 2086: MidAutumnDayOfYear = 243+14; break;    //February 14th
-			//case 2087: MidAutumnDayOfYear = 243+3; break;     //February 3rd
-			//case 2088: MidAutumnDayOfYear = 24; break;       //January 24th
-			//case 2089: MidAutumnDayOfYear = 243+10; break;    //February 10th
-			//case 2090: MidAutumnDayOfYear = 30; break;       //January 30th
-			//case 2091: MidAutumnDayOfYear = 243+18; break;    //February 18th
-			//case 2092: MidAutumnDayOfYear = 243+7; break;     //February 7th
-			//case 2093: MidAutumnDayOfYear = 27; break;       //January 27th
-			//case 2094: MidAutumnDayOfYear = 243+15; break;    //February 15th
-			//case 2095: MidAutumnDayOfYear = 243+5; break;     //February 5th
-			//case 2096: MidAutumnDayOfYear = 25; break;       //January 25th
-			//case 2097: MidAutumnDayOfYear = 243+12; break;    //February 12th
-			//case 2098: MidAutumnDayOfYear = 243+1; break;     //February 1st
-			//case 2099: MidAutumnDayOfYear = 21; break;       //January 21st
-			//case 2100: MidAutumnDayOfYear = 243+9; break;     //February 9th
-		}
+        }
 
 		//celebrate for 7 days total, with Mid-Autumn on the 5th day
 		return dayOfYear >= MidAutumnDayOfYear-4 && dayOfYear <= MidAutumnDayOfYear+2;
+	}
+	
+	public static boolean isDragonBoat(int year, int dayOfYear){
+		int DragonBoatDayOfYear;
+		//May 1st is the 121st day, Jun 1st is the 152nd day
+		switch (year){
+			//但这是最好的办法
+			default:   DragonBoatDayOfYear = 151+12; break;     //defaults to June 12th
+			case 2020: DragonBoatDayOfYear = 151+25+1; break;       //Jun 25th,Leap
+			case 2021: DragonBoatDayOfYear = 151+14; break;    //Jun 14th
+			case 2022: DragonBoatDayOfYear = 151+3; break;     //Jun 3rd
+			case 2023: DragonBoatDayOfYear = 151+22; break;       //Jun 22nd
+			case 2024: DragonBoatDayOfYear = 151+10+1; break;    //Jun 10th,Leap
+			case 2025: DragonBoatDayOfYear = 120+31; break;       //Jun 31st
+			case 2026: DragonBoatDayOfYear = 151+19; break;    //Jun 19th
+			case 2027: DragonBoatDayOfYear = 151+9; break;     //Jun 9th
+			case 2028: DragonBoatDayOfYear = 120+28+1; break;       //Jun 28th,Leap
+			case 2029: DragonBoatDayOfYear = 151+16; break;    //Jun 16nd
+			case 2030: DragonBoatDayOfYear = 151+5; break;     //Jun 5th
+			case 2031: DragonBoatDayOfYear = 151+24; break;       //Jun 24nd
+			case 2032: DragonBoatDayOfYear = 151+12+1; break;    //Jun 12th,Leap
+			case 2033: DragonBoatDayOfYear = 151+1; break;       //Jun 1st
+			case 2034: DragonBoatDayOfYear = 151+20; break;    //Jun 20th
+			case 2035: DragonBoatDayOfYear = 151+10; break;     //Jun 10th
+			case 2036: DragonBoatDayOfYear = 120+30+1; break;       //May 30th,Leap
+			case 2037: DragonBoatDayOfYear = 151+18; break;    //Jun 18th
+			case 2038: DragonBoatDayOfYear = 151+7; break;     //Jun 7th
+			case 2039: DragonBoatDayOfYear = 120+27; break;       //May 27th
+			case 2040: DragonBoatDayOfYear = 151+14+1; break;    //Jun 14th,Leap
+			case 2041: DragonBoatDayOfYear = 151+3; break;     //Jun 3rd
+			case 2042: DragonBoatDayOfYear = 151+22; break;       //Jun 22nd
+			case 2043: DragonBoatDayOfYear = 151+11; break;    //Jun 11th
+			case 2044: DragonBoatDayOfYear = 120+31+1; break;       //May 31st,Leap
+			case 2045: DragonBoatDayOfYear = 151+19; break;    //Jun 19th
+			case 2046: DragonBoatDayOfYear = 151+8; break;     //Jun 8th
+			case 2047: DragonBoatDayOfYear = 120+29; break;       //May 29th
+			case 2048: DragonBoatDayOfYear = 151+15+1; break;    //Jun 15tn,Leap
+			case 2049: DragonBoatDayOfYear = 151+4; break;     //Jun 4th
+			case 2050: DragonBoatDayOfYear = 120+1; break;       //May 25th
+		}
+
+		//celebrate for 7 days total, with Dragon Boat Festival on the 5th day
+		return dayOfYear >= DragonBoatDayOfYear-4 && dayOfYear <= DragonBoatDayOfYear+2;
 	}
 
 	//has to be algorithmically computed =S

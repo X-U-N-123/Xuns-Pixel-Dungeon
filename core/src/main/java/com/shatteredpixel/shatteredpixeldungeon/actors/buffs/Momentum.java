@@ -26,6 +26,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.SpellSprite;
+import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
@@ -76,6 +77,9 @@ public class Momentum extends Buff implements ActionIndicator.Action {
 		if (freerunTurns > 0){
 			if (target.invisible == 0 || Dungeon.hero.pointsInTalent(Talent.SPEEDY_STEALTH) < 2) {
 				freerunTurns--;
+				if (freerunTurns <= 0){
+					Item.updateQuickslot();
+				}
 			}
 		} else if (!movedLastTurn){
 			momentumStacks = (int)GameMath.gate(0, momentumStacks-1, Math.round(momentumStacks * 0.667f));
@@ -242,6 +246,7 @@ public class Momentum extends Buff implements ActionIndicator.Action {
 		momentumStacks = 0;
 		BuffIndicator.refreshHero();
 		ActionIndicator.clearAction(this);
+		Item.updateQuickslot();
 	}
 
 }

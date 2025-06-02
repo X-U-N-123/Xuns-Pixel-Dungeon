@@ -404,7 +404,7 @@ public abstract class Char extends Actor {
 			Preparation prep = buff(Preparation.class);
 			if (prep != null){
 				dmg = prep.damageRoll(this);
-				if (this == Dungeon.hero && Dungeon.hero.hasTalent(Talent.TERRORIST_ATTACK)) {
+				if (this == Dungeon.hero && ((Hero)this).hasTalent(Talent.TERRORIST_ATTACK)) {
 					for (Mob mob : Dungeon.level.mobs.toArray( new Mob[0] )) {
  						if (Dungeon.level.heroFOV[mob.pos] && mob.alignment != Alignment.ALLY) {
 							Buff.affect( mob, Terror.class, (float)(1+Dungeon.hero.pointsInTalent(Talent.TERRORIST_ATTACK))).object = Dungeon.hero.id();
@@ -905,7 +905,7 @@ public abstract class Char extends Actor {
 		if (AntiMagic.RESISTS.contains(src.getClass())){
 			dmg -= AntiMagic.drRoll(this, glyphLevel(AntiMagic.class));
 			if (Dungeon.hero.hasTalent(Talent.ARCANE_ARMOR) && this instanceof Hero){
-				dmg -= Random.NormalIntRange(2*Dungeon.hero.pointsInTalent(Talent.ARCANE_ARMOR)+1,
+				dmg -= Random.NormalIntRange(2*Dungeon.hero.pointsInTalent(Talent.ARCANE_ARMOR),
 						5*Dungeon.hero.pointsInTalent(Talent.ARCANE_ARMOR)-1);
 			}
 			if (buff(ArcaneArmor.class) != null) {

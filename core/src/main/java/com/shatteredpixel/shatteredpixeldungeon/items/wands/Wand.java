@@ -33,6 +33,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Degrade;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Momentum;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Recharging;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Regeneration;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ScrollEmpower;
@@ -405,6 +406,11 @@ public abstract class Wand extends Item {
 
 			if (curCharges == 1 && charger.target instanceof Hero && ((Hero)charger.target).hasTalent(Talent.DESPERATE_POWER)){
 				lvl += ((Hero)charger.target).pointsInTalent(Talent.DESPERATE_POWER);
+			}
+
+			if (charger.target instanceof Hero && ((Hero)charger.target).hasTalent(Talent.ARCANE_STEP)
+			&& charger.target.buff(Momentum.class)!=null && charger.target.buff(Momentum.class).freerunning()){
+				lvl += ((Hero)charger.target).pointsInTalent(Talent.ARCANE_STEP);
 			}
 
 			if (charger.target.buff(WildMagic.WildMagicTracker.class) != null){
@@ -864,6 +870,11 @@ public abstract class Wand extends Item {
 
 			if (Dungeon.hero.hasTalent(Talent.POWER_ACCUMULATION) && Dungeon.hero.heroClass != HeroClass.DUELIST){
 				turnsToCharge /= 1f + 0.07f*Dungeon.hero.pointsInTalent(Talent.POWER_ACCUMULATION);
+			}
+
+			if (charger.target instanceof Hero && ((Hero)charger.target).hasTalent(Talent.ARCANE_STEP)
+					&& charger.target.buff(Momentum.class)!=null && charger.target.buff(Momentum.class).freerunning()){
+				turnsToCharge /= 1f + 0.1f*((Hero)charger.target).pointsInTalent(Talent.ARCANE_STEP);
 			}
 
 			if (Regeneration.regenOn())

@@ -137,7 +137,7 @@ public class Berserk extends Buff implements ActionIndicator.Action {
 				powerLossBuffer--;
 			} else {
 				power -= GameMath.gate(0.1f, power, 1f) * 0.067f * Math.pow((target.HP / (float) target.HT), 2)
-						* (1f-Dungeon.hero.pointsInTalent(Talent.BEAR_GRUDGES)*0.2f);
+						* (1f-Dungeon.hero.pointsInTalent(Talent.BEAR_GRUDGES)*0.15f);
 
 				if (power < 1f){
 					ActionIndicator.clearAction(this);

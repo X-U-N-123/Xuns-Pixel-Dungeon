@@ -27,6 +27,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -39,7 +40,7 @@ import java.util.ArrayList;
 public class Windblade extends MeleeWeapon {
 
     {
-        image = ItemSpriteSheet.Jiewan;
+        image = ItemSpriteSheet.Windblade;
         hitSound = Assets.Sounds.HIT_SLASH;
         hitSoundPitch = 1.3f;
 
@@ -49,8 +50,14 @@ public class Windblade extends MeleeWeapon {
 
     @Override
     public int max(int lvl) {
-        return  Math.round(2f*(tier+1)) +    //8 base, up from 20
-                lvl*(tier-1);                //+2 scaling, down from +4
+        return  2*(tier+1) +    //8 base, up from 20
+                lvl*tier;                //+3 scaling, down from +4
+    }
+
+    @Override
+    public int proc(Char attacker, Char defender, int damage) {
+        attacker.sprite.emitter().burst(Speck.factory(Speck.JET), (int)Math.min(25, Math.ceil(damage/4f)));
+        return super.proc( attacker, defender, damage );
     }
 
     @Override
@@ -85,15 +92,16 @@ public class Windblade extends MeleeWeapon {
             public void call() {
                 beforeAbilityUsed(hero, finalClosest);
                 for (Char ch : targets) {
-                    //ability does 50% less damage
-                    hero.attack(ch, 0.5f, 0, Char.INFINITE_ACCURACY);
+                    //ability does 10% less damage
+                    hero.attack(ch, 0.9f, 0, Char.INFINITE_ACCURACY);
+                    ch.sprite.emitter().burst(Speck.factory(Speck.JET), 15);
                     if (ch.isAlive()) {
                         //trace a ballistica to our target (which will also extend past them
                         Ballistica trajectory = new Ballistica(hero.pos, ch.pos, Ballistica.STOP_TARGET);
                         //trim it to just be the part that goes past them
                         trajectory = new Ballistica(trajectory.collisionPos, trajectory.path.get(trajectory.path.size() - 1), Ballistica.PROJECTILE);
                         //knock them back along that ballistica
-                        WandOfBlastWave.throwChar(ch, trajectory, 114514, true, false, hero);
+                        WandOfBlastWave.throwChar(ch, trajectory, 2, true, true, hero);
                     } else {
                         onAbilityKill(hero, ch);
                     }
@@ -108,14 +116,14 @@ public class Windblade extends MeleeWeapon {
     @Override
     public String abilityInfo() {
         if (levelKnown){
-            return Messages.get(this, "ability_desc", augment.damageFactor(min()), augment.damageFactor(max()));
+            return Messages.get(this, "ability_desc", Math.round(0.9f*augment.damageFactor(min())), Math.round(0.9f*augment.damageFactor(max())));
         } else {
-            return Messages.get(this, "typical_ability_desc", min(0), max(0));
+            return Messages.get(this, "typical_ability_desc", Math.round(0.9f*min(0)), Math.round(0.9f*max(0)));
         }
     }
 
     public String upgradeAbilityStat(int level){
-        return augment.damageFactor(min(level)) + "-" + augment.damageFactor(max(level));
+        return Math.round(0.9f*augment.damageFactor(min(level))) + "-" + Math.round(0.9f*augment.damageFactor(max(level)));
     }
 
 }

@@ -25,17 +25,21 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ArtifactRecharge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bless;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfExperience;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRecharging;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.utils.Holiday;
 import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.Random;
 
 public class Pasty extends Food {
 
@@ -65,6 +69,9 @@ public class Pasty extends Food {
 				break;
 			case EASTER:
 				image = ItemSpriteSheet.EASTER_EGG;
+				break;
+			case DRAGON_BOAT:
+				image = ItemSpriteSheet.ZONGZI;
 				break;
 			case SHATTEREDPD_BIRTHDAY:
 				image = ItemSpriteSheet.SHATTERED_CAKE;
@@ -121,6 +128,16 @@ public class Pasty extends Food {
 			case EASTER:
 				ArtifactRecharge.chargeArtifacts(hero, 2f);
 				ScrollOfRecharging.charge( hero );
+				break;
+			case DRAGON_BOAT:
+				// bless hero for 40 turns
+				Buff.affect(hero, Bless.class, 40f);
+				new Flare( 6, 32 ).color(0xFFFF00, true).show( hero.sprite, 2f );
+				if (Random.Float() < 0.5f){
+					GLog.i( Messages.get(this, "sweet") );
+				} else {
+					GLog.i( Messages.get(this, "salty") );
+				}
 				break;
 			/*case PRIDE:
 				Char target = null;
@@ -184,6 +201,8 @@ public class Pasty extends Food {
 				return Messages.get(this, "egg_name");
 			case XUNS_BIRTHDAY:
 				return Messages.get(this, "xuns_name");
+			case DRAGON_BOAT:
+				return Messages.get(this, "zongzi_name");
 			case SHATTEREDPD_BIRTHDAY:
 				return Messages.get(this, "shattered_name");
 			case HALLOWEEN:
@@ -214,6 +233,8 @@ public class Pasty extends Food {
 				return Messages.get(this, "xuns_desc");
 			case SHATTEREDPD_BIRTHDAY:
 				return Messages.get(this, "shattered_desc");
+			case DRAGON_BOAT:
+				return Messages.get(this, "zongzi_desc");
 			case HALLOWEEN:
 				return Messages.get(this, "pie_desc");
 			//case MID_AUTUMN:

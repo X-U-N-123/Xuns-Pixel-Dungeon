@@ -221,6 +221,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WarHammer;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WarScythe;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Whip;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Wicker;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Windblade;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Wolftailgrassspear;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Woodsword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WornShortsword;
@@ -521,9 +522,10 @@ public class Generator {
 					Shortrunicblade.class,
 					Knife.class,
 					Scythe.class,
-					LightFlail.class
+					LightFlail.class,
+					Windblade.class
 			};
-			WEP_T3.defaultProbs = new float[]{ 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2 };
+			WEP_T3.defaultProbs = new float[]{ 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2};
 			WEP_T3.probs = WEP_T3.defaultProbs.clone();   //WEP_T1
 			
 			WEP_T4.classes = new Class<?>[]{//15 Weapons
