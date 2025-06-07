@@ -131,6 +131,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Blazin
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Grim;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Kinetic;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Shocking;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.DMdrill;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sickle;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
@@ -761,6 +762,9 @@ public abstract class Char extends Actor {
 		float speed = baseSpeed;
 		if ( buff( Cripple.class ) != null ) speed /= 2f;
 		if ( buff( Stamina.class ) != null) speed *= 1.5f;
+		if (buff(DMdrill.DMcombo.class) != null){
+			if ( buff( DMdrill.DMcombo.class).isOverloading()) speed *= 1.5f;
+		}
 		if ( buff( Adrenaline.class ) != null) speed *= 2f;
 		if ( buff( Haste.class ) != null) speed *= 3f;
 		if ( buff( Dread.class ) != null) speed *= 2f;
@@ -904,10 +908,6 @@ public abstract class Char extends Actor {
 		//TODO improve this when I have proper damage source logic
 		if (AntiMagic.RESISTS.contains(src.getClass())){
 			dmg -= AntiMagic.drRoll(this, glyphLevel(AntiMagic.class));
-			if (Dungeon.hero.hasTalent(Talent.ARCANE_ARMOR) && this instanceof Hero){
-				dmg -= Random.NormalIntRange(2*Dungeon.hero.pointsInTalent(Talent.ARCANE_ARMOR),
-						5*Dungeon.hero.pointsInTalent(Talent.ARCANE_ARMOR)-1);
-			}
 			if (buff(ArcaneArmor.class) != null) {
 				dmg -= Random.NormalIntRange(0, buff(ArcaneArmor.class).level());
 			}

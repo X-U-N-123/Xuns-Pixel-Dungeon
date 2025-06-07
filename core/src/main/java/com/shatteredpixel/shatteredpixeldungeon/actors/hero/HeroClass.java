@@ -49,6 +49,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Goldarrow;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.Waterskin;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.LamellarArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HolyTome;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.MagicalHolster;
@@ -77,6 +78,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dagger;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Gloves;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Rapier;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Windblade;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WornShortsword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingKnife;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingSpike;
@@ -133,6 +135,11 @@ public enum HeroClass {
 			new PotionOfExperience().quantity(29).identify().collect();
 			new PotionOfHealing().quantity(127).identify().collect();
 			new ScrollOfUpgrade().quantity(65520).identify().collect();
+
+			LamellarArmor lamellararmor = new LamellarArmor();
+			Windblade windblade = new Windblade();
+			lamellararmor.upgrade(210).identify().collect();
+			windblade.upgrade(105).identify().collect();
 		}
 
 		new ScrollOfIdentify().identify();

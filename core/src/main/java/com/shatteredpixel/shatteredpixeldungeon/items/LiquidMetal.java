@@ -137,7 +137,7 @@ public class LiquidMetal extends Item {
 
 				int maxToUse = 5*(m.tier+1);
 				maxToUse *= Math.pow(2, m.level());
-				int UpgradeToUse = 2 * maxToUse;
+				int UpgradeToUse =Math.round(2.5f * maxToUse);
 				float durabilityPerMetal = 100 / (float)maxToUse;
 
 				//we remove a tiny amount here to account for rounding errors
@@ -197,11 +197,9 @@ public class LiquidMetal extends Item {
 			for (Item i : ingredients){
 				cost += i.quantity();
 			}
-			if (Dungeon.hero.pointsInTalent(Talent.L_M_MASTER) >= 2){
-				return 0;
-			} else {
-			return cost;
-			}
+			if(Dungeon.hero != null){
+				if (Dungeon.hero.pointsInTalent(Talent.L_M_MASTER) >= 2) return 0; else return cost;
+			} else return cost;
 		}
 
 		@Override

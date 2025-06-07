@@ -50,13 +50,13 @@ public class Windblade extends MeleeWeapon {
 
     @Override
     public int max(int lvl) {
-        return  2*(tier+1) +    //8 base, up from 20
+        return  2*(tier+1) +    //10 base, up from 20
                 lvl*tier;                //+3 scaling, down from +4
     }
 
     @Override
     public int proc(Char attacker, Char defender, int damage) {
-        attacker.sprite.emitter().burst(Speck.factory(Speck.JET), (int)Math.min(25, Math.ceil(damage/4f)));
+        attacker.sprite.emitter().burst(Speck.factory(Speck.JET), (int)Math.min(15, Math.ceil(damage+1/4f)));
         return super.proc( attacker, defender, damage );
     }
 
@@ -92,8 +92,8 @@ public class Windblade extends MeleeWeapon {
             public void call() {
                 beforeAbilityUsed(hero, finalClosest);
                 for (Char ch : targets) {
-                    //ability does 10% less damage
-                    hero.attack(ch, 0.9f, 0, Char.INFINITE_ACCURACY);
+                    //ability does 10% less base damage
+                    hero.attack(ch, 1f, -2, Char.INFINITE_ACCURACY);
                     ch.sprite.emitter().burst(Speck.factory(Speck.JET), 15);
                     if (ch.isAlive()) {
                         //trace a ballistica to our target (which will also extend past them
@@ -116,14 +116,14 @@ public class Windblade extends MeleeWeapon {
     @Override
     public String abilityInfo() {
         if (levelKnown){
-            return Messages.get(this, "ability_desc", Math.round(0.9f*augment.damageFactor(min())), Math.round(0.9f*augment.damageFactor(max())));
+            return Messages.get(this, "ability_desc", augment.damageFactor(min())-2, augment.damageFactor(max())-2);
         } else {
-            return Messages.get(this, "typical_ability_desc", Math.round(0.9f*min(0)), Math.round(0.9f*max(0)));
+            return Messages.get(this, "typical_ability_desc", min(0)-2, max(0)-2);
         }
     }
 
     public String upgradeAbilityStat(int level){
-        return Math.round(0.9f*augment.damageFactor(min(level))) + "-" + Math.round(0.9f*augment.damageFactor(max(level)));
+        return augment.damageFactor(min(level)-2) + "-" + augment.damageFactor(max(level)-2);
     }
 
 }

@@ -95,6 +95,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.KindOfWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClassArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.AntiMagic;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Viscosity;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.AlchemistsToolkit;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CapeOfThorns;
@@ -1474,7 +1475,7 @@ public class Hero extends Char {
 
 		if (damage > 0 && subClass == HeroSubClass.BERSERKER){
 			Berserk berserk = Buff.affect(this, Berserk.class);
-			berserk.damage((int)(damage*Dungeon.hero.pointsInTalent(Talent.BLADE_OF_ANGER)/3f));
+			berserk.damage((int)(damage*Dungeon.hero.pointsInTalent(Talent.BLADE_OF_ANGER)*0.3f));
 		}
 		damage = super.attackProc( enemy, damage );
 
@@ -1638,6 +1639,15 @@ public class Hero extends Char {
 
 		if (buff(Challenge.DuelParticipant.class) != null){
 			buff(Challenge.DuelParticipant.class).addDamage(effectiveDamage);
+		}
+
+		//TODO improve this when I have proper damage source logic
+		if (AntiMagic.RESISTS.contains(src.getClass())){
+			if (hasTalent(Talent.ARCANE_ARMOR)){
+				dmg -= Random.NormalIntRange(2*pointsInTalent(Talent.ARCANE_ARMOR), 5*pointsInTalent(Talent.ARCANE_ARMOR)-1);
+			}
+
+			super.damage(dmg, src);
 		}
 
 		//flash red when hit for serious damage.

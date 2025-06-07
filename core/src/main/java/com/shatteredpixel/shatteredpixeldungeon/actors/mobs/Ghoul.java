@@ -286,7 +286,6 @@ public class Ghoul extends Mob {
 					}
 				}
 				ghoul.HP = Math.round(ghoul.HT/10f);
-				Buff.affect(ghoul, Revivetracker.class);
 				ghoul.beingLifeLinked = false;
 				Actor.add(ghoul);
 				ghoul.timeToNow();
@@ -295,6 +294,7 @@ public class Ghoul extends Mob {
 				ghoul.sprite.idle();
 				ghoul.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(Math.round(ghoul.HT/10f)), FloatingText.HEALING);
 				super.detach();
+				Buff.affect(ghoul, Revivetracker.class);
 				return true;
 			}
 
@@ -372,5 +372,5 @@ public class Ghoul extends Mob {
 		}
 	}
 
-	public class Revivetracker extends Buff{}
+	public static class Revivetracker extends Buff{}
 }

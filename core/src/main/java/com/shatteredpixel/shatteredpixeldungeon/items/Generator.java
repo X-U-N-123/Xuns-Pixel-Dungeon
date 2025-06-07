@@ -150,6 +150,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Crabclaw;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Crossbow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Crystalsword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Cudgel;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.DMdrill;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dagger;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Daggeraxe;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Darkgoldsword;
@@ -509,7 +510,7 @@ public class Generator {
 			WEP_T2.defaultProbs = new float[]{ 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0 };
 			WEP_T2.probs = WEP_T2.defaultProbs.clone();
 			
-			WEP_T3.classes = new Class<?>[]{//13 Weapons
+			WEP_T3.classes = new Class<?>[]{//14 Weapons
 					Sword.class,
 					Mace.class,
 					Scimitar.class,
@@ -526,7 +527,7 @@ public class Generator {
 					Windblade.class
 			};
 			WEP_T3.defaultProbs = new float[]{ 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2};
-			WEP_T3.probs = WEP_T3.defaultProbs.clone();   //WEP_T1
+			WEP_T3.probs = WEP_T3.defaultProbs.clone();
 			
 			WEP_T4.classes = new Class<?>[]{//15 Weapons
 					Longsword.class,
@@ -548,7 +549,7 @@ public class Generator {
 			WEP_T4.defaultProbs = new float[]{ 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2};
 			WEP_T4.probs = WEP_T4.defaultProbs.clone();
 			
-			WEP_T5.classes = new Class<?>[]{//14 Weapons
+			WEP_T5.classes = new Class<?>[]{//15 Weapons
 					Greatsword.class,
 					WarHammer.class,
 					Glaive.class,
@@ -562,9 +563,10 @@ public class Generator {
 					Greatknife.class,
 					Miaoblade.class,
 					HeavyFlail.class,
-					Lightsword.class
+					Lightsword.class,
+					DMdrill.class
 			};
-			WEP_T5.defaultProbs = new float[]{ 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2 };
+			WEP_T5.defaultProbs = new float[]{ 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2 };
 			WEP_T5.probs = WEP_T5.defaultProbs.clone();
 
 			WEP_T6.classes = new Class<?>[]{//13 Weapons
