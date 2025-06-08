@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2024 Evan Debenham
+ * Copyright (C) 2014-2025 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -54,6 +54,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Fury;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hex;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invulnerability;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LifeLink;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LostInventory;
@@ -62,6 +63,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Momentum;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MonkEnergy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Ooze;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.PhysicalEmpower;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Poison;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Preparation;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Regeneration;
@@ -92,6 +94,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Brute;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.CrystalSpire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DwarfKing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Elemental;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Ghoul;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GnollGeomancer;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Necromancer;
@@ -405,13 +408,22 @@ public abstract class Char extends Actor {
 			Preparation prep = buff(Preparation.class);
 			if (prep != null){
 				dmg = prep.damageRoll(this);
-				if (this == Dungeon.hero && ((Hero)this).hasTalent(Talent.TERRORIST_ATTACK)) {
-					for (Mob mob : Dungeon.level.mobs.toArray( new Mob[0] )) {
- 						if (Dungeon.level.heroFOV[mob.pos] && mob.alignment != Alignment.ALLY) {
-							Buff.affect( mob, Terror.class, (float)(1+Dungeon.hero.pointsInTalent(Talent.TERRORIST_ATTACK))).object = Dungeon.hero.id();
+				if (this instanceof Hero) {
+					if (((Hero)this).hasTalent(Talent.TERRORIST_ATTACK)) {
+						for (Mob mob : Dungeon.level.mobs.toArray( new Mob[0] )) {
+ 							if (Dungeon.level.heroFOV[mob.pos] && mob.alignment != Alignment.ALLY) {
+								Buff.affect( mob, Terror.class, (float)(1+Dungeon.hero.pointsInTalent(Talent.TERRORIST_ATTACK))).object = Dungeon.hero.id();
+							}
 						}
 					}
 
+					if (((Hero)this).hasTalent(Talent.HASHASHINS)){
+						Buff.affect(this, Talent.HashashinsTracker.class, Dungeon.hero.attackDelay()-1f);
+					}
+
+					if (Dungeon.hero.hasTalent(Talent.CHARGE_RECYCLING) && !enemy.isAlive()) {
+						Buff.affect(this, Invisibility.class, ((Hero)this).pointsInTalent(Talent.CHARGE_RECYCLING));
+					}
 				}
 			} else {
 				dmg = damageRoll();
@@ -487,10 +499,6 @@ public abstract class Char extends Actor {
 					&& enemy.alignment == alignment
 					&& (Char.hasProp(enemy, Property.BOSS) || Char.hasProp(enemy, Property.MINIBOSS))){
 				dmg *= 0.5f;
-				//yog-dzewa specifically takes 1/4 damage
-				if (enemy instanceof YogDzewa){
-					dmg *= 0.5f;
-				}
 			}
 			
 			int effectiveDamage = enemy.defenseProc( this, Math.round(dmg) );

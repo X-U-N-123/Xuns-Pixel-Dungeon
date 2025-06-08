@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2024 Evan Debenham
+ * Copyright (C) 2014-2025 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,6 +39,7 @@ import com.watabou.noosa.Visual;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.GameMath;
+import com.watabou.utils.Random;
 
 public class Momentum extends Buff implements ActionIndicator.Action {
 	
@@ -103,6 +104,8 @@ public class Momentum extends Buff implements ActionIndicator.Action {
 			momentumStacks = Math.min(momentumStacks + 1, 10);
 			ActionIndicator.setAction(this);
 			BuffIndicator.refreshHero();
+		} else if (Random.Float()<=0.1f*Dungeon.hero.pointsInTalent(Talent.STRETCHING) && freerunCooldown>0){
+			freerunCooldown --;
 		}
 	}
 

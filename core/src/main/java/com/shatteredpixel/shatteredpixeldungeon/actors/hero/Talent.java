@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2024 Evan Debenham
+ * Copyright (C) 2014-2025 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -72,7 +72,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dagger;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Woodsword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
@@ -138,9 +137,9 @@ public enum Talent {
 	//Rogue T3
 	ENHANCED_RINGS(73, 3), LIGHT_CLOAK(74, 3), STEALTH_METABOLISM(93, 3),
 	//Assassin T3
-	ENHANCED_LETHALITY(75, 3), ASSASSINS_REACH(76, 3), TERRORIST_ATTACK(77, 3),
+	ENHANCED_LETHALITY(75, 3), ASSASSINS_REACH(76, 3), TERRORIST_ATTACK(77, 3), CHARGE_RECYCLING(94, 3), HASHASHINS(95, 3),
 	//Freerunner T3
-	EVASIVE_ARMOR(78, 3), PROJECTILE_MOMENTUM(79, 3), SPEEDY_STEALTH(80, 3),ARCANE_STEP(228, 3),
+	EVASIVE_ARMOR(78, 3), PROJECTILE_MOMENTUM(79, 3), SPEEDY_STEALTH(80, 3),ARCANE_STEP(228, 3),STRETCHING(229, 3),
 	//Smoke Bomb T4
 	HASTY_RETREAT(81, 4), BODY_REPLACEMENT(82, 4), SHADOW_STEP(83, 4),
 	//Death Mark T4
@@ -294,7 +293,14 @@ public enum Talent {
 			barrierInc = bundle.getFloat( BARRIER_INC );
 		}
 	}
-	public static class BountyHunterTracker extends FlavourBuff{}
+	public static class HashashinsTracker extends FlavourBuff{
+		private int Boost =0;
+
+		@Override
+		public void detach(){
+			Buff.affect(Dungeon.hero, PhysicalEmpower.class).set(1, Math.round(Boost*Dungeon.hero.pointsInTalent(Talent.HASHASHINS)/3f));
+		}
+	}
 	public static class RejuvenatingStepsCooldown extends FlavourBuff{
 		public int icon() { return BuffIndicator.TIME; }
 		public void tintIcon(Image icon) { icon.hardlight(0f, 0.35f, 0.15f); }
@@ -677,7 +683,7 @@ public enum Talent {
 			Dungeon.hero.updateHT(false);
 		}
 
-		if (talent==FIGHTING_BACK && hero.pointsInTalent(talent)==1){
+		if (talent==FIGHTING_BACK) {
 			new ScrollOfMetamorphosis().collect();
 		}
 	}
@@ -1187,7 +1193,7 @@ public enum Talent {
 				Collections.addAll(tierTalents, ENHANCED_LETHALITY, ASSASSINS_REACH, TERRORIST_ATTACK);
 				break;
 			case FREERUNNER:
-				Collections.addAll(tierTalents, EVASIVE_ARMOR, PROJECTILE_MOMENTUM, SPEEDY_STEALTH, ARCANE_STEP);
+				Collections.addAll(tierTalents, EVASIVE_ARMOR, PROJECTILE_MOMENTUM, SPEEDY_STEALTH, ARCANE_STEP, STRETCHING);
 				break;
 			case SNIPER:
 				Collections.addAll(tierTalents, FARSIGHT, SHARED_ENCHANTMENT, SHARED_UPGRADES);
@@ -1259,7 +1265,7 @@ public enum Talent {
 	private static final HashSet<String> removedTalents = new HashSet<>();
 	static{
 		//v2.2.0
-		removedTalents.add("EMPOWERING_SCROLLS");
+		removedTalents.add("X_U_N");
 	}
 
 	private static final HashMap<String, String> renamedTalents = new HashMap<>();
@@ -1275,8 +1281,6 @@ public enum Talent {
 		//X_U_N v0.1.0
 		renamedTalents.put("TEST_SUBJECT",              "TESTED_REVIVE");
 		renamedTalents.put("HOLD_FAST",                 "INTACT_SEAL");
-		//v2.4.0
-		renamedTalents.put("SECONDARY_CHARGE",          "VARIED_CHARGE");
 	}
 
 	public static void restoreTalentsFromBundle( Bundle bundle, Hero hero ){

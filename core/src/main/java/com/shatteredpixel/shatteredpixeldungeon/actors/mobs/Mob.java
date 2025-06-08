@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2024 Evan Debenham
+ * Copyright (C) 2014-2025 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -927,16 +927,15 @@ public abstract class Mob extends Char {
 
 		float dropBonus = RingOfWealth.dropChanceMultiplier( Dungeon.hero );
 
-		Talent.BountyHunterTracker bhTracker = Dungeon.hero.buff(Talent.BountyHunterTracker.class);
-		if (bhTracker != null){
+		/*if (bhTracker != null){
 			Preparation prep = Dungeon.hero.buff(Preparation.class);
 			if (prep != null){
-				/* 2/4/8/16% per prep level, multiplied by talent points
+				2/4/8/16% per prep level, multiplied by talent points
 				float bhBonus = 0.02f * (float)Math.pow(2, prep.attackLevel()-1);
 					bhBonus *= Dungeon.hero.pointsInTalent(Talent.BOUNTY_HUNTER);
-				dropBonus += bhBonus;*/
+				dropBonus += bhBonus;
 			}
-		}
+		}*/
 
 		dropBonus += ShardOfOblivion.lootChanceMultiplier()-1f;
 
