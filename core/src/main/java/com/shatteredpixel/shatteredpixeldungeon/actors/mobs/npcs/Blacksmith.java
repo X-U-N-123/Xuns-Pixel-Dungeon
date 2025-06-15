@@ -89,22 +89,22 @@ public class Blacksmith extends NPC {
 			String msg1 = "";
 			String msg2 = "";
 
-				switch (Dungeon.hero.heroClass){
-					case WARRIOR:   msg1 += Messages.get(Blacksmith.this, "intro_quest_warrior"); break;
-					case MAGE:      msg1 += Messages.get(Blacksmith.this, "intro_quest_mage"); break;
-					case ROGUE:     msg1 += Messages.get(Blacksmith.this, "intro_quest_rogue"); break;
-					case HUNTRESS:  msg1 += Messages.get(Blacksmith.this, "intro_quest_huntress"); break;
-					case DUELIST:   msg1 += Messages.get(Blacksmith.this, "intro_quest_duelist"); break;
-					case CLERIC:    msg1 += Messages.get(Blacksmith.this, "intro_quest_cleric"); break;
-				}
+			switch (Dungeon.hero.heroClass){
+				case WARRIOR:   msg1 += Messages.get(Blacksmith.this, "intro_quest_warrior"); break;
+				case MAGE:      msg1 += Messages.get(Blacksmith.this, "intro_quest_mage"); break;
+				case ROGUE:     msg1 += Messages.get(Blacksmith.this, "intro_quest_rogue"); break;
+				case HUNTRESS:  msg1 += Messages.get(Blacksmith.this, "intro_quest_huntress"); break;
+				case DUELIST:   msg1 += Messages.get(Blacksmith.this, "intro_quest_duelist"); break;
+				case CLERIC:    msg1 += Messages.get(Blacksmith.this, "intro_quest_cleric"); break;
+			}
 
-				msg1 += "\n\n" + Messages.get(Blacksmith.this, "intro_quest_start");
+			msg1 += "\n\n" + Messages.get(Blacksmith.this, "intro_quest_start");
 
-				switch (Quest.type){
-					case Quest.CRYSTAL: msg2 += Messages.get(Blacksmith.this, "intro_quest_crystal"); break;
-					case Quest.GNOLL:   msg2 += Messages.get(Blacksmith.this, "intro_quest_gnoll"); break;
-					case Quest.FUNGI:   msg2 += Messages.get(Blacksmith.this, "intro_quest_fungi"); break;
-				}
+			switch (Quest.type){
+				case Quest.CRYSTAL: msg2 += Messages.get(Blacksmith.this, "intro_quest_crystal"); break;
+				case Quest.GNOLL:   msg2 += Messages.get(Blacksmith.this, "intro_quest_gnoll"); break;
+				case Quest.FUNGI:   msg2 += Messages.get(Blacksmith.this, "intro_quest_fungi"); break;
+			}
 
 			final String msg1Final = msg1;
 			final String msg2Final = msg2;
@@ -137,13 +137,13 @@ public class Blacksmith extends NPC {
 			
 		} else if (!Quest.completed) {
 
-				String msg = Messages.get(this, "reminder") + "\n\n";
-				switch (Quest.type){
-					case Quest.CRYSTAL: msg += Messages.get(Blacksmith.this, "reminder_crystal"); break;
-					case Quest.GNOLL:   msg += Messages.get(Blacksmith.this, "reminder_gnoll"); break;
-					case Quest.FUNGI:   msg += Messages.get(Blacksmith.this, "reminder_fungi"); break;
-				}
-				tell(msg);
+			String msg = Messages.get(this, "reminder") + "\n\n";
+			switch (Quest.type){
+				case Quest.CRYSTAL: msg += Messages.get(Blacksmith.this, "reminder_crystal"); break;
+				case Quest.GNOLL:   msg += Messages.get(Blacksmith.this, "reminder_gnoll"); break;
+				case Quest.FUNGI:   msg += Messages.get(Blacksmith.this, "reminder_fungi"); break;
+			}
+			tell(msg);
 
 		} else if (Quest.rewardsAvailable()) {
 
@@ -327,11 +327,11 @@ public class Blacksmith extends NPC {
 					//some for pre-3.1 saves, some from incorrect values from v3.1-BETA-1.0
 					if (favor >= 2500){
 						freePickaxe = true;
-				} else {
+					} else {
 						freePickaxe = false;
 					}
 				}
-					reforges = node.getInt( REFORGES );
+				reforges = node.getInt( REFORGES );
 				hardens = node.getInt( HARDENS );
 				upgrades = node.getInt( UPGRADES );
 				smiths = node.getInt( SMITHS );

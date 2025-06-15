@@ -48,10 +48,10 @@ public class Sheep extends NPC {
 		if (Dungeon.level.heroFOV[pos]){
 			Bestiary.setSeen(getClass());
 		}
-			HP = 0;
+		HP = 0;
 
-			destroy();
-			sprite.die();
+		destroy();
+		sprite.die();
 		return true;
 	}
 

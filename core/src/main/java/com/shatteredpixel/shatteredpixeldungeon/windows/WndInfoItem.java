@@ -119,7 +119,7 @@ public class WndInfoItem extends Window {
 		if (this instanceof WndUseItem){
 			title.setRect( 0, 0, width-16, 0 );
 		} else {
-		title.setRect( 0, 0, width, 0 );
+			title.setRect( 0, 0, width, 0 );
 		}
 		add( title );
 

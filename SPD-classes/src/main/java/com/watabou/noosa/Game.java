@@ -93,12 +93,25 @@ public class Game implements ApplicationListener {
 	
 	@Override
 	public void create() {
+		dispHeight = Gdx.graphics.getDisplayMode().height;
+		dispWidth = Gdx.graphics.getDisplayMode().width;
+
 		density = Gdx.graphics.getDensity();
 		if (density == Float.POSITIVE_INFINITY){
 			density = 100f / 160f; //assume 100PPI if density can't be found
+		} else if (DeviceCompat.isDesktop()) {
+			float reportedWidth = dispWidth / Gdx.graphics.getPpiX();
+			float reportedHeight = dispHeight / Gdx.graphics.getPpiY();
+
+			//this exists because Steam deck reports its display size as 4"x6.3" for some reason
+			// as if in portrait, instead of 6.3"x4". This results in incorrect PPI measurements.
+			// So we check that the orientation of the resolution and the display dimensions match.
+			// If they don't, re-calculate density assuming reported dimensions are flipped.
+			if (dispWidth > dispHeight != reportedWidth > reportedHeight){
+				float realPpiX = dispWidth / reportedHeight;
+				density = realPpiX / 160f;
+			}
 		}
-		dispHeight = Gdx.graphics.getDisplayMode().height;
-		dispWidth = Gdx.graphics.getDisplayMode().width;
 
 		inputHandler = new InputHandler( Gdx.input );
 		if (ControllerHandler.controllersSupported()){

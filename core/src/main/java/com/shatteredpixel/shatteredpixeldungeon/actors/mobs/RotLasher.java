@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ToxicGas;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
@@ -70,6 +71,14 @@ public class RotLasher extends Mob {
 		} else {
 			super.damage(dmg, src);
 		}
+	}
+
+	@Override
+	public boolean attack(Char enemy, float dmgMulti, float dmgBonus, float accMulti) {
+		if (enemy == Dungeon.hero){
+			Statistics.questScores[1] -= 100;
+		}
+		return super.attack(enemy, dmgMulti, dmgBonus, accMulti);
 	}
 
 	@Override

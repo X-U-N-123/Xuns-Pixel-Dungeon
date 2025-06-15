@@ -58,7 +58,7 @@ public abstract class StandardBridgeRoom extends StandardRoom {
 
 	@Override
 	public boolean canPlaceCharacter(Point p, Level l) {
-		return super.canPlaceItem(p, l) && (spaceRect == null || !spaceRect.inside(p));
+		return super.canPlaceCharacter(p, l) && (spaceRect == null || !spaceRect.inside(p));
 	}
 
 	//keep these so that subclasses can use them in their methods
@@ -169,11 +169,17 @@ public abstract class StandardBridgeRoom extends StandardRoom {
 		}
 
 		Painter.fill(level, spaceRect, spaceTile());
-		Painter.fill(level, bridgeRect, Terrain.EMPTY_SP);
+		Painter.fill(level, bridgeRect, bridgeTile());
 
 	}
 
 	protected abstract int maxBridgeWidth( int roomDimension );
 
 	protected abstract int spaceTile();
+
+	//defaults to special terrain
+	protected int bridgeTile(){
+		return Terrain.EMPTY_SP;
+	}
+
 }

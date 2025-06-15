@@ -82,11 +82,11 @@ public class GitHubUpdates extends UpdateService {
 								continue;
 
 							// or that are betas when we haven't opted in
-							} else if (!includeBetas && !b.getBoolean("prerelease")){
+							} else if (!includeBetas && b.getBoolean("prerelease")){
 								continue;
 
 							// or that aren't compatible
-							} else if (DeviceCompat.isDesktop()){
+							} else if (DeviceCompat.isAndroid()){
 								Matcher minAndroid = minAndroidPattern.matcher(b.getString("body"));
 								if (minAndroid.find() && DeviceCompat.getPlatformVersion() < Integer.parseInt(minAndroid.group(1))){
 									continue;

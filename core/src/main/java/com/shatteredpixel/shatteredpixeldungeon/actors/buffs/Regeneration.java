@@ -76,6 +76,11 @@ public class Regeneration extends Buff {
 						delay /= RingOfEnergy.artifactChargeMultiplier(target);
 					}
 				}
+
+				//salt cube is turned off while regen is disabled.
+				if (target.buff(LockedFloor.class) == null) {
+					delay /= SaltCube.healthRegenMultiplier();
+				}
 				if (Dungeon.hero.hasTalent(Talent.STEALTH_METABOLISM) && Dungeon.hero.invisible > 0){
 					delay /= 1+Dungeon.hero.pointsInTalent(Talent.STEALTH_METABOLISM)/3f;
 				}

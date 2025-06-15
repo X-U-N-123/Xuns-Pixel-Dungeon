@@ -157,7 +157,7 @@ public class Badges {
 		BOSS_SLAIN_4                ( 79 ),
 		ALL_RINGS_IDENTIFIED        , //still exists internally for pre-2.5 saves
 		ALL_ARTIFACTS_IDENTIFIED    , //still exists internally for pre-2.5 saves
-		ALL_RARE_ENEMIES            ( 79, BadgeType.JOURNAL ),
+		ALL_RARE_ENEMIES            ( 80, BadgeType.JOURNAL ), //no longer all, just 10 as of v3.1
 		DEATH_FROM_GRIM_TRAP        ( 81 ), //also disintegration traps
 		VICTORY                     ( 82 ),
 		BOSS_CHALLENGE_1            ( 83 ),
@@ -532,6 +532,13 @@ public class Badges {
 		
 		displayBadge( badge );
 	}
+
+	public static void validateHazardAssists() {
+		if (!local.contains( Badge.ENEMY_HAZARDS ) && Statistics.hazardAssistedKills >= 10) {
+			local.add( Badge.ENEMY_HAZARDS );
+			displayBadge( Badge.ENEMY_HAZARDS );
+		}
+	}
 	
 	public static void validatePiranhasKilled() {
 		Badge badge = null;
@@ -690,7 +697,7 @@ public class Badges {
 			displayBadge(Badge.CATALOG_POTIONS_SCROLLS);
 		}
 
-		if (Bestiary.RARE.totalEntities() == Bestiary.RARE.totalSeen()){
+		if (Bestiary.RARE.totalSeen() >= 10){
 			displayBadge(Badge.ALL_RARE_ENEMIES);
 		}
 
@@ -1061,7 +1068,7 @@ public class Badges {
 			displayBadge( badge );
 		}
 	}
-
+	
 	public static void validateGamesPlayed() {
 		Badge badge = null;
 		if (Rankings.INSTANCE.totalNumber >= 10 || Rankings.INSTANCE.wonNumber >= 1) {
@@ -1152,7 +1159,7 @@ public class Badges {
 	
 	private static void displayBadge( Badge badge ) {
 
-		if (badge == null || (badge.type != BadgeType.JOURNAL && !Dungeon.customSeedText.isEmpty()) || Dungeon.isChallenged(Challenges.X_U_NS_POWER)) {
+		if (badge == null || (badge.type != BadgeType.JOURNAL && !Dungeon.customSeedText.isEmpty())) {
 			return;
 		}
 		
@@ -1189,8 +1196,7 @@ public class Badges {
 	}
 	
 	public static void unlock( Badge badge ){
-		if (!isUnlocked(badge) && (badge.type == BadgeType.JOURNAL ||
-				Dungeon.customSeedText.isEmpty() ||!Dungeon.isChallenged(Challenges.X_U_NS_POWER))){
+		if (!isUnlocked(badge) && (badge.type == BadgeType.JOURNAL || Dungeon.customSeedText.isEmpty())){
 			global.add( badge );
 			saveNeeded = true;
 		}

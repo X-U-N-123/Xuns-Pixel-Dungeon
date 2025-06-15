@@ -204,6 +204,11 @@ public class Necromancer extends Mob {
 				}
 			}
 
+			//no push if char is immovable
+			if (Char.hasProp(Actor.findChar(summoningPos), Property.IMMOVABLE)){
+				pushPos = pos;
+			}
+
 			//push enemy, or wait a turn if there is no valid pushing position
 			if (pushPos != pos) {
 				Char ch = Actor.findChar(summoningPos);

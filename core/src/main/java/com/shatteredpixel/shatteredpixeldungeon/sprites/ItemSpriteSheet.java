@@ -443,7 +443,7 @@ public class ItemSpriteSheet {
 	public static final int THROWING_HAMMER = MISSILE_WEP+22;
 	public static final int FORCE_CUBE      = MISSILE_WEP+23;
 
-	public static final int Scorpiospike = MISSILE_WEP+26;
+	public static final int Scorpiospike    = MISSILE_WEP+26;
 	public static final int Ironball        = MISSILE_WEP+27;
 	public static final int Anti_matter     = MISSILE_WEP+28;
 	
@@ -633,6 +633,7 @@ public class ItemSpriteSheet {
 	public static final int BLOOD_VIAL      = TRINKETS+12;
 	public static final int OBLIVION_SHARD  = TRINKETS+13;
 	public static final int CHAOTIC_CENSER  = TRINKETS+14;
+	public static final int FERRET_TUFT     = TRINKETS+15;
 	static{
 		assignItemRect(RAT_SKULL,       16, 11);
 		assignItemRect(PARCHMENT_SCRAP, 10, 14);
@@ -649,6 +650,7 @@ public class ItemSpriteSheet {
 		assignItemRect(BLOOD_VIAL,      6,  15);
 		assignItemRect(OBLIVION_SHARD,  7,  14);
 		assignItemRect(CHAOTIC_CENSER,  13, 15);
+		assignItemRect(FERRET_TUFT,     16, 15);
 	}
 
 	private static final int SCROLLS        = xy(1, 13);  //16 slots
@@ -773,7 +775,7 @@ public class ItemSpriteSheet {
 	public static final int BREW_AQUA       = BREWS+4;
 	public static final int BREW_UNSTABLE   = BREWS+5;
 	public static final int BREW_EBULLITION = BREWS+6;
-	
+
 	private static final int ELIXIRS        = xy(25, 16);  //8 slots
 	public static final int ELIXIR_HONEY    = ELIXIRS+0;
 	public static final int ELIXIR_AQUA     = ELIXIRS+1;

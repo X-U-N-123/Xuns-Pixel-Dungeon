@@ -41,7 +41,7 @@ public abstract class ShieldBuff extends Buff {
 	// 0: everything else, mostly the various sources of generic barrier
 	protected int shieldUsePriority = 0;
 	protected boolean detachesAtZero = true;
-
+	
 	@Override
 	public boolean attachTo(Char target) {
 		if (super.attachTo(target)) {
@@ -105,7 +105,7 @@ public abstract class ShieldBuff extends Buff {
 		if (target != null) target.needsShieldUpdate = true;
 		return dmg;
 	}
-	
+
 	public static int processDamage( Char target, int damage, Object src ){
 		//hunger damage is not affected by shielding
 		if (src instanceof Hunger){
@@ -135,7 +135,7 @@ public abstract class ShieldBuff extends Buff {
 
 		return damage;
 	}
-
+	
 	private static final String SHIELDING = "shielding";
 	
 	@Override

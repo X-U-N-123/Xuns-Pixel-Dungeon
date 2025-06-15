@@ -102,7 +102,7 @@ public class Item implements Bundlable {
 
 	// whether an item can be included in heroes remains
 	public boolean bones = false;
-	
+
 	public int customNoteID = -1;
 
 	public static final Comparator<Item> itemComparator = new Comparator<Item>() {
@@ -531,16 +531,17 @@ public class Item implements Bundlable {
 	
 	public String info() {
 
-		if (hero != null) {
-			Notes.CustomRecord note;
-			if (this instanceof EquipableItem) {
-				note = Notes.findCustomRecord(((EquipableItem) this).customNoteID);
-			} else {
-				note = Notes.findCustomRecord(getClass());
-			}
-			if (note != null){
+		if (Dungeon.hero != null) {
+			Notes.CustomRecord note = Notes.findCustomRecord(customNoteID);
+			if (note != null) {
 				//we swap underscore(0x5F) with low macron(0x2CD) here to avoid highlighting in the item window
 				return Messages.get(this, "custom_note", note.title().replace('_', 'ˍ')) + "\n\n" + desc();
+			} else {
+				note = Notes.findCustomRecord(getClass());
+				if (note != null) {
+					//we swap underscore(0x5F) with low macron(0x2CD) here to avoid highlighting in the item window
+					return Messages.get(this, "custom_note_type", note.title().replace('_', 'ˍ')) + "\n\n" + desc();
+				}
 			}
 		}
 

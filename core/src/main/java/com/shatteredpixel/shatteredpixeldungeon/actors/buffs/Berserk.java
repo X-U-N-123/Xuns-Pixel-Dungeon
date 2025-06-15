@@ -100,21 +100,11 @@ public class Berserk extends ShieldBuff implements ActionIndicator.Action {
 	@Override
 	public boolean act() {
 		if (state == State.BERSERK){
-			ShieldBuff buff = target.buff(WarriorShield.class);
 			if (target.shielding() > 0) {
 				//lose 2.5% of shielding per turn, but no less than 1
 				int dmg = (int)Math.ceil(target.shielding() * 0.025f);
-				if (buff != null && buff.shielding() > 0) {
-					dmg = buff.absorbDamage(dmg);
-				}
 
-				if (dmg > 0){
-					//if there is leftover damage, then try to remove from other shielding buffs
-					for (ShieldBuff s : target.buffs(ShieldBuff.class)){
-						dmg = s.absorbDamage(dmg);
-						if (dmg == 0) break;
-					}
-				}
+				dmg = ShieldBuff.processDamage(target, dmg, this);
 
 				if (target.shielding() <= 0){
 					state = State.RECOVERING;
@@ -181,7 +171,6 @@ public class Berserk extends ShieldBuff implements ActionIndicator.Action {
 		if (target.HP == 0
 				&& state == State.NORMAL
 				&& power >= 1f
-				&& target.buff(WarriorShield.class) != null
 				&& ((Hero)target).hasTalent(Talent.DEATHLESS_FURY)){
 			startBerserking();
 			ActionIndicator.clearAction(this);
@@ -212,8 +201,8 @@ public class Berserk extends ShieldBuff implements ActionIndicator.Action {
 	}
 
 	public int currentShieldBoost(){
-		//base multiplier scales at 2/3/4/5/6x at 100/37/20/9/0% HP
-		float shieldMultiplier = 2f + 4*(float)Math.pow((1f-(target.HP/(float)target.HT)), 3);
+		//base multiplier scales at 1/1.5/2/2.5/3x at 100/37/20/9/0% HP
+		float shieldMultiplier = 1f + 2*(float)Math.pow((1f-(target.HP/(float)target.HT)), 3);
 
 		//Endless rage effect on shield and cooldown
 		if (power > 1f){
@@ -324,12 +313,12 @@ public class Berserk extends ShieldBuff implements ActionIndicator.Action {
 				float maxPower = 1f + 0.2f*((Hero)target).pointsInTalent(Talent.ENDLESS_RAGE);
 				return (maxPower - power)/maxPower;
 			case BERSERK:
-				return 0f;
+				return 1f - shielding() / (float)maxShieldBoost();
 			case RECOVERING:
 				if (levelRecovery > 0) {
-					return 1f - levelRecovery/(LEVEL_RECOVER_START-Dungeon.hero.pointsInTalent(Talent.DEATHLESS_FURY));
+					return levelRecovery/(LEVEL_RECOVER_START-Dungeon.hero.pointsInTalent(Talent.DEATHLESS_FURY));
 				} else {
-					return 1f - turnRecovery/(float)TURN_RECOVERY_START;
+					return turnRecovery/(float)TURN_RECOVERY_START;
 				}
 		}
 	}

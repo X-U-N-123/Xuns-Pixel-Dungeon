@@ -46,7 +46,7 @@ import com.watabou.utils.Callback;
 import java.util.ArrayList;
 
 public class Pickaxe extends MeleeWeapon {
-
+	
 	{
 		image = ItemSpriteSheet.PICKAXE;
 
