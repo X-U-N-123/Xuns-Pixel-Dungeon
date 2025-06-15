@@ -43,10 +43,13 @@ import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.GameMath;
 
-public class Berserk extends Buff implements ActionIndicator.Action {
+public class Berserk extends ShieldBuff implements ActionIndicator.Action {
 
 	{
 		type = buffType.POSITIVE;
+
+		detachesAtZero = false;
+		shieldUsePriority = -1; //other shielding buffs are always consumed first
 	}
 
 	private enum State{
@@ -201,6 +204,14 @@ public class Berserk extends Buff implements ActionIndicator.Action {
 			turnRecovery = 0;
 		}
 
+		int shieldAmount = currentShieldBoost();
+		setShield(shieldAmount);
+		target.sprite.showStatusWithIcon( CharSprite.POSITIVE, Integer.toString(shieldAmount), FloatingText.SHIELDING );
+
+		BuffIndicator.refreshHero();
+	}
+
+	public int currentShieldBoost(){
 		//base multiplier scales at 2/3/4/5/6x at 100/37/20/9/0% HP
 		float shieldMultiplier = 2f + 4*(float)Math.pow((1f-(target.HP/(float)target.HT)), 3);
 
@@ -211,12 +222,20 @@ public class Berserk extends Buff implements ActionIndicator.Action {
 			turnRecovery *= 2f - power;
 		}
 
-		WarriorShield shield = target.buff(WarriorShield.class);
-		int shieldAmount = Math.round(shield.maxShield() * shieldMultiplier);
-		shield.supercharge(shieldAmount);
-		target.sprite.showStatusWithIcon( CharSprite.POSITIVE, Integer.toString(shieldAmount), FloatingText.SHIELDING );
+		int baseShield = 10;
+		if (target instanceof Hero && ((Hero) target).belongings.armor() != null){
+			baseShield += 2*((Hero) target).belongings.armor().buffedLvl();
+		}
+		return Math.round(baseShield * shieldMultiplier);
+	}
 
-		BuffIndicator.refreshHero();
+	//not accounting for talents
+	public int maxShieldBoost(){
+		int baseShield = 10;
+		if (target instanceof Hero && ((Hero) target).belongings.armor() != null){
+			baseShield += 2*((Hero) target).belongings.armor().buffedLvl();
+		}
+		return baseShield*3;
 	}
 	
 	public void damage(int damage){
@@ -317,8 +336,10 @@ public class Berserk extends Buff implements ActionIndicator.Action {
 
 	public String iconTextDisplay(){
 		switch (state){
-			case NORMAL: case BERSERK: default:
+			case NORMAL: default:
 				return (int)(power*100) + "%";
+			case BERSERK:
+				return Integer.toString(shielding());
 			case RECOVERING:
 				if (levelRecovery > 0) {
 					return Messages.decimalFormat("#.##", levelRecovery);
@@ -345,9 +366,9 @@ public class Berserk extends Buff implements ActionIndicator.Action {
 		float dispDamage = ((int)damageFactor(10000) / 100f) - 100f;
 		switch (state){
 			case NORMAL: default:
-				return Messages.get(this, "angered_desc", Math.floor(power * 100f), dispDamage);
+				return Messages.get(this, "angered_desc", Math.floor(power * 100f), dispDamage, currentShieldBoost());
 			case BERSERK:
-				return Messages.get(this, "berserk_desc");
+				return Messages.get(this, "berserk_desc", shielding());
 			case RECOVERING:
 				if (levelRecovery > 0){
 					return Messages.get(this, "recovering_desc") + "\n\n" + Messages.get(this, "recovering_desc_levels", levelRecovery);

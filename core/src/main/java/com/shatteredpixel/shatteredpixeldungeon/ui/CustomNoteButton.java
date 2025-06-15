@@ -170,8 +170,8 @@ public class CustomNoteButton extends IconButton {
 				if (item instanceof Ring && Notes.findCustomRecord(item.getClass()) != null){
 					return false;
 				}
-				return ((EquipableItem) item).customNoteID == -1
-						|| Notes.findCustomRecord(((EquipableItem) item).customNoteID) == null;
+				return item.customNoteID == -1
+						|| Notes.findCustomRecord(item.customNoteID) == null;
 			} else {
 				return Notes.findCustomRecord(item.getClass()) == null;
 			}

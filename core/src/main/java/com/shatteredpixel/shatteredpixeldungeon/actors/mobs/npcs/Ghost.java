@@ -307,7 +307,7 @@ public class Ghost extends NPC {
 				Ghost ghost = new Ghost();
 				do {
 					ghost.pos = level.pointToCell(room.random());
-				} while (ghost.pos == -1 || level.solid[ghost.pos] || ghost.pos == level.exit());
+				} while (ghost.pos == -1 || level.solid[ghost.pos] || !level.openSpace[ghost.pos] || ghost.pos == level.exit());
 				level.mobs.add( ghost );
 				
 				spawned = true;
@@ -371,7 +371,7 @@ public class Ghost extends NPC {
 				GLog.n( Messages.get(Ghost.class, "find_me") );
 				Sample.INSTANCE.play( Assets.Sounds.GHOST );
 				processed = true;
-				Statistics.questScores[0] = 1000;
+				Statistics.questScores[0] += 1000;
 
 				Game.runOnRenderThread(new Callback() {
 					@Override

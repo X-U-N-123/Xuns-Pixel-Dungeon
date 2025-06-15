@@ -19,34 +19,42 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package com.shatteredpixel.shatteredpixeldungeon.items.potions;
+package com.shatteredpixel.shatteredpixeldungeon.items.trinkets;
 
-import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
-import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
-import com.watabou.noosa.audio.Sample;
 
-public class PotionOfInvisibility extends Potion {
+public class FerretTuft extends Trinket {
 
 	{
-		icon = ItemSpriteSheet.Icons.POTION_INVIS;
+		image = ItemSpriteSheet.FERRET_TUFT;
 	}
 
 	@Override
-	public void apply( Hero hero ) {
-		identify();
-		Buff.prolong( hero, Invisibility.class, Invisibility.DURATION );
-		GLog.i( Messages.get(this, "invisible") );
-		Sample.INSTANCE.play( Assets.Sounds.MELD );
+	protected int upgradeEnergyCost() {
+		//6 -> 8(14) -> 10(24) -> 12(36)
+		return 6+2*level();
 	}
-	
+
 	@Override
-	public int value() {
-		return isKnown() ? 40 * quantity : super.value();
+	public String statsDesc() {
+		if (isIdentified()){
+			return Messages.get(this, "stats_desc", Messages.decimalFormat("#.##", 100 * (evasionMultiplier(buffedLvl())-1f)));
+		} else {
+			return Messages.get(this, "typical_stats_desc", Messages.decimalFormat("#.##", 100 * (evasionMultiplier(0)-1f)));
+		}
+	}
+
+	public static float evasionMultiplier(){
+		return evasionMultiplier(trinketLevel(FerretTuft.class));
+	}
+
+	public static float evasionMultiplier(int level ){
+		if (level <= -1){
+			return 1;
+		} else {
+			return 1 + 0.125f*(level+1);
+		}
 	}
 
 }

@@ -103,6 +103,8 @@ public class Item implements Bundlable {
 	// whether an item can be included in heroes remains
 	public boolean bones = false;
 	
+	public int customNoteID = -1;
+
 	public static final Comparator<Item> itemComparator = new Comparator<Item>() {
 		@Override
 		public int compare( Item lhs, Item rhs ) {
@@ -596,7 +598,8 @@ public class Item implements Bundlable {
 	private static final String CURSED_KNOWN	= "cursedKnown";
 	private static final String QUICKSLOT		= "quickslotpos";
 	private static final String KEPT_LOST       = "kept_lost";
-	
+	private static final String CUSTOM_NOTE_ID = "custom_note_id";
+
 	@Override
 	public void storeInBundle( Bundle bundle ) {
 		bundle.put( QUANTITY, quantity );
@@ -608,6 +611,7 @@ public class Item implements Bundlable {
 			bundle.put( QUICKSLOT, Dungeon.quickslot.getSlot(this) );
 		}
 		bundle.put( KEPT_LOST, keptThoughLostInvent );
+		if (customNoteID != -1)     bundle.put(CUSTOM_NOTE_ID, customNoteID);
 	}
 	
 	@Override
@@ -633,6 +637,7 @@ public class Item implements Bundlable {
 		}
 
 		keptThoughLostInvent = bundle.getBoolean( KEPT_LOST );
+		if (bundle.contains(CUSTOM_NOTE_ID))    customNoteID = bundle.getInt(CUSTOM_NOTE_ID);
 	}
 
 	public int targetingPos( Hero user, int dst ){

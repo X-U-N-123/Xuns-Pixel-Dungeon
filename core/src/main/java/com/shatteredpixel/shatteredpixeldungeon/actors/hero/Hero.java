@@ -496,15 +496,9 @@ public class Hero extends Char {
 		
 		float accuracy = 1;
 		accuracy *= RingOfAccuracy.accuracyMultiplier( this );
-		
-		if (wep instanceof MissileWeapon){
-			if (Dungeon.level.adjacent( pos, target.pos )) {
-				accuracy *= 0.5f;
-			} else {
-				accuracy *= 1.5f;
-			}
+
 		//precise assault and liquid agility
-		} else {
+		if (!(wep instanceof MissileWeapon)) {
 			if ((hasTalent(Talent.PRECISE_ASSAULT) || hasTalent(Talent.LIQUID_AGILITY))
 					//does not trigger on ability attacks
 					&& belongings.abilityWeapon != wep && buff(MonkEnergy.MonkAbility.UnarmedAbilityTracker.class) == null){
@@ -797,11 +791,6 @@ public class Hero extends Char {
 			//But there's going to be that one guy who gets a furor+force ring combo
 			//This is for that one guy, you shall get your fists of fury!
 			float speed = RingOfFuror.attackSpeedMultiplier(this);
-
-            if (buff(Talent.AgileCountATKTracker.class)!=null && Dungeon.hero.hasTalent(Talent.AGILE_COUNTATK)){
-				speed += speed * Dungeon.hero.pointsInTalent(Talent.AGILE_COUNTATK)/15f;
-                buff(Talent.AgileCountATKTracker.class).detach();
-            }
 
 			//ditto for furor + sword dance!
 			if (buff(Scimitar.SwordDance.class) != null){
@@ -1616,6 +1605,7 @@ public class Hero extends Char {
 			}
 		}
 
+		//unused, could be removed
 		CapeOfThorns.Thorns thorns = buff( CapeOfThorns.Thorns.class );
 		if (thorns != null) {
 			dmg = thorns.proc(dmg, (src instanceof Char ? (Char)src : null),  this);
@@ -2004,12 +1994,6 @@ public class Hero extends Char {
 				buff(Talent.RejuvenatingStepsFurrow.class).countDown(percent*200f);
 				if (buff(Talent.RejuvenatingStepsFurrow.class).count() <= 0){
 					buff(Talent.RejuvenatingStepsFurrow.class).detach();
-				}
-			}
-			if (buff(Talent.OrganicFertilizerFurrow.class) != null){
-				buff(Talent.OrganicFertilizerFurrow.class).countDown(percent*200f);
-				if (buff(Talent.OrganicFertilizerFurrow.class).count() <= 0){
-					buff(Talent.OrganicFertilizerFurrow.class).detach();
 				}
 			}
 			if (buff(ElementalStrike.ElementalStrikeFurrowCounter.class) != null){

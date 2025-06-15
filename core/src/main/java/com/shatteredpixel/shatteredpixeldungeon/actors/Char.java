@@ -63,7 +63,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Momentum;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MonkEnergy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Ooze;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.PhysicalEmpower;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Poison;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Preparation;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Regeneration;
@@ -94,12 +93,10 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Brute;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.CrystalSpire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DwarfKing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Elemental;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Ghoul;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GnollGeomancer;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Necromancer;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Tengu;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.YogDzewa;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.MirrorImage;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.PrismaticImage;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
@@ -124,6 +121,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportat
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfPsionicBlast;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAggression;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.FerretTuft;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfFireblast;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfFrost;
@@ -305,6 +303,7 @@ public abstract class Char extends Actor {
 			if (Dungeon.hero.subClass == HeroSubClass.FREERUNNER){
 				Buff.affect(Dungeon.hero, Momentum.class).gainStack();
 			}
+			Dungeon.hero.justMoved = true;
 
 			Dungeon.hero.busy();
 		}
@@ -609,12 +608,6 @@ public abstract class Char extends Actor {
 				Sample.INSTANCE.play(Assets.Sounds.MISS);
 			}
 
-			if (enemy instanceof Hero){
-				if (Dungeon.hero.hasTalent(Talent.AGILE_COUNTATK)){
-					Buff.affect(Dungeon.hero, Talent.AgileCountATKTracker.class, 3f);
-				}
-			}
-			
 			return false;
 			
 		}
@@ -666,7 +659,8 @@ public abstract class Char extends Actor {
 			// + 4%/6%
 			acuRoll *= 1.02f + 0.02f*Dungeon.hero.pointsInTalent(Talent.BLESS);
 		}
-		
+		acuRoll *= accMulti;
+
 		float defRoll = Random.Float( defStat );
 		if (defender.buff(Bless.class) != null) defRoll *= 1.25f;
 		if (defender.buff(  Hex.class) != null) defRoll *= 0.8f;
@@ -681,8 +675,9 @@ public abstract class Char extends Actor {
 			// + 4%/6%
 			defRoll *= 1.02f + 0.02f*Dungeon.hero.pointsInTalent(Talent.BLESS);
 		}
-		
-		return (acuRoll * accMulti) >= defRoll;
+		defRoll *= FerretTuft.evasionMultiplier();
+
+		return acuRoll >= defRoll;
 	}
 
 	public int attackSkill( Char target ) {
@@ -832,6 +827,11 @@ public abstract class Char extends Actor {
 					ch.damage(dmg, link);
 					if (!ch.isAlive()) {
 						link.detach();
+						if (ch == Dungeon.hero){
+							Badges.validateDeathFromFriendlyMagic();
+							Dungeon.fail(src);
+							GLog.n( Messages.get(LifeLink.class, "ondeath") );
+						}
 					}
 				}
 			}
@@ -1084,11 +1084,11 @@ public abstract class Char extends Actor {
 				if (Dungeon.hero.pointsInTalent(Talent.ORGANIC_FERTILIZER) >= 3){
 					if (!Regeneration.regenOn()){
 						Level.set(Dungeon.hero.pos, Terrain.FURROWED_GRASS);
-					} else if (Dungeon.hero.buff(Talent.OrganicFertilizerFurrow.class) != null && Dungeon.hero.buff(Talent.OrganicFertilizerFurrow.class).count() >= 200) {
+					} else if (Dungeon.hero.buff(Talent.RejuvenatingStepsFurrow.class) != null && Dungeon.hero.buff(Talent.RejuvenatingStepsFurrow.class).count() >= 200) {
 						Level.set(Dungeon.hero.pos, Terrain.FURROWED_GRASS);
 					} else {
-						Level.set(Dungeon.hero.pos, Terrain.HIGH_GRASS);
-						Buff.count(Dungeon.hero, Talent.OrganicFertilizerFurrow.class, 3 - Dungeon.hero.pointsInTalent(Talent.ORGANIC_FERTILIZER));
+						Level.set(pos, Terrain.HIGH_GRASS);
+						Buff.count(Dungeon.hero, Talent.RejuvenatingStepsFurrow.class, 3 - Dungeon.hero.pointsInTalent(Talent.ORGANIC_FERTILIZER));
 					}
 				}
 				GameScene.updateMap(Dungeon.hero.pos);
