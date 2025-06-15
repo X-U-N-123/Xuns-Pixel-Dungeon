@@ -598,7 +598,7 @@ public class ScrollOfDebug extends Scroll {
                             if(manualPlace) {
                                 GameScene.selectCell(new CellSelector.Listener() {
                                     @Override public String prompt() {
-                                        return "Select a tile to place " + mob.name();
+                                        return "选择位置放置 " + mob.name();
                                     }
                                     @Override public void onSelect(Integer cell) {
                                         if(cell == null) return;

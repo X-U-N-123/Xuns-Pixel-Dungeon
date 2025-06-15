@@ -84,6 +84,9 @@ public class Regeneration extends Buff {
 				if (Dungeon.hero.hasTalent(Talent.STEALTH_METABOLISM) && Dungeon.hero.invisible > 0){
 					delay /= 1+Dungeon.hero.pointsInTalent(Talent.STEALTH_METABOLISM)/3f;
 				}
+				if (Dungeon.hero.hasTalent(Talent.INTACT_SEAL)){
+					delay /= 1+Dungeon.hero.pointsInTalent(Talent.STEALTH_METABOLISM)/10f;
+				}
 
 				//salt cube is turned off while regen is disabled.
 				if (target.buff(LockedFloor.class) == null) {

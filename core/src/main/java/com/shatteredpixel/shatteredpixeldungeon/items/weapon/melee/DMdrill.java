@@ -158,9 +158,9 @@ public class DMdrill extends MeleeWeapon {
         protected void hit(){
             count++;
             if (Overloadtime > 0){
-                Time += 5f;
+                Time += 1 + curItem.level();
             } else if (Time <= 5){
-                Time = 5f;
+                Time = 3 + curItem.level();
             }
             BuffIndicator.refreshHero();
         }

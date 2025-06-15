@@ -63,6 +63,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Momentum;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MonkEnergy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Ooze;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.PhysicalEmpower;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Poison;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Preparation;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Regeneration;
@@ -932,11 +933,24 @@ public abstract class Char extends Actor {
 		}
 
 		BrokenSeal.WarriorShield shield = buff(BrokenSeal.WarriorShield.class);
+		if (this instanceof Hero){
+			if (!(src instanceof Hunger)
+			&& damage >= buff(BrokenSeal.WarriorShield.class).maxShield()
+			&& shield != null && !shield.coolingDown()
+			&& ((Hero)this).hasTalent(Talent.FIGHTING_BACK)){
+				buff(BrokenSeal.WarriorShield.class).enterCooldown(1f);
+				if (((Hero)this).pointsInTalent(Talent.FIGHTING_BACK) > 1){
+					Buff.affect(this, PhysicalEmpower.class).set(1, buff(BrokenSeal.WarriorShield.class).maxShield());
+				}
+				sprite.showStatusWithIcon(CharSprite.POSITIVE, String.valueOf(dmg), FloatingText.SHIELDING);
+				dmg = 0;
+			}
+		}
 		if (!(src instanceof Hunger)
 				&& dmg > 0
-				//either HP is already half or below (ignoring shield)
-				// or the hit will reduce it to half or below
-				&& (HP <= HT/2 || HP + shielding() - dmg <= HT/2)
+				//either HP is already 80% or below (ignoring shield)
+				// or the hit will reduce it to 80% or below
+				&& (HP <= HT*4/5 || HP + shielding() - dmg <= HT*4/5)
 				&& shield != null && !shield.coolingDown()){
 			sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(buff(BrokenSeal.WarriorShield.class).maxShield()), FloatingText.SHIELDING);
 			shield.activate();

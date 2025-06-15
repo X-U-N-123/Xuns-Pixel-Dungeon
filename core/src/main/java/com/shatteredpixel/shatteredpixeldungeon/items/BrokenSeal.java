@@ -24,7 +24,6 @@ package com.shatteredpixel.shatteredpixeldungeon.items;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Combo;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Regeneration;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ShieldBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Belongings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
@@ -100,8 +99,13 @@ public class BrokenSeal extends Item {
 	}
 
 	public int maxShield( int armTier, int armLvl ){
-		// 5-15, based on equip tier and iron will
-		return 3 + 2*armTier + Dungeon.hero.pointsInTalent(Talent.IRON_WILL);
+		// 5 base, depend on equip tier, armor level, and iron will
+		int Base = 3 + 2*armTier;
+		if (Dungeon.hero.hasTalent(Talent.IRON_WILL)) {
+			Base += 1 + Dungeon.hero.pointsInTalent(Talent.IRON_WILL);
+		}
+		Base += armLvl * 2;
+		return Base;
 	}
 
 	@Override
@@ -128,11 +132,6 @@ public class BrokenSeal extends Item {
 			GameScene.show(new WndUseItem(null, this));
 		}
 	}
-	/*
-	@Override
-	public String name() {
-		return glyph != null ? glyph.name( super.name() ) : super.name();
-	}*/
 
 	//outgoing is either the seal itself as an item, or an armor the seal is affixed to
 	public void affixToArmor(Armor armor, Item outgoing){
@@ -290,9 +289,9 @@ public class BrokenSeal extends Item {
 		private int cooldown = 0;
 		private int turnsSinceEnemies = 0;
 
-		private static int COOLDOWN_START = 150;
+		private static final int COOLDOWN_START = 100;
 
-		@Override
+        @Override
 		public int icon() {
 			if (coolingDown() || shielding() > 0){
 				return BuffIndicator.SEAL_SHIELD;
@@ -343,7 +342,7 @@ public class BrokenSeal extends Item {
 
 		@Override
 		public synchronized boolean act() {
-			if (cooldown > 0 && Regeneration.regenOn()){
+			if (cooldown > 0){
 				cooldown--;
 			}
 
@@ -354,7 +353,7 @@ public class BrokenSeal extends Item {
 						if (cooldown > 0) {
 							float percentLeft = shielding() / (float)maxShield();
 							//max of 50% cooldown refund
-							cooldown = Math.max(0, (int)(cooldown - COOLDOWN_START * (percentLeft / 2f)));
+							cooldown = Math.max(0, (int)(cooldown - COOLDOWN_START - 15 * Dungeon.hero.pointsInTalent(Talent.INTACT_SEAL) * (percentLeft / 2f)));
 						}
 						decShield(shielding());
 					}
@@ -373,7 +372,7 @@ public class BrokenSeal extends Item {
 
 		public synchronized void activate() {
 			incShield(maxShield());
-			cooldown = Math.max(0, cooldown+COOLDOWN_START);
+			cooldown = Math.max(0, cooldown+COOLDOWN_START - 15 * Dungeon.hero.pointsInTalent(Talent.INTACT_SEAL));
 			turnsSinceEnemies = 0;
 		}
 
@@ -381,9 +380,14 @@ public class BrokenSeal extends Item {
 			return cooldown > 0;
 		}
 
+		public void enterCooldown(float percentage){
+			cooldown = Math.round(COOLDOWN_START*percentage);
+		}
+
 		public void reduceCooldown(float percentage){
-			cooldown -= Math.round(COOLDOWN_START*percentage);
-			cooldown = Math.max(cooldown, -COOLDOWN_START);
+			int Talentdecrease = 15 * Dungeon.hero.pointsInTalent(Talent.INTACT_SEAL);
+			cooldown -= Math.round((COOLDOWN_START - Talentdecrease)*percentage);
+			cooldown = Math.max(cooldown, -COOLDOWN_START - Talentdecrease);
 		}
 
 		public synchronized void setArmor(Armor arm){
@@ -393,7 +397,7 @@ public class BrokenSeal extends Item {
 		public synchronized int maxShield() {
 			//metamorphed iron will logic
 			if (((Hero)target).heroClass != HeroClass.WARRIOR && ((Hero) target).hasTalent(Talent.IRON_WILL)){
-				return ((Hero) target).pointsInTalent(Talent.IRON_WILL);
+				return 1 + ((Hero) target).pointsInTalent(Talent.IRON_WILL);
 			}
 
 			if (armor != null && armor.isEquipped((Hero)target) && armor.checkSeal() != null) {

@@ -35,8 +35,12 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Scorpio;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Spinner;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Swarm;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
+import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.MiningLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.AttackIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
@@ -46,6 +50,8 @@ import com.watabou.utils.Callback;
 import java.util.ArrayList;
 
 public class Pickaxe extends MeleeWeapon {
+
+	public static final String AC_MINE = "MINE";
 	
 	{
 		image = ItemSpriteSheet.PICKAXE;
@@ -66,6 +72,7 @@ public class Pickaxe extends MeleeWeapon {
 	@Override
 	public ArrayList<String> actions( Hero hero ) {
 		ArrayList<String> actions = super.actions( hero );
+		actions.add(AC_MINE);
 		if (Dungeon.level instanceof MiningLevel){
 			actions.remove(AC_DROP);
 			actions.remove(AC_THROW);
@@ -78,6 +85,39 @@ public class Pickaxe extends MeleeWeapon {
 		//pickaxe is always kept when it's needed for the mining level
 		return super.keptThroughLostInventory() || Dungeon.level instanceof MiningLevel;
 	}
+
+	@Override
+	public void execute( Hero hero, String action ) {
+
+		super.execute(hero, action);
+
+		if (action.equals(AC_MINE)){
+			GameScene.selectCell(new CellSelector.Listener() {
+				@Override public String prompt() {
+					return Messages.get(this, "mine");
+				}
+
+				@Override public void onSelect(Integer cell) {
+					if (cell == null)return;
+					if (Dungeon.level.distance(cell, curUser.pos) > 1 || !Dungeon.level.heroFOV[cell]) {
+						return;
+					}
+					if (Dungeon.level.map[cell] == Terrain.REGION_DECO || Dungeon.level.map[cell] == Terrain.REGION_DECO_ALT){
+						Level.set(cell, Terrain.EMPTY);
+						if (Dungeon.level.map[cell] == Terrain.REGION_DECO_ALT && 5<Dungeon.depth && Dungeon.depth<=10){
+							Level.set(cell, Terrain.CHASM);
+						}
+						GameScene.updateMap(cell);
+						Dungeon.hero.sprite.turnTo( Dungeon.hero.pos, cell);
+						Sample.INSTANCE.play( Assets.Sounds.MINE );
+					}
+
+					hero.next();
+				}
+			});
+		}
+	}
+
 	@Override
 	public String targetingPrompt() {
 		return Messages.get(this, "prompt");
