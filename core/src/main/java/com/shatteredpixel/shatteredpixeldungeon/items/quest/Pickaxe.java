@@ -34,6 +34,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Crab;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Scorpio;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Spinner;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Swarm;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Splash;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.MiningLevel;
@@ -100,16 +101,46 @@ public class Pickaxe extends MeleeWeapon {
 				@Override public void onSelect(Integer cell) {
 					if (cell == null)return;
 					if (Dungeon.level.distance(cell, curUser.pos) > 1 || !Dungeon.level.heroFOV[cell]) {
+						GLog.w(Messages.get(this, "reach"));
 						return;
 					}
-					if (Dungeon.level.map[cell] == Terrain.REGION_DECO || Dungeon.level.map[cell] == Terrain.REGION_DECO_ALT){
-						Level.set(cell, Terrain.EMPTY);
-						if (Dungeon.level.map[cell] == Terrain.REGION_DECO_ALT && 5<Dungeon.depth && Dungeon.depth<=10){
-							Level.set(cell, Terrain.CHASM);
+					if (Dungeon.level.map[cell] == Terrain.REGION_DECO || Dungeon.level.map[cell] == Terrain.REGION_DECO_ALT || Dungeon.level.map[cell] == Terrain.BOOKSHELF){
+						if (0<Dungeon.depth && Dungeon.depth<=5){//Sewer
+							if (Dungeon.level.map[cell] == Terrain.REGION_DECO_ALT){
+								Level.set(cell, Terrain.EMPTY_SP);
+							} else if (Dungeon.level.map[cell] == Terrain.REGION_DECO){
+								Level.set(cell, Terrain.WATER);
+								Splash.at(cell, 0xFF507B5D, 10);
+							}
+						}
+						if (5<Dungeon.depth && Dungeon.depth<=10){//Prison
+							if (Dungeon.level.map[cell] == Terrain.REGION_DECO_ALT){
+								Level.set(cell, Terrain.CHASM);
+							} else if (Dungeon.level.map[cell] == Terrain.REGION_DECO){
+								Level.set(cell, Terrain.EMPTY);
+							}
+						}
+						if (10<Dungeon.depth && Dungeon.depth<=15){//Cave
+							if (Dungeon.level.map[cell] == Terrain.REGION_DECO_ALT){
+								Level.set(cell, Terrain.EMPTY_SP);
+							} else if (Dungeon.level.map[cell] == Terrain.REGION_DECO){
+								Level.set(cell, Terrain.EMPTY);
+							}
+						}
+						if (15<Dungeon.depth && Dungeon.depth<=20){//City
+							GLog.w(Messages.get(this, "hard"));
+							return;
+						}
+						if ((20<Dungeon.depth && Dungeon.depth<=25) || Dungeon.level.map[cell] == Terrain.BOOKSHELF){//Hall and Bookshelf
+							Level.set(cell, Terrain.EMPTY);
 						}
 						GameScene.updateMap(cell);
 						Dungeon.hero.sprite.turnTo( Dungeon.hero.pos, cell);
+						Dungeon.hero.sprite.zap(cell);
 						Sample.INSTANCE.play( Assets.Sounds.MINE );
+					} else {
+						GLog.w(Messages.get(this, "hard"));
+						return;
 					}
 
 					hero.next();

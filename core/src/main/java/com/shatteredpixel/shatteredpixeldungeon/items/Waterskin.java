@@ -101,10 +101,10 @@ public class Waterskin extends Item {
 				//add extra drops if we can gain shielding
 				int curShield = 0;
 				if (hero.buff(Barrier.class) != null) curShield = hero.buff(Barrier.class).shielding();
-				int maxShield = Math.round(hero.HT *0.2f*hero.pointsInTalent(Talent.SHIELDING_DEW));
-				if (hero.hasTalent(Talent.SHIELDING_DEW)){
+				int maxShield = Math.round(hero.HT *0.2f*hero.pointsInTalent(Talent.DEW_COLLECTING));
+				if (hero.hasTalent(Talent.DEW_COLLECTING)){
 					float missingShieldPercent = 1f - (curShield / (float)maxShield);
-					missingShieldPercent *= 0.2f*hero.pointsInTalent(Talent.SHIELDING_DEW);
+					missingShieldPercent *= 0.2f*hero.pointsInTalent(Talent.DEW_COLLECTING);
 					if (missingShieldPercent > 0){
 						dropsNeeded += missingShieldPercent / 0.05f;
 					}
@@ -171,10 +171,10 @@ public class Waterskin extends Item {
 		return volume >= MAX_VOLUME;
 	}
 
-	public void collectDew( Dewdrop dew ) {
+	public void collectDew( int Quantity ) {
 
 		GLog.i( Messages.get(this, "collected") );
-		volume += dew.quantity;
+		volume += Quantity;
 		if (volume >= MAX_VOLUME) {
 			volume = MAX_VOLUME;
 			GLog.p( Messages.get(this, "full") );

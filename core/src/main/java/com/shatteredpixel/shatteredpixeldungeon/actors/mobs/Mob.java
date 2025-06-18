@@ -819,8 +819,8 @@ public abstract class Mob extends Char {
 		}
 
 		//TODO improve this when I have proper damage source logic
-		if (AntiMagic.RESISTS.contains(src.getClass()) && buffs(SoulMark.class)!=null){
-			int heal = (int)Math.ceil(Dungeon.hero.pointsInTalent(Talent.MANA_EATING)*0.2f)*dmg;
+		if (AntiMagic.RESISTS.contains(src.getClass()) && this.buff(SoulMark.class)!=null && Dungeon.hero.hasTalent(Talent.MANA_EATING)){
+			int heal = Math.round(Dungeon.hero.pointsInTalent(Talent.MANA_EATING)*0.2f*dmg);
 			Dungeon.hero.HP = Math.min(Dungeon.hero.HT, Dungeon.hero.HP + heal);
 			Dungeon.hero.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(heal), FloatingText.HEALING);
 		}

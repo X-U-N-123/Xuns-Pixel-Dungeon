@@ -147,7 +147,7 @@ public class LiquidMetal extends Item {
 				if(UpgradeToUse<quantity() && !(m instanceof Antimatter)
 				&& Dungeon.hero.pointsInTalent(Talent.L_M_MASTER) >= 3){
 					Catalog.countUses(LiquidMetal.class, UpgradeToUse);
-					GLog.i(Messages.get(LiquidMetal.class, "upgrade", UpgradeToUse));
+					GLog.p(Messages.get(LiquidMetal.class, "upgrade", UpgradeToUse));
 					m.upgrade();
 					quantity(quantity()-UpgradeToUse);
 				} else if (maxToUse == 0 ||

@@ -69,6 +69,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.QuickSlotButton;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.watabou.noosa.Image;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
@@ -914,6 +915,7 @@ public abstract class Wand extends Item {
 	}
 	public static class ReservedenergyCooldown extends FlavourBuff {
 		public int icon() { return BuffIndicator.RECHARGING; }
+		public void tintIcon(Image icon) { icon.hardlight(1f, 1f, 0.7f); }
 		public float iconFadePercent() { return Math.max(0, visualcooldown() / 80); }
 	}
 }

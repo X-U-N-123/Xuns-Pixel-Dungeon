@@ -23,7 +23,9 @@ package com.shatteredpixel.shatteredpixeldungeon.actors;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Electricity;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.StormCloud;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ToxicGas;
@@ -48,6 +50,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Daze;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Doom;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Dread;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FireImbue;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Frost;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FrostImbue;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Fury;
@@ -104,7 +107,9 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.PrismaticImage;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal;
+import com.shatteredpixel.shatteredpixeldungeon.items.Dewdrop;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
+import com.shatteredpixel.shatteredpixeldungeon.items.Waterskin;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.curses.Bulk;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.AntiMagic;
@@ -140,6 +145,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sickle;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.ShockingDart;
+import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.Chasm;
@@ -153,8 +159,10 @@ import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MobSprite;
+import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.TargetHealthIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.watabou.noosa.Image;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.BArray;
 import com.watabou.utils.Bundlable;
@@ -922,6 +930,9 @@ public abstract class Char extends Actor {
 		//TODO improve this when I have proper damage source logic
 		if (AntiMagic.RESISTS.contains(src.getClass())){
 			dmg -= AntiMagic.drRoll(this, glyphLevel(AntiMagic.class));
+			if (Dungeon.hero.hasTalent(Talent.ARCANE_ARMOR) && this instanceof Hero){
+				dmg -= Random.NormalIntRange(0, Math.round(0.05f*Dungeon.hero.pointsInTalent(Talent.ARCANE_ARMOR)*Dungeon.hero.HT));
+			}
 			if (buff(ArcaneArmor.class) != null) {
 				dmg -= Random.NormalIntRange(0, buff(ArcaneArmor.class).level());
 			}
@@ -933,19 +944,30 @@ public abstract class Char extends Actor {
 		}
 
 		BrokenSeal.WarriorShield shield = buff(BrokenSeal.WarriorShield.class);
-		if (this instanceof Hero){
-			if (!(src instanceof Hunger)
-			&& damage >= buff(BrokenSeal.WarriorShield.class).maxShield()
-			&& shield != null && !shield.coolingDown()
-			&& ((Hero)this).hasTalent(Talent.FIGHTING_BACK)){
-				buff(BrokenSeal.WarriorShield.class).enterCooldown(1f);
-				if (((Hero)this).pointsInTalent(Talent.FIGHTING_BACK) > 1){
-					Buff.affect(this, PhysicalEmpower.class).set(1, buff(BrokenSeal.WarriorShield.class).maxShield());
+		if (this instanceof Hero && !(src instanceof Hunger) && ((Hero)this).hasTalent(Talent.FIGHTING_BACK)){
+			if (shield != null && Dungeon.hero.heroClass == HeroClass.WARRIOR){
+				if (dmg >= shield.maxShield()
+				&& !shield.coolingDown()){
+					shield.enterCooldown(1f, 0);
+					if (((Hero)this).pointsInTalent(Talent.FIGHTING_BACK) > 1){
+						Buff.affect(this, PhysicalEmpower.class).set(shield.maxShield(), 1);
+					}
+					sprite.showStatusWithIcon(CharSprite.POSITIVE, String.valueOf(dmg), FloatingText.SHIELDING);
+					dmg = 0;
 				}
-				sprite.showStatusWithIcon(CharSprite.POSITIVE, String.valueOf(dmg), FloatingText.SHIELDING);
-				dmg = 0;
+			} else if (Dungeon.hero.heroClass != HeroClass.WARRIOR){
+				if (dmg >= HT/5f
+				&& (buff(FightingbackCooldown.class) == null)){
+					Buff.affect(this, FightingbackCooldown.class, 100f);
+					if (((Hero)this).pointsInTalent(Talent.FIGHTING_BACK) > 1){
+						Buff.affect(this, PhysicalEmpower.class).set(Math.round(HT/5f), 1);
+					}
+					sprite.showStatusWithIcon(CharSprite.POSITIVE, String.valueOf(dmg), FloatingText.SHIELDING);
+					dmg = 0;
+				}
 			}
 		}
+
 		if (!(src instanceof Hunger)
 				&& dmg > 0
 				//either HP is already 80% or below (ignoring shield)
@@ -1091,7 +1113,8 @@ public abstract class Char extends Actor {
 				((MobSprite) sprite).fall();
 			}
 		}
-		if (Dungeon.hero.hasTalent(Talent.ORGANIC_FERTILIZER)){
+
+		if (Dungeon.hero.hasTalent(Talent.ORGANIC_FERTILIZER) && Dungeon.level.heroFOV[pos]){
 			if (Dungeon.level.map[pos] == Terrain.EMBERS || Dungeon.level.map[pos] == Terrain.EMPTY || Dungeon.level.map[pos] == Terrain.EMPTY_DECO){
 				Level.set(pos, Terrain.GRASS);
 			}
@@ -1112,6 +1135,22 @@ public abstract class Char extends Actor {
 				GameScene.updateMap(Dungeon.hero.pos);
 			}
 			GameScene.updateMap(this.pos);
+		}
+
+		if (Random.Float() <= Dungeon.hero.pointsInTalent(Talent.DEW_COLLECTING)/4f && Dungeon.level.heroFOV[pos] &&
+		(Dungeon.level.map[Dungeon.hero.pos] == Terrain.GRASS ||
+		Dungeon.level.map[Dungeon.hero.pos] == Terrain.HIGH_GRASS ||
+		Dungeon.level.map[Dungeon.hero.pos] == Terrain.FURROWED_GRASS)){
+
+			Waterskin flask = (Dungeon.hero.belongings.getItem( Waterskin.class ));
+
+			if (flask != null && !flask.isFull() && Dungeon.isChallenged(Challenges.NO_HERBALISM)){
+
+				flask.collectDew( 1 );
+
+			} else if (!Dungeon.isChallenged(Challenges.NO_HERBALISM)){
+				Dungeon.level.drop(new Dewdrop(), Dungeon.hero.pos).sprite.drop();
+			}
 		}
 	}
 
@@ -1438,5 +1477,11 @@ public abstract class Char extends Actor {
 
 	public static boolean hasProp( Char ch, Property p){
 		return (ch != null && ch.properties().contains(p));
+	}
+
+	public static class FightingbackCooldown extends FlavourBuff {
+		public int icon() { return BuffIndicator.SEAL_SHIELD; }
+		public void tintIcon(Image icon) { icon.hardlight(0.7f, 0.7f, 0.7f); }
+		public float iconFadePercent() { return Math.max(0, visualcooldown() / 100); }
 	}
 }

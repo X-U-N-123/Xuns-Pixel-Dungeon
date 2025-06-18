@@ -353,7 +353,7 @@ public class BrokenSeal extends Item {
 						if (cooldown > 0) {
 							float percentLeft = shielding() / (float)maxShield();
 							//max of 50% cooldown refund
-							cooldown = Math.max(0, (int)(cooldown - COOLDOWN_START - 15 * Dungeon.hero.pointsInTalent(Talent.INTACT_SEAL) * (percentLeft / 2f)));
+							cooldown = Math.max(0, (int)(cooldown - (COOLDOWN_START - 15*Dungeon.hero.pointsInTalent(Talent.INTACT_SEAL)) * (percentLeft / 2f)));
 						}
 						decShield(shielding());
 					}
@@ -372,7 +372,7 @@ public class BrokenSeal extends Item {
 
 		public synchronized void activate() {
 			incShield(maxShield());
-			cooldown = Math.max(0, cooldown+COOLDOWN_START - 15 * Dungeon.hero.pointsInTalent(Talent.INTACT_SEAL));
+			cooldown = Math.max(0, cooldown + COOLDOWN_START - 15*Dungeon.hero.pointsInTalent(Talent.INTACT_SEAL));
 			turnsSinceEnemies = 0;
 		}
 
@@ -380,14 +380,15 @@ public class BrokenSeal extends Item {
 			return cooldown > 0;
 		}
 
-		public void enterCooldown(float percentage){
-			cooldown = Math.round(COOLDOWN_START*percentage);
+		public void enterCooldown(float percentage, int turn){
+			cooldown = Math.round((COOLDOWN_START - 15*Dungeon.hero.pointsInTalent(Talent.INTACT_SEAL)) * percentage);
+			cooldown += turn;
 		}
 
 		public void reduceCooldown(float percentage){
 			int Talentdecrease = 15 * Dungeon.hero.pointsInTalent(Talent.INTACT_SEAL);
 			cooldown -= Math.round((COOLDOWN_START - Talentdecrease)*percentage);
-			cooldown = Math.max(cooldown, -COOLDOWN_START - Talentdecrease);
+			cooldown = Math.max(cooldown, -COOLDOWN_START + Talentdecrease);
 		}
 
 		public synchronized void setArmor(Armor arm){

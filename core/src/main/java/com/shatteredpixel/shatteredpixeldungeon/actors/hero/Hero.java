@@ -1637,15 +1637,6 @@ public class Hero extends Char {
 			buff(Challenge.DuelParticipant.class).addDamage(effectiveDamage);
 		}
 
-		//TODO improve this when I have proper damage source logic
-		if (AntiMagic.RESISTS.contains(src.getClass())){
-			if (hasTalent(Talent.ARCANE_ARMOR)){
-				dmg -= Random.NormalIntRange(2*pointsInTalent(Talent.ARCANE_ARMOR), 5*pointsInTalent(Talent.ARCANE_ARMOR)-1);
-			}
-
-			super.damage(dmg, src);
-		}
-
 		//flash red when hit for serious damage.
 		float percentDMG = effectiveDamage / (float)preHP; //percent of current HP that was taken
 		float percentHP = 1 - ((HT - postHP) / (float)HT); //percent health after damage was taken
