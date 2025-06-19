@@ -24,26 +24,31 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items;
 
-import static com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMagicMapping.discover;
-
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Awareness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicalSight;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MindVision;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfFeatherFall;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.Chasm;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.watabou.noosa.Game;
 
 import java.util.ArrayList;
-//This is from ARranged PD
 
 public class Goldarrow extends Item {
 
     String AC_TELEPORT = "teleport";
     String AC_RETURN = "return";
+    String AC_AWARE = "aware";
+    String AC_GOTO = "goto";
 
     {
         defaultAction = AC_TELEPORT;
@@ -58,6 +63,8 @@ public class Goldarrow extends Item {
         ArrayList<String> actions = super.actions(hero);
         actions.add(AC_TELEPORT);
         actions.add(AC_RETURN);
+        actions.add(AC_AWARE);
+        actions.add(AC_GOTO);
         return actions;
     }
 
@@ -66,13 +73,21 @@ public class Goldarrow extends Item {
 
         super.execute(hero, action);
         if (action.equals(AC_TELEPORT)) {
-            Buff.affect(hero, ElixirOfFeatherFall.FeatherBuff.class, 3f);
+            Buff.affect(hero, ElixirOfFeatherFall.FeatherBuff.class, 2f);
             Chasm.heroFall(hero.pos);
+        }
+        if (action.equals(AC_RETURN)) {
+            InterlevelScene.mode = InterlevelScene.Mode.RETURN;
+            InterlevelScene.returnDepth = Math.max(1, (Dungeon.depth - 1));
+            InterlevelScene.returnBranch = 0;
+            InterlevelScene.returnPos = -2;
+            Game.switchScene( InterlevelScene.class );
+        }
+        if (action.equals(AC_AWARE)) {
             int length = Dungeon.level.length();
             int[] map = Dungeon.level.map;
             boolean[] mapped = Dungeon.level.mapped;
             boolean[] discoverable = Dungeon.level.discoverable;
-
             for (int i=0; i < length; i++) {
 
                 int terr = map[i];
@@ -83,44 +98,28 @@ public class Goldarrow extends Item {
                     if ((Terrain.flags[terr] & Terrain.SECRET) != 0) {
 
                         Dungeon.level.discover( i );
-
-                        if (Dungeon.level.heroFOV[i]) {
-                            GameScene.discoverTile( i, terr );
-                            discover( i );
-                        }
                     }
                 }
             }
+
+            Buff.prolong(curUser, Awareness.class, Awareness.DURATION);
+            Buff.prolong(curUser, MindVision.class, MindVision.DURATION);
+            Buff.prolong(curUser, MagicalSight.class, MagicalSight.DURATION);
+            Dungeon.observe();
+            Dungeon.hero.checkVisibleMobs();
         }
-        if (action.equals(AC_RETURN)) {
-            InterlevelScene.mode = InterlevelScene.Mode.RETURN;
-            InterlevelScene.returnDepth = Math.max(1, (Dungeon.depth - 1));
-            InterlevelScene.returnBranch = 0;
-            InterlevelScene.returnPos = -2;
-            Game.switchScene( InterlevelScene.class );
-        }
-        int length = Dungeon.level.length();
-        int[] map = Dungeon.level.map;
-        boolean[] mapped = Dungeon.level.mapped;
-        boolean[] discoverable = Dungeon.level.discoverable;
-
-        for (int i=0; i < length; i++) {
-
-            int terr = map[i];
-
-            if (discoverable[i]) {
-
-                mapped[i] = true;
-                if ((Terrain.flags[terr] & Terrain.SECRET) != 0) {
-
-                    Dungeon.level.discover( i );
-
-                    if (Dungeon.level.heroFOV[i]) {
-                        GameScene.discoverTile( i, terr );
-                        discover( i );
-                    }
+        if (action.equals(AC_GOTO)){
+            GameScene.selectCell(new CellSelector.Listener() {
+                @Override public String prompt() {
+                    return Messages.get(this, "where");
                 }
-            }
+                @Override public void onSelect(Integer cell) {
+                    if (cell == null)return;
+                    ScrollOfTeleportation.teleportToLocation(curUser, cell);
+
+                    hero.next();
+                }
+            });
         }
         GameScene.updateFog();
     }

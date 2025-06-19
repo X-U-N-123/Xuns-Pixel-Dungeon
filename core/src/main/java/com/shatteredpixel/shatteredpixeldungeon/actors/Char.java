@@ -33,6 +33,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Adrenaline;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AllyBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Amok;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ArcaneArmor;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ArtifactRecharge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barkskin;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Berserk;
@@ -97,6 +98,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Brute;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.CrystalSpire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DwarfKing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Elemental;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Ghoul;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GnollGeomancer;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Necromancer;
@@ -430,10 +432,6 @@ public abstract class Char extends Actor {
 					if (((Hero)this).hasTalent(Talent.HASHASHINS)){
 						Buff.affect(this, Talent.HashashinsTracker.class, Dungeon.hero.attackDelay()-1f);
 					}
-
-					if (Dungeon.hero.hasTalent(Talent.CHARGE_RECYCLING) && !enemy.isAlive()) {
-						Buff.affect(this, Invisibility.class, ((Hero)this).pointsInTalent(Talent.CHARGE_RECYCLING));
-					}
 				}
 			} else {
 				dmg = damageRoll();
@@ -551,6 +549,9 @@ public abstract class Char extends Actor {
 					enemy.buff(Brute.BruteRage.class).detach();
 				}
 				if (!enemy.isAlive()) {
+					if (Dungeon.hero.hasTalent(Talent.CHARGE_RECYCLING)) {
+						Buff.affect(Dungeon.hero, ArtifactRecharge.class).extend(Dungeon.hero.pointsInTalent(Talent.CHARGE_RECYCLING)).ignoreHornOfPlenty = false;
+					}
 					enemy.die(this);
 				} else {
 					//helps with triggering any on-damage effects that need to activate
@@ -780,7 +781,7 @@ public abstract class Char extends Actor {
 		if ( buff( Cripple.class ) != null ) speed /= 2f;
 		if ( buff( Stamina.class ) != null) speed *= 1.5f;
 		if (buff(DMdrill.DMcombo.class) != null){
-			if ( buff( DMdrill.DMcombo.class).isOverloading()) speed *= 1.5f;
+			if ( buff( DMdrill.DMcombo.class).isOverloading()) speed *= 2f;
 		}
 		if ( buff( Adrenaline.class ) != null) speed *= 2f;
 		if ( buff( Haste.class ) != null) speed *= 3f;
@@ -926,7 +927,7 @@ public abstract class Char extends Actor {
 		for (ChampionEnemy buff : buffs(ChampionEnemy.class)){
 			dmg = (int) Math.ceil(dmg * buff.damageTakenFactor());
 		}
-		
+
 		//TODO improve this when I have proper damage source logic
 		if (AntiMagic.RESISTS.contains(src.getClass())){
 			dmg -= AntiMagic.drRoll(this, glyphLevel(AntiMagic.class));

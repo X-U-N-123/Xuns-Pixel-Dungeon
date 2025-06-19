@@ -271,10 +271,10 @@ abstract public class MissileWeapon extends Weapon {
 				|| Dungeon.level.map[defender.pos] == Terrain.GRASS
 				|| Dungeon.level.map[defender.pos] ==Terrain.HIGH_GRASS)
 				&& curUser.heroClass != HeroClass.HUNTRESS
-				&& Dungeon.hero.buff(Talent.IvybindCooldown.class) == null
+				&& Dungeon.hero.buff(SpiritBow.IvybindCooldown.class) == null
 				&& Dungeon.hero.hasTalent(Talent.IVY_BIND)) {
 			Buff.affect(defender, Roots.class, 1f+2*Dungeon.hero.pointsInTalent(Talent.IVY_BIND));
-			Buff.affect(attacker, Talent.IvybindCooldown.class, 50);
+			Buff.affect(attacker, SpiritBow.IvybindCooldown.class, 50);
 		}
 
 		return super.proc(attacker, defender, damage);

@@ -98,7 +98,8 @@ public class Darkgoldsword extends MeleeWeapon{
             public void call() {
                 beforeAbilityUsed(hero, enemy);
                 AttackIndicator.target(enemy);
-                if (hero.attack(enemy, 1, 0, Char.INFINITE_ACCURACY)){
+                //41.6% base, 33% scaling
+                if (hero.attack(enemy, 1, 5+level(), Char.INFINITE_ACCURACY)){
                     Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG);
                 }
 
@@ -113,6 +114,21 @@ public class Darkgoldsword extends MeleeWeapon{
                 afterAbilityUsed(hero);
             }
         });
+    }
+
+    @Override
+    public String abilityInfo() {
+        int dmgBoost = levelKnown ? 5 + buffedLvl() : 5;
+        if (levelKnown){
+            return Messages.get(this, "ability_desc", augment.damageFactor(min()+dmgBoost), augment.damageFactor(max()+dmgBoost));
+        } else {
+            return Messages.get(this, "typical_ability_desc", min(0)+dmgBoost, max(0)+dmgBoost);
+        }
+    }
+
+    public String upgradeAbilityStat(int level){
+        int dmgBoost = 5 + level;
+        return augment.damageFactor(min(level)+dmgBoost) + "-" + augment.damageFactor(max(level)+dmgBoost);
     }
 }
 

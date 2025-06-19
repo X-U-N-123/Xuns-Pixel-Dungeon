@@ -30,6 +30,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Brute;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Ghoul;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ElmoParticle;
@@ -179,7 +180,7 @@ public class MagesStaff extends MeleeWeapon {
 		if (wand != null &&
 				attacker instanceof Hero && ((Hero)attacker).subClass == HeroSubClass.BATTLEMAGE) {
 			if (wand.curCharges < wand.maxCharges) wand.partialCharge += 0.5f;
-			if(defender.HP<=damage && defender.HP!=0 && defender.buff(Ghoul.Revivetracker.class)==null){//preventting brute and ghoul
+			if(defender.HP<=damage && defender.buff(Brute.BruteRage.class)==null && defender.buff(Ghoul.Revivetracker.class)==null){//preventting brute and ghoul
 				wand.partialCharge += 0.5f*Dungeon.hero.pointsInTalent(Talent.BATTLE_CHARGE);
 			}
 			ScrollOfRecharging.charge((Hero)attacker);

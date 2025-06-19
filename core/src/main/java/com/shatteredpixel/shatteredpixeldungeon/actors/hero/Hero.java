@@ -95,7 +95,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.KindOfWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClassArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
-import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.AntiMagic;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Viscosity;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.AlchemistsToolkit;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CapeOfThorns;
@@ -719,6 +718,13 @@ public class Hero extends Char {
 		NaturesPower.naturesPowerTracker natStrength = buff(NaturesPower.naturesPowerTracker.class);
 		if (natStrength != null){
 			speed *= (2f + 0.25f*pointsInTalent(Talent.GROWING_POWER));
+		}
+
+		if (hasTalent(Talent.JUNGLE_GUERRILLA) &&
+		(Dungeon.level.map[pos] == Terrain.GRASS
+		|| Dungeon.level.map[pos] == Terrain.HIGH_GRASS)
+		|| Dungeon.level.map[pos] == Terrain.FURROWED_GRASS) {
+			speed *= 1.15f;
 		}
 
 		speed = AscensionChallenge.modifyHeroSpeed(speed);
@@ -1624,6 +1630,10 @@ public class Hero extends Char {
 		//we ceil this one to avoid letting the player easily take 0 dmg from tenacity early
 		dmg = (int)Math.ceil(dmg * RingOfTenacity.damageMultiplier( this ));
 
+		if (buff(Talent.HashashinsTracker.class) != null){
+			buff(Talent.HashashinsTracker.class).hurt(dmg);
+		}
+
 		int preHP = HP + shielding();
 		if (src instanceof Hunger) preHP -= shielding();
 		super.damage( dmg, src );
@@ -1656,10 +1666,6 @@ public class Hero extends Char {
 				interrupt();
 				damageInterrupt = true;
 			}
-		}
-
-		if (buff(Talent.HashashinsTracker.class) != null){
-			Buff.affect(Dungeon.hero, PhysicalEmpower.class).set(1, Math.round(dmg*Dungeon.hero.pointsInTalent(Talent.HASHASHINS)/3f));
 		}
 	}
 	

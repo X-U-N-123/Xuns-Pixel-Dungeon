@@ -53,47 +53,7 @@ public class Whip extends MeleeWeapon {
 
 	@Override
 	protected void duelistAbility(Hero hero, Integer target) {
-
-		ArrayList<Char> targets = new ArrayList<>();
-		Char closest = null;
-
-		hero.belongings.abilityWeapon = this;
-		for (Char ch : Actor.chars()){
-			if (ch.alignment == Char.Alignment.ENEMY
-					&& !hero.isCharmedBy(ch)
-					&& Dungeon.level.heroFOV[ch.pos]
-					&& hero.canAttack(ch)){
-				targets.add(ch);
-				if (closest == null || Dungeon.level.trueDistance(hero.pos, closest.pos) > Dungeon.level.trueDistance(hero.pos, ch.pos)){
-					closest = ch;
-				}
-			}
-		}
-		hero.belongings.abilityWeapon = null;
-
-		if (targets.isEmpty()) {
-			GLog.w(Messages.get(this, "ability_no_target"));
-			return;
-		}
-
-		throwSound();
-		Char finalClosest = closest;
-		hero.sprite.attack(hero.pos, new Callback() {
-			@Override
-			public void call() {
-				beforeAbilityUsed(hero, finalClosest);
-				for (Char ch : targets) {
-					//ability does no extra damage
-					hero.attack(ch, 1, 0, Char.INFINITE_ACCURACY);
-					if (!ch.isAlive()){
-						onAbilityKill(hero, ch);
-					}
-				}
-				Invisibility.dispel();
-				hero.spendAndNext(hero.attackDelay());
-				afterAbilityUsed(hero);
-			}
-		});
+		lashAbility(hero, this);
 	}
 
 	@Override
@@ -107,5 +67,48 @@ public class Whip extends MeleeWeapon {
 
 	public String upgradeAbilityStat(int level){
 		return augment.damageFactor(min(level)) + "-" + augment.damageFactor(max(level));
+	}
+
+	public static void lashAbility(Hero hero, MeleeWeapon wep){
+		ArrayList<Char> targets = new ArrayList<>();
+		Char closest = null;
+
+		hero.belongings.abilityWeapon = wep;
+		for (Char ch : Actor.chars()){
+			if (ch.alignment == Char.Alignment.ENEMY
+			&& !hero.isCharmedBy(ch)
+			&& Dungeon.level.heroFOV[ch.pos]
+			&& hero.canAttack(ch)){
+				targets.add(ch);
+				if (closest == null || Dungeon.level.trueDistance(hero.pos, closest.pos) > Dungeon.level.trueDistance(hero.pos, ch.pos)){
+					closest = ch;
+				}
+			}
+		}
+		hero.belongings.abilityWeapon = null;
+
+		if (targets.isEmpty()) {
+			GLog.w(Messages.get(wep, "ability_no_target"));
+			return;
+		}
+
+		wep.throwSound();
+		Char finalClosest = closest;
+		hero.sprite.attack(hero.pos, new Callback() {
+			@Override
+			public void call() {
+				wep.beforeAbilityUsed(hero, finalClosest);
+				for (Char ch : targets) {
+					//ability does no extra damage
+					hero.attack(ch, 1, 0, Char.INFINITE_ACCURACY);
+					if (!ch.isAlive()){
+						onAbilityKill(hero, ch);
+					}
+				}
+				Invisibility.dispel();
+				hero.spendAndNext(hero.attackDelay());
+				wep.afterAbilityUsed(hero);
+			}
+		});
 	}
 }

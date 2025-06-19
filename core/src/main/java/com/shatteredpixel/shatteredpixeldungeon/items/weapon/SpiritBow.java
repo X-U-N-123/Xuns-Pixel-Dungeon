@@ -26,6 +26,9 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.GreaterHaste;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.PinCushion;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RevealedArea;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Roots;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
@@ -33,6 +36,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.huntress.NaturesPower;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Splash;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.LeafParticle;
+import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfSharpshooting;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
@@ -47,10 +51,14 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MissileSprite;
+import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.QuickSlotButton;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.watabou.noosa.Image;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.utils.Callback;
+import com.watabou.utils.GameMath;
 import com.watabou.utils.Random;
 import com.watabou.utils.Reflection;
 
@@ -135,10 +143,32 @@ public class SpiritBow extends Weapon {
 		if ((Dungeon.level.map[defender.pos] == Terrain.FURROWED_GRASS
 			|| Dungeon.level.map[defender.pos] == Terrain.GRASS
 			|| Dungeon.level.map[defender.pos] ==Terrain.HIGH_GRASS)
-			&& attacker.buff(Talent.IvybindCooldown.class) == null
+			&& attacker.buff(IvybindCooldown.class) == null
 			&& Dungeon.hero.hasTalent(Talent.IVY_BIND)) {
 			Buff.affect(defender, Roots.class, 1f+2*Dungeon.hero.pointsInTalent(Talent.IVY_BIND));
-			Buff.affect(attacker, Talent.IvybindCooldown.class, 50);
+			Buff.affect(attacker, IvybindCooldown.class, 50);
+		}
+
+		if ((Dungeon.level.map[attacker.pos] == Terrain.FURROWED_GRASS
+		|| Dungeon.level.map[attacker.pos] ==Terrain.HIGH_GRASS)
+		&& Random.Float() <= 0.25f * (Dungeon.hero.pointsInTalent(Talent.JUNGLE_GUERRILLA)-1)) {
+			Buff.affect(attacker, GreaterHaste.class).set((int)Math.ceil(delayFactor(curUser))+1);
+		}
+
+		if (Dungeon.hero.hasTalent(Talent.RESONANCE_FETCH) && !sniperSpecial
+		&& defender.buff(PinCushion.class) != null && attacker.buff(ResonanceFetchCooldown.class) == null){
+			Buff.affect(attacker, ResonanceFetchCooldown.class, 250 - 50*Dungeon.hero.pointsInTalent(Talent.RESONANCE_FETCH));
+			while (defender.buff(PinCushion.class) != null) {
+				Item item = defender.buff(PinCushion.class).grabOne();
+
+				if (item.doPickUp(Dungeon.hero, defender.pos)) {
+					Dungeon.hero.spend(-Item.TIME_TO_PICK_UP); //shooting already takes time
+					GLog.i( Messages.capitalize(Messages.get(Dungeon.hero, "you_now_have", item.name())) );
+				} else {
+					GLog.w(Messages.get(this, "cant_grab"));
+					Dungeon.level.drop(item, attacker.pos).sprite.drop();
+				}
+			}
 		}
 
 		return super.proc(attacker, defender, damage);
@@ -490,4 +520,16 @@ public class SpiritBow extends Weapon {
 			return Messages.get(SpiritBow.class, "prompt");
 		}
 	};
+
+	public static class IvybindCooldown extends FlavourBuff {
+		public int icon() { return BuffIndicator.TIME; }
+		public void tintIcon(Image icon) { icon.hardlight(0f, 0.5f, 0.25f); }
+		public float iconFadePercent() { return GameMath.gate(0, visualcooldown() / 50, 1); }
+	}
+
+	public static class ResonanceFetchCooldown extends FlavourBuff {
+		public int icon() { return BuffIndicator.TIME; }
+		public void tintIcon(Image icon) { icon.hardlight(0f, 0f, 0.8f); }
+		public float iconFadePercent() { return GameMath.gate(0, visualcooldown() / 200, 1); }
+	}
 }

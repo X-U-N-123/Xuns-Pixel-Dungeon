@@ -154,9 +154,9 @@ public enum Talent {
 	//Huntress T3
 	L_M_MASTER(105, 3), SEER_SHOT(106, 3), ORGANIC_FERTILIZER(125, 3),
 	//Sniper T3
-	FARSIGHT(107, 3), SHARED_ENCHANTMENT(108, 3), SHARED_UPGRADES(109, 3),
+	FARSIGHT(107, 3), SHARED_ENCHANTMENT(108, 3), SHARED_UPGRADES(109, 3),RESONANCE_FETCH(127, 3),
 	//Warden T3
-	DURABLE_TIPS(110, 3), BARKSKIN(111, 3), DEW_COLLECTING(112, 3),
+	DURABLE_TIPS(110, 3), BARKSKIN(111, 3), DEW_COLLECTING(112, 3),JUNGLE_GUERRILLA(230, 3),
 	//Spectral Blades T4
 	FAN_OF_BLADES(113, 4), PROJECTING_BLADES(114, 4), SPIRIT_BLADES(115, 4),
 	//Natures Power T4
@@ -294,22 +294,34 @@ public enum Talent {
 		}
 	}
 	public static class HashashinsTracker extends FlavourBuff{
+		public int icon() { return BuffIndicator.TIME; }
 		private int Boost = 0;
+
+		public void hurt(int dmg){
+			Boost += dmg;
+		}
 
 		@Override
 		public void detach(){
-			Buff.affect(Dungeon.hero, PhysicalEmpower.class).set(1, Math.round(Boost*Dungeon.hero.pointsInTalent(Talent.HASHASHINS)/3f));
+			Buff.affect(Dungeon.hero, PhysicalEmpower.class).set(1, Math.round(Boost*Dungeon.hero.pointsInTalent(Talent.HASHASHINS)/5f));
+		}
+
+		private static final String DMG = "dmg";
+		@Override
+		public void storeInBundle(Bundle bundle) {
+			super.storeInBundle(bundle);
+			bundle.put(DMG, Boost);
+		}
+		@Override
+		public void restoreFromBundle(Bundle bundle) {
+			super.restoreFromBundle(bundle);
+			Boost = bundle.getInt(DMG);
 		}
 	}
 	public static class RejuvenatingStepsCooldown extends FlavourBuff{
 		public int icon() { return BuffIndicator.TIME; }
 		public void tintIcon(Image icon) { icon.hardlight(0f, 0.35f, 0.15f); }
 		public float iconFadePercent() { return GameMath.gate(0, visualcooldown() / (15 - 5*Dungeon.hero.pointsInTalent(REJUVENATING_STEPS)), 1); }
-	};
-	public static class IvybindCooldown extends FlavourBuff{
-		public int icon() { return BuffIndicator.TIME; }
-		public void tintIcon(Image icon) { icon.hardlight(0f, 0.5f, 0.25f); }
-		public float iconFadePercent() { return GameMath.gate(0, visualcooldown() / 50, 1); }
 	};
 	public static class RejuvenatingStepsFurrow extends CounterBuff{{revivePersists = true;}};
 	public static class SeerShotCooldown extends FlavourBuff{
@@ -1178,16 +1190,16 @@ public enum Talent {
 				Collections.addAll(tierTalents, SOUL_EATER, SOUL_SIPHON, NECROMANCERS_MINIONS, CLEAR_YOUR_SOUL, MANA_EATING);
 				break;
 			case ASSASSIN:
-				Collections.addAll(tierTalents, ENHANCED_LETHALITY, ASSASSINS_REACH, TERRORIST_ATTACK);
+				Collections.addAll(tierTalents, ENHANCED_LETHALITY, ASSASSINS_REACH, TERRORIST_ATTACK, CHARGE_RECYCLING, HASHASHINS);
 				break;
 			case FREERUNNER:
 				Collections.addAll(tierTalents, EVASIVE_ARMOR, PROJECTILE_MOMENTUM, SPEEDY_STEALTH, ARCANE_STEP, STRETCHING);
 				break;
 			case SNIPER:
-				Collections.addAll(tierTalents, FARSIGHT, SHARED_ENCHANTMENT, SHARED_UPGRADES);
+				Collections.addAll(tierTalents, FARSIGHT, SHARED_ENCHANTMENT, SHARED_UPGRADES, RESONANCE_FETCH);
 				break;
 			case WARDEN:
-				Collections.addAll(tierTalents, DURABLE_TIPS, BARKSKIN, DEW_COLLECTING);
+				Collections.addAll(tierTalents, DURABLE_TIPS, BARKSKIN, DEW_COLLECTING, JUNGLE_GUERRILLA);
 				break;
 			case CHAMPION:
 				Collections.addAll(tierTalents, VARIED_CHARGE, TWIN_UPGRADES, COMBINED_LETHALITY);

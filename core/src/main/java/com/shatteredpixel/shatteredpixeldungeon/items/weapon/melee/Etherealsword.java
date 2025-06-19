@@ -22,17 +22,9 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
-import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
-import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
-import com.watabou.utils.Callback;
-
-import java.util.ArrayList;
 
 public class Etherealsword extends MeleeWeapon {
 
@@ -53,64 +45,20 @@ public class Etherealsword extends MeleeWeapon {
 
     @Override
     protected void duelistAbility(Hero hero, Integer target) {
-        //-2 damage, roughly -2 base dmg, no scaling
-        int dmgBoost = augment.damageFactor(-3);
-
-        ArrayList<Char> targets = new ArrayList<>();
-        Char closest = null;
-
-        hero.belongings.abilityWeapon = this;
-        for (Char ch : Actor.chars()){
-            if (ch.alignment == Char.Alignment.ENEMY
-                    && !hero.isCharmedBy(ch)
-                    && Dungeon.level.heroFOV[ch.pos]
-                    && hero.canAttack(ch)){
-                targets.add(ch);
-                if (closest == null || Dungeon.level.trueDistance(hero.pos, closest.pos) > Dungeon.level.trueDistance(hero.pos, ch.pos)){
-                    closest = ch;
-                }
-            }
-        }
-        hero.belongings.abilityWeapon = null;
-
-        if (targets.isEmpty()) {
-            GLog.w(Messages.get(this, "ability_no_target"));
-            return;
-        }
-
-        throwSound();
-        Char finalClosest = closest;
-        hero.sprite.attack(hero.pos, new Callback() {
-            @Override
-            public void call() {
-                beforeAbilityUsed(hero, finalClosest);
-                for (Char ch : targets) {
-                    //ability does 3 less damage
-                    hero.attack(ch, 1, dmgBoost, Char.INFINITE_ACCURACY);
-                    if (!ch.isAlive()){
-                        onAbilityKill(hero, ch);
-                    }
-                }
-                Invisibility.dispel();
-                hero.spendAndNext(hero.attackDelay());
-                afterAbilityUsed(hero);
-            }
-        });
+        Whip.lashAbility(hero, this);
     }
 
     @Override
     public String abilityInfo() {
-        int dmgBoost = -3;
         if (levelKnown){
-            return Messages.get(this, "ability_desc", augment.damageFactor(min()+dmgBoost), augment.damageFactor(max()+dmgBoost));
+            return Messages.get(this, "ability_desc", augment.damageFactor(min()), augment.damageFactor(max()));
         } else {
-            return Messages.get(this, "typical_ability_desc", min(0)+dmgBoost, max(0)+dmgBoost);
+            return Messages.get(this, "typical_ability_desc", min(0), max(0));
         }
     }
 
     public String upgradeAbilityStat(int level){
-        int dmgBoost = -3;
-        return augment.damageFactor(min(level)+dmgBoost) + "-" + augment.damageFactor(max(level)+dmgBoost);
+        return augment.damageFactor(min(level)) + "-" + augment.damageFactor(max(level));
     }
 
 }
