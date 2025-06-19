@@ -2,7 +2,7 @@
 
 Xun's Pixel Dungeon is an open-source traditional roguelike dungeon crawler with randomized levels and enemies, and hundreds of items to collect and use. It's based on the [source code of Pixel Dungeon](https://github.com/00-Evan/pixel-dungeon-gradle), by [Watabou](https://www.watabou.ru).
 
-Shattered Pixel Dungeon currently compiles for Android, and Desktop platforms. You can find official releases of the game on:
+Xun's Pixel Dungeon currently compiles for Android and Desktop platforms. You can find official releases of the game on:
 
 [![Itch.io](https://shatteredpixel.com/assets/images/badges/itch.png)](https://shattered-pixel.itch.io/shattered-pixel-dungeon)
 [![Github Releases](https://shatteredpixel.com/assets/images/badges/github.png)](https://github.com/00-Evan/shattered-pixel-dungeon/releases)

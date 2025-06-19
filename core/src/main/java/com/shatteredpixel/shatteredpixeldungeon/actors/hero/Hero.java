@@ -219,7 +219,8 @@ public class Hero extends Char {
 	public HeroAction curAction = null;
 	public HeroAction lastAction = null;
 
-	private Char enemy;
+	//reference to the enemy the hero is currently in the process of attacking
+	private Char attackTarget;
 	
 	public boolean resting = false;
 	
@@ -464,7 +465,7 @@ public class Hero extends Char {
 	
 	public boolean shoot( Char enemy, MissileWeapon wep ) {
 
-		this.enemy = enemy;
+		attackTarget = enemy;
 		boolean wasEnemy = enemy.alignment == Alignment.ENEMY
 				|| (enemy instanceof Mimic && enemy.alignment == Alignment.NEUTRAL);
 
@@ -486,6 +487,7 @@ public class Hero extends Char {
 			Buff.affect( this, Sai.ComboStrikeTracker.class).addHit();
 		}
 
+		attackTarget = null;
 		return hit;
 	}
 	
@@ -1411,15 +1413,15 @@ public class Hero extends Char {
 	
 	private boolean actAttack( HeroAction.Attack action ) {
 
-		enemy = action.target;
+		attackTarget = action.target;
 
-		if (isCharmedBy( enemy )){
+		if (isCharmedBy(attackTarget)){
 			GLog.w( Messages.get(Charm.class, "cant_attack"));
 			ready();
 			return false;
 		}
 
-		if (enemy.isAlive() && canAttack( enemy ) && enemy.invisible == 0) {
+		if (attackTarget.isAlive() && canAttack(attackTarget) && attackTarget.invisible == 0) {
 
 			if (heroClass != HeroClass.DUELIST
 					&& hasTalent(Talent.AGGRESSIVE_BARRIER)
@@ -1430,26 +1432,29 @@ public class Hero extends Char {
 				Buff.affect(this, Talent.AggressiveBarrierCooldown.class, 25f);
 
 			}
-			sprite.attack( enemy.pos );
+			//attack target cleared on onAttackComplete
+			sprite.attack( attackTarget.pos );
 
 			return false;
 
 		} else {
 
-			if (fieldOfView[enemy.pos] && getCloser( enemy.pos )) {
+			if (fieldOfView[attackTarget.pos] && getCloser( attackTarget.pos )) {
 
+				attackTarget = null;
 				return true;
 
 			} else {
 				ready();
+				attackTarget = null;
 				return false;
 			}
 
 		}
 	}
 
-	public Char enemy(){
-		return enemy;
+	public Char attackTarget(){
+		return attackTarget;
 	}
 	
 	public void rest( boolean fullRest ) {
@@ -2300,23 +2305,23 @@ public class Hero extends Char {
 	@Override
 	public void onAttackComplete() {
 
-		if (enemy == null){
+		if (attackTarget == null){
 			curAction = null;
 			super.onAttackComplete();
 			return;
 		}
 		
-		AttackIndicator.target(enemy);
-		boolean wasEnemy = enemy.alignment == Alignment.ENEMY
-				|| (enemy instanceof Mimic && enemy.alignment == Alignment.NEUTRAL);
+		AttackIndicator.target(attackTarget);
+		boolean wasEnemy = attackTarget.alignment == Alignment.ENEMY
+				|| (attackTarget instanceof Mimic && attackTarget.alignment == Alignment.NEUTRAL);
 
-		boolean hit = attack( enemy );
+		boolean hit = attack(attackTarget);
 		
 		Invisibility.dispel();
 		spend( attackDelay() );
 
 		if (hit && subClass == HeroSubClass.GLADIATOR && wasEnemy){
-			Buff.affect( this, Combo.class ).hit( enemy );
+			Buff.affect( this, Combo.class ).hit(attackTarget);
 		}
 
 		if (hit && heroClass == HeroClass.DUELIST && wasEnemy){
@@ -2324,6 +2329,7 @@ public class Hero extends Char {
 		}
 
 		curAction = null;
+		attackTarget = null;
 
 		super.onAttackComplete();
 	}
