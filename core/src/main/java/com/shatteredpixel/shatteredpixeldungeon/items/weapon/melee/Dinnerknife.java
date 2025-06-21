@@ -56,7 +56,7 @@ public class Dinnerknife extends MeleeWeapon {
 
     @Override
     public int proc(Char attacker, Char defender, int damage) {
-        Buff.affect(defender, Bleeding.class).set(0.8f*damage);
+        Buff.affect(defender, Bleeding.class).set(0.9f*damage);
         return super.proc( attacker, defender, damage );
     }
 

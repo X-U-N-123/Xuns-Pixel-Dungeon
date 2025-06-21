@@ -23,17 +23,25 @@ package com.shatteredpixel.shatteredpixeldungeon.items.food;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ArtifactRecharge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bless;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Splash;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfExperience;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRecharging;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
+import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
+import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
@@ -76,9 +84,9 @@ public class Pasty extends Food {
 			case SHATTEREDPD_BIRTHDAY:
 				image = ItemSpriteSheet.SHATTERED_CAKE;
 				break;
-			//case MID_AUTUMN:
-				//image = ItemSpriteSheet.MOONCAKE;
-			//break;
+			case MID_AUTUMN:
+				image = ItemSpriteSheet.MOONCAKE;
+			break;
 			case HALLOWEEN:
 				image = ItemSpriteSheet.PUMPKIN_PIE;
 				break;
@@ -167,8 +175,9 @@ public class Pasty extends Food {
 				hero.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(expToGive), FloatingText.EXPERIENCE);
 				hero.earnExp(expToGive, PotionOfExperience.class);
 				break;
-			//case MID_AUTUMN:
-				//break;
+			case MID_AUTUMN:
+				Buff.affect(hero, Invisibility.class, 10f);
+				break;
 			case HALLOWEEN:
 				//heals for 5% max hp, min of 3
 				int toHeal = Math.max(3, hero.HT/20);
@@ -207,8 +216,8 @@ public class Pasty extends Food {
 				return Messages.get(this, "shattered_name");
 			case HALLOWEEN:
 				return Messages.get(this, "pie_name");
-			//case MID_AUTUMN:
-				//return Messages.get(this, "mooncake_name");
+			case MID_AUTUMN:
+				return Messages.get(this, "mooncake_name");
 			case PD_BIRTHDAY:
 				return Messages.get(this, "vanilla_name");
 			case WINTER_HOLIDAYS:
@@ -237,8 +246,8 @@ public class Pasty extends Food {
 				return Messages.get(this, "zongzi_desc");
 			case HALLOWEEN:
 				return Messages.get(this, "pie_desc");
-			//case MID_AUTUMN:
-				//return Messages.get(this, "mooncake_desc");
+			case MID_AUTUMN:
+				return Messages.get(this, "mooncake_desc");
 			case PD_BIRTHDAY:
 				return Messages.get(this, "vanilla_desc");
 			case WINTER_HOLIDAYS:

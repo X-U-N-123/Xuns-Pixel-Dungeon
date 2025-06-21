@@ -24,6 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.hero;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Bones;
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
@@ -46,7 +47,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Charm;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Combo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Drowsy;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Foresight;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.GreaterHaste;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HeroDisguise;
@@ -547,14 +547,11 @@ public class Hero extends Char {
 		if(attackDelay() >1 && hasTalent(Talent.OVERWHELMING)){
 			accuracy += accuracy * Math.max (attackDelay()-(pointsInTalent(Talent.OVERWHELMING) / 3f),0.5f);
 		}
-		int comboboost = 0;
-		if (buff(Combo.class) != null){
-			comboboost += buff(Combo.class).getComboCount() * Dungeon.hero.pointsInTalent(Talent.IN_BATTLE);
-		}
+
 		if (!RingOfForce.fightingUnarmed(this)) {
-			return (int)((attackSkill + comboboost) * accuracy * wep.accuracyFactor(this, target));
+			return (int)((attackSkill) * accuracy * wep.accuracyFactor(this, target));
 		} else {
-			return (int)((attackSkill + comboboost) * accuracy);
+			return (int)((attackSkill) * accuracy);
 		}
 	}
 	
@@ -1871,10 +1868,6 @@ public class Hero extends Char {
 			if (subClass == HeroSubClass.FREERUNNER){
 				Buff.affect(this, Momentum.class).gainStack();
 			}
-
-			if (hasTalent(Talent.MARCH_FORWARD)){
-				Buff.affect(this, Talent.MarchforwardTracker.class).move();
-			}
 			sprite.move(pos, step);
 			move(step);
 
@@ -2142,6 +2135,10 @@ public class Hero extends Char {
 			}
 		}
 
+		if (Dungeon.isChallenged(Challenges.X_U_NS_POWER)){
+			Badges.validateDeathInDevmode();
+		}
+
 		if (ankh != null) {
 			interrupt();
 
@@ -2335,6 +2332,9 @@ public class Hero extends Char {
 
 		if (hit && heroClass == HeroClass.DUELIST && wasEnemy){
 			Buff.affect( this, Sai.ComboStrikeTracker.class).addHit();
+			if (hasTalent(Talent.SKILLED_DUAL)) {
+				Buff.affect(this, Talent.SkilleddualTracker.class).Hit((Weapon) belongings.weapon());
+			}
 		}
 
 		curAction = null;

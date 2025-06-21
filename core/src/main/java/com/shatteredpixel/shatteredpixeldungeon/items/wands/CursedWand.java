@@ -1103,11 +1103,11 @@ public class CursedWand {
 								public void call() {
 									GameScene.show(
 											new WndOptions(Icons.get(Icons.WARNING),
-													"errtitle",
-													"errdesc",
-													"abort",
-													"retry",
-													"fail") {
+													Messages.get(CursedWand.class, "title"),
+													Messages.get(CursedWand.class, "desc"),
+													Messages.get(CursedWand.class, "abort"),
+													Messages.get(CursedWand.class, "retry"),
+													Messages.get(CursedWand.class, "fail")) {
 
 												@Override
 												protected void onSelect(int index) {

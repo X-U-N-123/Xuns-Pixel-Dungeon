@@ -47,7 +47,7 @@ public class Knife extends MeleeWeapon {
 
     @Override
     public int proc(Char attacker, Char defender, int damage) {
-        Buff.affect(defender, Bleeding.class).set(0.68f*damage);
+        Buff.affect(defender, Bleeding.class).set(0.78f*damage);
         return super.proc( attacker, defender, damage );
     }
 

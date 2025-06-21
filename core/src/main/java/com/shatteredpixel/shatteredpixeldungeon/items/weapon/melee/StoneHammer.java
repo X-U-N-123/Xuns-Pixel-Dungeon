@@ -46,7 +46,7 @@ public class StoneHammer extends MeleeWeapon{
 
     @Override
     public int max(int lvl) {
-        return  Math.round(7*(tier+1)) +        //21 base, up from 15
+        return  7*(tier+1) +        //21 base, up from 15
                 lvl*Math.round(1.67f*(tier+1));  //+5 per level, up from +3
     }
 

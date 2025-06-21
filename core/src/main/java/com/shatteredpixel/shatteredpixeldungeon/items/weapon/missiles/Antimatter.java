@@ -88,16 +88,10 @@ public class Antimatter extends MissileWeapon{
             if (Dungeon.level.distance(cell, i) <= 2){
                 if (!(Dungeon.level.traps.get(cell+i) instanceof TenguDartTrap)) Dungeon.level.pressCell(cell+i);
                 if ((Actor.findChar(cell + i) != null) && i != 0) targets.add(Actor.findChar(cell + i));
-                if (Dungeon.level.map[cell + i] == Terrain.HIGH_GRASS
-                        || Dungeon.level.map[cell + i] == Terrain.GRASS
-                        || Dungeon.level.map[cell + i] == Terrain.FURROWED_GRASS
-                        || Dungeon.level.map[cell + i] == Terrain.WATER
-                        || Dungeon.level.map[cell + i] == Terrain.BOOKSHELF
-                        || Dungeon.level.map[cell + i] == Terrain.BARRICADE
+                if (Dungeon.level.map[cell + i] == Terrain.WATER
                         || Dungeon.level.map[cell + i] == Terrain.MINE_CRYSTAL
                         || Dungeon.level.map[cell + i] == Terrain.MINE_BOULDER
-                        || Dungeon.level.map[cell + i] == Terrain.DOOR
-                        || Dungeon.level.map[cell + i] == Terrain.OPEN_DOOR){
+                        || (Terrain.flags[Dungeon.level.map[i + cell]] & Terrain.FLAMABLE) != 0){
                     Level.set(cell + i, Terrain.EMPTY);
                     GameScene.updateMap(cell + i);
                 }

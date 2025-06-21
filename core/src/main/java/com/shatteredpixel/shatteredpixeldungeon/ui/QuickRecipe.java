@@ -39,6 +39,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.AquaBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.BlizzardBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.CausticBrew;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.HeatBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.InfernalBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.ShockingBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.UnstableBrew;
@@ -364,6 +365,7 @@ public class QuickRecipe extends Component {
 				result.add(new QuickRecipe(new ShockingBrew.Recipe()));
 				result.add(new QuickRecipe(new InfernalBrew.Recipe()));
 				result.add(new QuickRecipe(new AquaBrew.Recipe()));
+				result.add(new QuickRecipe(new HeatBrew.Recipe()));
 				result.add(null);
 				result.add(null);
 				result.add(new QuickRecipe(new ElixirOfHoneyedHealing.Recipe()));

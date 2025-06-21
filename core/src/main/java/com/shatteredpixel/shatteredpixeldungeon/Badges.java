@@ -94,6 +94,7 @@ public class Badges {
 		DEATH_FROM_GAS              ( 19 ),
 		DEATH_FROM_HUNGER           ( 20 ),
 		DEATH_FROM_FALLING          ( 21 ),
+		DEATH_IN_DEVMODE            ( 25, BadgeType.JOURNAL ),
 		RESEARCHER_1                ( 22, BadgeType.JOURNAL ),
 		GAMES_PLAYED_1              ( 23, BadgeType.GLOBAL ),
 		HIGH_SCORE_1                ( 24 ),
@@ -204,16 +205,18 @@ public class Badges {
 		GAMES_PLAYED_4              ( 108, BadgeType.GLOBAL ),
 		HIGH_SCORE_4                ( 109 ),
 		CHAMPION_1                  ( 110 ),
+		PIRANHAS_2                  ( 111 ),
 
 		//diamond
-		PACIFIST_ASCENT             ( 120 ),
-		TAKING_THE_MICK             ( 121 ), //This might be the most obscure game reference I've made
-		BOSS_CHALLENGE_5            ( 122 ),
-		RESEARCHER_5                ( 123, BadgeType.JOURNAL ),
-		GAMES_PLAYED_5              ( 124, BadgeType.GLOBAL ),
-		HIGH_SCORE_5                ( 125 ),
-		CHAMPION_2                  ( 126 ),
-		CHAMPION_3                  ( 127 );
+		PACIFIST_ASCENT             ( 112 ),
+		TAKING_THE_MICK             ( 113 ), //This might be the most obscure game reference I've made
+		BOSS_CHALLENGE_5            ( 114 ),
+		RESEARCHER_5                ( 115, BadgeType.JOURNAL ),
+		GAMES_PLAYED_5              ( 116, BadgeType.GLOBAL ),
+		HIGH_SCORE_5                ( 117 ),
+		CHAMPION_2                  ( 118 ),
+		CHAMPION_3                  ( 119 ),
+		MANY_BUFFS_2                ( 120 ); //我可能是玩《我的世界》玩多了
 
 		public boolean meta;
 
@@ -546,9 +549,14 @@ public class Badges {
 		if (!local.contains( Badge.PIRANHAS ) && Statistics.piranhasKilled >= 6) {
 			badge = Badge.PIRANHAS;
 			local.add( badge );
+			displayBadge( badge );
+
+			if (!local.contains( Badge.PIRANHAS_2 ) && Statistics.piranhasKilled >= 10) {
+				badge = Badge.PIRANHAS_2;
+				local.add( badge );
+				displayBadge( badge );
+			}
 		}
-		
-		displayBadge( badge );
 	}
 	
 	public static void validateItemLevelAquired( Item item ) {
@@ -737,6 +745,12 @@ public class Badges {
 		displayBadge( badge );
 		
 		validateDeathFromAll();
+	}
+
+	public static void validateDeathInDevmode() {
+		Badge badge = Badge.DEATH_IN_DEVMODE;
+		local.add( badge );
+		displayBadge( badge );
 	}
 
 	public static void validateDeathFromFalling() {
@@ -1061,11 +1075,16 @@ public class Badges {
 		}
 	}
 
-	public static void validateManyBuffs(){
+	public static void validateManyBuffs(int amount){
 		if (!local.contains( Badge.MANY_BUFFS )) {
 			Badge badge = Badge.MANY_BUFFS;
 			local.add( badge );
 			displayBadge( badge );
+			if (amount >= 20){
+				badge = Badge.MANY_BUFFS_2;
+				local.add(badge);
+				displayBadge(badge);
+			}
 		}
 	}
 	
@@ -1159,7 +1178,7 @@ public class Badges {
 	
 	private static void displayBadge( Badge badge ) {
 
-		if (badge == null || (badge.type != BadgeType.JOURNAL && !Dungeon.customSeedText.isEmpty())) {
+		if (badge == null || (badge.type != BadgeType.JOURNAL && (!Dungeon.customSeedText.isEmpty() || Dungeon.isChallenged(Challenges.X_U_NS_POWER)))) {
 			return;
 		}
 		
@@ -1233,7 +1252,9 @@ public class Badges {
 			{Badge.RESEARCHER_1, Badge.RESEARCHER_2, Badge.RESEARCHER_3, Badge.RESEARCHER_4, Badge.RESEARCHER_5},
 			{Badge.HIGH_SCORE_1, Badge.HIGH_SCORE_2, Badge.HIGH_SCORE_3, Badge.HIGH_SCORE_4, Badge.HIGH_SCORE_5},
 			{Badge.GAMES_PLAYED_1, Badge.GAMES_PLAYED_2, Badge.GAMES_PLAYED_3, Badge.GAMES_PLAYED_4, Badge.GAMES_PLAYED_5},
-			{Badge.CHAMPION_1, Badge.CHAMPION_2, Badge.CHAMPION_3}
+			{Badge.CHAMPION_1, Badge.CHAMPION_2, Badge.CHAMPION_3},
+			{Badge.MANY_BUFFS, Badge.MANY_BUFFS_2},
+			{Badge.PIRANHAS, Badge.PIRANHAS_2}
 	};
 
 	//don't show the later badge if the earlier one isn't unlocked
@@ -1246,7 +1267,8 @@ public class Badges {
 			{Badge.BOSS_SLAIN_4, Badge.BOSS_CHALLENGE_4},
 			{Badge.VICTORY,      Badge.BOSS_CHALLENGE_5},
 			{Badge.HAPPY_END,    Badge.PACIFIST_ASCENT},
-			{Badge.VICTORY,      Badge.TAKING_THE_MICK}
+			{Badge.VICTORY,      Badge.TAKING_THE_MICK},
+			{Badge.VICTORY,      Badge.DEATH_IN_DEVMODE},
 	};
 
 	//If the summary badge is unlocked, don't show the component badges

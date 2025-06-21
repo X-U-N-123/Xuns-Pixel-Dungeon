@@ -30,6 +30,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.AquaBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.BlizzardBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.CausticBrew;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.HeatBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.InfernalBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.ShockingBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.UnstableBrew;
@@ -180,6 +181,7 @@ public abstract class Recipe {
 		new BlizzardBrew.Recipe(),
 		new InfernalBrew.Recipe(),
 		new AquaBrew.Recipe(),
+		new HeatBrew.Recipe(),
 		new ShockingBrew.Recipe(),
 		new ElixirOfDragonsBlood.Recipe(),
 		new ElixirOfIcyTouch.Recipe(),

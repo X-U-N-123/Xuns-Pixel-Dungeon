@@ -106,7 +106,7 @@ public enum Talent {
 	//Berserker T3
 	ENDLESS_RAGE(11, 3), DEATHLESS_FURY(12, 3), ENRAGED_CATALYST(13, 3), BEAR_GRUDGES(30, 3), BLADE_OF_ANGER(31, 3),
 	//Gladiator T3
-	CLEAVE(14, 3), LETHAL_DEFENSE(15, 3), ENHANCED_COMBO(16, 3), IN_BATTLE(224, 3), FAR_STANDOFF(225, 3),
+	CLEAVE(14, 3), LETHAL_DEFENSE(15, 3), ENHANCED_COMBO(16, 3), REPEATED_SKILL(224, 3), FAR_STANDOFF(225, 3),
 	//Heroic Leap T4
 	BODY_SLAM(17, 4), IMPACT_WAVE(18, 4), DOUBLE_JUMP(19, 4),
 	//Shockwave T4
@@ -172,7 +172,7 @@ public enum Talent {
 	//Duelist T3
 	PRECISE_ASSAULT(137, 3), DEADLY_FOLLOWUP(138, 3), AGILE_COUNTATK(157, 3),
 	//Champion T3
-	VARIED_CHARGE(139, 3), TWIN_UPGRADES(140, 3), COMBINED_LETHALITY(141, 3), MARCH_FORWARD(158, 3),
+	VARIED_CHARGE(139, 3), TWIN_UPGRADES(140, 3), COMBINED_LETHALITY(141, 3), SKILLED_DUAL(158, 3),
 	//Monk T3
 	UNENCUMBERED_SPIRIT(142, 3), MONASTIC_VIGOR(143, 3), COMBINED_ENERGY(144, 3), YANG_SEEING(232, 3), YIN_GAIT(233, 3),
 	//Challenge T4
@@ -450,21 +450,30 @@ public enum Talent {
 		}
 	}
 
-	public static class MarchforwardTracker extends Buff{
+	public static class SkilleddualTracker extends Buff{
 		{
 			type = buffType.POSITIVE;
 		}
-		public int icon() { return BuffIndicator.MOMENTUM; }
-		private int Step = 0;
+		public int icon() { return BuffIndicator.SKILLED_DUAL; }
+		private int Stack = 0;
 		private int time = 0;
+		Weapon Wep = null;
 
-		public void move(){
-			Step = Math.min(Step + 1, 10 * Dungeon.hero.pointsInTalent(MARCH_FORWARD));
-			time = 3;
+		public void Hit(Weapon wep){
+			if (Wep != wep) {
+				Wep = wep;
+				Stack = Math.min(Stack+3, 10*Dungeon.hero.pointsInTalent(SKILLED_DUAL));
+				time = 10;
+			};
 		}
 
-		public float attack(){
-			return Step/100f;
+		@Override
+		public String iconTextDisplay() {
+			return Integer.toString(time);
+		}
+
+		public float attackBoost(){
+			return Stack/100f;
 		}
 
 		@Override
@@ -477,29 +486,30 @@ public enum Talent {
 			return true;
 		}
 
-		private static final String STEP = "step";
+		private static final String STACK = "stack";
 		private static final String TIME = "time";
+		private static final String WEP = "wep";
 		@Override
 		public void storeInBundle(Bundle bundle) {
 			super.storeInBundle(bundle);
-			bundle.put(STEP, Step);
+			bundle.put(STACK, Stack);
 			bundle.put(TIME, time);
+			bundle.put(WEP, Wep);
 		}
 		@Override
 		public void restoreFromBundle(Bundle bundle) {
 			super.restoreFromBundle(bundle);
-			Step = bundle.getInt(STEP);
+			Stack = bundle.getInt(STACK);
 			time = bundle.getInt(TIME);
+			Wep = (Weapon) bundle.get(WEP);
 		}
-
-		@Override
-		public void tintIcon(Image icon) { icon.hardlight(1,0,1); }
 
 		@Override
 		public String desc() {
-			return Messages.get(this, "momentum_desc", time, Step);
+			return Messages.get(this, "desc", time, Stack, Wep.name());
 		}
 	}
+
 	public static class CombinedLethalityAbilityTracker extends FlavourBuff{
 		public MeleeWeapon weapon;
 	};
@@ -526,7 +536,8 @@ public enum Talent {
 	public static int MonkViewBoost(){
 		MonkEnergy Energy =Dungeon.hero.buff(MonkEnergy.class);
 		if (Energy != null && Dungeon.hero.hasTalent(Talent.YANG_SEEING)) {
-			return (int)Math.floor(Energy.Getenergy() / (5 - Dungeon.hero.pointsInTalent(Talent.YANG_SEEING)));
+			return Math.min((int)Math.floor(Energy.Getenergy() / (5 - Dungeon.hero.pointsInTalent(Talent.YANG_SEEING))),
+			1+2*Dungeon.hero.pointsInTalent(YANG_SEEING));
 		} else return 0;
 	}
 
@@ -1077,11 +1088,10 @@ public enum Talent {
 			dmg = Math.round(dmg * (1.0f + 0.05f*hero.pointsInTalent(AGILE_COUNTATK)));
 		}
 
-		/*Buff buffs = hero.buff(MarchforwardTracker.class);
-		if (hero.hasTalent(MARCH_FORWARD) && buffs != null){
-			buffs.detach();
-			dmg = Math.round(dmg * hero.buff(MarchforwardTracker.class).attack());
-		}*/
+		Buff buffs = hero.buff(SkilleddualTracker.class);
+		if (hero.hasTalent(SKILLED_DUAL) && buffs != null){
+			dmg = Math.round(dmg * (1f + hero.buff(SkilleddualTracker.class).attackBoost()));
+		}
 
 		return dmg;
 	}
@@ -1245,7 +1255,7 @@ public enum Talent {
 				Collections.addAll(tierTalents, ENDLESS_RAGE, DEATHLESS_FURY, ENRAGED_CATALYST, BEAR_GRUDGES, BLADE_OF_ANGER);
 				break;
 			case GLADIATOR:
-				Collections.addAll(tierTalents, CLEAVE, LETHAL_DEFENSE, ENHANCED_COMBO, IN_BATTLE, FAR_STANDOFF);
+				Collections.addAll(tierTalents, CLEAVE, LETHAL_DEFENSE, ENHANCED_COMBO, REPEATED_SKILL, FAR_STANDOFF);
 				break;
 			case BATTLEMAGE:
 				Collections.addAll(tierTalents, EMPOWERED_STRIKE, MYSTICAL_CHARGE, EXCESS_CHARGE, BATTLE_CHARGE);
@@ -1266,7 +1276,7 @@ public enum Talent {
 				Collections.addAll(tierTalents, DURABLE_TIPS, BARKSKIN, DEW_COLLECTING, JUNGLE_GUERRILLA);
 				break;
 			case CHAMPION:
-				Collections.addAll(tierTalents, VARIED_CHARGE, TWIN_UPGRADES, COMBINED_LETHALITY);
+				Collections.addAll(tierTalents, VARIED_CHARGE, TWIN_UPGRADES, COMBINED_LETHALITY, SKILLED_DUAL);
 				break;
 			case MONK:
 				Collections.addAll(tierTalents, UNENCUMBERED_SPIRIT, MONASTIC_VIGOR, COMBINED_ENERGY, YANG_SEEING, YIN_GAIT);
@@ -1336,6 +1346,7 @@ public enum Talent {
 	static{
 		//X_U_N v0.2.2
 		renamedTalents.put("SHIELDING_DEW",             "DEW_COLLECTING");
+		renamedTalents.put("IN_BATTLE",                 "REPEATED_SKILL");
 		//X_U_N v0.2.0
 		renamedTalents.put("BOUNTY_HUNTER",             "TERRORIST_ATTACK");
 		//X_U_N v0.1.4

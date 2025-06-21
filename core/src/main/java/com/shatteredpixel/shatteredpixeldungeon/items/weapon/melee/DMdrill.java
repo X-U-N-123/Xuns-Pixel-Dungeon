@@ -50,7 +50,7 @@ public class DMdrill extends MeleeWeapon {
 
     @Override
     public int proc(Char attacker, Char defender, int damage) {
-        Buff.affect(attacker, DMcombo.class).hit();
+        Buff.affect(attacker, DMcombo.class).hit(3 + level());
         if (attacker.buff(DMcombo.class)!=null){
             ACC = (float)Math.pow(1.1f, attacker.buff(DMcombo.class).Getcount());
             damage = (int)(damage*Math.pow(1.1f, attacker.buff(DMcombo.class).Getcount()));
@@ -155,12 +155,12 @@ public class DMdrill extends MeleeWeapon {
             return count;
         }
 
-        protected void hit(){
+        protected void hit(int time){
             count++;
             if (Overloadtime > 0){
-                Time += 1 + curItem.level();
+                Time += time - 1;
             } else if (Time <= 5){
-                Time = 3 + curItem.level();
+                Time = time;
             }
             BuffIndicator.refreshHero();
         }

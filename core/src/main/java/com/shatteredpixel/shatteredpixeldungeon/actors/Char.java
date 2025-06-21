@@ -316,9 +316,7 @@ public abstract class Char extends Actor {
 			if (Dungeon.hero.subClass == HeroSubClass.FREERUNNER){
 				Buff.affect(Dungeon.hero, Momentum.class).gainStack();
 			}
-			if (((Hero)c).hasTalent(Talent.MARCH_FORWARD)){
-				Buff.affect(this, Talent.MarchforwardTracker.class).move();
-			}
+
 			Dungeon.hero.justMoved = true;
 
 			Dungeon.hero.busy();
@@ -1320,7 +1318,7 @@ public abstract class Char extends Actor {
 
 		MonkEnergy energy = Dungeon.hero.buff(MonkEnergy.class);
 		if (this == Dungeon.hero && Dungeon.hero.hasTalent(Talent.YIN_GAIT) && energy != null) {
-			stealth += 0.15f * Dungeon.hero.pointsInTalent(Talent.YIN_GAIT) * energy.Getenergy();
+			stealth += 0.2f * Dungeon.hero.pointsInTalent(Talent.YIN_GAIT) * energy.Getenergy();
 		}
 
 		return stealth;

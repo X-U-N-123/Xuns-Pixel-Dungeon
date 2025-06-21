@@ -47,7 +47,7 @@ public class Greatknife extends MeleeWeapon {
 
     @Override
     public int proc(Char attacker, Char defender, int damage) {
-        Buff.affect(defender, Bleeding.class).set(0.56f*damage);
+        Buff.affect(defender, Bleeding.class).set(0.66f*damage);
         return super.proc( attacker, defender, damage );
     }
 

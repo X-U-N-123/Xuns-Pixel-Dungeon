@@ -52,7 +52,7 @@ public class Goldarrow extends Item {
     String AC_GOTO = "goto";
 
     {
-        defaultAction = AC_TELEPORT;
+        defaultAction = AC_GOTO;
         image = ItemSpriteSheet.GOLDARROW;
         cursedKnown = levelKnown = true;
         unique = true;
@@ -103,10 +103,10 @@ public class Goldarrow extends Item {
                 }
             }
 
-            Buff.prolong(curUser, Awareness.class, 250);
-            Buff.prolong(curUser, MindVision.class, 250);
-            Buff.prolong(curUser, MagicalSight.class, 250);
-            Buff.prolong(curUser, Foresight.class, 250);
+            Buff.prolong(curUser, Awareness.class, 100);
+            Buff.prolong(curUser, MindVision.class, 100);
+            Buff.prolong(curUser, MagicalSight.class, 100);
+            Buff.prolong(curUser, Foresight.class, 100);
             Dungeon.observe();
             Dungeon.hero.checkVisibleMobs();
         }
