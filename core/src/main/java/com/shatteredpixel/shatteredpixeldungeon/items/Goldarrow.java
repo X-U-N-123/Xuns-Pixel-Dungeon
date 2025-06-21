@@ -27,6 +27,7 @@ package com.shatteredpixel.shatteredpixeldungeon.items;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Awareness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Foresight;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicalSight;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MindVision;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
@@ -102,9 +103,10 @@ public class Goldarrow extends Item {
                 }
             }
 
-            Buff.prolong(curUser, Awareness.class, Awareness.DURATION);
-            Buff.prolong(curUser, MindVision.class, MindVision.DURATION);
-            Buff.prolong(curUser, MagicalSight.class, MagicalSight.DURATION);
+            Buff.prolong(curUser, Awareness.class, 250);
+            Buff.prolong(curUser, MindVision.class, 250);
+            Buff.prolong(curUser, MagicalSight.class, 250);
+            Buff.prolong(curUser, Foresight.class, 250);
             Dungeon.observe();
             Dungeon.hero.checkVisibleMobs();
         }

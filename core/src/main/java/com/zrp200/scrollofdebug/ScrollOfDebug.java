@@ -420,12 +420,12 @@ public class ScrollOfDebug extends Scroll {
                             !macro.matches("[A-Za-z_][\\w$_]*") ? "must be valid java variable name (alphanumeric, first character must be a letter or underscore)"
                                     : null;
                     if (failureReason != null) {
-                        GLog.n("Invalid macro name - " + failureReason);
+                        GLog.n("非法变量名： - " + failureReason);
                     } else GameScene.show(new WndTextInput(
                             "Macro " + input[1], "Enter macro.\n\nMacros consist of chains of scroll of debug commands separated by new lines. Please refrain from commands that prompt for input outside of the last line.",
                             macroExists ? macros.get(macro) : "",
                             Integer.MAX_VALUE, // ????
-                            true, "Confirm", "Cancel"
+                            true, "确定", "取消"
                     ) {
                         @Override public void onSelect(boolean positive, String text) {
                             if (positive) setMacro(macro, text);
@@ -567,7 +567,7 @@ public class ScrollOfDebug extends Scroll {
                                 cls != null && canInstantiate(cls) ? Reflection.newInstance(cls) :
                                 null;
                         if(!executeMethod(o, cls, input, 2)) {
-                            GLog.w(String.format("No method '%s' was found for %s", input[2], cls));
+                            GLog.w(String.format("%s中找不到方法 '%s'", input[2], cls));
                             return false;
                         }
                         return true;
@@ -740,7 +740,7 @@ public class ScrollOfDebug extends Scroll {
                                         if(!success &&
                                                 index < input.length
                                                 && !executeMethod(added, input, index)
-                                        ) GLog.w("Warning: No supported method matching "+input[index]+" was found.");
+                                        ) GLog.w("警告：找不到与 "+input[index]+" 匹配的方法");
                                     }
                                     if(added == null) {
                                         added = Buff.affect(target, cls);
@@ -786,7 +786,7 @@ public class ScrollOfDebug extends Scroll {
                             });
                             return false;
                     } else {
-                        GLog.w( "%s \"%s\" not found.", command.paramClass.getSimpleName(), input[1]);
+                        GLog.w( "%s \"%s\" 找不到。", command.paramClass.getSimpleName(), input[1]);
                         return false;
                     }
                 } else {

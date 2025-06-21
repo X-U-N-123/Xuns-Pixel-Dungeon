@@ -316,6 +316,9 @@ public abstract class Char extends Actor {
 			if (Dungeon.hero.subClass == HeroSubClass.FREERUNNER){
 				Buff.affect(Dungeon.hero, Momentum.class).gainStack();
 			}
+			if (((Hero)c).hasTalent(Talent.MARCH_FORWARD)){
+				Buff.affect(this, Talent.MarchforwardTracker.class).move();
+			}
 			Dungeon.hero.justMoved = true;
 
 			Dungeon.hero.busy();
@@ -423,14 +426,14 @@ public abstract class Char extends Actor {
 				if (this instanceof Hero) {
 					if (((Hero)this).hasTalent(Talent.TERRORIST_ATTACK)) {
 						for (Mob mob : Dungeon.level.mobs.toArray( new Mob[0] )) {
- 							if (Dungeon.level.heroFOV[mob.pos] && mob.alignment != Alignment.ALLY) {
+ 							if (Dungeon.level.distance(pos, mob.pos) <= 5 && mob.alignment != Alignment.ALLY) {
 								Buff.affect( mob, Terror.class, (float)(1+Dungeon.hero.pointsInTalent(Talent.TERRORIST_ATTACK))).object = Dungeon.hero.id();
 							}
 						}
 					}
 
 					if (((Hero)this).hasTalent(Talent.HASHASHINS)){
-						Buff.affect(this, Talent.HashashinsTracker.class, Dungeon.hero.attackDelay()-1f);
+						Buff.affect(this, Talent.HashashinsTracker.class, Math.max(0, Dungeon.hero.attackDelay()-1f));
 					}
 				}
 			} else {
@@ -543,15 +546,17 @@ public abstract class Char extends Actor {
 			if (buff(FireImbue.class) != null)  buff(FireImbue.class).proc(enemy);
 			if (buff(FrostImbue.class) != null) buff(FrostImbue.class).proc(enemy);
 
+			if (Dungeon.hero.hasTalent(Talent.CHARGE_RECYCLING) && prep != null && this instanceof Hero &&
+			enemy.HP <= effectiveDamage && enemy.buff(Brute.BruteRage.class) == null) {
+				Buff.affect(this, ArtifactRecharge.class).extend(Dungeon.hero.pointsInTalent(Talent.CHARGE_RECYCLING)).ignoreHornOfPlenty = false;
+			}
+
 			if (enemy.isAlive() && enemy.alignment != alignment && prep != null && prep.canKO(enemy)){
 				enemy.HP = 0;
 				if (enemy.buff(Brute.BruteRage.class) != null){
 					enemy.buff(Brute.BruteRage.class).detach();
 				}
 				if (!enemy.isAlive()) {
-					if (Dungeon.hero.hasTalent(Talent.CHARGE_RECYCLING)) {
-						Buff.affect(Dungeon.hero, ArtifactRecharge.class).extend(Dungeon.hero.pointsInTalent(Talent.CHARGE_RECYCLING)).ignoreHornOfPlenty = false;
-					}
 					enemy.die(this);
 				} else {
 					//helps with triggering any on-damage effects that need to activate
@@ -619,7 +624,13 @@ public abstract class Char extends Actor {
 				//TODO enemy.defenseSound? currently miss plays for monks/crab even when they parry
 				Sample.INSTANCE.play(Assets.Sounds.MISS);
 			}
-			
+
+			if (enemy instanceof Hero){
+				if (Dungeon.hero.hasTalent(Talent.AGILE_COUNTATK)){
+					Buff.affect(Dungeon.hero, Talent.AgileCountATKTracker.class, 3f);
+				}
+			}
+
 			return false;
 			
 		}
@@ -1306,6 +1317,11 @@ public abstract class Char extends Actor {
 		float stealth = 0;
 
 		stealth += Obfuscation.stealthBoost(this, glyphLevel(Obfuscation.class));
+
+		MonkEnergy energy = Dungeon.hero.buff(MonkEnergy.class);
+		if (this == Dungeon.hero && Dungeon.hero.hasTalent(Talent.YIN_GAIT) && energy != null) {
+			stealth += 0.15f * Dungeon.hero.pointsInTalent(Talent.YIN_GAIT) * energy.Getenergy();
+		}
 
 		return stealth;
 	}

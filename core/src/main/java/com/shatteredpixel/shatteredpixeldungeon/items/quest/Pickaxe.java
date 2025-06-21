@@ -138,6 +138,7 @@ public class Pickaxe extends MeleeWeapon {
 						Dungeon.hero.sprite.turnTo( Dungeon.hero.pos, cell);
 						Dungeon.hero.sprite.zap(cell);
 						Sample.INSTANCE.play( Assets.Sounds.MINE );
+						hero.spendConstant(Actor.TICK);
 					} else {
 						GLog.w(Messages.get(this, "hard"));
 						return;

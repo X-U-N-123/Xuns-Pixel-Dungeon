@@ -197,11 +197,16 @@ public class MonkEnergy extends Buff implements ActionIndicator.Action {
 			ActionIndicator.setAction(this);
 		}
 		BuffIndicator.refreshHero();
+		Dungeon.observe();
 	}
 
 	//10 at base, 20 at level 30
 	public int energyCap(){
 		return Math.max(10, 5 + Dungeon.hero.lvl/2);
+	}
+
+	public int Getenergy(){
+		return (int)energy;
 	}
 
 	public void abilityUsed( MonkAbility abil ){

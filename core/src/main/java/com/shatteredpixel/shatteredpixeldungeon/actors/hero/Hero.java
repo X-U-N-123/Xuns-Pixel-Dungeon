@@ -46,6 +46,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Charm;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Combo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Drowsy;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Foresight;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.GreaterHaste;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HeroDisguise;
@@ -193,7 +194,7 @@ public class Hero extends Char {
 
 	{
 		actPriority = HERO_PRIO;
-		
+
 		alignment = Alignment.ALLY;
 	}
 	
@@ -1527,6 +1528,11 @@ public class Hero extends Char {
 							} else {
 								Buff.prolong(Hero.this, SnipersMark.class, SnipersMark.DURATION).set(enemy.id(), 0);
 							}
+
+							if (Dungeon.hero.hasTalent(Talent.SUPRESSING_MARK) && enemy.buff(SupressingmarkTracker.class) == null){
+								Buff.prolong(enemy, Paralysis.class, 1+Dungeon.hero.pointsInTalent(Talent.SUPRESSING_MARK));
+								Buff.affect(enemy, SupressingmarkTracker.class);
+							}
 						}
 						Actor.remove(this);
 						return true;
@@ -1865,7 +1871,10 @@ public class Hero extends Char {
 			if (subClass == HeroSubClass.FREERUNNER){
 				Buff.affect(this, Momentum.class).gainStack();
 			}
-			
+
+			if (hasTalent(Talent.MARCH_FORWARD)){
+				Buff.affect(this, Talent.MarchforwardTracker.class).move();
+			}
 			sprite.move(pos, step);
 			move(step);
 
@@ -2593,4 +2602,5 @@ public class Hero extends Char {
 	public static interface Doom {
 		public void onDeath();
 	}
+	public static class SupressingmarkTracker extends Buff {}
 }

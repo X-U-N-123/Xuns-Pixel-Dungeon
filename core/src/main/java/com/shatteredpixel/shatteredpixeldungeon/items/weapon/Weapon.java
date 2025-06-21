@@ -310,11 +310,6 @@ abstract public class Weapon extends KindOfWeapon {
 			multi += 0.6f;
 		}
 
-		if (owner.buff(Talent.AgileCountATKTracker.class)!=null && Dungeon.hero.hasTalent(Talent.AGILE_COUNTATK)){
-			multi += multi * Dungeon.hero.pointsInTalent(Talent.AGILE_COUNTATK)/15f;
-			owner.buff(Talent.AgileCountATKTracker.class).detach();
-		}
-
 		return multi;
 	}
 

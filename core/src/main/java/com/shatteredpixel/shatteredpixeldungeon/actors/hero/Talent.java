@@ -43,6 +43,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RevealedArea;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Roots;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ScrollEmpower;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.WandEmpower;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MonkEnergy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.ArmorAbility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.Ratmogrify;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.DivineSense;
@@ -139,7 +140,7 @@ public enum Talent {
 	//Assassin T3
 	ENHANCED_LETHALITY(75, 3), ASSASSINS_REACH(76, 3), TERRORIST_ATTACK(77, 3), CHARGE_RECYCLING(94, 3), HASHASHINS(95, 3),
 	//Freerunner T3
-	EVASIVE_ARMOR(78, 3), PROJECTILE_MOMENTUM(79, 3), SPEEDY_STEALTH(80, 3),ARCANE_STEP(228, 3),STRETCHING(229, 3),
+	EVASIVE_ARMOR(78, 3), PROJECTILE_MOMENTUM(79, 3), SPEEDY_STEALTH(80, 3), ARCANE_STEP(228, 3), STRETCHING(229, 3),
 	//Smoke Bomb T4
 	HASTY_RETREAT(81, 4), BODY_REPLACEMENT(82, 4), SHADOW_STEP(83, 4),
 	//Death Mark T4
@@ -154,9 +155,9 @@ public enum Talent {
 	//Huntress T3
 	L_M_MASTER(105, 3), SEER_SHOT(106, 3), ORGANIC_FERTILIZER(125, 3),
 	//Sniper T3
-	FARSIGHT(107, 3), SHARED_ENCHANTMENT(108, 3), SHARED_UPGRADES(109, 3),RESONANCE_FETCH(127, 3),
+	FARSIGHT(107, 3), SHARED_ENCHANTMENT(108, 3), SHARED_UPGRADES(109, 3), SUPRESSING_MARK(126, 3), RESONANCE_FETCH(127, 3),
 	//Warden T3
-	DURABLE_TIPS(110, 3), BARKSKIN(111, 3), DEW_COLLECTING(112, 3),JUNGLE_GUERRILLA(230, 3),
+	DURABLE_TIPS(110, 3), BARKSKIN(111, 3), DEW_COLLECTING(112, 3), JUNGLE_GUERRILLA(230, 3),
 	//Spectral Blades T4
 	FAN_OF_BLADES(113, 4), PROJECTING_BLADES(114, 4), SPIRIT_BLADES(115, 4),
 	//Natures Power T4
@@ -167,13 +168,13 @@ public enum Talent {
 	//Duelist T1
 	STRENGTHENING_MEAL(128), ADVENTURERS_INTUITION(129), PATIENT_STRIKE(130), AGGRESSIVE_BARRIER(131), TESTED_CHARGE(155),
 	//Duelist T2
-	FOCUSED_MEAL(132), LIQUID_AGILITY(133), WEAPON_RECHARGING(134), LETHAL_HASTE(135), SWIFT_EQUIP(136),POWER_ACCUMULATION(156),
+	FOCUSED_MEAL(132), LIQUID_AGILITY(133), WEAPON_RECHARGING(134), LETHAL_HASTE(135), SWIFT_EQUIP(136), POWER_ACCUMULATION(156),
 	//Duelist T3
 	PRECISE_ASSAULT(137, 3), DEADLY_FOLLOWUP(138, 3), AGILE_COUNTATK(157, 3),
 	//Champion T3
-	VARIED_CHARGE(139, 3), TWIN_UPGRADES(140, 3), COMBINED_LETHALITY(141, 3),
+	VARIED_CHARGE(139, 3), TWIN_UPGRADES(140, 3), COMBINED_LETHALITY(141, 3), MARCH_FORWARD(158, 3),
 	//Monk T3
-	UNENCUMBERED_SPIRIT(142, 3), MONASTIC_VIGOR(143, 3), COMBINED_ENERGY(144, 3),
+	UNENCUMBERED_SPIRIT(142, 3), MONASTIC_VIGOR(143, 3), COMBINED_ENERGY(144, 3), YANG_SEEING(232, 3), YIN_GAIT(233, 3),
 	//Challenge T4
 	CLOSE_THE_GAP(145, 4), INVIGORATING_VICTORY(146, 4), ELIMINATION_MATCH(147, 4),
 	//Elemental Strike T4
@@ -295,27 +296,19 @@ public enum Talent {
 	}
 	public static class HashashinsTracker extends FlavourBuff{
 		public int icon() { return BuffIndicator.TIME; }
-		private int Boost = 0;
+		private int Dmg = 0;
 
 		public void hurt(int dmg){
-			Boost += dmg;
+			Dmg += dmg;
 		}
 
 		@Override
 		public void detach(){
-			Buff.affect(Dungeon.hero, PhysicalEmpower.class).set(1, Math.round(Boost*Dungeon.hero.pointsInTalent(Talent.HASHASHINS)/5f));
-		}
-
-		private static final String DMG = "dmg";
-		@Override
-		public void storeInBundle(Bundle bundle) {
-			super.storeInBundle(bundle);
-			bundle.put(DMG, Boost);
-		}
-		@Override
-		public void restoreFromBundle(Bundle bundle) {
-			super.restoreFromBundle(bundle);
-			Boost = bundle.getInt(DMG);
+			int Boost = Math.round(Dmg *Dungeon.hero.pointsInTalent(Talent.HASHASHINS)/4f);
+			if (Boost > 0){
+				Buff.affect(Dungeon.hero, PhysicalEmpower.class).set( Boost, 1);
+			}
+			super.detach();
 		}
 	}
 	public static class RejuvenatingStepsCooldown extends FlavourBuff{
@@ -456,6 +449,57 @@ public enum Talent {
 			weapon = bundle.getClass(WEAPON);
 		}
 	}
+
+	public static class MarchforwardTracker extends Buff{
+		{
+			type = buffType.POSITIVE;
+		}
+		public int icon() { return BuffIndicator.MOMENTUM; }
+		private int Step = 0;
+		private int time = 0;
+
+		public void move(){
+			Step = Math.min(Step + 1, 10 * Dungeon.hero.pointsInTalent(MARCH_FORWARD));
+			time = 3;
+		}
+
+		public float attack(){
+			return Step/100f;
+		}
+
+		@Override
+		public boolean act() {
+			time-=TICK;
+			spend(TICK);
+			if (time <= 0) {
+				detach();
+			}
+			return true;
+		}
+
+		private static final String STEP = "step";
+		private static final String TIME = "time";
+		@Override
+		public void storeInBundle(Bundle bundle) {
+			super.storeInBundle(bundle);
+			bundle.put(STEP, Step);
+			bundle.put(TIME, time);
+		}
+		@Override
+		public void restoreFromBundle(Bundle bundle) {
+			super.restoreFromBundle(bundle);
+			Step = bundle.getInt(STEP);
+			time = bundle.getInt(TIME);
+		}
+
+		@Override
+		public void tintIcon(Image icon) { icon.hardlight(1,0,1); }
+
+		@Override
+		public String desc() {
+			return Messages.get(this, "momentum_desc", time, Step);
+		}
+	}
 	public static class CombinedLethalityAbilityTracker extends FlavourBuff{
 		public MeleeWeapon weapon;
 	};
@@ -478,6 +522,14 @@ public enum Talent {
 			wepAbilUsed = bundle.getBoolean(WEP_ABIL_USED);
 		}
 	}
+
+	public static int MonkViewBoost(){
+		MonkEnergy Energy =Dungeon.hero.buff(MonkEnergy.class);
+		if (Energy != null && Dungeon.hero.hasTalent(Talent.YANG_SEEING)) {
+			return (int)Math.floor(Energy.Getenergy() / (5 - Dungeon.hero.pointsInTalent(Talent.YANG_SEEING)));
+		} else return 0;
+	}
+
 	public static class CounterAbilityTacker extends FlavourBuff{}
 	public static class SatiatedSpellsTracker extends Buff{
 		@Override
@@ -499,7 +551,7 @@ public enum Talent {
 	int maxPoints;
 
 	// tiers 1/2/3/4 start at levels 2/7/13/21
-	public static int[] tierLevelThresholds = new int[]{0, 2, 7, 13, 21, 31};
+	public static int[] tierLevelThresholds = new int[]{0, 2, 7, 13, 22, 31};
 
 	Talent( int icon ){
 		this(icon, 2);
@@ -660,6 +712,7 @@ public enum Talent {
 
 		if (talent == HEIGHTENED_SENSES || talent == FARSIGHT || talent == DIVINE_SENSE){
 			Dungeon.observe();
+			Dungeon.hero.checkVisibleMobs();
 		}
 
 		if (talent == TWIN_UPGRADES || talent == DESPERATE_POWER
@@ -1019,6 +1072,17 @@ public enum Talent {
 			}
 		}
 
+		if (hero.hasTalent(AGILE_COUNTATK) && hero.buff(AgileCountATKTracker.class) != null){
+			hero.buff(AgileCountATKTracker.class).detach();
+			dmg = Math.round(dmg * (1.0f + 0.05f*hero.pointsInTalent(AGILE_COUNTATK)));
+		}
+
+		/*Buff buffs = hero.buff(MarchforwardTracker.class);
+		if (hero.hasTalent(MARCH_FORWARD) && buffs != null){
+			buffs.detach();
+			dmg = Math.round(dmg * hero.buff(MarchforwardTracker.class).attack());
+		}*/
+
 		return dmg;
 	}
 
@@ -1196,7 +1260,7 @@ public enum Talent {
 				Collections.addAll(tierTalents, EVASIVE_ARMOR, PROJECTILE_MOMENTUM, SPEEDY_STEALTH, ARCANE_STEP, STRETCHING);
 				break;
 			case SNIPER:
-				Collections.addAll(tierTalents, FARSIGHT, SHARED_ENCHANTMENT, SHARED_UPGRADES, RESONANCE_FETCH);
+				Collections.addAll(tierTalents, FARSIGHT, SHARED_ENCHANTMENT, SHARED_UPGRADES, SUPRESSING_MARK, RESONANCE_FETCH);
 				break;
 			case WARDEN:
 				Collections.addAll(tierTalents, DURABLE_TIPS, BARKSKIN, DEW_COLLECTING, JUNGLE_GUERRILLA);
@@ -1205,7 +1269,7 @@ public enum Talent {
 				Collections.addAll(tierTalents, VARIED_CHARGE, TWIN_UPGRADES, COMBINED_LETHALITY);
 				break;
 			case MONK:
-				Collections.addAll(tierTalents, UNENCUMBERED_SPIRIT, MONASTIC_VIGOR, COMBINED_ENERGY);
+				Collections.addAll(tierTalents, UNENCUMBERED_SPIRIT, MONASTIC_VIGOR, COMBINED_ENERGY, YANG_SEEING, YIN_GAIT);
 				break;
 			case PRIEST:
 				Collections.addAll(tierTalents, HOLY_LANCE, HALLOWED_GROUND, MNEMONIC_PRAYER);
