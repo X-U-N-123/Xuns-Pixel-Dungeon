@@ -227,7 +227,7 @@ public abstract class Wand extends Item {
 
 		if (Dungeon.hero.subClass == HeroSubClass.PRIEST && target.buff(GuidingLight.Illuminated.class) != null) {
 			target.buff(GuidingLight.Illuminated.class).detach();
-			target.damage(Dungeon.hero.lvl+5, GuidingLight.INSTANCE);
+			target.damage(Dungeon.hero.lvl, GuidingLight.INSTANCE);
 		}
 
 		if (target.alignment != Char.Alignment.ALLY
@@ -771,7 +771,7 @@ public abstract class Wand extends Item {
 					}
 
 					if (curUser.hasTalent(Talent.PROTECTING_SPELL) && curUser.heroClass != HeroClass.CLERIC){
-						Buff.affect(curUser, Barrier.class).incShield(2*curUser.pointsInTalent(Talent.PROTECTING_SPELL)*curWand.chargesPerCast());
+						Buff.affect(curUser, Barrier.class).incShield(Math.round(curUser.HT*curUser.pointsInTalent(Talent.PROTECTING_SPELL)*curWand.chargesPerCast()/60f));
 					}
 					
 					if (curWand.cursed){

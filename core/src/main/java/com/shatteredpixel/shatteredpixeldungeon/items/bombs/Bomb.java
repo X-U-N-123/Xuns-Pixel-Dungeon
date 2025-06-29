@@ -27,6 +27,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.Explosion;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.BlastParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SmokeParticle;
@@ -182,7 +183,7 @@ public class Bomb extends Item {
 			for (Char ch : affectedChars){
 
 				//if they have already been killed by another bomb
-				if(!ch.isAlive()){
+				if(!ch.isAlive() || ch.buff(Explosion.Holyexplosionimmune.class) != null){
 					continue;
 				}
 

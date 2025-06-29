@@ -215,8 +215,7 @@ public class Badges {
 		GAMES_PLAYED_5              ( 116, BadgeType.GLOBAL ),
 		HIGH_SCORE_5                ( 117 ),
 		CHAMPION_2                  ( 118 ),
-		CHAMPION_3                  ( 119 ),
-		MANY_BUFFS_2                ( 120 ); //我可能是玩《我的世界》玩多了
+		CHAMPION_3                  ( 119 );
 
 		public boolean meta;
 
@@ -1080,11 +1079,6 @@ public class Badges {
 			Badge badge = Badge.MANY_BUFFS;
 			local.add( badge );
 			displayBadge( badge );
-			if (amount >= 20){
-				badge = Badge.MANY_BUFFS_2;
-				local.add(badge);
-				displayBadge(badge);
-			}
 		}
 	}
 	
@@ -1253,7 +1247,6 @@ public class Badges {
 			{Badge.HIGH_SCORE_1, Badge.HIGH_SCORE_2, Badge.HIGH_SCORE_3, Badge.HIGH_SCORE_4, Badge.HIGH_SCORE_5},
 			{Badge.GAMES_PLAYED_1, Badge.GAMES_PLAYED_2, Badge.GAMES_PLAYED_3, Badge.GAMES_PLAYED_4, Badge.GAMES_PLAYED_5},
 			{Badge.CHAMPION_1, Badge.CHAMPION_2, Badge.CHAMPION_3},
-			{Badge.MANY_BUFFS, Badge.MANY_BUFFS_2},
 			{Badge.PIRANHAS, Badge.PIRANHAS_2}
 	};
 

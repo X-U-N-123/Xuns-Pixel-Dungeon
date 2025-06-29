@@ -35,6 +35,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.cleric.Asc
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.duelist.ElementalStrike;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.BodyForm;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.HolyWeapon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.SacredProjecting;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.Smite;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.KindOfWeapon;
@@ -316,11 +317,6 @@ abstract public class Weapon extends KindOfWeapon {
 	@Override
 	public int reachFactor(Char owner) {
 		int reach = RCH;
-		if (Dungeon.hero.pointsInTalent(Talent.FAR_STANDOFF)>=2 && owner.buff(Combo.class)!=null){
-			if (65 - 25*Dungeon.hero.pointsInTalent(Talent.FAR_STANDOFF) <= owner.buff(Combo.class).getComboCount()){
-				reach += 1;
-			}
-		}
 		if (owner instanceof Hero && RingOfForce.fightingUnarmed((Hero) owner)){
 			reach = 1; //brawlers stance benefits from enchantments, but not innate reach
 			if (Dungeon.hero.pointsInTalent(Talent.FAR_STANDOFF)>=2 && owner.buff(Combo.class)!=null){
@@ -332,8 +328,18 @@ abstract public class Weapon extends KindOfWeapon {
 				return reach;
 			}
 		}
-		if (owner instanceof Hero && owner.buff(AscendedForm.AscendBuff.class) != null){
-			reach += 2;
+		if (owner instanceof Hero) {
+			if (owner.buff(AscendedForm.AscendBuff.class) != null){
+				reach += 2;
+			}
+			if (Dungeon.hero.pointsInTalent(Talent.FAR_STANDOFF)>=2 && owner.buff(Combo.class)!=null){
+				if (65 - 25*Dungeon.hero.pointsInTalent(Talent.FAR_STANDOFF) <= owner.buff(Combo.class).getComboCount()){
+					reach += 1;
+				}
+			}
+			if (owner.buff(SacredProjecting.SacredProjectingTracker.class) != null){
+				reach += 3*Dungeon.hero.pointsInTalent(Talent.SACRED_PROJECTING);
+			}
 		}
 		if (hasEnchant(Projecting.class, owner)){
 			return reach + Math.round(Enchantment.genericProcChanceMultiplier(owner));
@@ -544,7 +550,7 @@ abstract public class Weapon extends KindOfWeapon {
 			}
 
 			if (attacker.buff(Smite.SmiteTracker.class) != null){
-				multi += 3f;
+				multi += 2f;
 			}
 
 			if (attacker.buff(ElementalStrike.DirectedPowerTracker.class) != null){

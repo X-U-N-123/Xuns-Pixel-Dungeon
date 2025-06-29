@@ -66,7 +66,7 @@ import java.util.Locale;
 public class WndRanking extends WndTabbed {
 	
 	private static final int WIDTH			= 115;
-	private static final int HEIGHT			= 144;
+	private static final int HEIGHT			= 160;
 	
 	private static WndRanking INSTANCE;
 	
@@ -386,7 +386,7 @@ public class WndRanking extends WndTabbed {
 				if (item != null){
 					QuickSlotButton slot = new QuickSlotButton(item);
 
-					slot.setRect( pos, 120, slotWidth, 23 );
+					slot.setRect( pos, 136, slotWidth, 23 );
 					PixelScene.align(slot);
 
 					add(slot);

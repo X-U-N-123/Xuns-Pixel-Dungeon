@@ -28,6 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Ghoul;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfMight;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -60,7 +61,7 @@ public class Darkgoldsword extends MeleeWeapon{
                 !(defender.properties().contains(Char.Property.BOSS) || defender.properties().contains(Char.Property.MINIBOSS))){
             if (defender.HT <= damage) {
                 defender.sprite.showStatusWithIcon(CharSprite.NEGATIVE, Integer.toString(damage), FloatingText.PHYS_DMG);
-                defender.die(defender);//在最大生命值小于伤害值时使敌人死亡
+                defender.die(Ghoul.GhoulLifeLink.class);//在最大生命值小于伤害值时使敌人死亡
             } else {
                 defender.HT -= damage;
             }
