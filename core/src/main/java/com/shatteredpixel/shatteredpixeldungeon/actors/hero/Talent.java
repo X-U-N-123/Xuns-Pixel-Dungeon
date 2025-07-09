@@ -187,11 +187,11 @@ public enum Talent {
 	//Cleric T2
 	ENLIGHTENING_MEAL(164), RECALL_INSCRIPTION(165), SUNRAY(166), DIVINE_SENSE(167), BLESS(168), ASCETICISM(188),
 	//Cleric T3
-	CLEANSE(169, 3), LIGHT_READING(170, 3),PROTECTING_SPELL(189, 3),
+	CLEANSE(169, 3), LIGHT_READING(170, 3), SHARED_CHARGE(189, 3),
 	//Priest T3
 	HOLY_LANCE(171, 3), HALLOWED_GROUND(172, 3), MNEMONIC_PRAYER(173, 3), EXPLOSION(190, 3),ENHANCED_RADIANCE(191, 3),
 	//Paladin T3
-	LAY_ON_HANDS(174, 3), AURA_OF_PROTECTION(175, 3), WALL_OF_LIGHT(176, 3), ENHANCED_SMITE(235, 3),
+	LAY_ON_HANDS(174, 3), AURA_OF_PROTECTION(175, 3), WALL_OF_LIGHT(176, 3),JUSTICE_STRIKE(234, 3), ENHANCED_SMITE(235, 3),
 	//Ascended Form T4
 	DIVINE_INTERVENTION(177, 4), JUDGEMENT(178, 4), FLASH(179, 4),
 	//Trinity T4
@@ -640,6 +640,7 @@ public enum Talent {
 			//2/3 turns of artifact recharging
 			Buff.affect(hero, ArtifactRecharge.class)
 					.set(1f + hero.pointsInTalent(TESTED_MYST)).ignoreHornOfPlenty = false;
+			Buff.affect(hero, ArtifactRecharge.class).extend(0).ignoreHolyTome = false;
 		}
 		if (hero.hasTalent(TESTED_ADRENALINE)){
 			//2/3 turns of adrenaline
@@ -659,6 +660,8 @@ public enum Talent {
 				if (buff.left() < 1 + (hero.pointsInTalent(TESTED_HOLINESS))){
 					Buff.affect( hero, ArtifactRecharge.class)
 							.set(hero.pointsInTalent(TESTED_HOLINESS)).ignoreHornOfPlenty = false;
+					Buff.affect( hero, ArtifactRecharge.class)
+						.extend(0).ignoreHolyTome = false;
 				}
 				Buff.prolong( hero, Recharging.class, hero.pointsInTalent(ENLIGHTENING_MEAL));
 				ScrollOfRecharging.charge( hero );
@@ -793,6 +796,7 @@ public enum Talent {
 			ArtifactRecharge buff = Buff.affect( hero, ArtifactRecharge.class);
 			if (buff.left() < 1 + 2*(hero.pointsInTalent(MYSTICAL_MEAL))){
 				Buff.affect( hero, ArtifactRecharge.class).set(1 + 2*(hero.pointsInTalent(MYSTICAL_MEAL))).ignoreHornOfPlenty = foodSource instanceof HornOfPlenty;
+				Buff.affect( hero, ArtifactRecharge.class).extend(0).ignoreHornOfPlenty = false;
 			}
 			ScrollOfRecharging.charge( hero );
 			SpellSprite.show(hero, SpellSprite.CHARGE, 0, 1, 1);
@@ -841,6 +845,7 @@ public enum Talent {
 				ArtifactRecharge buff = Buff.affect( hero, ArtifactRecharge.class);
 				if (buff.left() < 1 + (hero.pointsInTalent(ENLIGHTENING_MEAL))){
 					Buff.affect( hero, ArtifactRecharge.class).set(1 + (hero.pointsInTalent(ENLIGHTENING_MEAL))).ignoreHornOfPlenty = foodSource instanceof HornOfPlenty;
+					Buff.affect( hero, ArtifactRecharge.class).extend(0).ignoreHolyTome = false;
 				}
 				Buff.prolong( hero, Recharging.class, 1 + (hero.pointsInTalent(ENLIGHTENING_MEAL)) );
 				ScrollOfRecharging.charge( hero );
@@ -1221,7 +1226,7 @@ public enum Talent {
 				Collections.addAll(tierTalents, PRECISE_ASSAULT, DEADLY_FOLLOWUP, AGILE_COUNTATK);
 				break;
 			case CLERIC:
-				Collections.addAll(tierTalents, CLEANSE, LIGHT_READING, PROTECTING_SPELL);
+				Collections.addAll(tierTalents, CLEANSE, LIGHT_READING, SHARED_CHARGE);
 				break;
 		}
 		for (Talent talent : tierTalents){
@@ -1258,7 +1263,7 @@ public enum Talent {
 				Collections.addAll(tierTalents, CLEAVE, LETHAL_DEFENSE, ENHANCED_COMBO, REPEATED_SKILL, FAR_STANDOFF);
 				break;
 			case BATTLEMAGE:
-				Collections.addAll(tierTalents, EMPOWERED_STRIKE, MYSTICAL_CHARGE, EXCESS_CHARGE, BATTLE_CHARGE);
+				Collections.addAll(tierTalents, EMPOWERED_STRIKE, MYSTICAL_CHARGE, EXCESS_CHARGE, BATTLE_CHARGE);//1 less talent because I have no idea
 				break;
 			case WARLOCK:
 				Collections.addAll(tierTalents, SOUL_EATER, SOUL_SIPHON, NECROMANCERS_MINIONS, CLEAR_YOUR_SOUL, MANA_EATING);
@@ -1273,10 +1278,10 @@ public enum Talent {
 				Collections.addAll(tierTalents, FARSIGHT, SHARED_ENCHANTMENT, SHARED_UPGRADES, SUPRESSING_MARK, RESONANCE_FETCH);
 				break;
 			case WARDEN:
-				Collections.addAll(tierTalents, DURABLE_TIPS, BARKSKIN, DEW_COLLECTING, JUNGLE_GUERRILLA);
+				Collections.addAll(tierTalents, DURABLE_TIPS, BARKSKIN, DEW_COLLECTING, JUNGLE_GUERRILLA);//1 less talent because I have no idea
 				break;
 			case CHAMPION:
-				Collections.addAll(tierTalents, VARIED_CHARGE, TWIN_UPGRADES, COMBINED_LETHALITY, SKILLED_DUAL);
+				Collections.addAll(tierTalents, VARIED_CHARGE, TWIN_UPGRADES, COMBINED_LETHALITY, SKILLED_DUAL);//1 less talent because I have no idea
 				break;
 			case MONK:
 				Collections.addAll(tierTalents, UNENCUMBERED_SPIRIT, MONASTIC_VIGOR, COMBINED_ENERGY, YANG_SEEING, YIN_GAIT);
@@ -1285,7 +1290,7 @@ public enum Talent {
 				Collections.addAll(tierTalents, HOLY_LANCE, HALLOWED_GROUND, MNEMONIC_PRAYER, EXPLOSION, ENHANCED_RADIANCE);
 				break;
 			case PALADIN:
-				Collections.addAll(tierTalents, LAY_ON_HANDS, AURA_OF_PROTECTION, WALL_OF_LIGHT, ENHANCED_SMITE);
+				Collections.addAll(tierTalents, LAY_ON_HANDS, AURA_OF_PROTECTION, WALL_OF_LIGHT, JUSTICE_STRIKE, ENHANCED_SMITE);
 				break;
 		}
 		for (Talent talent : tierTalents){

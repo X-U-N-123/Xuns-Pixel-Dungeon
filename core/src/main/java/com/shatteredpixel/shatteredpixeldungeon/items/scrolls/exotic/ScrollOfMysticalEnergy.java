@@ -41,6 +41,7 @@ public class ScrollOfMysticalEnergy extends ExoticScroll {
 		detach(curUser.belongings.backpack);
 		//append buff
 		Buff.affect(curUser, ArtifactRecharge.class).set( 30 ).ignoreHornOfPlenty = false;
+		Buff.affect(curUser, ArtifactRecharge.class).extend(0).ignoreHolyTome = false;
 
 		Sample.INSTANCE.play( Assets.Sounds.READ );
 		Sample.INSTANCE.play( Assets.Sounds.CHARGEUP );

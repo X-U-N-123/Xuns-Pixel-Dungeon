@@ -657,6 +657,7 @@ public class MonkEnergy extends Buff implements ActionIndicator.Action {
 					protected boolean act() {
 						Buff.affect(hero, Recharging.class, 8f);
 						Buff.affect(hero, ArtifactRecharge.class).extend(8f).ignoreHornOfPlenty = false;
+						Buff.affect(hero, ArtifactRecharge.class).extend(0f).ignoreHolyTome = false;
 						Actor.remove(this);
 						return true;
 					}

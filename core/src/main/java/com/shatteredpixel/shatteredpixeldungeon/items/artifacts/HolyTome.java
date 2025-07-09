@@ -155,9 +155,6 @@ public class HolyTome extends Artifact {
 
 	public void spendCharge( float chargesSpent ){
 		partialCharge -= chargesSpent;
-		if (Dungeon.hero.hasTalent(Talent.PROTECTING_SPELL)){
-			Buff.affect(Dungeon.hero, Barrier.class).incShield(Math.round(Dungeon.hero.HT*Dungeon.hero.pointsInTalent(Talent.PROTECTING_SPELL)*chargesSpent/48f));
-		}
 		while (partialCharge < 0){
 			charge--;
 			partialCharge++;

@@ -766,12 +766,9 @@ public abstract class Wand extends Item {
 						&& curWand.isIdentified()){
 						curWand.curCharges = Math.min(3 , curWand.maxCharges+1);
 						Sample.INSTANCE.play( Assets.Sounds.CHARGEUP );
-						SpellSprite.show( curUser, SpellSprite.CHARGE );
+						ScrollOfRecharging.charge(curUser);
+						SpellSprite.show(curUser, SpellSprite.CHARGE);
 						Buff.affect(curUser, ReservedenergyCooldown.class, 110 - 30f*(curUser.pointsInTalent(Talent.RESERVED_ENERGY)));
-					}
-
-					if (curUser.hasTalent(Talent.PROTECTING_SPELL) && curUser.heroClass != HeroClass.CLERIC){
-						Buff.affect(curUser, Barrier.class).incShield(Math.round(curUser.HT*curUser.pointsInTalent(Talent.PROTECTING_SPELL)*curWand.chargesPerCast()/60f));
 					}
 					
 					if (curWand.cursed){

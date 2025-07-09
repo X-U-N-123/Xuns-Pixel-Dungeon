@@ -149,6 +149,10 @@ public abstract class ClericSpell {
 				spells.add(Cleanse.INSTANCE);
 			}
 
+			if (cleric.hasTalent(Talent.SHARED_CHARGE)){
+				spells.add(SharedCharge.INSTANCE);
+			}
+
 			if (cleric.hasTalent(Talent.HOLY_LANCE)){
 				spells.add(HolyLance.INSTANCE);
 			}
@@ -170,6 +174,9 @@ public abstract class ClericSpell {
 			}
 			if (cleric.hasTalent(Talent.WALL_OF_LIGHT)){
 				spells.add(WallOfLight.INSTANCE);
+			}
+			if (cleric.hasTalent(Talent.JUSTICE_STRIKE)){
+				spells.add(JusticeStrike.INSTANCE);
 			}
 
 		} else if (tier == 4){
@@ -221,11 +228,13 @@ public abstract class ClericSpell {
 		spells.add(DivineSense.INSTANCE);
 		spells.add(BlessSpell.INSTANCE);
 		spells.add(Cleanse.INSTANCE);
+		spells.add(SharedCharge.INSTANCE);
 		spells.add(Radiance.INSTANCE);
 		spells.add(Smite.INSTANCE);
 		spells.add(LayOnHands.INSTANCE);
 		spells.add(AuraOfProtection.INSTANCE);
 		spells.add(WallOfLight.INSTANCE);
+		spells.add(JusticeStrike.INSTANCE);
 		spells.add(HolyLance.INSTANCE);
 		spells.add(HallowedGround.INSTANCE);
 		spells.add(MnemonicPrayer.INSTANCE);

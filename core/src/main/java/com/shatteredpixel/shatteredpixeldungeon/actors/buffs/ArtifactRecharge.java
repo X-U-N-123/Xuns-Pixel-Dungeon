@@ -23,6 +23,7 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HolyTome;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HornOfPlenty;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
@@ -39,6 +40,7 @@ public class ArtifactRecharge extends Buff {
 
 	private float left;
 	public boolean ignoreHornOfPlenty;
+	public boolean ignoreHolyTome;
 	
 	@Override
 	public boolean act() {
@@ -49,6 +51,9 @@ public class ArtifactRecharge extends Buff {
 				for (Buff b : target.buffs()) {
 					if (b instanceof Artifact.ArtifactBuff) {
 						if (b instanceof HornOfPlenty.hornRecharge && ignoreHornOfPlenty){
+							continue;
+						}
+						if (b instanceof HolyTome.TomeRecharge && ignoreHolyTome){
 							continue;
 						}
 						if (!((Artifact.ArtifactBuff) b).isCursed()) {
@@ -110,12 +115,14 @@ public class ArtifactRecharge extends Buff {
 	
 	private static final String LEFT = "left";
 	private static final String IGNORE_HORN = "ignore_horn";
+	private static final String IGNORE_TOME = "ignore_tome";
 	
 	@Override
 	public void storeInBundle(Bundle bundle) {
 		super.storeInBundle(bundle);
 		bundle.put( LEFT, left );
 		bundle.put( IGNORE_HORN, ignoreHornOfPlenty );
+		bundle.put( IGNORE_TOME, ignoreHolyTome );
 	}
 	
 	@Override
@@ -123,6 +130,7 @@ public class ArtifactRecharge extends Buff {
 		super.restoreFromBundle(bundle);
 		left = bundle.getFloat(LEFT);
 		ignoreHornOfPlenty = bundle.getBoolean(IGNORE_HORN);
+		ignoreHolyTome = bundle.getBoolean(IGNORE_TOME);
 	}
 
 	public static void chargeArtifacts( Hero hero, float turns ){
