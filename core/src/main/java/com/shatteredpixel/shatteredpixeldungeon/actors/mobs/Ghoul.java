@@ -30,6 +30,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.duelist.Ch
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Darkgoldsword;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.Chasm;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
@@ -150,7 +151,7 @@ public class Ghoul extends Mob {
 
 	@Override
 	public void die(Object cause) {
-		if (cause != Chasm.class && cause != GhoulLifeLink.class && !Dungeon.level.pit[pos] && HT != 0){
+		if (cause != Chasm.class && !(cause instanceof Darkgoldsword) && cause != GhoulLifeLink.class && !Dungeon.level.pit[pos] && HT > 0){
 			Ghoul nearby = GhoulLifeLink.searchForHost(this);
 			if (nearby != null){
 				beingLifeLinked = true;

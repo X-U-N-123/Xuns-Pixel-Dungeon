@@ -30,6 +30,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HolyTome;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
@@ -59,7 +60,20 @@ public class Smite extends TargetedClericSpell {
 	public String desc() {
 		int min = Dungeon.hero.lvl/2;
 		int max = Dungeon.hero.lvl;
-		return Messages.get(this, "desc", min, max) + "\n\n" + Messages.get(this, "charge_cost", (int)chargeUse(Dungeon.hero));
+		String desc;
+		int point = Dungeon.hero.pointsInTalent(Talent.ENHANCED_SMITE);
+		if (point > 0) {
+			if (point > 1){
+				desc = Messages.get(this, "desc",2.75f, max, max);//+2
+				if (point > 2) desc += Messages.get(this, "projecting_desc");//+3
+			} else {
+				desc = Messages.get(this, "desc",2, max, max);//+1
+			}
+		} else {
+			desc = Messages.get(this, "desc",2, min, max);//+0
+		}
+		desc += "\n\n" + Messages.get(this, "charge_cost", (int)chargeUse(Dungeon.hero));
+		return desc;
 	}
 
 	@Override
@@ -120,7 +134,8 @@ public class Smite extends TargetedClericSpell {
 	public static int bonusDmg( Hero attacker, Char defender){
 		int min = attacker.lvl/2;
 		int max = attacker.lvl;
-		if (Char.hasProp(defender, Char.Property.UNDEAD) || Char.hasProp(defender, Char.Property.DEMONIC)){
+		if (Char.hasProp(defender, Char.Property.UNDEAD) || Char.hasProp(defender, Char.Property.DEMONIC)
+		|| Dungeon.hero.pointsInTalent(Talent.ENHANCED_SMITE) > 0){
 			return max;
 		} else {
 			return Random.NormalIntRange(min, max);

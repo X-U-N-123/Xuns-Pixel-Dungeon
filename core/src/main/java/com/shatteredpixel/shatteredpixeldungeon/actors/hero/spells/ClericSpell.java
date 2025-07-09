@@ -171,9 +171,6 @@ public abstract class ClericSpell {
 			if (cleric.hasTalent(Talent.WALL_OF_LIGHT)){
 				spells.add(WallOfLight.INSTANCE);
 			}
-			if (cleric.hasTalent(Talent.SACRED_PROJECTING)){
-				spells.add(SacredProjecting.INSTANCE);
-			}
 
 		} else if (tier == 4){
 
@@ -229,7 +226,6 @@ public abstract class ClericSpell {
 		spells.add(LayOnHands.INSTANCE);
 		spells.add(AuraOfProtection.INSTANCE);
 		spells.add(WallOfLight.INSTANCE);
-		spells.add(SacredProjecting.INSTANCE);
 		spells.add(HolyLance.INSTANCE);
 		spells.add(HallowedGround.INSTANCE);
 		spells.add(MnemonicPrayer.INSTANCE);

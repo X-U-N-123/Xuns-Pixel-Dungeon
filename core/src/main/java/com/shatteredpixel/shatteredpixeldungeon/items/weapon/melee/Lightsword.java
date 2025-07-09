@@ -9,6 +9,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Light;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicalSight;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.AttackIndicator;
@@ -47,6 +48,8 @@ public class Lightsword extends MeleeWeapon{
         if (((attacker != Dungeon.hero) || (Dungeon.hero.STR <= STRReq()))
             && (defender.properties().contains(Char.Property.DEMONIC) || defender.properties().contains(Char.Property.UNDEAD))){
             ACC = Char.INFINITE_ACCURACY;
+            defender.sprite.emitter().start( ShadowParticle.UP, 0.05f, 10 );
+            Sample.INSTANCE.play( Assets.Sounds.BURNING );
         }
         return super.proc( attacker, defender, damage );
     }

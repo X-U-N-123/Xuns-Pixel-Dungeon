@@ -35,7 +35,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.cleric.Asc
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.duelist.ElementalStrike;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.BodyForm;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.HolyWeapon;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.SacredProjecting;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.Smite;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.KindOfWeapon;
@@ -337,8 +336,8 @@ abstract public class Weapon extends KindOfWeapon {
 					reach += 1;
 				}
 			}
-			if (owner.buff(SacredProjecting.SacredProjectingTracker.class) != null){
-				reach += 3*Dungeon.hero.pointsInTalent(Talent.SACRED_PROJECTING);
+			if (owner.buff(Smite.SmiteTracker.class) != null && Dungeon.hero.pointsInTalent(Talent.ENHANCED_SMITE) > 2){
+				reach += 1;
 			}
 		}
 		if (hasEnchant(Projecting.class, owner)){
@@ -551,6 +550,9 @@ abstract public class Weapon extends KindOfWeapon {
 
 			if (attacker.buff(Smite.SmiteTracker.class) != null){
 				multi += 2f;
+				if ((attacker == Dungeon.hero) && Dungeon.hero.pointsInTalent(Talent.ENHANCED_SMITE) > 1){
+					multi += 0.75f;
+				}
 			}
 
 			if (attacker.buff(ElementalStrike.DirectedPowerTracker.class) != null){

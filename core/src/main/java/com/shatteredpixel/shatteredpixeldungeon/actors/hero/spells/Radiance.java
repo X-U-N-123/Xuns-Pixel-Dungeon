@@ -22,7 +22,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
@@ -30,8 +29,10 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Light;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HolyTome;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.ui.HeroIcon;
 import com.watabou.noosa.audio.Sample;
@@ -43,6 +44,25 @@ public class Radiance extends ClericSpell {
 	@Override
 	public int icon() {
 		return HeroIcon.RADIANCE;
+	}
+
+	@Override
+	public String desc(){
+		int point = Dungeon.hero.pointsInTalent(Talent.ENHANCED_RADIANCE);
+		String desc;
+		if (point > 0) {
+			if (point > 1){
+				desc = Messages.get(this, "desc", 4);//+2
+				if (point > 2) desc = Messages.get(this, "desc_3", 4);//+3
+			} else {
+				desc = Messages.get(this, "desc", 3);//+1
+			}
+		} else {
+			desc = Messages.get(this, "desc", 3) + Messages.get(this, "desc_0");//+0
+		}
+		desc += Messages.get(this, "light_desc") + "\n\n" + Messages.get(this, "charge_cost", (int)chargeUse(Dungeon.hero));
+		return desc;
+
 	}
 
 	@Override
@@ -61,21 +81,29 @@ public class Radiance extends ClericSpell {
 		GameScene.flash( 0x80FFFFFF );
 		Sample.INSTANCE.play(Assets.Sounds.BLAST);
 
-		if (Dungeon.level.viewDistance < 6 ){
-			Buff.prolong(hero, Light.class, Dungeon.isChallenged(Challenges.DARKNESS) ? 20 : 100);
+		int point = Dungeon.hero.pointsInTalent(Talent.ENHANCED_RADIANCE);
+
+		if (Dungeon.level.viewDistance < 6 || point > 0){
+			Buff.prolong(hero, Light.class, 100);
 		}
 
 		for (Mob mob : Dungeon.level.mobs.toArray( new Mob[0] )) {
 			if (mob.alignment != Char.Alignment.ALLY && Dungeon.level.heroFOV[mob.pos]) {
 
 				if (mob.buff(GuidingLight.Illuminated.class) != null){
-					Buff.affect(mob, GuidingLight.Illuminated.class).detach();
+					if (point <= 2) {
+						Buff.affect(mob, GuidingLight.Illuminated.class).detach();
+					}
 					mob.damage(hero.lvl, GuidingLight.class);
 				} else {
 					Buff.affect(mob, GuidingLight.Illuminated.class);
 					Buff.affect(mob, GuidingLight.WasIlluminatedTracker.class);
 				}
-				Buff.affect(mob, Paralysis.class, 3f);
+				if (point > 1) {
+					Buff.affect(mob, Paralysis.class, 4f);
+				} else {
+					Buff.affect(mob, Paralysis.class, 3f);
+				}
 			}
 		}
 

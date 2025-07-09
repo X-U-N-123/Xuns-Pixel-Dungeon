@@ -101,7 +101,6 @@ public class HeroIcon extends Image {
 	public static final int LIFE_LINK       = 65;
 	public static final int STASIS          = 66;
 	public static final int EXPLOSION       = 67;
-	public static final int SACRED_PROJECTING= 69;
 
 	//all cleric spells have a separate icon with no background for the action indicator
 	public static final int SPELL_ACTION_OFFSET      = 32;

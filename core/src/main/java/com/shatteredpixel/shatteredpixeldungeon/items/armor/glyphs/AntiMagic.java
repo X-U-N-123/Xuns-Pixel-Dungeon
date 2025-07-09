@@ -36,7 +36,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.mage.WarpB
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.GuidingLight;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.HolyLance;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.HolyWeapon;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.SacredProjecting;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.Smite;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.Sunray;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.CrystalWisp;
@@ -103,7 +102,6 @@ public class AntiMagic extends Armor.Glyph {
 		RESISTS.add( Smite.class );
 		RESISTS.add( Judgement.class );
 		RESISTS.add( Explosion.class);
-		RESISTS.add( SacredProjecting.class);
 
 		RESISTS.add( ElementalBlast.class );
 		RESISTS.add( CursedWand.class );

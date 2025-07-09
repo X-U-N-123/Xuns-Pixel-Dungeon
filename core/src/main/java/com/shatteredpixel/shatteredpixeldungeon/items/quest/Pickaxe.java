@@ -104,7 +104,7 @@ public class Pickaxe extends MeleeWeapon {
 						GLog.w(Messages.get(this, "reach"));
 						return;
 					}
-					if (Dungeon.level.map[cell] == Terrain.REGION_DECO || Dungeon.level.map[cell] == Terrain.REGION_DECO_ALT || Dungeon.level.map[cell] == Terrain.BOOKSHELF){
+					if (Dungeon.level.map[cell] == Terrain.REGION_DECO || Dungeon.level.map[cell] == Terrain.REGION_DECO_ALT){
 						if (0<Dungeon.depth && Dungeon.depth<=5){//Sewer
 							if (Dungeon.level.map[cell] == Terrain.REGION_DECO_ALT){
 								Level.set(cell, Terrain.EMPTY_SP);
@@ -131,7 +131,7 @@ public class Pickaxe extends MeleeWeapon {
 							GLog.w(Messages.get(this, "hard"));
 							return;
 						}
-						if ((20<Dungeon.depth && Dungeon.depth<=25) || Dungeon.level.map[cell] == Terrain.BOOKSHELF){//Hall and Bookshelf
+						if (20<Dungeon.depth && Dungeon.depth<=25){//Hall
 							Level.set(cell, Terrain.EMPTY);
 						}
 						GameScene.updateMap(cell);
