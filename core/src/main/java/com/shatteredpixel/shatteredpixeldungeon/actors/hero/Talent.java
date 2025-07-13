@@ -27,7 +27,6 @@ import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Adrenaline;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ArtifactRecharge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
@@ -108,11 +107,11 @@ public enum Talent {
 	//Gladiator T3
 	CLEAVE(14, 3), LETHAL_DEFENSE(15, 3), ENHANCED_COMBO(16, 3), REPEATED_SKILL(224, 3), FAR_STANDOFF(225, 3),
 	//Heroic Leap T4
-	BODY_SLAM(17, 4), IMPACT_WAVE(18, 4), DOUBLE_JUMP(19, 4),
+	BODY_SLAM(17, 4), IMPACT_WAVE(18, 4), DOUBLE_JUMP(19, 4),SHIELDING_JUMP(236, 4),
 	//Shockwave T4
-	EXPANDING_WAVE(20, 4), STRIKING_WAVE(21, 4), SHOCK_FORCE(22, 4),
+	EXPANDING_WAVE(20, 4), STRIKING_WAVE(21, 4), SHOCK_FORCE(22, 4),EARTHQUAKE(237, 4),
 	//Endure T4
-	SUSTAINED_RETRIBUTION(23, 4), SHRUG_IT_OFF(24, 4), EVEN_THE_ODDS(25, 4),
+	SUSTAINED_RETRIBUTION(23, 4), SHRUG_IT_OFF(24, 4), EVEN_THE_ODDS(25, 4),BOTTOM_LINE(238, 4),
 
 	//Mage T1
 	EMPOWERING_MEAL(32), SCHOLARS_INTUITION(33), LINGERING_MAGIC(34), BACKUP_BARRIER(35), TESTED_HYPOTHESIS(59),
@@ -121,15 +120,15 @@ public enum Talent {
 	//Mage T3
 	DESPERATE_POWER(41, 3), ALLY_WARP(42, 3), ARCANE_ARMOR(61, 3),
 	//Battlemage T3
-	EMPOWERED_STRIKE(43, 3), MYSTICAL_CHARGE(44, 3), EXCESS_CHARGE(45, 3), BATTLE_CHARGE(62, 3),ARCANE_CATALYST(63, 3),
+	EMPOWERED_STRIKE(43, 3), MYSTICAL_CHARGE(44, 3), EXCESS_CHARGE(45, 3), BATTLE_CHARGE(62, 3), VARIED_MAGIC(63, 3),
 	//Warlock T3
 	SOUL_EATER(46, 3), SOUL_SIPHON(47, 3), NECROMANCERS_MINIONS(48, 3), CLEAR_YOUR_SOUL(226, 3),MANA_EATING(227, 3),
 	//Elemental Blast T4
-	BLAST_RADIUS(49, 4), ELEMENTAL_POWER(50, 4), REACTIVE_BARRIER(51, 4),
+	BLAST_RADIUS(49, 4), ELEMENTAL_POWER(50, 4), REACTIVE_BARRIER(51, 4),VARIED_STORM(239, 4),
 	//Wild Magic T4
-	WILD_POWER(52, 4), FIRE_EVERYTHING(53, 4), CONSERVED_MAGIC(54, 4),
+	WILD_POWER(52, 4), FIRE_EVERYTHING(53, 4), CONSERVED_MAGIC(54, 4),WILD_CURSE(240 ,4),
 	//Warp Beacon T4
-	TELEFRAG(55, 4), REMOTE_BEACON(56, 4), LONGRANGE_WARP(57, 4),
+	TELEFRAG(55, 4), REMOTE_BEACON(56, 4), LONGRANGE_WARP(57, 4),SPACE_CONDENSATION(241, 4),
 
 	//Rogue T1
 	CACHED_RATIONS(64), THIEFS_INTUITION(65), SUCKER_PUNCH(66), PROTECTIVE_SHADOWS(67), TESTED_MYST(91),
@@ -142,14 +141,14 @@ public enum Talent {
 	//Freerunner T3
 	EVASIVE_ARMOR(78, 3), PROJECTILE_MOMENTUM(79, 3), SPEEDY_STEALTH(80, 3), ARCANE_STEP(228, 3), STRETCHING(229, 3),
 	//Smoke Bomb T4
-	HASTY_RETREAT(81, 4), BODY_REPLACEMENT(82, 4), SHADOW_STEP(83, 4),
+	HASTY_RETREAT(81, 4), BODY_REPLACEMENT(82, 4), SHADOW_STEP(83, 4), STATIC_SMOKE(242, 4),
 	//Death Mark T4
-	FEAR_THE_REAPER(84, 4), DEATHLY_DURABILITY(85, 4), DOUBLE_MARK(86, 4),
+	FEAR_THE_REAPER(84, 4), DEATHLY_DURABILITY(85, 4), DOUBLE_MARK(86, 4),STRONG_MARK(243, 4),
 	//Shadow Clone T4
-	SHADOW_BLADE(87, 4), CLONED_ARMOR(88, 4), PERFECT_COPY(89, 4),
+	SHADOW_BLADE(87, 4), CLONED_ARMOR(88, 4), PERFECT_COPY(89, 4),PRECISE_SHADOW(244, 4),
 
 	//Huntress T1
-	NATURES_BOUNTY(96), SURVIVALISTS_INTUITION(97), FOLLOWUP_STRIKE(98), NATURES_AID(99), TESTED_ADRENALINE(123),
+	NATURES_BOUNTY(96), SURVIVALISTS_INTUITION(97), FOLLOWUP_STRIKE(98), NATURES_AID(99), TESTED_SWIFTNESS(123),
 	//Huntress T2
 	INVIGORATING_MEAL(100), LIQUID_NATURE(101), REJUVENATING_STEPS(102), HEIGHTENED_SENSES(103), DURABLE_PROJECTILES(104), IVY_BIND(124),
 	//Huntress T3
@@ -157,7 +156,7 @@ public enum Talent {
 	//Sniper T3
 	FARSIGHT(107, 3), SHARED_ENCHANTMENT(108, 3), SHARED_UPGRADES(109, 3), SUPRESSING_MARK(126, 3), RESONANCE_FETCH(127, 3),
 	//Warden T3
-	DURABLE_TIPS(110, 3), BARKSKIN(111, 3), DEW_COLLECTING(112, 3), JUNGLE_GUERRILLA(230, 3),
+	DURABLE_TIPS(110, 3), BARKSKIN(111, 3), DEW_COLLECTING(112, 3), JUNGLE_GUERRILLA(230, 3), GRASSMAN(231, 3),
 	//Spectral Blades T4
 	FAN_OF_BLADES(113, 4), PROJECTING_BLADES(114, 4), SPIRIT_BLADES(115, 4),
 	//Natures Power T4
@@ -172,7 +171,7 @@ public enum Talent {
 	//Duelist T3
 	PRECISE_ASSAULT(137, 3), DEADLY_FOLLOWUP(138, 3), AGILE_COUNTATK(157, 3),
 	//Champion T3
-	VARIED_CHARGE(139, 3), TWIN_UPGRADES(140, 3), COMBINED_LETHALITY(141, 3), SKILLED_DUAL(158, 3),
+	VARIED_CHARGE(139, 3), TWIN_UPGRADES(140, 3), COMBINED_LETHALITY(141, 3), SKILLED_DUAL(158, 3),MARCH_FORWARD(159 ,3),
 	//Monk T3
 	UNENCUMBERED_SPIRIT(142, 3), MONASTIC_VIGOR(143, 3), COMBINED_ENERGY(144, 3), YANG_SEEING(232, 3), YIN_GAIT(233, 3),
 	//Challenge T4
@@ -410,6 +409,32 @@ public enum Talent {
 			secondUse = bundle.getBoolean(SECOND_USE);
 		}
 	};
+	public static class MarchForwardTracker extends FlavourBuff{
+		{ type = Buff.buffType.POSITIVE; }
+		public int icon() { return BuffIndicator.MOMENTUM; }
+		public void tintIcon(Image icon) { icon.hardlight(1f, 1f, 0f); }
+		private int Step = 0;
+
+		public void Move(){
+			Step = Math.min(Step + 1, Dungeon.hero.lvl*Dungeon.hero.pointsInTalent(MARCH_FORWARD));
+		}
+
+		public int ACCBoost() {
+			return Step;
+		}
+
+		private static final String STEP = "step";
+		@Override
+		public void storeInBundle(Bundle bundle) {
+			super.storeInBundle(bundle);
+			bundle.put(STEP, Step);
+		}
+		@Override
+		public void restoreFromBundle(Bundle bundle) {
+			super.restoreFromBundle(bundle);
+			Step = bundle.getInt(STEP);
+		}
+	}
 	public static class DeadlyFollowupTracker extends FlavourBuff{
 		public int object;
 		{ type = Buff.buffType.POSITIVE; }
@@ -633,18 +658,18 @@ public enum Talent {
 		}
 		if (hero.hasTalent(TESTED_HYPOTHESIS)){
 			//2/3 turns of wand recharging
-			Buff.affect(hero, Recharging.class, 1f + hero.pointsInTalent(TESTED_HYPOTHESIS));
+			Buff.prolong(hero, Recharging.class, 1f + hero.pointsInTalent(TESTED_HYPOTHESIS));
 			ScrollOfRecharging.charge(hero);
 		}
 		if (hero.hasTalent(TESTED_MYST)){
 			//2/3 turns of artifact recharging
 			Buff.affect(hero, ArtifactRecharge.class)
-					.set(1f + hero.pointsInTalent(TESTED_MYST)).ignoreHornOfPlenty = false;
+					.extend(1f + hero.pointsInTalent(TESTED_MYST)).ignoreHornOfPlenty = false;
 			Buff.affect(hero, ArtifactRecharge.class).extend(0).ignoreHolyTome = false;
 		}
-		if (hero.hasTalent(TESTED_ADRENALINE)){
+		if (hero.hasTalent(TESTED_SWIFTNESS)){
 			//2/3 turns of adrenaline
-			Buff.affect(hero, Adrenaline.class, 1f + hero.pointsInTalent(TESTED_ADRENALINE));
+			Buff.prolong(hero, Haste.class, 1f + hero.pointsInTalent(TESTED_SWIFTNESS));
 		}
 		if (hero.hasTalent(TESTED_HOLINESS)){
 			if (hero.heroClass == HeroClass.CLERIC) {
@@ -1098,6 +1123,11 @@ public enum Talent {
 			dmg = Math.round(dmg * (1f + hero.buff(SkilleddualTracker.class).attackBoost()));
 		}
 
+		buffs = hero.buff(MarchForwardTracker.class);
+		if (hero.hasTalent(MARCH_FORWARD) && buffs != null){
+			dmg = Math.round(dmg * (1f + hero.buff(MarchForwardTracker.class).ACCBoost()));
+		}
+
 		return dmg;
 	}
 
@@ -1162,7 +1192,7 @@ public enum Talent {
 				Collections.addAll(tierTalents, CACHED_RATIONS, THIEFS_INTUITION, TESTED_MYST, SUCKER_PUNCH, PROTECTIVE_SHADOWS);
 				break;
 			case HUNTRESS:
-				Collections.addAll(tierTalents, NATURES_BOUNTY, SURVIVALISTS_INTUITION, TESTED_ADRENALINE, FOLLOWUP_STRIKE, NATURES_AID);
+				Collections.addAll(tierTalents, NATURES_BOUNTY, SURVIVALISTS_INTUITION, TESTED_SWIFTNESS, FOLLOWUP_STRIKE, NATURES_AID);
 				break;
 			case DUELIST:
 				Collections.addAll(tierTalents, STRENGTHENING_MEAL, ADVENTURERS_INTUITION, TESTED_CHARGE, PATIENT_STRIKE, AGGRESSIVE_BARRIER);
@@ -1263,7 +1293,7 @@ public enum Talent {
 				Collections.addAll(tierTalents, CLEAVE, LETHAL_DEFENSE, ENHANCED_COMBO, REPEATED_SKILL, FAR_STANDOFF);
 				break;
 			case BATTLEMAGE:
-				Collections.addAll(tierTalents, EMPOWERED_STRIKE, MYSTICAL_CHARGE, EXCESS_CHARGE, BATTLE_CHARGE);//1 less talent because I have no idea
+				Collections.addAll(tierTalents, EMPOWERED_STRIKE, MYSTICAL_CHARGE, EXCESS_CHARGE, BATTLE_CHARGE, VARIED_MAGIC);
 				break;
 			case WARLOCK:
 				Collections.addAll(tierTalents, SOUL_EATER, SOUL_SIPHON, NECROMANCERS_MINIONS, CLEAR_YOUR_SOUL, MANA_EATING);
@@ -1278,7 +1308,7 @@ public enum Talent {
 				Collections.addAll(tierTalents, FARSIGHT, SHARED_ENCHANTMENT, SHARED_UPGRADES, SUPRESSING_MARK, RESONANCE_FETCH);
 				break;
 			case WARDEN:
-				Collections.addAll(tierTalents, DURABLE_TIPS, BARKSKIN, DEW_COLLECTING, JUNGLE_GUERRILLA);//1 less talent because I have no idea
+				Collections.addAll(tierTalents, DURABLE_TIPS, BARKSKIN, DEW_COLLECTING, JUNGLE_GUERRILLA, GRASSMAN);
 				break;
 			case CHAMPION:
 				Collections.addAll(tierTalents, VARIED_CHARGE, TWIN_UPGRADES, COMBINED_LETHALITY, SKILLED_DUAL);//1 less talent because I have no idea
@@ -1349,6 +1379,8 @@ public enum Talent {
 
 	private static final HashMap<String, String> renamedTalents = new HashMap<>();
 	static{
+		//X_U_N v0.2.5
+		renamedTalents.put("TESTED_ADRENALINE",         "TESTED_SWIFTNESS");
 		//X_U_N v0.2.2
 		renamedTalents.put("SHIELDING_DEW",             "DEW_COLLECTING");
 		renamedTalents.put("IN_BATTLE",                 "REPEATED_SKILL");

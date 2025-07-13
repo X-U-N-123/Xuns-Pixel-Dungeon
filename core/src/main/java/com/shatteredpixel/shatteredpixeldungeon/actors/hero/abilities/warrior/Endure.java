@@ -25,9 +25,11 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bless;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Combo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
@@ -78,6 +80,7 @@ public class Endure extends ArmorAbility {
 
 		public int damageBonus = 0;
 		public int hitsLeft = 0;
+		public int Damagedtimes = 0;
 
 		@Override
 		public int icon() {
@@ -105,9 +108,10 @@ public class Endure extends ArmorAbility {
 
 				float damageMulti = 0.5f;
 				if (Dungeon.hero.hasTalent(Talent.SHRUG_IT_OFF)){
-					//total damage reduction is 60%/68%/74%/80%, based on points in talent
-					damageMulti *= Math.pow(0.8f, Dungeon.hero.pointsInTalent(Talent.SHRUG_IT_OFF));
+					//total damage reduction is 60%/70%/80%/90%, based on points in talent
+					damageMulti -= 0.1f*Dungeon.hero.pointsInTalent(Talent.SHRUG_IT_OFF);
 				}
+				if (Dungeon.hero.hasTalent(Talent.BOTTOM_LINE)) Damagedtimes += 1;
 
 				return damage*damageMulti;
 			}
@@ -121,6 +125,25 @@ public class Endure extends ArmorAbility {
 
 			enduring = false;
 			damageBonus *= 1f + 0.15f*Dungeon.hero.pointsInTalent(Talent.SUSTAINED_RETRIBUTION);
+			if (Dungeon.hero.hasTalent(Talent.BOTTOM_LINE) && Damagedtimes > 0){
+				switch (Dungeon.hero.pointsInTalent(Talent.BOTTOM_LINE)){
+					case 1:
+						Buff.prolong(Dungeon.hero, Bless.class, Damagedtimes);
+						break;
+					case 2:
+						Buff.prolong(Dungeon.hero, Bless.class, Damagedtimes);
+						Buff.prolong(Dungeon.hero, Haste.class, Damagedtimes);
+						break;
+					case 3:
+						Buff.prolong(Dungeon.hero, Bless.class, 2*Damagedtimes);
+						Buff.prolong(Dungeon.hero, Haste.class, Damagedtimes);
+						break;
+					case 4:
+						Buff.prolong(Dungeon.hero, Bless.class, 2*Damagedtimes);
+						Buff.prolong(Dungeon.hero, Haste.class, 2*Damagedtimes);
+						break;
+				}
+			}
 
 			int nearby = 0;
 			for (Char ch : Actor.chars()){
@@ -159,6 +182,7 @@ public class Endure extends ArmorAbility {
 		public static String ENDURING       = "enduring";
 		public static String DAMAGE_BONUS   = "damage_bonus";
 		public static String HITS_LEFT      = "hits_left";
+		public static String DAMAGE_TIMES   = "damage_times";
 
 		@Override
 		public void storeInBundle(Bundle bundle) {
@@ -166,6 +190,7 @@ public class Endure extends ArmorAbility {
 			bundle.put(ENDURING, enduring);
 			bundle.put(DAMAGE_BONUS, damageBonus);
 			bundle.put(HITS_LEFT, hitsLeft);
+			bundle.put(DAMAGE_TIMES, Damagedtimes);
 		}
 
 		@Override
@@ -174,8 +199,9 @@ public class Endure extends ArmorAbility {
 			enduring = bundle.getBoolean(ENDURING);
 			damageBonus = bundle.getInt(DAMAGE_BONUS);
 			hitsLeft = bundle.getInt(HITS_LEFT);
+			Damagedtimes = bundle.getInt(DAMAGE_TIMES);
 		}
-	};
+	}
 
 	@Override
 	public int icon() {
@@ -184,6 +210,6 @@ public class Endure extends ArmorAbility {
 
 	@Override
 	public Talent[] talents() {
-		return new Talent[]{Talent.SUSTAINED_RETRIBUTION, Talent.SHRUG_IT_OFF, Talent.EVEN_THE_ODDS, Talent.HEROIC_ENERGY};
+		return new Talent[]{Talent.SUSTAINED_RETRIBUTION, Talent.SHRUG_IT_OFF, Talent.EVEN_THE_ODDS, Talent.BOTTOM_LINE, Talent.HEROIC_ENERGY};
 	}
 }

@@ -76,6 +76,7 @@ public class Goldarrow extends Item {
         if (action.equals(AC_TELEPORT)) {
             Buff.affect(hero, ElixirOfFeatherFall.FeatherBuff.class, 2f);
             Chasm.heroFall(hero.pos);
+            defaultAction = AC_TELEPORT;
         }
         if (action.equals(AC_RETURN)) {
             InterlevelScene.mode = InterlevelScene.Mode.RETURN;
@@ -83,6 +84,7 @@ public class Goldarrow extends Item {
             InterlevelScene.returnBranch = 0;
             InterlevelScene.returnPos = -2;
             Game.switchScene( InterlevelScene.class );
+            defaultAction = AC_RETURN;
         }
         if (action.equals(AC_AWARE)) {
             int length = Dungeon.level.length();
@@ -109,6 +111,7 @@ public class Goldarrow extends Item {
             Buff.prolong(curUser, Foresight.class, 100);
             Dungeon.observe();
             Dungeon.hero.checkVisibleMobs();
+            defaultAction = AC_AWARE;
         }
         if (action.equals(AC_GOTO)){
             GameScene.selectCell(new CellSelector.Listener() {
@@ -122,6 +125,7 @@ public class Goldarrow extends Item {
                     hero.next();
                 }
             });
+            defaultAction = AC_GOTO;
         }
         GameScene.updateFog();
     }

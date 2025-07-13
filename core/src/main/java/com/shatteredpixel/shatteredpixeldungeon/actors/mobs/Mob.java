@@ -1054,7 +1054,63 @@ public abstract class Mob extends Char {
 			desc += "\n\n_" + Messages.titleCase(b.name()) + "_\n" + b.desc();
 		}
 
-		return desc;
+		String desc_dev = "";
+		String property = "";
+		String State = "";
+		if (Dungeon.hero != null && Dungeon.isChallenged(Challenges.X_U_NS_POWER)){
+			property = Messages.get(this, "property");
+			if (this.properties().contains(Char.Property.BOSS)) {
+				property += Messages.get(this, "boss");
+			}
+			if (this.properties().contains(Char.Property.MINIBOSS)) {
+				property += Messages.get(this, "miniboss");
+			}
+			if (this.properties().contains(Char.Property.BOSS_MINION)) {
+				property += Messages.get(this, "boss_minion");
+			}
+			if (this.properties().contains(Char.Property.UNDEAD)) {
+				property += Messages.get(this, "undead");
+			}
+			if (this.properties().contains(Char.Property.DEMONIC)) {
+				property += Messages.get(this, "demonic");
+			}
+			if (this.properties().contains(Char.Property.INORGANIC)) {
+				property += Messages.get(this, "inorganic");
+			}
+			if (this.properties().contains(Char.Property.FIERY)) {
+				property += Messages.get(this, "fiery");
+			}
+			if (this.properties().contains(Char.Property.ICY)) {
+				property += Messages.get(this, "icy");
+			}
+			if (this.properties().contains(Char.Property.ACIDIC)) {
+				property += Messages.get(this, "acidic");
+			}
+			if (this.properties().contains(Char.Property.ELECTRIC)) {
+				property += Messages.get(this, "electric");
+			}
+			if (this.properties().contains(Char.Property.LARGE)) {
+				property += Messages.get(this, "large");
+			}
+			if (this.properties().contains(Char.Property.IMMOVABLE)) {
+				property += Messages.get(this, "immovable");
+			}
+			if (this.properties().contains(Char.Property.STATIC)) {
+				property += Messages.get(this, "static");
+			}
+
+			State = Messages.get(this, "state");
+			if (this.state.equals(WANDERING))State += Messages.get(this, "wandering");
+			if (this.state.equals(SLEEPING)) State += Messages.get(this, "sleeping");
+			if (this.state.equals(HUNTING))  State += Messages.get(this, "hunting");
+			if (this.state.equals(FLEEING))  State += Messages.get(this, "fleeing");
+			if (this.state.equals(PASSIVE))  State += Messages.get(this, "passive");
+			State += "\n\n";
+
+			desc_dev = Messages.get(this, "dev_info", HP, HT, attackSkill(Dungeon.hero), defenseSkill(Dungeon.hero), EXP, maxLvl, damageRoll(), attackDelay(), drRoll());
+		}
+
+		return desc_dev + property + State + desc;
 	}
 	
 	public void notice() {

@@ -126,7 +126,7 @@ public class WildMagic extends ArmorAbility {
 
 	}
 
-	public static class WildMagicTracker extends FlavourBuff{};
+	public static class WildMagicTracker extends FlavourBuff{}
 
 	Actor wildMagicActor = null;
 

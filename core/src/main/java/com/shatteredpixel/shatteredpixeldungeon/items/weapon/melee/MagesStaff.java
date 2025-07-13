@@ -185,6 +185,18 @@ public class MagesStaff extends MeleeWeapon {
 			}
 			ScrollOfRecharging.charge((Hero)attacker);
 			wand.onHit(this, attacker, defender, damage);
+
+			if (Random.Float() <= 0.3f*Dungeon.hero.pointsInTalent(Talent.VARIED_MAGIC)) {
+				ArrayList<Wand> wands = Dungeon.hero.belongings.getAllItems(Wand.class);
+				if (!wands.isEmpty()){
+					Wand cur = wands.remove(Random.Int(wands.size()));
+					if (cur instanceof WandOfDisintegration){
+						damage = Math.round(damage * 1.2f);
+					} else {
+						cur.onHit(this, attacker, defender, damage);
+					}
+				}
+			}
 		}
 
 		if (empoweredStrike != null){

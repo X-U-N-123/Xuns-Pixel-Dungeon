@@ -143,7 +143,7 @@ public class DeathMark extends ArmorAbility {
 
 	@Override
 	public Talent[] talents() {
-		return new Talent[]{Talent.FEAR_THE_REAPER, Talent.DEATHLY_DURABILITY, Talent.DOUBLE_MARK, Talent.HEROIC_ENERGY};
+		return new Talent[]{Talent.FEAR_THE_REAPER, Talent.DEATHLY_DURABILITY, Talent.DOUBLE_MARK, Talent.STRONG_MARK, Talent.HEROIC_ENERGY};
 	}
 
 	public static class DeathMarkTracker extends FlavourBuff {

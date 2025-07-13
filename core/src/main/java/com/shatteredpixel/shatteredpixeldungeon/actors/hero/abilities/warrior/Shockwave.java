@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
@@ -34,9 +35,11 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.ArmorAbility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mimic;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClassArmor;
+import com.shatteredpixel.shatteredpixeldungeon.levels.features.Chasm;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.ConeAOE;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -118,7 +121,7 @@ public class Shockwave extends ArmorAbility {
 								damage = Math.round(damage * (1f + 0.2f*hero.pointsInTalent(Talent.SHOCK_FORCE)));
 								damage -= ch.drRoll();
 
-								if (hero.pointsInTalent(Talent.STRIKING_WAVE) == 4){
+								if (hero.pointsInTalent(Talent.STRIKING_WAVE) >= 4){
 									Buff.affect(hero, Talent.StrikingWaveTracker.class, 0f);
 								}
 
@@ -133,6 +136,14 @@ public class Shockwave extends ArmorAbility {
 								} else {
 									ch.damage(damage, hero);
 								}
+
+								if (Random.Float() <= 0.025f*hero.pointsInTalent(Talent.EARTHQUAKE) &&
+								ch.alignment == Char.Alignment.ENEMY &&
+								!(ch.properties().contains(Char.Property.BOSS) || ch.properties().contains(Char.Property.MINIBOSS))&&
+								Dungeon.depth != 5 && Dungeon.depth != 10 && Dungeon.depth != 15 && Dungeon.depth != 20 && Dungeon.depth < 25){
+									Chasm.mobFall((Mob)ch);
+								}
+
 								if (ch.isAlive()){
 									if (Random.Int(4) < hero.pointsInTalent(Talent.SHOCK_FORCE)){
 										Buff.affect(ch, Paralysis.class, 5f);
@@ -158,6 +169,6 @@ public class Shockwave extends ArmorAbility {
 
 	@Override
 	public Talent[] talents() {
-		return new Talent[]{Talent.EXPANDING_WAVE, Talent.STRIKING_WAVE, Talent.SHOCK_FORCE, Talent.HEROIC_ENERGY};
+		return new Talent[]{Talent.EXPANDING_WAVE, Talent.STRIKING_WAVE, Talent.SHOCK_FORCE, Talent.EARTHQUAKE, Talent.HEROIC_ENERGY};
 	}
 }

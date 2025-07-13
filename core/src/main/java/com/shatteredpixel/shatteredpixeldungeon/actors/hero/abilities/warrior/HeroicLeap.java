@@ -24,6 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
@@ -31,6 +32,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vulnerable;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.ArmorAbility;
+import com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClassArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
@@ -95,6 +97,14 @@ public class HeroicLeap extends ArmorAbility {
 					Dungeon.observe();
 					GameScene.updateFog();
 
+					int point = hero.pointsInTalent(Talent.SHIELDING_JUMP);
+					if(point > 0){
+						Buff.affect(hero, BrokenSeal.WarriorShield.class).reduceCooldown(Math.min(point/3f, 1));
+						if(point > 3){
+							Buff.affect(hero, Barrier.class).incShield(hero.lvl/2);
+						}
+					}
+
 					for (int i : PathFinder.NEIGHBOURS8) {
 						Char mob = Actor.findChar(hero.pos + i);
 						if (mob != null && mob != hero && mob.alignment != Char.Alignment.ALLY) {
@@ -133,7 +143,7 @@ public class HeroicLeap extends ArmorAbility {
 		}
 	}
 
-	public static class DoubleJumpTracker extends FlavourBuff{};
+	public static class DoubleJumpTracker extends FlavourBuff{}
 
 	@Override
 	public int icon() {
@@ -142,6 +152,6 @@ public class HeroicLeap extends ArmorAbility {
 
 	@Override
 	public Talent[] talents() {
-		return new Talent[]{Talent.BODY_SLAM, Talent.IMPACT_WAVE, Talent.DOUBLE_JUMP, Talent.HEROIC_ENERGY};
+		return new Talent[]{Talent.BODY_SLAM, Talent.IMPACT_WAVE, Talent.DOUBLE_JUMP, Talent.SHIELDING_JUMP, Talent.HEROIC_ENERGY};
 	}
 }

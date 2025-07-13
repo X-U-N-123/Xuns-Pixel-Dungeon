@@ -22,15 +22,24 @@
 package com.shatteredpixel.shatteredpixeldungeon.plants;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FireImbue;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FrostImbue;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
+import com.shatteredpixel.shatteredpixeldungeon.effects.SpellSprite;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.LeafParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.Berry;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfRegrowth;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Bestiary;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
@@ -39,6 +48,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundlable;
 import com.watabou.utils.Bundle;
@@ -128,8 +138,10 @@ public abstract class Plant implements Bundlable {
 	public static class Seed extends Item {
 
 		public static final String AC_PLANT	= "PLANT";
+		public static final String AC_EAT	= "EAT";
 		
 		private static final float TIME_TO_PLANT = 1f;
+		private static final float TIME_TO_EAT = 1f;
 		
 		{
 			stackable = true;
@@ -142,6 +154,9 @@ public abstract class Plant implements Bundlable {
 		public ArrayList<String> actions( Hero hero ) {
 			ArrayList<String> actions = super.actions( hero );
 			actions.add( AC_PLANT );
+			if (Dungeon.hero.hasTalent(Talent.GRASSMAN)){
+				actions.add( AC_EAT );
+			}
 			return actions;
 		}
 		
@@ -182,6 +197,46 @@ public abstract class Plant implements Bundlable {
 
 				hero.sprite.operate( hero.pos );
 				
+			}
+
+			if (action.equals( AC_EAT ) && Dungeon.hero.hasTalent(Talent.GRASSMAN)) {
+
+				detach( hero.belongings.backpack );
+				Catalog.countUse(getClass());
+
+				Buff.affect(hero, Hunger.class).satisfy(Hunger.HUNGRY/3f);
+				GLog.i( Messages.get(Berry.class, "eat_msg") );
+
+				hero.sprite.operate( hero.pos );
+				hero.busy();
+				SpellSprite.show( hero, SpellSprite.FOOD );
+				Sample.INSTANCE.play( Assets.Sounds.EAT );
+				Sample.INSTANCE.play( Assets.Sounds.PLANT );
+
+				if (!(Dungeon.hero.hasTalent(Talent.IRON_STOMACH)
+				|| Dungeon.hero.hasTalent(Talent.ENERGIZING_MEAL)
+				|| Dungeon.hero.hasTalent(Talent.MYSTICAL_MEAL)
+				|| Dungeon.hero.hasTalent(Talent.INVIGORATING_MEAL)
+				|| Dungeon.hero.hasTalent(Talent.FOCUSED_MEAL)
+				|| Dungeon.hero.hasTalent(Talent.ENLIGHTENING_MEAL)))
+					hero.spend(TIME_TO_EAT);
+
+				Statistics.foodEaten++;
+				Badges.validateFoodEaten();
+
+				Talent.onFoodEaten(hero, Hunger.HUNGRY/3f, this);
+				if ((Dungeon.hero.pointsInTalent(Talent.GRASSMAN)-1)*0.5f >= Random.Float()) {
+					if (this instanceof Icecap.Seed){
+						Buff.affect(Dungeon.hero, FrostImbue.class, FrostImbue.DURATION*0.3f);
+						return;
+					}//Stop their terrain effect
+					if (this instanceof Firebloom.Seed){
+						Buff.affect(Dungeon.hero, FireImbue.class).set( FireImbue.DURATION*0.3f );
+						return;
+					}
+					Reflection.newInstance(plantClass).activate(hero);
+				}
+
 			}
 		}
 		

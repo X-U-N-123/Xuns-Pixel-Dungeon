@@ -33,8 +33,10 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.ArmorAbili
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
+import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClassArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.PhaseShift;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -112,7 +114,16 @@ public class WarpBeacon extends ArmorAbility {
 						}
 
 						armor.charge -= chargeNeeded;
-						armor.updateQuickslot();
+						if (hero.pointsInTalent(Talent.SPACE_CONDENSATION)*0.5f >= Random.Float()) {
+							new PhaseShift().collect();
+							if ((hero.pointsInTalent(Talent.SPACE_CONDENSATION)-2)*0.4f >= Random.Float()) {
+								new ScrollOfTeleportation().collect();
+								GLog.p(Messages.get(this, "tele"));
+							} else {
+								GLog.p(Messages.get(this, "shift"));
+							}
+						}
+						Item.updateQuickslot();
 
 						if (tracker.depth == Dungeon.depth && tracker.branch == Dungeon.branch){
 							Char existing = Actor.findChar(tracker.pos);
@@ -272,6 +283,6 @@ public class WarpBeacon extends ArmorAbility {
 
 	@Override
 	public Talent[] talents() {
-		return new Talent[]{Talent.TELEFRAG, Talent.REMOTE_BEACON, Talent.LONGRANGE_WARP, Talent.HEROIC_ENERGY};
+		return new Talent[]{Talent.TELEFRAG, Talent.REMOTE_BEACON, Talent.LONGRANGE_WARP, Talent.SPACE_CONDENSATION, Talent.HEROIC_ENERGY};
 	}
 }

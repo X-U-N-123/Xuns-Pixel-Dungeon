@@ -129,7 +129,7 @@ public class ShadowClone extends ArmorAbility {
 
 	@Override
 	public Talent[] talents() {
-		return new Talent[]{Talent.SHADOW_BLADE, Talent.CLONED_ARMOR, Talent.PERFECT_COPY, Talent.HEROIC_ENERGY};
+		return new Talent[]{Talent.SHADOW_BLADE, Talent.CLONED_ARMOR, Talent.PERFECT_COPY, Talent.PRECISE_SHADOW, Talent.HEROIC_ENERGY};
 	}
 
 	private static ShadowAlly getShadowAlly(){
@@ -199,7 +199,12 @@ public class ShadowClone extends ArmorAbility {
 
 		@Override
 		public int attackSkill(Char target) {
-			return defenseSkill+5; //equal to base hero attack skill
+			return defenseSkill+5*(1 + Dungeon.hero.pointsInTalent(Talent.PRECISE_SHADOW)); //equal to base hero attack skill
+		}
+
+		@Override
+		public int defenseSkill(Char target) {
+			return Math.round(defenseSkill*Dungeon.hero.pointsInTalent(Talent.PRECISE_SHADOW)/4f);
 		}
 
 		@Override

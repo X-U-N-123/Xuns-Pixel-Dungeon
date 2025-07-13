@@ -33,6 +33,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Charm;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Dread;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicalSleep;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Sleep;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
@@ -107,10 +108,13 @@ public class SmokeBomb extends ArmorAbility {
 
 			boolean shadowStepping = hero.invisible > 0 && hero.hasTalent(Talent.SHADOW_STEP);
 
+			int point = hero.pointsInTalent(Talent.STATIC_SMOKE);
 			if (!shadowStepping) {
 				for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
-					if (Dungeon.level.adjacent(mob.pos, hero.pos) && mob.alignment != Char.Alignment.ALLY) {
+					if (Dungeon.level.distance(mob.pos, hero.pos) <= 1+2*Math.min(point, 2) && mob.alignment != Char.Alignment.ALLY) {
 						Buff.prolong(mob, Blindness.class, Blindness.DURATION / 2f);
+						if (mob.state == mob.SLEEPING && point > 2) Buff.affect(mob, MagicalSleep.class);
+						if (mob.state == mob.WANDERING && point > 3) Buff.affect(mob, MagicalSleep.class);
 						if (mob.state == mob.HUNTING) mob.state = mob.WANDERING;
 						mob.sprite.emitter().burst(Speck.factory(Speck.LIGHT), 4);
 					}
@@ -159,7 +163,7 @@ public class SmokeBomb extends ArmorAbility {
 
 	@Override
 	public Talent[] talents() {
-		return new Talent[]{Talent.HASTY_RETREAT, Talent.BODY_REPLACEMENT, Talent.SHADOW_STEP, Talent.HEROIC_ENERGY};
+		return new Talent[]{Talent.HASTY_RETREAT, Talent.BODY_REPLACEMENT, Talent.SHADOW_STEP, Talent.STATIC_SMOKE, Talent.HEROIC_ENERGY};
 	}
 
 	public static class NinjaLog extends NPC {

@@ -911,7 +911,7 @@ public abstract class Char extends Actor {
 			damage *= 1.67f;
 		}
 		if (alignment != Alignment.ALLY && this.buff(DeathMark.DeathMarkTracker.class) != null){
-			damage *= 1.25f;
+			damage *= 1.25f + 0.35f*Dungeon.hero.pointsInTalent(Talent.STRONG_MARK)/4f;
 		}
 		if (this.buff(JusticeStrike.JusticeStrikeBuff.class) != null){
 			damage *= 1f + 0.06f * (Dungeon.hero.pointsInTalent(Talent.JUSTICE_STRIKE) + 1);

@@ -108,13 +108,13 @@ public class HeroIcon extends Image {
 	public static final int SPELL_ACTION_OFFSET      = 48;
 
 	//action indicator visuals
-	public static final int BERSERK         = 192;
-	public static final int COMBO           = 193;
-	public static final int PREPARATION     = 194;
-	public static final int MOMENTUM        = 195;
-	public static final int SNIPERS_MARK    = 196;
-	public static final int WEAPON_SWAP     = 197;
-	public static final int MONK_ABILITIES  = 198;
+	public static final int BERSERK         = 176;
+	public static final int COMBO           = 177;
+	public static final int PREPARATION     = 178;
+	public static final int MOMENTUM        = 179;
+	public static final int SNIPERS_MARK    = 180;
+	public static final int WEAPON_SWAP     = 181;
+	public static final int MONK_ABILITIES  = 182;
 
 	public HeroIcon(HeroSubClass subCls){
 		super( Assets.Interfaces.HERO_ICONS );
