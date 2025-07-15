@@ -106,6 +106,9 @@ public class SpiritHawk extends ArmorAbility {
 
 				ally = new HawkAlly();
 				ally.pos = Random.element(spawnPoints);
+				ally.timeRemaining += 20 * Dungeon.hero.pointsInTalent(Talent.STRONG_HAWK);
+				ally.HT += 5 * Dungeon.hero.pointsInTalent(Talent.STRONG_HAWK);
+				ally.HP += 5 * Dungeon.hero.pointsInTalent(Talent.STRONG_HAWK);
 				GameScene.add(ally);
 
 				ScrollOfTeleportation.appear(ally, ally.pos);
@@ -128,7 +131,7 @@ public class SpiritHawk extends ArmorAbility {
 
 	@Override
 	public Talent[] talents() {
-		return new Talent[]{Talent.EAGLE_EYE, Talent.GO_FOR_THE_EYES, Talent.SWIFT_SPIRIT, Talent.HEROIC_ENERGY};
+		return new Talent[]{Talent.EAGLE_EYE, Talent.GO_FOR_THE_EYES, Talent.SWIFT_SPIRIT, Talent.STRONG_HAWK, Talent.HEROIC_ENERGY};
 	}
 
 	private static HawkAlly getHawk(){
@@ -168,7 +171,7 @@ public class SpiritHawk extends ArmorAbility {
 		}
 
 		private int dodgesUsed = 0;
-		private float timeRemaining = 100f;
+		public float timeRemaining = 100f;
 
 		@Override
 		public int defenseSkill(Char enemy) {

@@ -135,6 +135,7 @@ public class Dungeon {
 		SCROLL_HOLDER,
 		POTION_BANDOLIER,
 		MAGICAL_HOLSTER,
+		FOOD_POCKET,
 
 		//lore documents
 		LORE_SEWERS,

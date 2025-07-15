@@ -28,11 +28,16 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Crossbow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Bolas;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.CoinDart;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.FishingSpear;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Boomerang;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Headdart;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.HeavyBoomerang;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Javelin;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Kunai;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.SCORPIOSPIKE;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Lancet;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.LightBoomerang;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Scorpiospike;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Shuriken;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingKnife;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingSpear;
@@ -100,7 +105,7 @@ public class MissileSprite extends ItemSprite implements Tweener.Listener {
 		ANGULAR_SPEEDS.put(Kunai.class,         0);
 		ANGULAR_SPEEDS.put(Javelin.class,       0);
 		ANGULAR_SPEEDS.put(Trident.class,       0);
-		ANGULAR_SPEEDS.put(SCORPIOSPIKE.class,  0);
+		ANGULAR_SPEEDS.put(Scorpiospike.class,  0);
 		
 		ANGULAR_SPEEDS.put(SpiritBow.SpiritArrow.class,       0);
 		ANGULAR_SPEEDS.put(ScorpioSprite.ScorpioShot.class,   0);
@@ -110,10 +115,15 @@ public class MissileSprite extends ItemSprite implements Tweener.Listener {
 
 		ANGULAR_SPEEDS.put(GnollGeomancer.Boulder.class,   90);
 		
+		ANGULAR_SPEEDS.put(Boomerang.class,1440);
 		ANGULAR_SPEEDS.put(HeavyBoomerang.class,1440);
+		ANGULAR_SPEEDS.put(LightBoomerang.class,1440);
 		ANGULAR_SPEEDS.put(Bolas.class,         1440);
+		ANGULAR_SPEEDS.put(Headdart.class,      1440);
+		ANGULAR_SPEEDS.put(Lancet.class,        1440);
 		
 		ANGULAR_SPEEDS.put(Shuriken.class,                  2160);
+		ANGULAR_SPEEDS.put(CoinDart.class,                  2160);
 		ANGULAR_SPEEDS.put(TenguSprite.TenguShuriken.class, 2160);
 	}
 

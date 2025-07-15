@@ -214,6 +214,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sickle;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Smallrunicblade;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Smallshield;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Spear;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.StoneCudgel;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.StoneHammer;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Stonesword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sword;
@@ -230,14 +231,19 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WornShortswor
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Wornrunicblade;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Antimatter;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Bolas;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.CoinDart;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.FishingSpear;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ForceCube;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Boomerang;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Headdart;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.HeavyBoomerang;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Ironball;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Javelin;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Kunai;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Lancet;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.LightBoomerang;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.SCORPIOSPIKE;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Scorpiospike;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Shuriken;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingClub;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingHammer;
@@ -583,9 +589,10 @@ public class Generator {
 					Dwarvessword.class,
 					Erlangknife.class,
 					Greatrunicblade.class,
-					Fetter.class
+					Fetter.class,
+					//StoneCudgel.class
 			};
-			WEP_T6.defaultProbs = new float[]{ 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2 };
+			WEP_T6.defaultProbs = new float[]{ 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2};
 			WEP_T6.probs = WEP_T6.defaultProbs.clone();
 
 			//see Generator.randomArmor
@@ -621,41 +628,46 @@ public class Generator {
 			MIS_T2.classes = new Class<?>[]{
 					FishingSpear.class,
 					ThrowingClub.class,
-					Shuriken.class
+					Shuriken.class,
+					LightBoomerang.class
 			};
-			MIS_T2.defaultProbs = new float[]{ 3, 3, 3 };
+			MIS_T2.defaultProbs = new float[]{ 3, 3, 3, 3 };
 			MIS_T2.probs = MIS_T2.defaultProbs.clone();
 			
 			MIS_T3.classes = new Class<?>[]{
 					ThrowingSpear.class,
 					Kunai.class,
-					Bolas.class
+					Bolas.class,
+					CoinDart.class
 			};
-			MIS_T3.defaultProbs = new float[]{ 3, 3, 3 };
+			MIS_T3.defaultProbs = new float[]{ 3, 3, 3, 3 };
 			MIS_T3.probs = MIS_T3.defaultProbs.clone();
 			
 			MIS_T4.classes = new Class<?>[]{
 					Javelin.class,
 					Tomahawk.class,
-					HeavyBoomerang.class
+					Boomerang.class,
+					Lancet.class
 			};
-			MIS_T4.defaultProbs = new float[]{ 3, 3, 3 };
+			MIS_T4.defaultProbs = new float[]{ 3, 3, 3, 3 };
 			MIS_T4.probs = MIS_T4.defaultProbs.clone();
 			
 			MIS_T5.classes = new Class<?>[]{
 					Trident.class,
 					ThrowingHammer.class,
-					ForceCube.class
+					ForceCube.class,
+					Headdart.class
 			};
-			MIS_T5.defaultProbs = new float[]{ 3, 3, 3 };
+			MIS_T5.defaultProbs = new float[]{ 3, 3, 3, 3 };
 			MIS_T5.probs = MIS_T5.defaultProbs.clone();
 
 			MIS_T6.classes = new Class<?>[]{
-					SCORPIOSPIKE.class,
+					Scorpiospike.class,
 					Ironball.class,
-					Antimatter.class
+					Antimatter.class,
+					HeavyBoomerang.class
 			};
-			MIS_T6.defaultProbs = new float[]{ 3, 3, 3 };
+			MIS_T6.defaultProbs = new float[]{ 3, 3, 3, 3 };
 			MIS_T6.probs = MIS_T6.defaultProbs.clone();
 			
 			FOOD.classes = new Class<?>[]{

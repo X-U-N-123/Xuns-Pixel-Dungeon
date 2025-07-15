@@ -404,6 +404,7 @@ public class ItemSpriteSheet {
 	public static final int Fetter         = WEP_TIER6+10;
 	public static final int Greatrunicblade= WEP_TIER6+11;
 	public static final int Ripperclaw     = WEP_TIER6+12;
+	public static final int Stonecudgel    = WEP_TIER6+14;
 	static{
 		assignItemRect(GREATAXE,       12, 16);
 		assignItemRect(Shangfang,      16, 16);
@@ -418,9 +419,10 @@ public class ItemSpriteSheet {
 		assignItemRect(Erlangknife,    16, 16);
 		assignItemRect(Greatrunicblade,16, 16);
 		assignItemRect(Fetter,         14, 14);
+		assignItemRect(Stonecudgel,    16, 16);
 	}
 
-	private static final int MISSILE_WEP    = xy(1, 8);  //32 slots. 3 per tier + bow
+	private static final int MISSILE_WEP    = xy(1, 8);  //32 slots. 4 per tier + bow
 	public static final int SPIRIT_BOW      = MISSILE_WEP+0;
 	
 	public static final int THROWING_SPIKE  = MISSILE_WEP+1;
@@ -430,22 +432,27 @@ public class ItemSpriteSheet {
 	public static final int FISHING_SPEAR   = MISSILE_WEP+6;
 	public static final int SHURIKEN        = MISSILE_WEP+7;
 	public static final int THROWING_CLUB   = MISSILE_WEP+8;
+	public static final int LIGHTBOOMERANG  = MISSILE_WEP+9;
 	
 	public static final int THROWING_SPEAR  = MISSILE_WEP+11;
 	public static final int BOLAS           = MISSILE_WEP+12;
 	public static final int KUNAI           = MISSILE_WEP+13;
+	public static final int COINDART        = MISSILE_WEP+14;
 	
 	public static final int JAVELIN         = MISSILE_WEP+16;
 	public static final int TOMAHAWK        = MISSILE_WEP+17;
 	public static final int BOOMERANG       = MISSILE_WEP+18;
+	public static final int LANCET          = MISSILE_WEP+19;
 	
 	public static final int TRIDENT         = MISSILE_WEP+21;
 	public static final int THROWING_HAMMER = MISSILE_WEP+22;
 	public static final int FORCE_CUBE      = MISSILE_WEP+23;
+	public static final int HEADDART        = MISSILE_WEP+24;
 
 	public static final int Scorpiospike    = MISSILE_WEP+26;
 	public static final int Ironball        = MISSILE_WEP+27;
 	public static final int Anti_matter     = MISSILE_WEP+28;
+	public static final int HEAVYBOOMERANG  = MISSILE_WEP+29;
 	
 	static{
 		assignItemRect(SPIRIT_BOW,      16, 16);
@@ -457,22 +464,27 @@ public class ItemSpriteSheet {
 		assignItemRect(FISHING_SPEAR,   11, 11);
 		assignItemRect(SHURIKEN,        12, 12);
 		assignItemRect(THROWING_CLUB,   12, 12);
+		assignItemRect(LIGHTBOOMERANG,  13, 13);
 		
 		assignItemRect(THROWING_SPEAR,  13, 13);
 		assignItemRect(BOLAS,           15, 14);
 		assignItemRect(KUNAI,           15, 15);
+		assignItemRect(COINDART,        12, 12);
 		
 		assignItemRect(JAVELIN,         16, 16);
 		assignItemRect(TOMAHAWK,        13, 13);
 		assignItemRect(BOOMERANG,       14, 14);
+		assignItemRect(LANCET,          15 ,16);
 		
 		assignItemRect(TRIDENT,         16, 16);
 		assignItemRect(THROWING_HAMMER, 12, 12);
 		assignItemRect(FORCE_CUBE,      11, 12);
+		assignItemRect(HEADDART,        14 ,14);
 
 		assignItemRect(Scorpiospike,    16, 16);
 		assignItemRect(Ironball,        12, 12);
 		assignItemRect(Anti_matter,     12, 11);
+		assignItemRect(HEAVYBOOMERANG,  15, 15);
 	}
 	
 	public static final int DARTS           = xy(17, 4);  //16 slots
@@ -912,6 +924,7 @@ public class ItemSpriteSheet {
 	public static final int BANDOLIER   = BAGS+4;
 	public static final int HOLSTER     = BAGS+5;
 	public static final int VIAL        = BAGS+6;
+	public static final int FOOD_POCKET = BAGS+7;
 	static{
 		assignItemRect(WATERSKIN,   16, 14);
 		assignItemRect(BACKPACK,    16, 16);
@@ -920,6 +933,7 @@ public class ItemSpriteSheet {
 		assignItemRect(BANDOLIER,   15, 16);
 		assignItemRect(HOLSTER,     15, 16);
 		assignItemRect(VIAL,        12, 12);
+		assignItemRect(FOOD_POCKET, 14, 15);
 	}
 
 	private static final int DOCUMENTS  = xy(17, 18);  //16 slots

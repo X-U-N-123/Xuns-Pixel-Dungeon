@@ -27,14 +27,14 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
-public class Kunai extends MissileWeapon {
+public class Lancet extends MissileWeapon {
 	
 	{
-		image = ItemSpriteSheet.KUNAI;
+		image = ItemSpriteSheet.LANCET;
 		hitSound = Assets.Sounds.HIT_STAB;
 		hitSoundPitch = 1.1f;
 		
-		tier = 3;
+		tier = 4;
 		baseUses = 5;
 	}
 	
@@ -44,10 +44,10 @@ public class Kunai extends MissileWeapon {
 			Hero hero = (Hero)owner;
 			Char enemy = hero.attackTarget();
 			if (enemy instanceof Mob && ((Mob) enemy).surprisedBy(hero)) {
-				//deals 70% toward max to max on surprise, instead of min to max.
+				//deals 50% toward max to max on surprise, instead of min to max.
 				int diff = max() - min();
 				int damage = augment.damageFactor(Hero.heroDamageIntRange(
-						min() + Math.round(diff*0.7f),
+						min() + Math.round(diff*0.5f),
 						max()));
 				int exStr = hero.STR() - STRReq();
 				if (exStr > 0) {

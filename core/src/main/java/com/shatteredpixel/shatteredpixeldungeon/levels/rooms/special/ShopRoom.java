@@ -39,6 +39,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.armor.PlateArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ScaleArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
+import com.shatteredpixel.shatteredpixeldungeon.items.bags.FoodPocket;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.MagicalHolster;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.PotionBandolier;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.ScrollHolder;
@@ -358,6 +359,7 @@ public class ShopRoom extends SpecialRoom {
 		if (!Dungeon.LimitedDrops.SCROLL_HOLDER.dropped()) bags.put(new ScrollHolder(), 0);
 		if (!Dungeon.LimitedDrops.POTION_BANDOLIER.dropped()) bags.put(new PotionBandolier(), 0);
 		if (!Dungeon.LimitedDrops.MAGICAL_HOLSTER.dropped()) bags.put(new MagicalHolster(), 0);
+		if (!Dungeon.LimitedDrops.FOOD_POCKET.dropped()) bags.put(new FoodPocket(), 0);
 
 		if (bags.isEmpty()) return null;
 
@@ -388,6 +390,8 @@ public class ShopRoom extends SpecialRoom {
 			Dungeon.LimitedDrops.POTION_BANDOLIER.drop();
 		} else if (bestBag instanceof MagicalHolster){
 			Dungeon.LimitedDrops.MAGICAL_HOLSTER.drop();
+		} else if (bestBag instanceof FoodPocket){
+			Dungeon.LimitedDrops.FOOD_POCKET.drop();
 		}
 
 		return bestBag;

@@ -33,21 +33,21 @@ import com.watabou.noosa.tweeners.AlphaTweener;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
 
-public class HeavyBoomerang extends MissileWeapon {
+public class Boomerang extends MissileWeapon {
 	
 	{
-		image = ItemSpriteSheet.HEAVYBOOMERANG;
+		image = ItemSpriteSheet.BOOMERANG;
 		hitSound = Assets.Sounds.HIT_CRUSH;
-		hitSoundPitch = 0.9f;
+		hitSoundPitch = 1f;
 		
-		tier = 6;
+		tier = 4;
 		sticky = false;
 	}
 	
 	@Override
 	public int max(int lvl) {
-		return  4 * tier +                  //24 base, down from 30
-				tier * lvl;               //scaling unchanged
+		return  4 * tier +                  //16 base, down from 20
+				(tier) * lvl;               //scaling unchanged
 	}
 
 	boolean circleBackhit = false;
@@ -56,7 +56,7 @@ public class HeavyBoomerang extends MissileWeapon {
 	protected float adjacentAccFactor(Char owner, Char target) {
 		if (circleBackhit){
 			circleBackhit = false;
-			return 1.45f;
+			return 1.5f;
 		}
 		return super.adjacentAccFactor(owner, target);
 	}
@@ -81,7 +81,7 @@ public class HeavyBoomerang extends MissileWeapon {
 			revivePersists = true;
 		}
 		
-		private HeavyBoomerang boomerang;
+		private Boomerang boomerang;
 		private int thrownPos;
 		private int returnPos;
 		private int returnDepth;
@@ -89,7 +89,7 @@ public class HeavyBoomerang extends MissileWeapon {
 		
 		private int left;
 		
-		public void setup(HeavyBoomerang boomerang, int thrownPos, int returnPos, int returnDepth, int returnBranch){
+		public void setup(Boomerang boomerang, int thrownPos, int returnPos, int returnDepth, int returnBranch){
 			this.boomerang = boomerang;
 			this.thrownPos = thrownPos;
 			this.returnPos = returnPos;
@@ -180,7 +180,7 @@ public class HeavyBoomerang extends MissileWeapon {
 		@Override
 		public void restoreFromBundle(Bundle bundle) {
 			super.restoreFromBundle(bundle);
-			boomerang = (HeavyBoomerang) bundle.get(BOOMERANG);
+			boomerang = (Boomerang) bundle.get(BOOMERANG);
 			thrownPos = bundle.getInt(THROWN_POS);
 			returnPos = bundle.getInt(RETURN_POS);
 			returnDepth = bundle.getInt(RETURN_DEPTH);

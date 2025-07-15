@@ -19,19 +19,36 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles;
+package com.shatteredpixel.shatteredpixeldungeon.items.bags;
 
-import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
-public class SCORPIOSPIKE extends MissileWeapon {
+public class FoodPocket extends Bag {
 
     {
-        image = ItemSpriteSheet.Scorpiospike;
-        hitSound = Assets.Sounds.HIT_STAB;
-        hitSoundPitch = 0.9f;
+        image = ItemSpriteSheet.FOOD_POCKET;
+    }
 
-        tier = 6;
+    public static final float POCKET_SATISFY_FACTOR = 1.2f;
+
+    @Override
+    public boolean canHold( Item item ) {
+        if (item instanceof Food){
+            return super.canHold(item);
+        } else {
+            return false;
+        }
+    }
+
+    public int capacity(){
+        return 19;
+    }
+
+    @Override
+    public int value() {
+        return 30;
     }
 
 }

@@ -23,40 +23,36 @@ package com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
-public class Kunai extends MissileWeapon {
-	
+public class Headdart extends MissileWeapon {
+
 	{
-		image = ItemSpriteSheet.KUNAI;
-		hitSound = Assets.Sounds.HIT_STAB;
-		hitSoundPitch = 1.1f;
-		
-		tier = 3;
+		image = ItemSpriteSheet.HEADDART;
+		hitSound = Assets.Sounds.HIT_SLASH;
+		hitSoundPitch = 0.8f;
+
+		tier = 5;
 		baseUses = 5;
+	}
+
+	@Override
+	public int min(int lvl) {
+		return  Math.round(1.5f * tier) +   //8 base, down from 10
+				2 * lvl;                    //scaling unchanged
 	}
 	
 	@Override
-	public int damageRoll(Char owner) {
-		if (owner instanceof Hero) {
-			Hero hero = (Hero)owner;
-			Char enemy = hero.attackTarget();
-			if (enemy instanceof Mob && ((Mob) enemy).surprisedBy(hero)) {
-				//deals 70% toward max to max on surprise, instead of min to max.
-				int diff = max() - min();
-				int damage = augment.damageFactor(Hero.heroDamageIntRange(
-						min() + Math.round(diff*0.7f),
-						max()));
-				int exStr = hero.STR() - STRReq();
-				if (exStr > 0) {
-					damage += Hero.heroDamageIntRange(0, exStr);
-				}
-				return damage;
-			}
-		}
-		return super.damageRoll(owner);
+	public int max(int lvl) {
+		return  Math.round(3.75f * tier) +  //18 base, down from 25
+				(tier)*lvl;                 //scaling unchanged
 	}
 	
+	@Override
+	public int proc( Char attacker, Char defender, int damage ) {
+		Buff.affect( defender, Bleeding.class ).set( Math.round(damage*0.55f) );
+		return super.proc( attacker, defender, damage );
+	}
 }

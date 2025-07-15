@@ -24,13 +24,12 @@ package com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
-public class Kunai extends MissileWeapon {
-	
+public class CoinDart extends MissileWeapon {
+
 	{
-		image = ItemSpriteSheet.KUNAI;
+		image = ItemSpriteSheet.COINDART;
 		hitSound = Assets.Sounds.HIT_STAB;
 		hitSoundPitch = 1.1f;
 		
@@ -39,24 +38,14 @@ public class Kunai extends MissileWeapon {
 	}
 	
 	@Override
-	public int damageRoll(Char owner) {
-		if (owner instanceof Hero) {
-			Hero hero = (Hero)owner;
-			Char enemy = hero.attackTarget();
-			if (enemy instanceof Mob && ((Mob) enemy).surprisedBy(hero)) {
-				//deals 70% toward max to max on surprise, instead of min to max.
-				int diff = max() - min();
-				int damage = augment.damageFactor(Hero.heroDamageIntRange(
-						min() + Math.round(diff*0.7f),
-						max()));
-				int exStr = hero.STR() - STRReq();
-				if (exStr > 0) {
-					damage += Hero.heroDamageIntRange(0, exStr);
-				}
-				return damage;
-			}
-		}
-		return super.damageRoll(owner);
+	public int max(int lvl) {
+		return  4 * tier +                      //12 base, down from 15
+				tier * lvl; //scaling unchanged
 	}
 	
+	@Override
+	public float delayFactor(Char owner) {
+		if (owner instanceof Hero && ((Hero) owner).justMoved)  return 0;
+		else                                                    return super.delayFactor(owner);
+	}
 }

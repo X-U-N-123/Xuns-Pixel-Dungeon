@@ -35,6 +35,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Shuriken;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.ConeAOE;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MissileSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.HeroIcon;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
@@ -118,7 +119,11 @@ public class SpectralBlades extends ArmorAbility {
 					callbacks.remove( this );
 					if (callbacks.isEmpty()) {
 						Invisibility.dispel();
-						hero.spendAndNext( hero.attackDelay() );
+						if (hero.pointsInTalent(Talent.INSTANT_BLADES) > 1) {
+							Buff.affect(Dungeon.hero, Swiftthistle.TimeBubble.class).reset(2*(hero.pointsInTalent(Talent.INSTANT_BLADES)-2));
+							hero.busy();hero.next();
+						} else if (hero.pointsInTalent(Talent.INSTANT_BLADES) <=0) hero.spendAndNext( hero.attackDelay() );
+						else {hero.busy();hero.next();}
 					}
 				}
 			};
@@ -162,6 +167,6 @@ public class SpectralBlades extends ArmorAbility {
 
 	@Override
 	public Talent[] talents() {
-		return new Talent[]{Talent.FAN_OF_BLADES, Talent.PROJECTING_BLADES, Talent.SPIRIT_BLADES, Talent.HEROIC_ENERGY};
+		return new Talent[]{Talent.FAN_OF_BLADES, Talent.PROJECTING_BLADES, Talent.SPIRIT_BLADES, Talent.INSTANT_BLADES, Talent.HEROIC_ENERGY};
 	}
 }

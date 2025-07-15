@@ -54,6 +54,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.LamellarArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HolyTome;
+import com.shatteredpixel.shatteredpixeldungeon.items.bags.FoodPocket;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.MagicalHolster;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.PotionBandolier;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.ScrollHolder;
@@ -132,6 +133,8 @@ public enum HeroClass {
 			Dungeon.LimitedDrops.MAGICAL_HOLSTER.drop();
 			new PotionBandolier().collect();
 			Dungeon.LimitedDrops.POTION_BANDOLIER.drop();
+			new FoodPocket().collect();
+			Dungeon.LimitedDrops.FOOD_POCKET.drop();
 
 			new PotionOfStrength().quantity(127).identify().collect();
 			new PotionOfExperience().quantity(29).identify().collect();

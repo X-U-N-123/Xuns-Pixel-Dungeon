@@ -26,6 +26,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
+import com.shatteredpixel.shatteredpixeldungeon.items.bags.FoodPocket;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.MagicalHolster;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.PotionBandolier;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.ScrollHolder;
@@ -143,6 +144,7 @@ public class Badges {
 		BAG_BOUGHT_SCROLL_HOLDER,
 		BAG_BOUGHT_POTION_BANDOLIER,
 		BAG_BOUGHT_MAGICAL_HOLSTER,
+		BAG_BOUGHT_FOOD_POCKET,
 		ALL_BAGS_BOUGHT             ( 67 ),
 		MASTERY_COMBO               ( 68 ),
 		MONSTERS_SLAIN_5            ( 69 ),
@@ -614,6 +616,8 @@ public class Badges {
 			badge = Badge.BAG_BOUGHT_POTION_BANDOLIER;
 		} else if (bag instanceof MagicalHolster) {
 			badge = Badge.BAG_BOUGHT_MAGICAL_HOLSTER;
+		} else if (bag instanceof FoodPocket) {
+			badge = Badge.BAG_BOUGHT_FOOD_POCKET;
 		}
 		
 		if (badge != null) {
@@ -624,7 +628,8 @@ public class Badges {
 				local.contains( Badge.BAG_BOUGHT_VELVET_POUCH ) &&
 				local.contains( Badge.BAG_BOUGHT_SCROLL_HOLDER ) &&
 				local.contains( Badge.BAG_BOUGHT_POTION_BANDOLIER ) &&
-				local.contains( Badge.BAG_BOUGHT_MAGICAL_HOLSTER )) {
+				local.contains( Badge.BAG_BOUGHT_MAGICAL_HOLSTER ) &&
+				local.contains( Badge.BAG_BOUGHT_FOOD_POCKET )) {
 						
 					badge = Badge.ALL_BAGS_BOUGHT;
 					local.add( badge );
