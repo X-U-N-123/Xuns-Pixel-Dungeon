@@ -52,7 +52,7 @@ import java.util.ArrayList;
 
 public class WndClericSpells extends Window {
 
-	protected static final int WIDTH    = 120;
+	protected static final int WIDTH    = 136;
 
 	public static int BTN_SIZE = 20;
 
@@ -112,10 +112,18 @@ public class WndClericSpells extends Window {
 				spellBtns.add(spellBtn);
 			}
 
-			int left = 2 + (WIDTH - spellBtns.size() * (BTN_SIZE + 4)) / 2;
+			int dist = 14;
+			int left = (dist / 2) + (WIDTH - spellBtns.size() * (BTN_SIZE + dist)) / 2;
+			int a = 0;
+			while (a < spellBtns.size()){
+				dist -= 2;
+				left += spellBtns.size() - 1;
+				a++;
+			}
+
 			for (IconButton btn : spellBtns) {
 				btn.setRect(left, top, BTN_SIZE, BTN_SIZE);
-				left += btn.width() + 4;
+				left += btn.width() + dist;
 			}
 
 		}

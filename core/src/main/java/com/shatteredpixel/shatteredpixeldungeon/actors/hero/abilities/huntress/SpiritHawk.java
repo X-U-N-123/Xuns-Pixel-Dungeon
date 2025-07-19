@@ -304,8 +304,6 @@ public class SpiritHawk extends ArmorAbility {
 
 			TextureFilm frames = new TextureFilm( texture, 15, 15 );
 
-			int c = 0;
-
 			idle = new Animation( 6, true );
 			idle.frames( frames, 0, 1 );
 

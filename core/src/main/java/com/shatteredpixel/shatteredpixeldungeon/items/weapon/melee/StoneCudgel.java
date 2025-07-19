@@ -185,10 +185,10 @@ public class StoneCudgel extends MeleeWeapon{
 
         @Override
         public void die( Object cause ) {
-            //Stop it from dropping weapon
+            //Jump Guardian super method to stop it from dropping weapon
             if (Dungeon.hero.isAlive() && !Dungeon.level.heroFOV[pos]) {
                 GLog.i( Messages.get(this, "died") );
-            }//Mob super method
+            }//Mob.java super method
 
             destroy();
             if (cause != Chasm.class) {
@@ -196,9 +196,8 @@ public class StoneCudgel extends MeleeWeapon{
                 if (!flying && Dungeon.level != null && sprite instanceof MobSprite && Dungeon.level.map[pos] == Terrain.CHASM){
                     ((MobSprite) sprite).fall();
                 }
-            }//Char super method
+            }//Char.java super method
         }
-
     }
 
     public static class StoneGuardianSprite extends StatueSprite {

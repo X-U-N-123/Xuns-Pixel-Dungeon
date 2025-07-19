@@ -69,6 +69,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.ArmorAbili
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.cleric.AscendedForm;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.duelist.Challenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.duelist.ElementalStrike;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.duelist.Feint;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.huntress.NaturesPower;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.Endure;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.BodyForm;
@@ -583,6 +584,10 @@ public class Hero extends Char {
 
 		if (buff(Quarterstaff.DefensiveStance.class) != null){
 			evasion *= 3;
+		}
+
+		if (buff(Feint.Evasiveafterimage.class) != null){
+			evasion *= 1 + 0.5f*pointsInTalent(Talent.EVASIVE_AFTERIMAGE);
 		}
 		
 		if (paralysed > 0) {

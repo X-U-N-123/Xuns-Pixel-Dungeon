@@ -470,15 +470,6 @@ public class Item implements Bundlable {
 			Statistics.itemTypesDiscovered.add(getClass());
 			if (!isIdentified()) {
 				Talent.onItemIdentified(hero, this);
-				if (hero.hasTalent(Talent.TESTED_CHARGE)){
-					if (hero.heroClass == (HeroClass.DUELIST)){
-						Buff.affect(hero, MeleeWeapon.Charger.class ).gainCharge(0.1f + 0.2f*hero.pointsInTalent(Talent.TESTED_CHARGE));
-					ScrollOfRecharging.charge(hero);
-					} else {
-						//Empower next melee attack by 2 / 3 points
-						Buff.affect(hero, PhysicalEmpower.class).set(1 + hero.pointsInTalent(Talent.TESTED_CHARGE), 1);
-					}
-				}
 			}
 		}
 

@@ -28,6 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AllyBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.PrismaticGuard;
@@ -37,6 +38,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.ArmorAbility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.BeamingRay;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.ClericSpell;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.HolyChampion;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.LifeLinkSpell;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.Stasis;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
@@ -186,7 +188,7 @@ public class PowerOfMany extends ArmorAbility {
 
 	@Override
 	public Talent[] talents() {
-		return new Talent[]{Talent.BEAMING_RAY, Talent.LIFE_LINK, Talent.STASIS, Talent.HEROIC_ENERGY};
+		return new Talent[]{Talent.BEAMING_RAY, Talent.LIFE_LINK, Talent.STASIS, Talent.HOLY_CHAMPION, Talent.HEROIC_ENERGY};
 	}
 
 	public static Char getPoweredAlly(){
@@ -238,6 +240,12 @@ public class PowerOfMany extends ArmorAbility {
 			super.detach();
 			Dungeon.observe();
 			GameScene.updateFog();
+			for (ChampionEnemy buff : target.buffs(ChampionEnemy.class)){
+				buff.detach();
+			}
+			if (target.buff(HolyChampion.HolyChampionTracker.class) != null){
+				target.buff(HolyChampion.HolyChampionTracker.class).detach();
+			}
 		}
 	}
 

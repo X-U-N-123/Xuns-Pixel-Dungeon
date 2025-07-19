@@ -114,9 +114,9 @@ public class WarpBeacon extends ArmorAbility {
 						}
 
 						armor.charge -= chargeNeeded;
-						if (hero.pointsInTalent(Talent.SPACE_CONDENSATION)*0.5f >= Random.Float()) {
+						if (hero.pointsInTalent(Talent.SPACE_COLLECTING)*0.5f >= Random.Float()) {
 							new PhaseShift().collect();
-							if ((hero.pointsInTalent(Talent.SPACE_CONDENSATION)-2)*0.4f >= Random.Float()) {
+							if ((hero.pointsInTalent(Talent.SPACE_COLLECTING)-2)*0.4f >= Random.Float()) {
 								new ScrollOfTeleportation().collect();
 								GLog.p(Messages.get(this, "tele"));
 							} else {
@@ -283,6 +283,6 @@ public class WarpBeacon extends ArmorAbility {
 
 	@Override
 	public Talent[] talents() {
-		return new Talent[]{Talent.TELEFRAG, Talent.REMOTE_BEACON, Talent.LONGRANGE_WARP, Talent.SPACE_CONDENSATION, Talent.HEROIC_ENERGY};
+		return new Talent[]{Talent.TELEFRAG, Talent.REMOTE_BEACON, Talent.LONGRANGE_WARP, Talent.SPACE_COLLECTING, Talent.HEROIC_ENERGY};
 	}
 }

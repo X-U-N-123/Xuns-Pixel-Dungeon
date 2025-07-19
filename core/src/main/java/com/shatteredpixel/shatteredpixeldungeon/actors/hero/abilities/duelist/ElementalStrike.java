@@ -277,11 +277,11 @@ public class ElementalStrike extends ArmorAbility {
 		public float enchBoost = 0f;
 	}
 
-	public static class ElementalStrikeLuckyTracker extends Buff{};
+	public static class ElementalStrikeLuckyTracker extends Buff{}
 
 	private int storedKineticDamage = 0;
 
-	public static class ElementalStrikeFurrowCounter extends CounterBuff{{revivePersists = true;}};
+	public static class ElementalStrikeFurrowCounter extends CounterBuff{{revivePersists = true;}}
 
 	//effects that affect the cells of the environment themselves
 	private void perCellEffect(ConeAOE cone, Weapon.Enchantment ench){
@@ -365,6 +365,11 @@ public class ElementalStrike extends ArmorAbility {
 			if (ch.alignment != Char.Alignment.ALLY && cone.cells.contains(ch.pos)) {
 				affected.add(ch);
 			}
+		}
+
+		if (hero.hasTalent(Talent.RECHARGING_STRIKE)){
+			MeleeWeapon.Charger charger = Buff.affect(hero, MeleeWeapon.Charger.class);
+			charger.gainCharge(Dungeon.hero.pointsInTalent(Talent.RECHARGING_STRIKE) * 0.125f * affected.size());
 		}
 
 		//*** no enchantment ***
@@ -577,7 +582,7 @@ public class ElementalStrike extends ArmorAbility {
 
 	@Override
 	public Talent[] talents() {
-		return new Talent[]{Talent.ELEMENTAL_REACH, Talent.STRIKING_FORCE, Talent.DIRECTED_POWER, Talent.HEROIC_ENERGY};
+		return new Talent[]{Talent.ELEMENTAL_REACH, Talent.STRIKING_FORCE, Talent.DIRECTED_POWER, Talent.RECHARGING_STRIKE, Talent.HEROIC_ENERGY};
 	}
 
 }

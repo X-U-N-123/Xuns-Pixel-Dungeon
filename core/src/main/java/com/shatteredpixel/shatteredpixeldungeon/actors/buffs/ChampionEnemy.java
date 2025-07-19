@@ -37,6 +37,8 @@ import com.watabou.utils.Bundle;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
+import java.util.ArrayList;
+
 public abstract class ChampionEnemy extends Buff {
 
 	{
@@ -106,6 +108,24 @@ public abstract class ChampionEnemy extends Buff {
 
 		if (Dungeon.mobsToChampion <= 0 && Dungeon.isChallenged(Challenges.CHAMPION_ENEMIES)) {
 			Buff.affect(m, buffCls);
+			if (m.state != m.PASSIVE) {
+				m.state = m.WANDERING;
+			}
+		}
+	}
+
+	public static void GiveChampion(Mob m){
+
+		ArrayList <Class<?extends ChampionEnemy>> Usablebuff = new ArrayList<>();
+		if(m.buff(Projecting.class) == null)Usablebuff.add(Projecting.class);
+		if(m.buff(AntiMagic.class) == null) Usablebuff.add(AntiMagic.class);
+		if(m.buff(Blessed.class) == null)   Usablebuff.add(Blessed.class);
+		if(m.buff(Growing.class) == null)   Usablebuff.add(Growing.class);
+		if(m.buff(Blazing.class) == null)   Usablebuff.add(Blazing.class);
+		if(m.buff(Giant.class) == null && Usablebuff.isEmpty()) Usablebuff.add(Giant.class);
+
+		if (!Usablebuff.isEmpty()){
+			Buff.affect(m, Usablebuff.get(Random.Int(Usablebuff.size())));
 			if (m.state != m.PASSIVE) {
 				m.state = m.WANDERING;
 			}

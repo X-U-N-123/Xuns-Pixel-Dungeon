@@ -68,7 +68,7 @@ public class AscendedForm extends ArmorAbility {
 
 	@Override
 	public Talent[] talents() {
-		return new Talent[]{Talent.DIVINE_INTERVENTION, Talent.JUDGEMENT, Talent.FLASH, Talent.HEROIC_ENERGY};
+		return new Talent[]{Talent.DIVINE_INTERVENTION, Talent.JUDGEMENT, Talent.FLASH, Talent.HOLY_PROTECTION, Talent.HEROIC_ENERGY};
 	}
 
 	public static class AscendBuff extends ShieldBuff {
@@ -107,6 +107,7 @@ public class AscendedForm extends ArmorAbility {
 		public int spellCasts = 0;
 		public int flashCasts = 0;
 		public boolean divineInverventionCast = false;
+		public boolean HolyProtectionCast = false;
 
 		public void reset(){
 			setShield(30);
@@ -143,6 +144,7 @@ public class AscendedForm extends ArmorAbility {
 		public static final String SPELL_CASTS = "spell_casts";
 		public static final String FLASH_CASTS = "flash_casts";
 		public static final String DIVINE_INTERVENTION_CAST = "divine_intervention_cast";
+		public static final String HOLY_PROTECTION_CAST = "holy_protection_cast";
 
 		@Override
 		public void storeInBundle(Bundle bundle) {
@@ -151,6 +153,7 @@ public class AscendedForm extends ArmorAbility {
 			bundle.put(SPELL_CASTS, spellCasts);
 			bundle.put(FLASH_CASTS, flashCasts);
 			bundle.put(DIVINE_INTERVENTION_CAST, divineInverventionCast);
+			bundle.put(HOLY_PROTECTION_CAST, HolyProtectionCast);
 		}
 
 		@Override
@@ -160,6 +163,7 @@ public class AscendedForm extends ArmorAbility {
 			spellCasts = bundle.getInt(SPELL_CASTS);
 			flashCasts = bundle.getInt(FLASH_CASTS);
 			divineInverventionCast = bundle.getBoolean(DIVINE_INTERVENTION_CAST);
+			HolyProtectionCast = bundle.getBoolean(HOLY_PROTECTION_CAST);
 		}
 	}
 

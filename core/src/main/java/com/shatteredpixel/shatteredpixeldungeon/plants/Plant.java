@@ -204,7 +204,7 @@ public abstract class Plant implements Bundlable {
 				detach( hero.belongings.backpack );
 				Catalog.countUse(getClass());
 
-				Buff.affect(hero, Hunger.class).satisfy(Hunger.HUNGRY/3f);
+				Buff.affect(hero, Hunger.class).satisfy(Hunger.HUNGRY/2f);
 				GLog.i( Messages.get(Berry.class, "eat_msg") );
 
 				hero.sprite.operate( hero.pos );
@@ -219,22 +219,29 @@ public abstract class Plant implements Bundlable {
 				|| Dungeon.hero.hasTalent(Talent.INVIGORATING_MEAL)
 				|| Dungeon.hero.hasTalent(Talent.FOCUSED_MEAL)
 				|| Dungeon.hero.hasTalent(Talent.ENLIGHTENING_MEAL)))
-					hero.spend(TIME_TO_EAT);
+					hero.spend(Actor.TICK);
 
 				Statistics.foodEaten++;
 				Badges.validateFoodEaten();
 
 				Talent.onFoodEaten(hero, Hunger.HUNGRY/3f, this);
-				if ((Dungeon.hero.pointsInTalent(Talent.GRASSMAN)-1)*0.5f >= Random.Float()) {
+				if ((Dungeon.hero.pointsInTalent(Talent.GRASSMAN)) > 1) {
 					if (this instanceof Icecap.Seed){
 						Buff.affect(Dungeon.hero, FrostImbue.class, FrostImbue.DURATION*0.3f);
-						return;
-					}//Stop their terrain effect
-					if (this instanceof Firebloom.Seed){
+					} else if (this instanceof Firebloom.Seed){
 						Buff.affect(Dungeon.hero, FireImbue.class).set( FireImbue.DURATION*0.3f );
-						return;
+					} else Reflection.newInstance(plantClass).activate(hero);
+					if (Dungeon.hero.pointsInTalent(Talent.GRASSMAN) > 2){
+						for (int i : PathFinder.NEIGHBOURS9) {
+							int c = Dungeon.level.map[Dungeon.hero.pos + i];
+							if ( c == Terrain.EMPTY || c == Terrain.EMPTY_DECO
+							|| c == Terrain.EMBERS || c == Terrain.GRASS){
+								Level.set(Dungeon.hero.pos + i, Terrain.FURROWED_GRASS);
+								GameScene.updateMap(Dungeon.hero.pos + i);
+								CellEmitter.get( Dungeon.hero.pos + i ).burst( LeafParticle.LEVEL_SPECIFIC, 4 );
+							}
+						}
 					}
-					Reflection.newInstance(plantClass).activate(hero);
 				}
 
 			}

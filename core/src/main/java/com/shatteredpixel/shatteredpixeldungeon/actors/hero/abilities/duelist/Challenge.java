@@ -29,7 +29,9 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.BlobImmunity;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Doom;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Stamina;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.ArmorAbility;
@@ -166,15 +168,16 @@ public class Challenge extends ArmorAbility {
 		for (Char toFreeze : Actor.chars()){
 			if (toFreeze != targetCh && toFreeze.alignment != Char.Alignment.ALLY && !(toFreeze instanceof NPC)
 				&& (!bossTarget || !(Char.hasProp(targetCh, Char.Property.BOSS) || Char.hasProp(targetCh, Char.Property.BOSS_MINION)))) {
-				Actor.delayChar(toFreeze, DuelParticipant.DURATION);
-				Buff.affect(toFreeze, SpectatorFreeze.class, DuelParticipant.DURATION);
+				Actor.delayChar(toFreeze, DuelParticipant.DURATION * (int)Math.pow(2, hero.pointsInTalent(Talent.BURN_BRIDGES)));
+				Buff.affect(toFreeze, SpectatorFreeze.class, DuelParticipant.DURATION * (int)Math.pow(2, hero.pointsInTalent(Talent.BURN_BRIDGES)));
 			}
 		}
 
-		Buff.affect(targetCh, DuelParticipant.class);
-		Buff.affect(hero, DuelParticipant.class);
+		Buff.affect(targetCh, DuelParticipant.class).talenttime(hero.pointsInTalent(Talent.BURN_BRIDGES));
+		Buff.affect(hero, DuelParticipant.class).talenttime(hero.pointsInTalent(Talent.BURN_BRIDGES));
 		if (targetCh instanceof Mob){
 			((Mob) targetCh).aggro(hero);
+            if (hero.hasTalent(Talent.BURN_BRIDGES))((Mob)targetCh).beckon(hero.pos);
 		}
 
 		GameScene.flash(0x80FFFFFF);
@@ -194,10 +197,10 @@ public class Challenge extends ArmorAbility {
 
 	@Override
 	public Talent[] talents() {
-		return new Talent[]{Talent.CLOSE_THE_GAP, Talent.INVIGORATING_VICTORY, Talent.ELIMINATION_MATCH, Talent.HEROIC_ENERGY};
+		return new Talent[]{Talent.CLOSE_THE_GAP, Talent.INVIGORATING_VICTORY, Talent.ELIMINATION_MATCH, Talent.BURN_BRIDGES, Talent.HEROIC_ENERGY};
 	}
 
-	public static class EliminationMatchTracker extends FlavourBuff{};
+	public static class EliminationMatchTracker extends FlavourBuff{}
 
 	public static class DuelParticipant extends Buff {
 
@@ -225,11 +228,15 @@ public class Challenge extends ArmorAbility {
 			takenDmg += dmg;
 		}
 
+		public void talenttime(int point){
+			left *= (int)Math.pow(2, point);
+		}
+
 		@Override
 		public boolean act() {
 
 			left--;
-			if (left == 0) {
+			if (left <= 0) {
 				detach();
 			} else {
 				Char other = null;
@@ -240,9 +247,29 @@ public class Challenge extends ArmorAbility {
 				}
 
 				if (other == null
-					|| target.alignment == other.alignment
-					|| Dungeon.level.distance(target.pos, other.pos) > 5) {
+					|| target.alignment == other.alignment) {
 					detach();
+				}
+
+				int point = Dungeon.hero.pointsInTalent(Talent.BURN_BRIDGES);
+
+				if (target instanceof Mob && left % 4 == 0 && point > 3) {
+					((Mob)target).beckon(Dungeon.hero.pos);
+				}
+
+				if (other != null && Dungeon.level.distance(target.pos, other.pos) > 5) {
+					if (point > 0) {
+						if (target instanceof Mob) {
+                            ((Mob)target).beckon(Dungeon.hero.pos);
+							if (point > 2){
+								Buff.affect(target, Haste.class, 1);
+							} else if (point > 1){
+								Buff.affect(target, Stamina.class, 2);
+							}
+						}
+					} else {
+						detach();
+					}
 				}
 			}
 

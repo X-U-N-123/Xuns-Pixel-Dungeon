@@ -152,7 +152,7 @@ public class Feint extends ArmorAbility {
 
 	@Override
 	public Talent[] talents() {
-		return new Talent[]{Talent.FEIGNED_RETREAT, Talent.EXPOSE_WEAKNESS, Talent.COUNTER_ABILITY, Talent.HEROIC_ENERGY};
+		return new Talent[]{Talent.FEIGNED_RETREAT, Talent.EXPOSE_WEAKNESS, Talent.COUNTER_ABILITY, Talent.EVASIVE_AFTERIMAGE, Talent.HEROIC_ENERGY};
 	}
 
 	public static class AfterImage extends Mob {
@@ -185,9 +185,7 @@ public class Feint extends ArmorAbility {
 		}
 
 		@Override
-		public void damage( int dmg, Object src ) {
-
-		}
+		public void damage( int dmg, Object src ) {}
 
 		@Override
 		public int defenseSkill(Char enemy) {
@@ -203,6 +201,9 @@ public class Feint extends ArmorAbility {
 				if (Dungeon.hero.hasTalent(Talent.EXPOSE_WEAKNESS)) {
 					Buff.prolong(enemy, Vulnerable.class, 2f * Dungeon.hero.pointsInTalent(Talent.EXPOSE_WEAKNESS));
 					Buff.prolong(enemy, Weakness.class, 2f * Dungeon.hero.pointsInTalent(Talent.EXPOSE_WEAKNESS));
+				}
+				if (Dungeon.hero.hasTalent(Talent.EVASIVE_AFTERIMAGE)){
+					Buff.affect(Dungeon.hero, Evasiveafterimage.class, 2*Dungeon.hero.pointsInTalent(Talent.EVASIVE_AFTERIMAGE));
 				}
 				if (Dungeon.hero.hasTalent(Talent.COUNTER_ABILITY)) {
 					Buff.prolong(Dungeon.hero, Talent.CounterAbilityTacker.class, 3f);
@@ -227,9 +228,7 @@ public class Feint extends ArmorAbility {
 			return s;
 		}
 
-		public static class FeintConfusion extends FlavourBuff {
-
-		}
+		public static class FeintConfusion extends FlavourBuff {}
 
 		public static class AfterImageSprite extends MirrorSprite {
 			@Override
@@ -259,4 +258,6 @@ public class Feint extends ArmorAbility {
 		}
 
 	}
+
+	public static class Evasiveafterimage extends FlavourBuff {}
 }

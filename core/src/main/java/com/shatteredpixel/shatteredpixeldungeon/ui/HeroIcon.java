@@ -89,9 +89,9 @@ public class HeroIcon extends Image {
 	public static final int MNEMONIC_PRAYER = 93;
 	public static final int SMITE           = 94;
 	public static final int LAY_ON_HANDS    = 95;
-	public static final int AURA_OF_PROTECTION = 96;
+	public static final int AURA_OF_PROTECTION= 96;
 	public static final int WALL_OF_LIGHT   = 97;
-	public static final int DIVINE_INTERVENTION = 98;
+	public static final int DIVINE_INTERVENTION= 98;
 	public static final int JUDGEMENT       = 99;
 	public static final int FLASH           = 100;
 	public static final int BODY_FORM       = 101;
@@ -103,6 +103,9 @@ public class HeroIcon extends Image {
 	public static final int EXPLOSION       = 107;
 	public static final int JUSTICE_STRIKE  = 109;
 	public static final int SHARED_CHARGE   = 110;
+	public static final int HOLY_CHAMPION   = 111;
+	public static final int HOLY_PROTECTION = 112;
+	public static final int MIMIC_FORM      = 113;
 
 	//all cleric spells have a separate icon with no background for the action indicator
 	public static final int SPELL_ACTION_OFFSET      = 48;

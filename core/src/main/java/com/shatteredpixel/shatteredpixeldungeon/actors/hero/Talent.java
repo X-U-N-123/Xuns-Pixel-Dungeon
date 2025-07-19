@@ -45,6 +45,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.WandEmpower;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MonkEnergy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.ArmorAbility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.Ratmogrify;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.duelist.Challenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.DivineSense;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.RecallInscription;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
@@ -124,11 +125,11 @@ public enum Talent {
 	//Warlock T3
 	SOUL_EATER(46, 3), SOUL_SIPHON(47, 3), NECROMANCERS_MINIONS(48, 3), CLEAR_YOUR_SOUL(226, 3),MANA_EATING(227, 3),
 	//Elemental Blast T4
-	BLAST_RADIUS(49, 4), ELEMENTAL_POWER(50, 4), REACTIVE_BARRIER(51, 4),VARIED_STORM(239, 4),
+	BLAST_RADIUS(49, 4), ELEMENTAL_POWER(50, 4), REACTIVE_BARRIER(51, 4), VARIED_BLAST(239, 4),
 	//Wild Magic T4
-	WILD_POWER(52, 4), FIRE_EVERYTHING(53, 4), CONSERVED_MAGIC(54, 4),WILD_CURSE(240 ,4),
+	WILD_POWER(52, 4), FIRE_EVERYTHING(53, 4), CONSERVED_MAGIC(54, 4),WILD_CURSE(240, 4),
 	//Warp Beacon T4
-	TELEFRAG(55, 4), REMOTE_BEACON(56, 4), LONGRANGE_WARP(57, 4),SPACE_CONDENSATION(241, 4),
+	TELEFRAG(55, 4), REMOTE_BEACON(56, 4), LONGRANGE_WARP(57, 4), SPACE_COLLECTING(241, 4),
 
 	//Rogue T1
 	CACHED_RATIONS(64), THIEFS_INTUITION(65), SUCKER_PUNCH(66), PROTECTIVE_SHADOWS(67), TESTED_MYST(91),
@@ -175,11 +176,11 @@ public enum Talent {
 	//Monk T3
 	UNENCUMBERED_SPIRIT(142, 3), MONASTIC_VIGOR(143, 3), COMBINED_ENERGY(144, 3), YANG_SEEING(232, 3), YIN_GAIT(233, 3),
 	//Challenge T4
-	CLOSE_THE_GAP(145, 4), INVIGORATING_VICTORY(146, 4), ELIMINATION_MATCH(147, 4),
+	CLOSE_THE_GAP(145, 4), INVIGORATING_VICTORY(146, 4), ELIMINATION_MATCH(147, 4),BURN_BRIDGES(248 ,4),
 	//Elemental Strike T4
-	ELEMENTAL_REACH(148, 4), STRIKING_FORCE(149, 4), DIRECTED_POWER(150, 4),
+	ELEMENTAL_REACH(148, 4), STRIKING_FORCE(149, 4), DIRECTED_POWER(150, 4), RECHARGING_STRIKE(249, 4),
 	//Feint T4
-	FEIGNED_RETREAT(151, 4), EXPOSE_WEAKNESS(152, 4), COUNTER_ABILITY(153, 4),
+	FEIGNED_RETREAT(151, 4), EXPOSE_WEAKNESS(152, 4), COUNTER_ABILITY(153, 4), EVASIVE_AFTERIMAGE(250, 4),
 
 	//Cleric T1
 	SATIATED_SPELLS(160), HOLY_INTUITION(161), SEARING_LIGHT(162), SHIELD_OF_LIGHT(163), TESTED_HOLINESS(187),
@@ -192,11 +193,11 @@ public enum Talent {
 	//Paladin T3
 	LAY_ON_HANDS(174, 3), AURA_OF_PROTECTION(175, 3), WALL_OF_LIGHT(176, 3),JUSTICE_STRIKE(234, 3), ENHANCED_SMITE(235, 3),
 	//Ascended Form T4
-	DIVINE_INTERVENTION(177, 4), JUDGEMENT(178, 4), FLASH(179, 4),
+	DIVINE_INTERVENTION(177, 4), JUDGEMENT(178, 4), FLASH(179, 4), HOLY_PROTECTION(251, 4),
 	//Trinity T4
-	BODY_FORM(180, 4), MIND_FORM(181, 4), SPIRIT_FORM(182, 4),
+	BODY_FORM(180, 4), MIND_FORM(181, 4), SPIRIT_FORM(182, 4), MIMIC_FORM(252, 4),
 	//Power of Many T4
-	BEAMING_RAY(183, 4), LIFE_LINK(184, 4), STASIS(185, 4),
+	BEAMING_RAY(183, 4), LIFE_LINK(184, 4), STASIS(185, 4), HOLY_CHAMPION(253, 4),
 
 	//universal T4
 	HEROIC_ENERGY(26, 4), //See icon() and title() for special logic for this one
@@ -671,6 +672,16 @@ public enum Talent {
 			//2/3 turns of adrenaline
 			Buff.prolong(hero, Haste.class, 1f + hero.pointsInTalent(TESTED_SWIFTNESS));
 		}
+		if (hero.hasTalent(Talent.TESTED_CHARGE)){
+			if (hero.heroClass == (HeroClass.DUELIST)){
+				MeleeWeapon.Charger charger = Buff.affect(hero, MeleeWeapon.Charger.class);
+				charger.gainCharge(0.1f + 0.2f*hero.pointsInTalent(Talent.TESTED_CHARGE));
+				ScrollOfRecharging.charge(hero);
+			} else {
+				//Empower next melee attack by 2 / 3 points
+				Buff.affect(hero, PhysicalEmpower.class).set(1 + hero.pointsInTalent(Talent.TESTED_CHARGE), 1);
+			}
+		}
 		if (hero.hasTalent(TESTED_HOLINESS)){
 			if (hero.heroClass == HeroClass.CLERIC) {
 				//0.4/0.6 point of tome charge
@@ -1123,9 +1134,9 @@ public enum Talent {
 			dmg = Math.round(dmg * (1f + hero.buff(SkilleddualTracker.class).attackBoost()));
 		}
 
-		buffs = hero.buff(MarchForwardTracker.class);
-		if (hero.hasTalent(MARCH_FORWARD) && buffs != null){
-			dmg = Math.round(dmg * (1f + hero.buff(MarchForwardTracker.class).ACCBoost()));
+		buffs = hero.buff(Challenge.DuelParticipant.class);
+		if (hero.hasTalent(BURN_BRIDGES) && buffs != null){
+			dmg += Math.round(dmg * 0.1f * Dungeon.hero.pointsInTalent(BURN_BRIDGES));
 		}
 
 		return dmg;
