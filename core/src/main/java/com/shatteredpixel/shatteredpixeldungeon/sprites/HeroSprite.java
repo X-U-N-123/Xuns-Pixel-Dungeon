@@ -21,6 +21,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.sprites;
 
+import static com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass.spritesheetmita;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HeroDisguise;
@@ -65,6 +67,12 @@ public class HeroSprite extends CharSprite {
 
 	public void disguise(HeroClass cls){
 		texture( cls.spritesheet() );
+		updateArmor();
+	}
+
+	public void disguisemita(){
+		String Mita = spritesheetmita();
+		texture(Mita);
 		updateArmor();
 	}
 	
@@ -176,7 +184,7 @@ public class HeroSprite extends CharSprite {
 
 	public static Image avatar( Hero hero ){
 		if (hero.buff(HeroDisguise.class) != null){
-			return avatar(hero.buff(HeroDisguise.class).getDisguise(), hero.tier());
+			return avatarmita( hero.tier());
 		} else {
 			return avatar(hero.heroClass, hero.tier());
 		}
@@ -190,6 +198,17 @@ public class HeroSprite extends CharSprite {
 		frame.shift( patch.left, patch.top );
 		avatar.frame( frame );
 		
+		return avatar;
+	}
+
+	public static Image avatarmita(int armorTier ) {
+
+		RectF patch = tiers().get( armorTier );
+		Image avatar = new Image( spritesheetmita() );
+		RectF frame = avatar.texture.uvRect( 1, 0, FRAME_WIDTH, FRAME_HEIGHT );
+		frame.shift( patch.left, patch.top );
+		avatar.frame( frame );
+
 		return avatar;
 	}
 }

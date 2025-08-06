@@ -45,7 +45,7 @@ import java.util.ArrayList;
 public class AlchemistsToolkit extends Artifact {
 
 	{
-		image = ItemSpriteSheet.ARTIFACT_TOOLKIT3;
+		image = ItemSpriteSheet.ARTIFACT_TOOLKIT1;
 		defaultAction = AC_BREW;
 
 		levelCap = 10;
@@ -165,10 +165,10 @@ public class AlchemistsToolkit extends Artifact {
 		while (partialCharge >= 1){
 			partialCharge--;
 			charge++;
-			/*if (charge >= 30)       image = ItemSpriteSheet.ARTIFACT_TOOLKIT3;
-			else if (charge >= 20)  image = ItemSpriteSheet.ARTIFACT_TOOLKIT2;
-			else if (charge >= 10)  image = ItemSpriteSheet.ARTIFACT_TOOLKIT1;
-			else                    image = ItemSpriteSheet.ARTIFACT_TOOLKIT0;*/
+
+			if (charge >= 30)      image = ItemSpriteSheet.ARTIFACT_TOOLKIT3;
+			else if (charge >= 15) image = ItemSpriteSheet.ARTIFACT_TOOLKIT2;
+			else                   image = ItemSpriteSheet.ARTIFACT_TOOLKIT1;
 			updateQuickslot();
 		}
 	}
@@ -181,7 +181,11 @@ public class AlchemistsToolkit extends Artifact {
 		int result = amount - charge;
 		charge = Math.max(0, charge - amount);
 		Talent.onArtifactUsed(Dungeon.hero);
+		if      (charge >= 30) image = ItemSpriteSheet.ARTIFACT_TOOLKIT3;
+		else if (charge >= 15) image = ItemSpriteSheet.ARTIFACT_TOOLKIT2;
+		else                   image = ItemSpriteSheet.ARTIFACT_TOOLKIT1;
 		return Math.max(0, result);
+
 	}
 
 	@Override
@@ -219,6 +223,9 @@ public class AlchemistsToolkit extends Artifact {
 	public void restoreFromBundle(Bundle bundle) {
 		super.restoreFromBundle(bundle);
 		warmUpDelay = bundle.getFloat(WARM_UP);
+
+		if (charge >= 30)      image = ItemSpriteSheet.ARTIFACT_TOOLKIT3;
+		else if (charge >= 15) image = ItemSpriteSheet.ARTIFACT_TOOLKIT2;
 	}
 	
 	public class kitEnergy extends ArtifactBuff {
@@ -256,6 +263,10 @@ public class AlchemistsToolkit extends Artifact {
 			while (partialCharge >= 1) {
 				charge++;
 				partialCharge -= 1;
+
+				if (charge >= 30)      image = ItemSpriteSheet.ARTIFACT_TOOLKIT3;
+				else if (charge >= 15) image = ItemSpriteSheet.ARTIFACT_TOOLKIT2;
+				else                   image = ItemSpriteSheet.ARTIFACT_TOOLKIT1;
 
 				updateQuickslot();
 			}

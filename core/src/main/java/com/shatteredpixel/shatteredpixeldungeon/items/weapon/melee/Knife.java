@@ -47,7 +47,9 @@ public class Knife extends MeleeWeapon {
 
     @Override
     public int proc(Char attacker, Char defender, int damage) {
-        Buff.affect(defender, Bleeding.class).set(0.78f*damage);
+        if (defender.buff(Dinnerknife.Cutabilitytracker.class) == null){
+            Buff.affect(defender, Bleeding.class).set(0.78f*damage);
+        }
         return super.proc( attacker, defender, damage );
     }
 
@@ -58,16 +60,16 @@ public class Knife extends MeleeWeapon {
 
     @Override
     protected void duelistAbility(Hero hero, Integer target) {
-        Dinnerknife.cutAbility(hero, target, 0f, this, 4+buffedLvl());
+        Dinnerknife.cutAbility(hero, target, this, 4+buffedLvl());
     }
 
     @Override
     public String abilityInfo() {
         int debuffDuration = levelKnown ? Math.round(4f + buffedLvl()) : 4;
         if (levelKnown){
-            return Messages.get(this, "ability_desc", augment.damageFactor(Math.round(min()*1f)), augment.damageFactor(Math.round(max()*1f)), debuffDuration);
+            return Messages.get(this, "ability_desc", augment.damageFactor(Math.round(min()*2f)), augment.damageFactor(Math.round(max()*2f)), debuffDuration);
         } else {
-            return Messages.get(this, "typical_ability_desc", Math.round(min(0)*1f), Math.round(max(0)*1f), debuffDuration);
+            return Messages.get(this, "typical_ability_desc", Math.round(min(0)*2f), Math.round(max(0)*2f), debuffDuration);
         }
     }
 

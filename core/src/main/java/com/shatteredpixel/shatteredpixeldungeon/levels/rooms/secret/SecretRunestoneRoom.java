@@ -21,13 +21,16 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.levels.rooms.secret;
 
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLiquidFlame;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfEnchantment;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.WornLock;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
 import com.watabou.utils.Point;
+import com.watabou.utils.Random;
 
 public class SecretRunestoneRoom extends SecretRoom {
 	
@@ -79,8 +82,12 @@ public class SecretRunestoneRoom extends SecretRoom {
 			dropPos = level.pointToCell(random());
 		} while (level.map[dropPos] != Terrain.EMPTY_SP);
 		level.drop( new StoneOfEnchantment(), dropPos);
-		
-		entrance.set(Door.Type.HIDDEN);
+
+
+		WornLock lock = Dungeon.hero.belongings.getItem(WornLock.class);
+		if (lock != null && Random.Float() <= lock.revealHiddenDoorChance()) {
+			entrance.set( Door.Type.HIDDEN );
+		}
 	}
 	
 	@Override

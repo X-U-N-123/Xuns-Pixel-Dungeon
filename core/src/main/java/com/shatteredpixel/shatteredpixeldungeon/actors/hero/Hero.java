@@ -50,6 +50,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Drowsy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Foresight;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.GreaterHaste;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HeroDisguise;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HoldFast;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invulnerability;
@@ -97,6 +98,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.KindOfWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClassArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Swiftness;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Viscosity;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.AlchemistsToolkit;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CapeOfThorns;
@@ -118,6 +120,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.keys.SkeletonKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfExperience;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfEnlightening;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfMight;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfDivineInspiration;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.DarkGold;
@@ -172,6 +175,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.AttackIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.QuickSlotButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.StatusPane;
+import com.shatteredpixel.shatteredpixeldungeon.ui.TargetHealthIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndHero;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndResurrect;
@@ -404,12 +408,16 @@ public class Hero extends Char {
 				|| (tier == 3 && subClass == HeroSubClass.NONE)
 				|| (tier == 4 && armorAbility == null)) {
 			return 0;
-		} else if (buff(PotionOfDivineInspiration.DivineInspirationTracker.class) != null
-					&& buff(PotionOfDivineInspiration.DivineInspirationTracker.class).isBoosted(tier)) {
-			return 2;
-		} else {
-			return 0;
 		}
+		int Bonus = 0;
+		if (buff(PotionOfDivineInspiration.DivineInspirationTracker.class) != null
+				&& buff(PotionOfDivineInspiration.DivineInspirationTracker.class).isBoosted(tier)) {
+			Bonus += 2;
+		}
+		if (buff(ElixirOfEnlightening.EnlighteningTracker.class) != null){
+			Bonus += buff(ElixirOfEnlightening.EnlighteningTracker.class).Boostamount();
+		}
+		return Bonus;
 	}
 	
 	public String className() {
@@ -419,7 +427,7 @@ public class Hero extends Char {
 	@Override
 	public String name(){
 		if (buff(HeroDisguise.class) != null) {
-			return buff(HeroDisguise.class).getDisguise().title();
+			return Messages.get(this, "mita");
 		} else {
 			return className();
 		}
@@ -641,12 +649,26 @@ public class Hero extends Char {
 			}
 			if (armDr > 0) dr += armDr;
 		}
+
+		if (hasTalent(Talent.ARMOR_SEIZING)){
+			dr += Math.round(TargetHealthIndicator.instance.target().drRoll()
+			* AscensionChallenge.statModifier(TargetHealthIndicator.instance.target())
+			* pointsInTalent(Talent.ARMOR_SEIZING) / 3f);
+		}
+
+		if (buff(MonkEnergy.MonkAbility.UnarmedAbilityTracker.class) != null){
+			dr = 0;
+		}
 		if (belongings.weapon() != null && !RingOfForce.fightingUnarmed(this))  {
 			int wepDr = Random.NormalIntRange( 0 , belongings.weapon().defenseFactor( this ) );
 			if (STR() < ((Weapon)belongings.weapon()).STRReq()){
 				wepDr -= 2*(((Weapon)belongings.weapon()).STRReq() - STR());
 			}
 			if (wepDr > 0) dr += wepDr;
+		}
+
+		if (buff(HoldFast.class) != null){
+			dr += buff(HoldFast.class).armorBonus();
 		}
 
 		return dr;
@@ -789,7 +811,7 @@ public class Hero extends Char {
 
 		float delay = 1f;
 
-		if (buff(Adrenaline.class)!=null){
+		if (buff(Adrenaline.class) != null){
 			delay /= 1.5f;
 		}
 
@@ -811,6 +833,10 @@ public class Hero extends Char {
 			//and augments + brawler's stance! My goodness, so many options now compared to 2014!
 			if (RingOfForce.unarmedGetsWeaponAugment(this)){
 				delay = ((Weapon)belongings.weapon).augment.delayFactor(delay);
+			}
+
+			if (buff(Adrenaline.class) != null){
+				delay /= 1.5f;
 			}
 
 			return delay/speed;
@@ -1462,6 +1488,9 @@ public class Hero extends Char {
 	
 	public void rest( boolean fullRest ) {
 		spendAndNextConstant( TIME_TO_REST );
+		if (subClass == HeroSubClass.GUARD){
+			Buff.affect(this, HoldFast.class).pos = pos;
+		}
 		if (hasTalent(Talent.PATIENT_STRIKE)){
 			Buff.affect(Dungeon.hero, Talent.PatientStrikeTracker.class).pos = Dungeon.hero.pos;
 		}
@@ -1476,9 +1505,9 @@ public class Hero extends Char {
 	@Override
 	public int attackProc( final Char enemy, int damage ) {
 
-		if (damage > 0 && subClass == HeroSubClass.BERSERKER){
+		if (damage > 0 && subClass == HeroSubClass.BERSERKER && hasTalent(Talent.BLADE_OF_ANGER)){
 			Berserk berserk = Buff.affect(this, Berserk.class);
-			berserk.damage((int)(damage*Dungeon.hero.pointsInTalent(Talent.BLADE_OF_ANGER)*0.3f));
+			berserk.damage((int)(damage*pointsInTalent(Talent.BLADE_OF_ANGER)*0.3f));
 		}
 		damage = super.attackProc( enemy, damage );
 
@@ -1641,7 +1670,8 @@ public class Hero extends Char {
 		dmg = Math.round(damage);
 
 		//we ceil this one to avoid letting the player easily take 0 dmg from tenacity early
-		dmg = (int)Math.ceil(dmg * RingOfTenacity.damageMultiplier( this ));
+		//向下取整，作为对韧性戒指的加强
+		dmg = (int)Math.floor(dmg * RingOfTenacity.damageMultiplier( this ));
 
 		if (buff(Talent.HashashinsTracker.class) != null){
 			buff(Talent.HashashinsTracker.class).hurt(dmg);
@@ -1873,6 +1903,9 @@ public class Hero extends Char {
 			if (subClass == HeroSubClass.FREERUNNER){
 				Buff.affect(this, Momentum.class).gainStack();
 			}
+			if (Dungeon.hero.hasTalent(Talent.MARCH_FORWARD) && !Swiftness.enemynear(this)){
+				Buff.affect(Dungeon.hero, Talent.MarchForwardTracker.class).Move();
+			}
 			sprite.move(pos, step);
 			move(step);
 
@@ -2047,7 +2080,7 @@ public class Hero extends Char {
 				defenseSkill++;
 
 			} else {
-				Buff.prolong(this, Bless.class, Bless.DURATION);
+				Buff.prolong(this, Bless.class, 100f);
 				this.exp = 0;
 
 				GLog.newLine();

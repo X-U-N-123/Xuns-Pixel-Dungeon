@@ -22,12 +22,27 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
+import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.watabou.noosa.Image;
+import com.watabou.noosa.audio.Sample;
+
+import java.util.ArrayList;
 
 public class Shovel extends MeleeWeapon{
+
+    public static final String AC_BUILD = "build";
 
     {
         image = ItemSpriteSheet.SHOVEL;
@@ -36,6 +51,15 @@ public class Shovel extends MeleeWeapon{
 
         tier = 1;
         DLY = 0.8f; //1.25x speed
+
+        defaultAction = AC_BUILD;
+    }
+
+    @Override
+    public ArrayList<String> actions(Hero hero ) {
+        ArrayList<String> actions = super.actions( hero );
+        actions.add(AC_BUILD);
+        return actions;
     }
 
     @Override
@@ -45,11 +69,69 @@ public class Shovel extends MeleeWeapon{
     }
 
     @Override
+    public void execute( Hero hero, String action ) {
+
+        super.execute(hero, action);
+
+        if (action.equals(AC_BUILD)){
+            GameScene.selectCell(new CellSelector.Listener() {
+                @Override public String prompt() {
+                    return Messages.get(this, "build");
+                }
+
+                @Override public void onSelect(Integer cell) {
+                    if (cell == null)return;
+                    if (Dungeon.level.distance(cell, curUser.pos) != 1 || !Dungeon.level.heroFOV[cell]) {
+                        GLog.w(Messages.get(this, "reach"));
+                        return;
+                    }
+
+                    if (Dungeon.level.map[cell] == Terrain.BARRICADE){
+                        Level.set( cell, Terrain.EMPTY );
+                        Sample.INSTANCE.play( Assets.Sounds.BUILD );
+                        GameScene.updateMap(cell);
+                        Dungeon.observe();
+                        curUser.sprite.turnTo( curUser.pos, cell);
+                        curUser.sprite.zap(cell);
+                        hero.spendAndNext(Actor.TICK);
+                        return;
+                    }
+
+                    if (curUser.buff(BarricadeCooldown.class) == null
+                    &&(Dungeon.level.map[cell] == Terrain.EMPTY || Dungeon.level.map[cell] == Terrain.EMPTY_DECO || Dungeon.level.map[cell] == Terrain.EMPTY_SP
+                    || Dungeon.level.map[cell] == Terrain.EMBERS || Dungeon.level.map[cell] == Terrain.WATER
+                    || Dungeon.level.map[cell] == Terrain.FURROWED_GRASS || Dungeon.level.map[cell] == Terrain.GRASS || Dungeon.level.map[cell] == Terrain.HIGH_GRASS
+                    || Dungeon.level.map[cell] == Terrain.INACTIVE_TRAP)){
+                        Level.set( cell, Terrain.BARRICADE );
+
+                        Sample.INSTANCE.play( Assets.Sounds.BUILD );
+                        Buff.affect(curUser, BarricadeCooldown.class, 15f);
+                        hero.spendConstant(Actor.TICK);
+                        GameScene.updateMap(cell);
+                        Dungeon.observe();
+                        curUser.sprite.turnTo( curUser.pos, cell);
+                        curUser.sprite.zap(cell);
+                        hero.next();
+                    } else if (curUser.buff(BarricadeCooldown.class) != null){
+                        GLog.w(Messages.get(this, "cd"));
+                        return;
+                    } else {
+                        GLog.w(Messages.get(this, "hard"));
+                        return;
+                    }
+                }
+            });
+            defaultAction = AC_BUILD;
+        }
+    }
+
+    @Override
     protected void duelistAbility(Hero hero, Integer target) {
         beforeAbilityUsed(hero, null);
         //1 turn less as using the ability is instant
         Buff.prolong(hero, Scimitar.SwordDance.class, 4+buffedLvl());
         hero.sprite.operate(hero.pos);
+        defaultAction = AC_ABILITY;
         hero.next();
         afterAbilityUsed(hero);
     }
@@ -67,5 +149,11 @@ public class Shovel extends MeleeWeapon{
     public String upgradeAbilityStat(int level) {
         return Integer.toString(5+level);
     }
+
+    public static class BarricadeCooldown extends FlavourBuff {
+        public int icon() { return BuffIndicator.TIME; }
+        public void tintIcon(Image icon) { icon.hardlight(0.5f, 0.3f, 0f); }
+        public float iconFadePercent() { return Math.max(0, visualcooldown() / 15); }
+    };
 
 }

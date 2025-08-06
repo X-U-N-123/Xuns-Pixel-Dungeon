@@ -108,7 +108,7 @@ public class HeatBrew extends Brew {
 
 	public static class Recipe extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe.SimpleRecipe {
 
-		private static final int OUT_QUANTITY = 6;
+		private static final int OUT_QUANTITY = 8;
 
 		{
 			inputs =  new Class[]{PotionOfDragonsBreath.class};

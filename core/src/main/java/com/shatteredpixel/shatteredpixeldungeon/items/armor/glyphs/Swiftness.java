@@ -43,28 +43,29 @@ public class Swiftness extends Armor.Glyph {
 			return 1;
 		}
 
-		boolean enemyNear = false;
+		if (enemynear(owner)){
+			return 1;
+		} else {
+			return (1.2f + 0.04f * level) * genericProcChanceMultiplier(owner);
+		}
+	}
+
+	public static boolean enemynear(Char chara){
 		//for each enemy, check if they are adjacent, or within 2 tiles and an adjacent cell is open
 		for (Char ch : Actor.chars()){
-			if ( Dungeon.level.distance(ch.pos, owner.pos) <= 2 && owner.alignment != ch.alignment && ch.alignment != Char.Alignment.NEUTRAL){
-				if (Dungeon.level.adjacent(ch.pos, owner.pos)){
-					enemyNear = true;
-					break;
+			if ( Dungeon.level.distance(ch.pos, chara.pos) <= 2 && chara.alignment != ch.alignment && ch.alignment != Char.Alignment.NEUTRAL){
+				if (Dungeon.level.adjacent(ch.pos, chara.pos)){
+					return true;
 				} else {
 					for (int i : PathFinder.NEIGHBOURS8){
-						if (Dungeon.level.adjacent(owner.pos+i, ch.pos) && !Dungeon.level.solid[owner.pos+i]){
-							enemyNear = true;
-							break;
+						if (Dungeon.level.adjacent(chara.pos+i, ch.pos) && !Dungeon.level.solid[chara.pos+i]){
+							return true;
 						}
 					}
 				}
 			}
 		}
-		if (enemyNear){
-			return 1;
-		} else {
-			return (1.2f + 0.04f * level) * genericProcChanceMultiplier(owner);
-		}
+		return false;
 	}
 
 	@Override

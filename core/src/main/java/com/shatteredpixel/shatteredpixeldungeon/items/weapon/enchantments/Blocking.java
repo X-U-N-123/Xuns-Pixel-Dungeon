@@ -21,10 +21,13 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments;
 
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ShieldBuff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
@@ -83,7 +86,11 @@ public class Blocking extends Weapon.Enchantment {
 		@Override
 		public void setShield(int shield) {
 			super.setShield(shield);
-			postpone(5f);
+			int lostLimit = 5;
+			if (target instanceof Hero){
+				lostLimit *= (int)Math.pow(2, Dungeon.hero.pointsInTalent(Talent.SHIELDING));
+			}
+			postpone(lostLimit);
 		}
 
 		@Override

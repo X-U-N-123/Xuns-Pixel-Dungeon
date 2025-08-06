@@ -28,6 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vulnerable;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
@@ -56,7 +57,9 @@ public class Dinnerknife extends MeleeWeapon {
 
     @Override
     public int proc(Char attacker, Char defender, int damage) {
-        Buff.affect(defender, Bleeding.class).set(0.9f*damage);
+        if (defender.buff(Cutabilitytracker.class) == null){
+            Buff.affect(defender, Bleeding.class).set(0.9f*damage);
+        }
         return super.proc( attacker, defender, damage );
     }
 
@@ -67,10 +70,10 @@ public class Dinnerknife extends MeleeWeapon {
 
     @Override
     protected void duelistAbility(Hero hero, Integer target) {
-        cutAbility(hero, target, 0f, this, 5+buffedLvl());
+        cutAbility(hero, target, this, 5+buffedLvl());
     }
 
-    public static void cutAbility(Hero hero, Integer target, float bleedingAmt, MeleeWeapon wep, int debuffDuration){
+    public static void cutAbility(Hero hero, Integer target, MeleeWeapon wep, int debuffDuration){
         if (target == null) {
             return;
         }
@@ -94,7 +97,8 @@ public class Dinnerknife extends MeleeWeapon {
             public void call() {
                 wep.beforeAbilityUsed(hero, enemy);
                 AttackIndicator.target(enemy);
-                if (hero.attack(enemy, 1, 0, Char.INFINITE_ACCURACY)){
+                Buff.affect(enemy, Cutabilitytracker.class, 0f);
+                if (hero.attack(enemy, 2, 0, Char.INFINITE_ACCURACY)){
                     Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG);
                 }
 
@@ -118,9 +122,9 @@ public class Dinnerknife extends MeleeWeapon {
     public String abilityInfo() {
         int debuffDuration = levelKnown ? Math.round(5f + buffedLvl()) : 5;
         if (levelKnown){
-            return Messages.get(this, "ability_desc", augment.damageFactor(Math.round(min()*1f)), augment.damageFactor(Math.round(max()*1f)), debuffDuration);
+            return Messages.get(this, "ability_desc", augment.damageFactor(Math.round(min()*2f)), augment.damageFactor(Math.round(max()*2f)), debuffDuration);
         } else {
-            return Messages.get(this, "typical_ability_desc", Math.round(min(0)*1f), Math.round(max(0)*1f), debuffDuration);
+            return Messages.get(this, "typical_ability_desc", Math.round(min(0)*2f), Math.round(max(0)*2f), debuffDuration);
         }
     }
 
@@ -128,5 +132,7 @@ public class Dinnerknife extends MeleeWeapon {
     public String upgradeAbilityStat(int level) {
         return Integer.toString(5+level);
     }
+
+    public static class Cutabilitytracker extends FlavourBuff{}
 
 }

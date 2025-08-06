@@ -21,9 +21,11 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.levels.rooms.secret;
 
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.WaterOfAwareness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.WaterOfHealth;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.WellWater;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.WornLock;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
@@ -65,7 +67,10 @@ public class SecretWellRoom extends SecretRoom {
 		Class<? extends WellWater> waterClass = (Class<? extends WellWater>) Random.element( WATERS );
 		
 		WellWater.seed(well.x + level.width() * well.y, 1, waterClass, level);
-		
-		entrance().set( Door.Type.HIDDEN );
+
+		WornLock lock = Dungeon.hero.belongings.getItem(WornLock.class);
+		if (lock != null && Random.Float() <= lock.revealHiddenDoorChance()) {
+			entrance().set( Door.Type.HIDDEN );
+		}
 	}
 }

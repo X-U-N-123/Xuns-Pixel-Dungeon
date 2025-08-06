@@ -26,11 +26,13 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.ChargrilledMeat;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Pasty;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.WornLock;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
 import com.shatteredpixel.shatteredpixeldungeon.plants.BlandfruitBush;
 import com.watabou.utils.Point;
+import com.watabou.utils.Random;
 
 public class SecretLarderRoom extends SecretRoom {
 	
@@ -73,8 +75,11 @@ public class SecretLarderRoom extends SecretRoom {
 			} while (level.map[foodPos] != Terrain.EMPTY_SP || level.heaps.get(foodPos) != null);
 			level.drop(food, foodPos);
 		}
-		
-		entrance().set(Door.Type.HIDDEN);
+
+		WornLock lock = Dungeon.hero.belongings.getItem(WornLock.class);
+		if (lock != null && Random.Float() <= lock.revealHiddenDoorChance()) {
+			entrance().set( Door.Type.HIDDEN );
+		}
 	}
 	
 	

@@ -21,12 +21,12 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.levels.rooms.secret;
 
-import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.WornLock;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
@@ -120,7 +120,10 @@ public class SecretMazeRoom extends SecretRoom {
 		level.drop(prize, level.pointToCell(bestDistP)).type = Heap.Type.CHEST;
 		
 		PathFinder.setMapSize(level.width(), level.height());
-		
-		entrance().set(Door.Type.HIDDEN);
+
+		WornLock lock = Dungeon.hero.belongings.getItem(WornLock.class);
+		if (lock != null && Random.Float() <= lock.revealHiddenDoorChance()) {
+			entrance().set( Door.Type.HIDDEN );
+		}
 	}
 }

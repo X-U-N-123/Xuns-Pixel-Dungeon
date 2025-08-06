@@ -150,6 +150,11 @@ public class AlchemyScene extends PixelScene {
 		ExitButton btnExit = new ExitButton(){
 			@Override
 			protected void onClick() {
+				if (toolkit != null) {
+					if      (toolkit.availableEnergy() >= 30) toolkit.image = ItemSpriteSheet.ARTIFACT_TOOLKIT3;
+					else if (toolkit.availableEnergy() >= 15) toolkit.image = ItemSpriteSheet.ARTIFACT_TOOLKIT2;
+					else                                      toolkit.image = ItemSpriteSheet.ARTIFACT_TOOLKIT1;
+				}
 				Game.switchScene(GameScene.class);
 			}
 		};
@@ -430,7 +435,11 @@ public class AlchemyScene extends PixelScene {
 		energyLeft.hardlight(0x44CCFF);
 		add(energyLeft);
 
-		energyIcon = new ItemSprite( toolkit != null ? ItemSpriteSheet.ARTIFACT_TOOLKIT3 : ItemSpriteSheet.ENERGY);
+		energyIcon = new ItemSprite( toolkit != null ? ItemSpriteSheet.ARTIFACT_TOOLKIT1 : ItemSpriteSheet.ENERGY);
+		if (toolkit != null) {
+			if      (toolkit.availableEnergy() >= 30) energyIcon = new ItemSprite(ItemSpriteSheet.ARTIFACT_TOOLKIT3);
+			else if (toolkit.availableEnergy() >= 15) energyIcon = new ItemSprite(ItemSpriteSheet.ARTIFACT_TOOLKIT2);
+		}
 		energyIcon.x = energyLeft.left() - energyIcon.width();
 		energyIcon.y = energyLeft.top() - (energyIcon.height() - energyLeft.height())/2;
 		align(energyIcon);
@@ -540,7 +549,7 @@ public class AlchemyScene extends PixelScene {
 			ShatteredPixelDungeon.reportException(e);
 		}
 	}
-	
+
 	@Override
 	public void update() {
 		super.update();

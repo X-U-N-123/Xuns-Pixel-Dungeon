@@ -275,6 +275,7 @@ public class ElementalBlast extends ArmorAbility {
 							if (mob != null && damage > 0 && mob.alignment != Char.Alignment.ALLY){
 								mob.damage(damage, Reflection.newInstance(finalWandCls));
 								charsHit++;
+								hero.belongings.getItem(MagesStaff.class).gainCharge(0.15f * hero.pointsInTalent(Talent.RECHARGING_BLAST));
 							}
 
 							//### Other Char Effects ###
@@ -464,6 +465,6 @@ public class ElementalBlast extends ArmorAbility {
 
 	@Override
 	public Talent[] talents() {
-		return new Talent[]{Talent.BLAST_RADIUS, Talent.ELEMENTAL_POWER, Talent.REACTIVE_BARRIER, Talent.HEROIC_ENERGY};
+		return new Talent[]{Talent.BLAST_RADIUS, Talent.ELEMENTAL_POWER, Talent.REACTIVE_BARRIER, Talent.RECHARGING_BLAST, Talent.HEROIC_ENERGY};
 	}
 }

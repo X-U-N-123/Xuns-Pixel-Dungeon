@@ -25,21 +25,26 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.Chasm;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.GuardianTrap;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MobSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.StatueSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.AttackIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.BArray;
 import com.watabou.utils.Callback;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
@@ -66,8 +71,9 @@ public class StoneCudgel extends MeleeWeapon{
     public int proc(Char attacker, Char defender, int damage) {
         int Guardamount = 0;
         for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
-            if (mob instanceof StoneGuardian) {
+            if (mob instanceof StoneGuardian && !(attacker instanceof StoneGuardian)) {
                 Guardamount ++;
+                mob.beckon(defender.pos);
             }
         }
 
@@ -86,6 +92,7 @@ public class StoneCudgel extends MeleeWeapon{
                 guardian.state = guardian.WANDERING;
                 guardian.pos = Random.element(spawnPoints);
                 GameScene.add(guardian);
+                Dungeon.level.occupyCell(guardian);
                 if (!(attacker == Dungeon.hero) && attacker.alignment == Char.Alignment.ENEMY){
                     guardian.alignment = Char.Alignment.ENEMY;
                 }
@@ -103,66 +110,55 @@ public class StoneCudgel extends MeleeWeapon{
 
     @Override
     protected void duelistAbility(Hero hero, Integer target) {
-        //+(1+lvl) damage, roughly +50% base dmg, +50% scaling
-        if (target == null) {
-            return;
-        }
 
-        Char enemy = Actor.findChar(target);
-        if (enemy == null || enemy == hero || hero.isCharmedBy(enemy) || !Dungeon.level.heroFOV[target]) {
-            GLog.w(Messages.get("ability_no_target"));
-            return;
-        }
+        beforeAbilityUsed(hero, null);
 
-        hero.belongings.abilityWeapon = this;
-        if (!hero.canAttack(enemy)){
-            GLog.w(Messages.get("ability_target_range"));
-            hero.belongings.abilityWeapon = null;
-            return;
-        }
-        hero.belongings.abilityWeapon = null;
-
-        hero.sprite.attack(enemy.pos, new Callback() {
-            @Override
-            public void call() {
-                beforeAbilityUsed(hero, enemy);
-                AttackIndicator.target(enemy);
-
-                int GuardBoost = 0;
-                for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
-                    if (mob instanceof StoneGuardian) {
-                        GuardBoost += level() + 1;
+        int a=0;
+        for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
+            ArrayList<Integer> telePoints = new ArrayList<>();
+            if (mob instanceof StoneGuardian && a < 2+buffedLvl() ) {
+                for (int i = 0; i < PathFinder.NEIGHBOURS25.length; i++) {
+                    int p = target + PathFinder.NEIGHBOURS25[i];
+                    if (Actor.findChar(p) == null && Dungeon.level.passable[p]) {
+                        telePoints.add(p);
                     }
                 }
-                GuardBoost = Random.NormalIntRange(0, GuardBoost);
-                if (hero.attack(enemy, 1, GuardBoost, Char.INFINITE_ACCURACY)){
-                    Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG);
+                if (telePoints.size() > 0) {
+                    int point = Random.element(telePoints);
+                    mob.pos = point;
+                    mob.sprite.place( point );
+                    Dungeon.level.occupyCell(mob);
+                    CellEmitter.get( point ).burst( Speck.factory( Speck.ROCK ), 3 );
+                    mob.beckon(target);
+                    a += 1;
+                } else {
+                    a = 2+buffedLvl();
                 }
-
-                Invisibility.dispel();
-
-                if (!enemy.isAlive()){
-                    onAbilityKill(hero, enemy);
-                }
-                hero.spendAndNext(hero.attackDelay());
-                afterAbilityUsed(hero);
             }
-        });
+        }
+        hero.sprite.turnTo( Dungeon.hero.pos, target);
+        hero.sprite.attack(target);
+        Sample.INSTANCE.play( Assets.Sounds.ROCKS );
+        hero.sprite.operate(hero.pos);
+        Dungeon.observe();
+        hero.checkVisibleMobs();
+
+        hero.next();
+        afterAbilityUsed(hero);
     }
 
     @Override
     public String abilityInfo() {
-        int dmgBoost = levelKnown ? 1 + buffedLvl() : 1;
+        int stone = levelKnown ? 2 + buffedLvl() : 2;
         if (levelKnown){
-            return Messages.get(this, "ability_desc", augment.damageFactor(min()+dmgBoost), augment.damageFactor(max()+dmgBoost));
+            return Messages.get(this, "ability_desc", stone);
         } else {
-            return Messages.get(this, "typical_ability_desc", min(0)+dmgBoost, max(0)+dmgBoost);
+            return Messages.get(this, "typical_ability_desc", stone);
         }
     }
 
     public String upgradeAbilityStat(int level){
-        int dmgBoost = 1 + level;
-        return augment.damageFactor(min(level)+dmgBoost) + "-" + augment.damageFactor(max(level)+dmgBoost);
+        return String.valueOf(2 + level);
     }
 
     public static class StoneGuardian extends GuardianTrap.Guardian {
@@ -204,13 +200,13 @@ public class StoneCudgel extends MeleeWeapon{
 
         public StoneGuardianSprite(){
             super();
-            tint(0, 0, 0, 0.3f);
+            tint(0, 0, 0, 0.2f);
         }
 
         @Override
         public void resetColor() {
             super.resetColor();
-            tint(0, 0, 0, 0.3f);
+            tint(0, 0, 0, 0.2f);
         }
     }
 }

@@ -21,7 +21,9 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.levels.rooms.secret;
 
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Foliage;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.WornLock;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfRegrowth;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Patch;
@@ -45,8 +47,11 @@ public class SecretGardenRoom extends SecretRoom {
 				}
 			}
 		}
-		
-		entrance().set( Door.Type.HIDDEN );
+
+		WornLock lock = Dungeon.hero.belongings.getItem(WornLock.class);
+		if (lock != null && Random.Float() <= lock.revealHiddenDoorChance()) {
+			entrance().set( Door.Type.HIDDEN );
+		}
 		
 		level.plant(new Starflower.Seed(), plantPos(level));
 		level.plant(new WandOfRegrowth.Seedpod.Seed(), plantPos( level ));

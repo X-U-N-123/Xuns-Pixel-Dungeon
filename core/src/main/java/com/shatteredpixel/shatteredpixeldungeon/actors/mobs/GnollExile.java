@@ -28,6 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.StoneofIntelligence;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.GnollExileSprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
@@ -98,7 +99,10 @@ public class GnollExile extends Gnoll {
 	public void rollToDropLoot() {
 		super.rollToDropLoot();
 
-		if (Dungeon.hero.lvl > maxLvl + 2) return;
+		StoneofIntelligence stone = Dungeon.hero.belongings.getItem(StoneofIntelligence.class);
+		int inc = 0;
+		if (stone != null) inc += stone.LootandExpinc();
+		if (Dungeon.hero.lvl > maxLvl + 2 + inc) return;
 
 		//drops 2 or 3 random items
 		ArrayList<Item> items = new ArrayList<>();

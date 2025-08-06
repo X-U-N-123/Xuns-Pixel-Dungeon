@@ -38,7 +38,7 @@ public class Havoc extends MeleeWeapon {
                 lvl*(tier + 2); //+4 scaling, up from +3
     }
 
-    int Enemieskilled = 0;
+    public int Enemieskilled = 0;
 
     @Override
     public int proc(Char attacker, Char defender, int damage) {
@@ -48,6 +48,7 @@ public class Havoc extends MeleeWeapon {
         return super.proc( attacker, defender, damage );
     }
 
+    @Override
     public String statsInfo()
         {return Messages.get(this, "stats_desc", Enemieskilled);}
 

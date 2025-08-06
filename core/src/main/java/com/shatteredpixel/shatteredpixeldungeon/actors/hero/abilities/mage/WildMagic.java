@@ -24,9 +24,22 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.mage;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Amok;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.BrokenArmor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Daze;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hex;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Roots;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Slow;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vulnerable;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Weakness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.ArmorAbility;
@@ -108,7 +121,7 @@ public class WildMagic extends ArmorAbility {
 			}
 		}
 
-		if (wands.size() == 0){
+		if (wands.isEmpty()){
 			GLog.w(Messages.get(this, "no_wands"));
 			return;
 		}
@@ -144,6 +157,7 @@ public class WildMagic extends ArmorAbility {
 					@Override
 					public void call() {
 						cur.onZap(aim);
+						if (hero.hasTalent(Talent.WILD_PUNISHMENT)) giveNegativeEffect(aim.collisionPos);
 						boolean alsoCursedZap = Random.Float() < WondrousResin.extraCurseEffectChance();
 						if (Game.timeTotal - startTime < 0.33f) {
 							hero.sprite.parent.add(new Delayer(0.33f - (Game.timeTotal - startTime)) {
@@ -259,6 +273,37 @@ public class WildMagic extends ArmorAbility {
 
 	@Override
 	public Talent[] talents() {
-		return new Talent[]{Talent.WILD_POWER, Talent.FIRE_EVERYTHING, Talent.CONSERVED_MAGIC, Talent.HEROIC_ENERGY};
+		return new Talent[]{Talent.WILD_POWER, Talent.FIRE_EVERYTHING, Talent.CONSERVED_MAGIC, Talent.WILD_PUNISHMENT, Talent.HEROIC_ENERGY};
+	}
+
+	public void giveNegativeEffect(int aim){
+		ArrayList<Class<? extends FlavourBuff>> buffs = new ArrayList<>();
+		buffs.add(Weakness.class);
+		buffs.add(Vulnerable.class);
+		buffs.add(BrokenArmor.class);
+		buffs.add(Vertigo.class);
+		buffs.add(Cripple.class);
+		buffs.add(Roots.class);
+		buffs.add(Blindness.class);
+		buffs.add(Terror.class);
+		buffs.add(Amok.class);
+		buffs.add(Slow.class);
+		buffs.add(Hex.class);
+		buffs.add(Daze.class);
+		buffs.add(Paralysis.class);
+
+		Char char1 = Actor.findChar(aim);//为什么 char 是关键字！
+		if (char1 != null){
+
+			int i = 0;
+			while (i < buffs.size()){
+				if (char1.buff(buffs.get(i)) != null) buffs.remove(i);
+				i++;
+			}
+
+			if (!buffs.isEmpty()){
+				Buff.affect(char1, buffs.get(Random.Int(buffs.size())), 1 + 2f*Dungeon.hero.pointsInTalent(Talent.WILD_PUNISHMENT));
+			}
+		}
 	}
 }

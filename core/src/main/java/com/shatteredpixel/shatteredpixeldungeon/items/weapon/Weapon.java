@@ -403,11 +403,10 @@ abstract public class Weapon extends KindOfWeapon {
 	@Override
 	public String name() {
 		if (isEquipped(Dungeon.hero) && !hasCurseEnchant() && Dungeon.hero.buff(HolyWeapon.HolyWepBuff.class) != null
-			&& (Dungeon.hero.subClass != HeroSubClass.PALADIN || enchantment == null)){
-				return Messages.get(HolyWeapon.class, "ench_name", super.name());
-			} else {
-				return enchantment != null && (cursedKnown || !enchantment.curse()) ? enchantment.name(super.name()) : super.name();
-
+		&& (Dungeon.hero.subClass != HeroSubClass.PALADIN || enchantment == null)){
+			return Messages.get(HolyWeapon.class, "ench_name", super.name());
+		} else {
+			return enchantment != null && (cursedKnown || !enchantment.curse()) ? enchantment.name(super.name()) : super.name();
 		}
 	}
 	

@@ -26,6 +26,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Ooze;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.GooBlob;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.StoneofIntelligence;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CausticSlimeSprite;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
@@ -50,7 +51,11 @@ public class CausticSlime extends Slime {
 	
 	@Override
 	public void rollToDropLoot() {
-		if (Dungeon.hero.lvl > maxLvl + 2) return;
+
+		StoneofIntelligence stone = Dungeon.hero.belongings.getItem(StoneofIntelligence.class);
+		int inc = 0;
+		if (stone != null) inc += stone.LootandExpinc();
+		if (Dungeon.hero.lvl > maxLvl + 2 + inc) return;
 		
 		super.rollToDropLoot();
 		

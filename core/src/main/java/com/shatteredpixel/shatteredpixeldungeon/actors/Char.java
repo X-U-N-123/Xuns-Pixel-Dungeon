@@ -21,13 +21,12 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.level;
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Electricity;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.StormCloud;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ToxicGas;
@@ -42,6 +41,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Berserk;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bless;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.BrokenArmor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
@@ -59,10 +59,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Frost;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FrostImbue;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Fury;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Healing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hex;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invulnerability;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LifeLink;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LostInventory;
@@ -74,7 +72,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.PhysicalEmpower;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Poison;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Preparation;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Regeneration;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ShieldBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Sleep;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Slow;
@@ -95,7 +92,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.rogue.Deat
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.Endure;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.AuraOfProtection;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.BeamingRay;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.Explosion;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.GuidingLight;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.JusticeStrike;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.LifeLinkSpell;
@@ -104,15 +100,14 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Brute;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.CrystalSpire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DwarfKing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Elemental;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Ghoul;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GnollGeomancer;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Necromancer;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Tengu;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.YogDzewa;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.MirrorImage;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.PrismaticImage;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.LeafParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal;
 import com.shatteredpixel.shatteredpixeldungeon.items.Dewdrop;
@@ -128,6 +123,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Potential;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Swiftness;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Viscosity;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ElementalMask;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfCleansing;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Pickaxe;
@@ -136,7 +132,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRetributio
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfPsionicBlast;
-import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfSirensSong;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAggression;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.FerretTuft;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
@@ -154,7 +149,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sickle;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.ShockingDart;
-import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.Chasm;
@@ -323,6 +317,9 @@ public abstract class Char extends Actor {
 			if (Dungeon.hero.subClass == HeroSubClass.FREERUNNER){
 				Buff.affect(Dungeon.hero, Momentum.class).gainStack();
 			}
+			if (Dungeon.hero.hasTalent(Talent.MARCH_FORWARD) && !Swiftness.enemynear(c)){
+				Buff.affect(c, Talent.MarchForwardTracker.class).Move();
+			}
 
 			Dungeon.hero.justMoved = true;
 
@@ -422,6 +419,10 @@ public abstract class Char extends Actor {
 				}
 			}
 
+			if (enemy.buff(BrokenArmor.class) != null){
+				dr = 0;
+			}
+
 			//we use a float here briefly so that we don't have to constantly round while
 			// potentially applying various multiplier effects
 			float dmg;
@@ -432,7 +433,7 @@ public abstract class Char extends Actor {
 					if (((Hero)this).hasTalent(Talent.TERRORIST_ATTACK)) {
 						for (Mob mob : Dungeon.level.mobs.toArray( new Mob[0] )) {
  							if (Dungeon.level.distance(pos, mob.pos) <= 5 && mob.alignment != Alignment.ALLY) {
-								Buff.affect( mob, Terror.class, (float)(1+Dungeon.hero.pointsInTalent(Talent.TERRORIST_ATTACK))).object = Dungeon.hero.id();
+								Buff.affect( mob, Terror.class, 1+2*Dungeon.hero.pointsInTalent(Talent.TERRORIST_ATTACK)).object = Dungeon.hero.id();
 							}
 						}
 					}
@@ -633,7 +634,7 @@ public abstract class Char extends Actor {
 
 			if (enemy instanceof Hero){
 				if (Dungeon.hero.hasTalent(Talent.AGILE_COUNTATK)){
-					Buff.affect(Dungeon.hero, Talent.AgileCountATKTracker.class, 3f);
+					Buff.affect(Dungeon.hero, Talent.AgileCountATKTracker.class, 2f);
 				}
 			}
 
@@ -679,7 +680,10 @@ public abstract class Char extends Actor {
 		if (attacker.buff(  Hex.class) != null) acuRoll *= 0.8f;
 		if (attacker.buff( Daze.class) != null) acuRoll *= 0.5f;
 		for (ChampionEnemy buff : attacker.buffs(ChampionEnemy.class)){
-			acuRoll *= buff.evasionAndAccuracyFactor();
+			acuRoll *= buff.AccuracyFactor();
+		}
+		if (attacker == hero && hero.subClass == HeroSubClass.GUARD && hero.shielding() > 0) {
+			acuRoll *= 1.2f;
 		}
 		acuRoll *= AscensionChallenge.statModifier(attacker);
 		if (Dungeon.hero.heroClass != HeroClass.CLERIC
@@ -695,7 +699,10 @@ public abstract class Char extends Actor {
 		if (defender.buff(  Hex.class) != null) defRoll *= 0.8f;
 		if (defender.buff( Daze.class) != null) defRoll *= 0.5f;
 		for (ChampionEnemy buff : defender.buffs(ChampionEnemy.class)){
-			defRoll *= buff.evasionAndAccuracyFactor();
+			defRoll *= buff.EvasionFactor();
+		}
+		if (defender == hero && hero.subClass == HeroSubClass.GUARD && hero.shielding() > 0) {
+			acuRoll *= 1.2f;
 		}
 		defRoll *= AscensionChallenge.statModifier(defender);
 		if (Dungeon.hero.heroClass != HeroClass.CLERIC
@@ -844,6 +851,13 @@ public abstract class Char extends Actor {
 			return;
 		}
 
+		if (this instanceof Hero && hero.hasTalent(Talent.EMERGENCY_SHIELD) && dmg > 1
+		&& !(src instanceof Hunger) && !(src instanceof Buff) && !(src instanceof Chasm)){
+			int shield = (int)(Math.log(dmg)/Math.log(Math.pow(5 - hero.pointsInTalent(Talent.EMERGENCY_SHIELD), 0.5)));
+			Buff.affect(this, Barrier.class).incShield(shield);
+			sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(shield), FloatingText.SHIELDING);
+		}
+
 		if (!(src instanceof LifeLink || src instanceof Hunger) && buff(LifeLink.class) != null){
 			HashSet<LifeLink> links = buffs(LifeLink.class);
 			for (LifeLink link : links.toArray(new LifeLink[0])){
@@ -952,7 +966,7 @@ public abstract class Char extends Actor {
 		if (AntiMagic.RESISTS.contains(src.getClass())){
 			dmg -= AntiMagic.drRoll(this, glyphLevel(AntiMagic.class));
 			if (Dungeon.hero.hasTalent(Talent.ARCANE_ARMOR) && this instanceof Hero){
-				dmg -= Random.NormalIntRange(0, Math.round(0.05f*Dungeon.hero.pointsInTalent(Talent.ARCANE_ARMOR)*Dungeon.hero.HT));
+				dmg -= Random.NormalIntRange(0, Math.round(0.05f*Dungeon.hero.pointsInTalent(Talent.ARCANE_ARMOR)*HT));
 			}
 			if (buff(ArcaneArmor.class) != null) {
 				dmg -= Random.NormalIntRange(0, buff(ArcaneArmor.class).level());
@@ -964,39 +978,48 @@ public abstract class Char extends Actor {
 			buff( Paralysis.class ).processDamage(dmg);
 		}
 
-		BrokenSeal.WarriorShield shield = buff(BrokenSeal.WarriorShield.class);
-		if (this instanceof Hero && !(src instanceof Hunger) && ((Hero)this).hasTalent(Talent.FIGHTING_BACK)){
-			if (shield != null && Dungeon.hero.heroClass == HeroClass.WARRIOR){
-				if (dmg >= shield.maxShield()
-				&& !shield.coolingDown()){
-					shield.enterCooldown(1f, 0);
-					if (((Hero)this).pointsInTalent(Talent.FIGHTING_BACK) > 1){
-						Buff.affect(this, PhysicalEmpower.class).set(shield.maxShield(), 1);
+		if (!(src instanceof Hunger)) {
+			if (this instanceof Hero && hero.subClass == HeroSubClass.GUARD && shielding() > 0){
+				dmg = Math.round(0.8f * dmg);
+			}
+
+			if (this instanceof Hero && buff(Talent.MarchForwardTracker.class) != null && !(src instanceof Buff) && !(src instanceof Chasm)){
+				dmg = Math.round(buff(Talent.MarchForwardTracker.class).DmgResist(dmg));
+			}
+
+
+			BrokenSeal.WarriorShield shield = buff(BrokenSeal.WarriorShield.class);
+			if (this instanceof Hero && ((Hero)this).hasTalent(Talent.FIGHTING_BACK)){
+				if (shield != null && Dungeon.hero.heroClass == HeroClass.WARRIOR){
+					if (dmg >= shield.maxShield()
+					&& !shield.coolingDown()){
+						shield.enterCooldown(1f, 0);
+						if (((Hero)this).pointsInTalent(Talent.FIGHTING_BACK) > 1){
+							Buff.affect(this, PhysicalEmpower.class).set(shield.maxShield(), 1);
+						}
+						sprite.showStatusWithIcon(CharSprite.POSITIVE, String.valueOf(dmg), FloatingText.SHIELDING);
+						dmg = 0;
 					}
-					sprite.showStatusWithIcon(CharSprite.POSITIVE, String.valueOf(dmg), FloatingText.SHIELDING);
-					dmg = 0;
-				}
-			} else if (Dungeon.hero.heroClass != HeroClass.WARRIOR){
-				if (dmg >= HT/5f
-				&& (buff(FightingbackCooldown.class) == null)){
-					Buff.affect(this, FightingbackCooldown.class, 100f);
-					if (((Hero)this).pointsInTalent(Talent.FIGHTING_BACK) > 1){
-						Buff.affect(this, PhysicalEmpower.class).set(Math.round(HT/5f), 1);
+				} else if (Dungeon.hero.heroClass != HeroClass.WARRIOR){
+					if (dmg >= HT/5f
+					&& (buff(FightingbackCooldown.class) == null)){
+						Buff.affect(this, FightingbackCooldown.class, 100f);
+						if (((Hero)this).pointsInTalent(Talent.FIGHTING_BACK) > 1){
+							Buff.affect(this, PhysicalEmpower.class).set(Math.round(HT/5f), 1);
+						}
+						sprite.showStatusWithIcon(CharSprite.POSITIVE, String.valueOf(dmg), FloatingText.SHIELDING);
+						dmg = 0;
 					}
-					sprite.showStatusWithIcon(CharSprite.POSITIVE, String.valueOf(dmg), FloatingText.SHIELDING);
-					dmg = 0;
 				}
 			}
-		}
 
-		if (!(src instanceof Hunger)
-				&& dmg > 0
-				//either HP is already 80% or below (ignoring shield)
-				// or the hit will reduce it to 80% or below
-				&& (HP <= HT*4/5 || HP + shielding() - dmg <= HT*4/5)
-				&& shield != null && !shield.coolingDown()){
-			sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(buff(BrokenSeal.WarriorShield.class).maxShield()), FloatingText.SHIELDING);
-			shield.activate();
+			if (dmg > 0
+			//either HP is already 75% or below (ignoring shield) or the hit will reduce it to 80% or below
+			&& (HP <= HT*3/4 || HP + shielding() - dmg <= HT*3/4)
+			&& shield != null && !shield.coolingDown()){
+				sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(buff(BrokenSeal.WarriorShield.class).maxShield()), FloatingText.SHIELDING);
+				shield.activate();
+			}
 		}
 
 		int shielded = dmg;
@@ -1135,27 +1158,26 @@ public abstract class Char extends Actor {
 			}
 		}
 
-		if (Dungeon.hero.hasTalent(Talent.ORGANIC_FERTILIZER) && Dungeon.level.heroFOV[pos]){
+		int point = Dungeon.hero.pointsInTalent(Talent.ORGANIC_FERTILIZER);
+		if (point > 0 && Dungeon.level.heroFOV[pos]){
 			if (Dungeon.level.map[pos] == Terrain.EMBERS || Dungeon.level.map[pos] == Terrain.EMPTY || Dungeon.level.map[pos] == Terrain.EMPTY_DECO){
-				Level.set(pos, Terrain.GRASS);
-			}
-			if ((Dungeon.level.map[Dungeon.hero.pos] == Terrain.EMBERS || Dungeon.level.map[Dungeon.hero.pos] == Terrain.EMPTY
-					|| Dungeon.level.map[Dungeon.hero.pos] == Terrain.EMPTY_DECO || Dungeon.level.map[Dungeon.hero.pos] == Terrain.GRASS)
-					&& Dungeon.hero.pointsInTalent(Talent.ORGANIC_FERTILIZER) >= 2){
-				Level.set(Dungeon.hero.pos, Terrain.GRASS);
-				if (Dungeon.hero.pointsInTalent(Talent.ORGANIC_FERTILIZER) >= 3){
-					if (!Regeneration.regenOn()){
-						Level.set(Dungeon.hero.pos, Terrain.FURROWED_GRASS);
-					} else if (Dungeon.hero.buff(Talent.RejuvenatingStepsFurrow.class) != null && Dungeon.hero.buff(Talent.RejuvenatingStepsFurrow.class).count() >= 200) {
-						Level.set(Dungeon.hero.pos, Terrain.FURROWED_GRASS);
-					} else {
-						Level.set(pos, Terrain.HIGH_GRASS);
-						Buff.count(Dungeon.hero, Talent.RejuvenatingStepsFurrow.class, 3 - Dungeon.hero.pointsInTalent(Talent.ORGANIC_FERTILIZER));
-					}
+				Level.set(pos, Terrain.GRASS);//+1
+				if (point > 2) {
+					OrganicGrass(pos);//+3
+					sprite.emitter().burst(LeafParticle.GENERAL, 5);
 				}
+			}
+			if ((Dungeon.level.map[pos] == Terrain.GRASS || Dungeon.level.map[pos] == Terrain.FURROWED_GRASS) && point > 2){
+				OrganicGrass(pos);//+3
+				sprite.emitter().burst(LeafParticle.GENERAL, 5);
+			}
+			if ((Dungeon.level.map[Dungeon.hero.pos] == Terrain.EMBERS || Dungeon.level.map[Dungeon.hero.pos] == Terrain.EMPTY || Dungeon.level.map[Dungeon.hero.pos] == Terrain.EMPTY_DECO
+			|| Dungeon.level.map[Dungeon.hero.pos] == Terrain.GRASS || Dungeon.level.map[Dungeon.hero.pos] == Terrain.FURROWED_GRASS) && point > 1){
+				OrganicGrass(Dungeon.hero.pos);//+2
+				Dungeon.hero.sprite.emitter().burst(LeafParticle.GENERAL, 5);
 				GameScene.updateMap(Dungeon.hero.pos);
 			}
-			GameScene.updateMap(this.pos);
+			GameScene.updateMap(pos);
 		}
 
 		if (Random.Float() <= Dungeon.hero.pointsInTalent(Talent.DEW_COLLECTING)/4f && Dungeon.level.heroFOV[pos] &&
@@ -1169,9 +1191,17 @@ public abstract class Char extends Actor {
 
 				flask.collectDew( 1 );
 
-			} else if (!Dungeon.isChallenged(Challenges.NO_HERBALISM)){
+			} else {
 				Dungeon.level.drop(new Dewdrop(), Dungeon.hero.pos).sprite.drop();
 			}
+		}
+	}
+
+	public void OrganicGrass(int Pos) {
+		if (Dungeon.hero.buff(Talent.RejuvenatingStepsFurrow.class) != null && Dungeon.hero.buff(Talent.RejuvenatingStepsFurrow.class).count() >= 200){
+			Level.set(Pos, Terrain.FURROWED_GRASS);
+		} else {
+			Level.set(Pos, Terrain.HIGH_GRASS);Buff.count(hero, Talent.RejuvenatingStepsFurrow.class, 4 - Dungeon.hero.pointsInTalent(Talent.ORGANIC_FERTILIZER));
 		}
 	}
 
@@ -1410,7 +1440,10 @@ public abstract class Char extends Actor {
 				result *= 0.5f;
 			}
 		}
-		return result * RingOfElements.resist(this, effect);
+		float maskproc = 1f;
+		if (hero.belongings.artifact instanceof ElementalMask)
+			maskproc = ((ElementalMask)hero.belongings.artifact).resist(effect);
+		return result * RingOfElements.resist(this, effect) * maskproc;
 	}
 	
 	protected final HashSet<Class> immunities = new HashSet<>();

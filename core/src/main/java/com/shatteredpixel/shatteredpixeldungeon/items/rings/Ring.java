@@ -38,6 +38,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.KindofMisc;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ShardOfOblivion;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.utils.Bundle;
@@ -75,6 +76,7 @@ public class Ring extends KindofMisc {
 	
 	//rings cannot be 'used' like other equipment, so they ID purely based on exp
 	private float levelsToID = 1;
+	public int powderBonus = 0;
 	
 	@SuppressWarnings("unchecked")
 	public static void initGems() {
@@ -190,6 +192,12 @@ public class Ring extends KindofMisc {
 			desc = super.info();
 		}
 
+		if (powderBonus == 1){
+			desc += "\n\n" + Messages.get(Ring.class, "powder_one");
+		} else if (powderBonus > 1){
+			desc += "\n\n" + Messages.get(Ring.class, "powder_many", powderBonus);
+		}
+
 		if (cursed && isEquipped( Dungeon.hero )) {
 			desc += "\n\n" + Messages.get(Ring.class, "cursed_worn");
 			
@@ -206,6 +214,11 @@ public class Ring extends KindofMisc {
 		}
 		
 		return desc;
+	}
+
+	@Override
+	public int level() {
+		return super.level() + powderBonus;
 	}
 	
 	protected String statsInfo(){
@@ -230,6 +243,10 @@ public class Ring extends KindofMisc {
 		
 		if (Random.Int(3) == 0) {
 			cursed = false;
+		}
+
+		if (powderBonus > 0){
+			powderBonus--;
 		}
 		
 		return this;
@@ -288,6 +305,12 @@ public class Ring extends KindofMisc {
 	public static boolean allKnown() {
 		return handler != null && handler.known().size() == Generator.Category.RING.classes.length;
 	}
+
+	@Override
+	public ItemSprite.Glowing glowing() {
+		if (powderBonus == 0) return null;
+		return new ItemSprite.Glowing(0xFFFFFF, 1f/(float)powderBonus);
+	}
 	
 	@Override
 	public int value() {
@@ -313,17 +336,20 @@ public class Ring extends KindofMisc {
 	}
 
 	private static final String LEVELS_TO_ID    = "levels_to_ID";
+	private static final String POWDER    = "powder";
 
 	@Override
 	public void storeInBundle( Bundle bundle ) {
 		super.storeInBundle( bundle );
 		bundle.put( LEVELS_TO_ID, levelsToID );
+		bundle.put( POWDER, powderBonus );
 	}
 
 	@Override
 	public void restoreFromBundle( Bundle bundle ) {
 		super.restoreFromBundle( bundle );
 		levelsToID = bundle.getFloat( LEVELS_TO_ID );
+		powderBonus = bundle.getInt( POWDER );
 	}
 	
 	public void onHeroGainExp( float levelPercent, Hero hero ){
@@ -455,5 +481,27 @@ public class Ring extends KindofMisc {
 			return Ring.this.soloBuffedBonus();
 		}
 
+	}
+
+	public static class PlaceHolder extends Ring {
+
+		{
+			image = ItemSpriteSheet.RING_HOLDER;
+		}
+
+		@Override
+		public boolean isSimilar(Item item) {
+			return item instanceof Ring;
+		}
+
+		@Override
+		public String name() {
+			return Messages.get(this, "name");
+		}
+
+		@Override
+		public String info() {
+			return Messages.get(this, "unknown_desc");
+		}
 	}
 }

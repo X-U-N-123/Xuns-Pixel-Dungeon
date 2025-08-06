@@ -53,7 +53,7 @@ public class Stone extends Armor.Glyph {
 		if (attacker.buff(  Hex.class) != null) accuracy *= 0.8f;
 		if (attacker.buff( Daze.class) != null) accuracy *= 0.5f;
 		for (ChampionEnemy buff : attacker.buffs(ChampionEnemy.class)){
-			accuracy *= buff.evasionAndAccuracyFactor();
+			accuracy *= buff.AccuracyFactor();
 		}
 		accuracy *= AscensionChallenge.statModifier(attacker);
 		if (Dungeon.hero.heroClass != HeroClass.CLERIC
@@ -67,7 +67,7 @@ public class Stone extends Armor.Glyph {
 		if (defender.buff(  Hex.class) != null) evasion *= 0.8f;
 		if (defender.buff( Daze.class) != null) evasion *= 0.5f;
 		for (ChampionEnemy buff : defender.buffs(ChampionEnemy.class)){
-			evasion *= buff.evasionAndAccuracyFactor();
+			evasion *= buff.EvasionFactor();
 		}
 		evasion *= AscensionChallenge.statModifier(defender);
 		if (Dungeon.hero.heroClass != HeroClass.CLERIC

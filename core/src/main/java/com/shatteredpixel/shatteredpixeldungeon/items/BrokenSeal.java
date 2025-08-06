@@ -28,11 +28,14 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ShieldBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Belongings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
+import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
@@ -340,6 +343,12 @@ public class BrokenSeal extends Item {
 			}
 		}
 
+		public int CDdecrease(){
+			int CD = 18 * Dungeon.hero.pointsInTalent(Talent.INTACT_SEAL);
+			if (target == Dungeon.hero && Dungeon.hero.subClass == HeroSubClass.GUARD) CD += 12;
+			return CD;
+		}
+
 		@Override
 		public synchronized boolean act() {
 			if (cooldown > 0){
@@ -353,7 +362,14 @@ public class BrokenSeal extends Item {
 						if (cooldown > 0) {
 							float percentLeft = shielding() / (float)maxShield();
 							//max of 50% cooldown refund
-							cooldown = Math.max(0, (int)(cooldown - (COOLDOWN_START - 15*Dungeon.hero.pointsInTalent(Talent.INTACT_SEAL)) * (percentLeft / 2f)));
+							cooldown = Math.max(0, (int)(cooldown - (COOLDOWN_START - CDdecrease()) * (percentLeft / 2f)));
+						}
+						float percent = Dungeon.hero.pointsInTalent(Talent.KEEP_GUARDING)/3f;
+						if (percent > 0){
+							if (target.HP < target.HT){
+								target.sprite.showStatusWithIcon(CharSprite.POSITIVE, String.valueOf(Math.round(percent * shielding())), FloatingText.HEALING);
+							}
+							target.HP = Math.min(target.HT, Math.round(target.HP + shielding() * percent));
 						}
 						decShield(shielding());
 					}
@@ -372,7 +388,7 @@ public class BrokenSeal extends Item {
 
 		public synchronized void activate() {
 			incShield(maxShield());
-			cooldown = Math.max(0, cooldown + COOLDOWN_START - 15*Dungeon.hero.pointsInTalent(Talent.INTACT_SEAL));
+			cooldown = Math.max(0, cooldown + COOLDOWN_START - CDdecrease());
 			turnsSinceEnemies = 0;
 		}
 
@@ -381,14 +397,13 @@ public class BrokenSeal extends Item {
 		}
 
 		public void enterCooldown(float percentage, int turn){
-			cooldown = Math.round((COOLDOWN_START - 15*Dungeon.hero.pointsInTalent(Talent.INTACT_SEAL)) * percentage);
+			cooldown = Math.round((COOLDOWN_START - CDdecrease()) * percentage);
 			cooldown += turn;
 		}
 
 		public void reduceCooldown(float percentage){
-			int Talentdecrease = 15 * Dungeon.hero.pointsInTalent(Talent.INTACT_SEAL);
-			cooldown -= Math.round((COOLDOWN_START - Talentdecrease)*percentage);
-			cooldown = Math.max(cooldown, -COOLDOWN_START + Talentdecrease);
+			cooldown -= Math.round((COOLDOWN_START - CDdecrease())*percentage);
+			cooldown = Math.max(cooldown, -COOLDOWN_START + CDdecrease());
 		}
 
 		public synchronized void setArmor(Armor arm){

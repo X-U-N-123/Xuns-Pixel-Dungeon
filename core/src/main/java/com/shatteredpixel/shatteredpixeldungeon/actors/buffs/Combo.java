@@ -93,7 +93,9 @@ public class Combo extends Buff implements ActionIndicator.Action {
 		comboTime = 10f;
 
 		if (!enemy.isAlive() || (enemy.buff(Corruption.class) != null && enemy.HP == enemy.HT)){
-			comboTime *= Math.pow(3, ((Hero)target).pointsInTalent(Talent.CLEAVE));
+			if (((Hero)target).hasTalent(Talent.CLEAVE)){
+				comboTime *= Math.pow(3, ((Hero)target).pointsInTalent(Talent.CLEAVE));
+			}
 
 			int talent = Dungeon.hero.pointsInTalent(Talent.REPEATED_SKILL);
 			if (talent > 0) {

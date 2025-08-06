@@ -331,6 +331,9 @@ public class Armor extends EquipableItem {
 			if (detaching.level() > 0){
 				degrade();
 			}
+			if (Dungeon.hero.hasTalent(Talent.INTACT_SEAL)){
+				detaching.image = ItemSpriteSheet.INTACT_SEAL;
+			}
 			if (detaching.canTransferGlyph()){
 				inscribe(null);
 			} else {

@@ -34,6 +34,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Roots;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.huntress.NaturesPower;
+import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Splash;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.LeafParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
@@ -49,6 +50,7 @@ import com.shatteredpixel.shatteredpixeldungeon.plants.Sorrowmoss;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Stormvine;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MissileSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
@@ -130,6 +132,13 @@ public class SpiritBow extends Weapon {
 						NaturesPower.naturesPowerTracker tracker = attacker.buff(NaturesPower.naturesPowerTracker.class);
 						if (tracker != null){
 							tracker.extend(((Hero) attacker).pointsInTalent(Talent.WILD_MOMENTUM));
+						}
+					}
+
+					if (((Hero)attacker).hasTalent(Talent.REGROWTH)) {
+						attacker.HP = Math.min(attacker.HT, attacker.HP + damage * ((Hero)attacker).pointsInTalent(Talent.REGROWTH)/5);
+						if (attacker.sprite != null) {
+							attacker.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(damage * ((Hero)attacker).pointsInTalent(Talent.REGROWTH)/5), FloatingText.HEALING);
 						}
 					}
 

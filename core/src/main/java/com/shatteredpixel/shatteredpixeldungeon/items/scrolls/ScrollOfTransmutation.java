@@ -266,7 +266,7 @@ public class ScrollOfTransmutation extends InventoryScroll {
 		
 		n.level(0);
 		
-		int level = r.level();
+		int level = r.trueLevel();
 		if (level > 0) {
 			n.upgrade( level );
 		} else if (level < 0) {
@@ -276,6 +276,7 @@ public class ScrollOfTransmutation extends InventoryScroll {
 		n.levelKnown = r.levelKnown;
 		n.cursedKnown = r.cursedKnown;
 		n.cursed = r.cursed;
+		n.powderBonus = r.powderBonus;
 		
 		return n;
 	}

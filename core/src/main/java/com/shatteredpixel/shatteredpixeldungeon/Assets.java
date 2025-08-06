@@ -196,6 +196,7 @@ public class Assets {
 		public static final String ALERT    = "sounds/alert.mp3";
 		public static final String MELD     = "sounds/meld.mp3";
 		public static final String BOSS     = "sounds/boss.mp3";
+		public static final String BUILD    = "sounds/build.mp3";
 		public static final String BLAST    = "sounds/blast.mp3";
 		public static final String PLANT    = "sounds/plant.mp3";
 		public static final String RAY      = "sounds/ray.mp3";
@@ -230,7 +231,7 @@ public class Assets {
 				HIT_ARROW, ATK_SPIRITBOW, ATK_CROSSBOW, HEALTH_WARN, HEALTH_CRITICAL,
 
 				DESCEND, EAT, READ, LULLABY, DRINK, SHATTER, ZAP, LIGHTNING, LEVELUP, DEATH,
-				CHALLENGE, CURSED, TRAP, EVOKE, TOMB, ALERT, MELD, BOSS, BLAST, PLANT, RAY, BEACON,
+				CHALLENGE, CURSED, TRAP, EVOKE, TOMB, ALERT, MELD, BOSS, BUILD, BLAST, PLANT, RAY, BEACON,
 				TELEPORT, CHARMS, MASTERY, PUFF, ROCKS, BURNING, FALLING, GHOST, SECRET, BONES,
 				BEE, DEGRADE, MIMIC, DEBUFF, CHARGEUP, GAS, CHAINS, SCAN, SHEEP, MINE
 		};
@@ -261,6 +262,7 @@ public class Assets {
 		public static final String HUNTRESS = "sprites/huntress.png";
 		public static final String DUELIST  = "sprites/duelist.png";
 		public static final String CLERIC   = "sprites/cleric.png";
+		public static final String MITA     = "sprites/mita.png";
 		public static final String AVATARS  = "sprites/avatars.png";
 		public static final String PET      = "sprites/pet.png";
 		public static final String AMULET   = "sprites/amulet.png";

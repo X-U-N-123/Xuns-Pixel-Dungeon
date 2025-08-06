@@ -62,7 +62,7 @@ public class HeroDisguise extends FlavourBuff {
 				} while (cls == ((Hero) target).heroClass);
 			}
 
-			if (on) ((HeroSprite)target.sprite).disguise(cls);
+			if (on) ((HeroSprite)target.sprite).disguisemita();
 			else    ((HeroSprite)target.sprite).disguise(((Hero) target).heroClass);
 			GameScene.updateAvatar();
 		}

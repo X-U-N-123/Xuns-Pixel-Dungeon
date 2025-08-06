@@ -27,9 +27,13 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Fire;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Freezing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Splash;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.watabou.noosa.Image;
 import com.watabou.utils.BArray;
@@ -81,7 +85,11 @@ public abstract class ChampionEnemy extends Buff {
 		return 1f;
 	}
 
-	public float evasionAndAccuracyFactor(){
+	public float EvasionFactor(){
+		return 1f;
+	}
+
+	public float AccuracyFactor(){
 		return 1f;
 	}
 
@@ -97,13 +105,18 @@ public abstract class ChampionEnemy extends Buff {
 		//we roll for a champion enemy even if we aren't spawning one to ensure that
 		//mobsToChampion does not affect levelgen RNG (number of calls to Random.Int() is constant)
 		Class<?extends ChampionEnemy> buffCls;
-		switch (Random.Int(6)){
+		switch (Random.Int(11)){
 			case 0: default:    buffCls = Blazing.class;      break;
 			case 1:             buffCls = Projecting.class;   break;
 			case 2:             buffCls = AntiMagic.class;    break;
 			case 3:             buffCls = Giant.class;        break;
 			case 4:             buffCls = Blessed.class;      break;
 			case 5:             buffCls = Growing.class;      break;
+			case 6:             buffCls = Gyokusai.class;     break;
+			case 7:             buffCls = BerserkEnemy.class; break;
+			case 8:             buffCls = Vampiric.class;     break;
+			case 9:             buffCls = FrostEnemy.class;   break;
+			case 10:            buffCls = OozeEnemy.class;    break;
 		}
 
 		if (Dungeon.mobsToChampion <= 0 && Dungeon.isChallenged(Challenges.CHAMPION_ENEMIES)) {
@@ -117,11 +130,15 @@ public abstract class ChampionEnemy extends Buff {
 	public static void GiveChampion(Mob m){
 
 		ArrayList <Class<?extends ChampionEnemy>> Usablebuff = new ArrayList<>();
-		if(m.buff(Projecting.class) == null)Usablebuff.add(Projecting.class);
-		if(m.buff(AntiMagic.class) == null) Usablebuff.add(AntiMagic.class);
-		if(m.buff(Blessed.class) == null)   Usablebuff.add(Blessed.class);
-		if(m.buff(Growing.class) == null)   Usablebuff.add(Growing.class);
-		if(m.buff(Blazing.class) == null)   Usablebuff.add(Blazing.class);
+		if(m.buff(Projecting.class) == null)   Usablebuff.add(Projecting.class);
+		if(m.buff(AntiMagic.class) == null)    Usablebuff.add(AntiMagic.class);
+		if(m.buff(Blessed.class) == null)      Usablebuff.add(Blessed.class);
+		if(m.buff(Growing.class) == null)      Usablebuff.add(Growing.class);
+		if(m.buff(Blazing.class) == null)      Usablebuff.add(Blazing.class);
+		if(m.buff(Vampiric.class) == null)     Usablebuff.add(Vampiric.class);
+		if(m.buff(BerserkEnemy.class) == null) Usablebuff.add(BerserkEnemy.class);
+		if(m.buff(FrostEnemy.class) == null)   Usablebuff.add(FrostEnemy.class);
+		if(m.buff(OozeEnemy.class) == null)    Usablebuff.add(OozeEnemy.class);
 		if(m.buff(Giant.class) == null && Usablebuff.isEmpty()) Usablebuff.add(Giant.class);
 
 		if (!Usablebuff.isEmpty()){
@@ -169,6 +186,112 @@ public abstract class ChampionEnemy extends Buff {
 		}
 	}
 
+	public static class FrostEnemy extends ChampionEnemy {
+
+		{
+			color = 0x0000FF;
+			rays = 5;
+		}
+
+		@Override
+		public void onAttackProc(Char enemy) {
+			if (!Dungeon.level.water[enemy.pos]) {
+				Buff.affect(enemy, Chill.class, 3f);
+			} else {
+				Buff.affect(enemy, Chill.class, 5f);
+			}
+		}
+
+		@Override
+		public void detach() {
+			//don't trigger when killed by being knocked into a pit
+			if (target.flying || !Dungeon.level.pit[target.pos]) {
+				for (int i : PathFinder.NEIGHBOURS9) {
+					if (!Dungeon.level.solid[target.pos + i]) {
+						GameScene.add(Blob.seed(target.pos + i, 2, Freezing.class));
+						if (Dungeon.level.water[target.pos + i] && Actor.findChar(target.pos + i) != null){
+							Buff.affect(Actor.findChar(target.pos + i), Frost.class, 5f);
+						}
+					}
+				}
+			}
+			super.detach();
+		}
+
+		@Override
+		public float meleeDamageFactor() {
+			return 1.25f;
+		}
+
+		{
+			immunities.add(Frost.class);
+			immunities.add(Chill.class);
+		}
+	}
+
+	public static class OozeEnemy extends ChampionEnemy {
+
+		{
+			color = 0x00FFFF;
+			rays = 5;
+		}
+
+		@Override
+		public void onAttackProc(Char enemy) {
+			if (!Dungeon.level.water[enemy.pos]) {
+				Buff.affect(enemy, Ooze.class).set(3f);
+			}
+		}
+
+		@Override
+		public void detach() {
+			//don't trigger when killed by being knocked into a pit
+			if (target.flying || !Dungeon.level.pit[target.pos]) {
+				for (int i : PathFinder.NEIGHBOURS9) {
+					if (!Dungeon.level.solid[target.pos + i] && !Dungeon.level.water[target.pos + i]) {
+						Splash.at(target.pos + i, 0x000000, 5);
+						Char ch = Actor.findChar(target.pos + i);
+
+						if (ch != null){
+							Buff.affect(ch, Ooze.class).set(5f);
+						}
+					}
+				}
+			}
+			super.detach();
+		}
+
+		@Override
+		public float meleeDamageFactor() {
+			return 1.25f;
+		}
+
+		{
+			immunities.add(Ooze.class);
+			resistances.add(Corrosion.class);
+		}
+	}
+
+	public static class Vampiric extends ChampionEnemy {
+
+		{
+			color = 0x99FF99;
+			rays = 5;
+		}
+
+		@Override
+		public void onAttackProc(Char enemy) {
+			int toheal = Math.round(0.15f*(target.HT - target.HP));
+			target.HP += toheal;
+			target.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(toheal), FloatingText.HEALING);
+		}
+
+		@Override
+		public float meleeDamageFactor() {
+			return 1.25f;
+		}
+	}
+
 	public static class Projecting extends ChampionEnemy {
 
 		{
@@ -196,6 +319,19 @@ public abstract class ChampionEnemy extends Buff {
 
 				return PathFinder.distance[target.pos] <= 4;
 			}
+		}
+	}
+
+	public static class BerserkEnemy extends ChampionEnemy {
+
+		{
+			color = 0xFFAAAA;
+			rays = 5;
+		}
+
+		@Override
+		public float meleeDamageFactor() {
+			return 1f + 0.75f*(float)(target.HT - target.HP)/target.HT;
 		}
 	}
 
@@ -256,8 +392,41 @@ public abstract class ChampionEnemy extends Buff {
 		}
 
 		@Override
-		public float evasionAndAccuracyFactor() {
+		public float EvasionFactor() {
 			return 4f;
+		}
+
+		@Override
+		public float AccuracyFactor() {
+			return 4f;
+		}
+	}
+
+	public static class Gyokusai extends ChampionEnemy {
+
+		{
+			color = 0xFFFFFF;
+			rays = 6;
+		}
+
+		@Override
+		public float EvasionFactor() {
+			return 0f;
+		}
+
+		@Override
+		public float AccuracyFactor() {
+			return 4f;
+		}
+
+		@Override
+		public float meleeDamageFactor() {
+			return 2.5f;
+		}
+
+		@Override
+		public float damageTakenFactor() {
+			return 10f;
 		}
 	}
 
@@ -288,7 +457,12 @@ public abstract class ChampionEnemy extends Buff {
 		}
 
 		@Override
-		public float evasionAndAccuracyFactor() {
+		public float EvasionFactor() {
+			return multiplier;
+		}
+
+		@Override
+		public float AccuracyFactor() {
 			return multiplier;
 		}
 

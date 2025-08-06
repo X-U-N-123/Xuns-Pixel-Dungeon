@@ -27,6 +27,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Adrenaline;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AllyBuff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Amok;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
@@ -182,7 +183,7 @@ public class Ratmogrify extends ArmorAbility {
 
 	@Override
 	public Talent[] talents() {
-		return new Talent[]{ Talent.RATSISTANCE, Talent.RATLOMACY, Talent.RATFORCEMENTS, Talent.HEROIC_ENERGY};
+		return new Talent[]{ Talent.RATSISTANCE, Talent.RATLOMACY, Talent.RATFORCEMENTS, Talent.ENRATGEMENT, Talent.HEROIC_ENERGY};
 	}
 
 	public static class TransmogRat extends Mob {
@@ -233,6 +234,9 @@ public class Ratmogrify extends ArmorAbility {
 		protected boolean act() {
 			if (timeLeft <= 0){
 				Mob original = getOriginal();
+				if (Dungeon.hero.hasTalent(Talent.ENRATGEMENT)){
+					Buff.affect(original, Amok.class, 2f*Dungeon.hero.pointsInTalent(Talent.ENRATGEMENT));
+				}
 				this.original = null;
 				GameScene.add(original);
 
@@ -273,7 +277,7 @@ public class Ratmogrify extends ArmorAbility {
 		public int damageRoll() {
 			int damage = original.damageRoll();
 			if (!allied && Dungeon.hero.hasTalent(Talent.RATSISTANCE)){
-				damage *= Math.pow(0.9f, Dungeon.hero.pointsInTalent(Talent.RATSISTANCE));
+				damage = Math.round(damage*(1 - 0.1f*Dungeon.hero.pointsInTalent(Talent.RATSISTANCE)));
 			}
 			return damage;
 		}

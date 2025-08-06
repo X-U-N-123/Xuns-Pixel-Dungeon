@@ -64,7 +64,7 @@ public class NaturesPower extends ArmorAbility {
 
 	@Override
 	public Talent[] talents() {
-		return new Talent[]{Talent.GROWING_POWER, Talent.NATURES_WRATH, Talent.WILD_MOMENTUM, Talent.HEROIC_ENERGY};
+		return new Talent[]{Talent.GROWING_POWER, Talent.NATURES_WRATH, Talent.WILD_MOMENTUM, Talent.REGROWTH, Talent.HEROIC_ENERGY};
 	}
 
 	public static class naturesPowerTracker extends FlavourBuff{

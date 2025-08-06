@@ -190,8 +190,8 @@ public abstract class ClericSpell {
 			if (cleric.hasTalent(Talent.FLASH)){
 				spells.add(Flash.INSTANCE);
 			}
-			if (cleric.hasTalent(Talent.HOLY_PROTECTION)){
-				spells.add(HolyProtection.INSTANCE);
+			if (cleric.hasTalent(Talent.HOLY_REGENERATION)){
+				spells.add(HolyRegeneration.INSTANCE);
 			}
 
 			if (cleric.hasTalent(Talent.BODY_FORM)){
@@ -248,7 +248,7 @@ public abstract class ClericSpell {
 		spells.add(DivineIntervention.INSTANCE);
 		spells.add(Judgement.INSTANCE);
 		spells.add(Flash.INSTANCE);
-		spells.add(HolyProtection.INSTANCE);
+		spells.add(HolyRegeneration.INSTANCE);
 		spells.add(BodyForm.INSTANCE);
 		spells.add(MindForm.INSTANCE);
 		spells.add(SpiritForm.INSTANCE);

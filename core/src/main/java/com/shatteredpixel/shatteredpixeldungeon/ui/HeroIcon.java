@@ -35,21 +35,23 @@ public class HeroIcon extends Image {
 	private static final int SIZE = 16;
 
 	//transparent icon
-	public static final int NONE    = 127;
+	public static final int NONE    = 255;
 
 	//subclasses
 	public static final int BERSERKER   = 0;
 	public static final int GLADIATOR   = 1;
-	public static final int BATTLEMAGE  = 2;
-	public static final int WARLOCK     = 3;
-	public static final int ASSASSIN    = 4;
-	public static final int FREERUNNER  = 5;
-	public static final int SNIPER      = 6;
-	public static final int WARDEN      = 7;
-	public static final int CHAMPION    = 8;
-	public static final int MONK        = 9;
-	public static final int PRIEST      = 10;
-	public static final int PALADIN     = 11;
+	public static final int GUARD       = 2;
+	public static final int BATTLEMAGE  = 4;
+	public static final int WARLOCK     = 5;
+	public static final int SWITCHER    = 6;
+	public static final int ASSASSIN    = 8;
+	public static final int FREERUNNER  = 9;
+	public static final int SNIPER      = 12;
+	public static final int WARDEN      = 13;
+	public static final int CHAMPION    = 16;
+	public static final int MONK        = 17;
+	public static final int PRIEST      = 20;
+	public static final int PALADIN     = 21;
 
 	//abilities
 	public static final int HEROIC_LEAP     = 48;
@@ -104,7 +106,7 @@ public class HeroIcon extends Image {
 	public static final int JUSTICE_STRIKE  = 109;
 	public static final int SHARED_CHARGE   = 110;
 	public static final int HOLY_CHAMPION   = 111;
-	public static final int HOLY_PROTECTION = 112;
+	public static final int HOLY_REGENERATION = 112;
 	public static final int MIMIC_FORM      = 113;
 
 	//all cleric spells have a separate icon with no background for the action indicator

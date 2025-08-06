@@ -25,6 +25,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.TrapMechanism;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.WornLock;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Document;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Patch;
@@ -212,9 +213,15 @@ public abstract class RegularPainter extends Painter {
 				
 				Room.Door d = r.connected.get(n);
 				int door = d.x + d.y * l.width();
+
+				float lockReveal = 0;
+				WornLock lock = Dungeon.hero.belongings.getItem(WornLock.class);
+				if (lock != null) {
+					lockReveal = lock.revealHiddenDoorChance();
+				}
 				
 				if (d.type == Room.Door.Type.REGULAR){
-					if (Random.Float() < hiddenDoorChance) {
+					if (Random.Float() < hiddenDoorChance - lockReveal) {
 						d.type = Room.Door.Type.HIDDEN;
 						//all standard rooms must have an unbroken path to all other standard rooms
 						if (l.feeling != Level.Feeling.SECRETS){

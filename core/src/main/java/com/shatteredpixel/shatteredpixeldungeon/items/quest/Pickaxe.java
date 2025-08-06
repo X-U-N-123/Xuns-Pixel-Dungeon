@@ -63,6 +63,8 @@ public class Pickaxe extends MeleeWeapon {
 		bones = false;
 
 		tier = 2;
+
+		defaultAction = AC_MINE;
 	}
 
 	@Override
@@ -147,6 +149,11 @@ public class Pickaxe extends MeleeWeapon {
 					hero.next();
 				}
 			});
+			defaultAction = AC_MINE;
+		}
+
+		if (action.equals(AC_ABILITY)){
+			defaultAction = AC_ABILITY;
 		}
 	}
 

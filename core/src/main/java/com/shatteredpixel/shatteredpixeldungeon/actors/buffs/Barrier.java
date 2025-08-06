@@ -21,6 +21,9 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Blocking;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
@@ -53,7 +56,12 @@ public class Barrier extends ShieldBuff {
 
 		partialLostShield += Math.min(1f, shielding()/20f);
 
-		if (partialLostShield >= 1f) {
+		int lostLimit = 1;
+		if (target instanceof Hero){
+			lostLimit = (int)Math.pow(2, Dungeon.hero.pointsInTalent(Talent.SHIELDING));
+		}
+
+		if (partialLostShield >= lostLimit) {
 			absorbDamage(1);
 			partialLostShield = 0;
 		}

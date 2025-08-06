@@ -32,6 +32,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Adrenaline;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AllyBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Amok;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.BrokenArmor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Charm;
@@ -75,6 +76,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfWealth;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ExoticScroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAggression;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ExoticCrystals;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.StoneofIntelligence;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ShardOfOblivion;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
@@ -856,8 +858,11 @@ public abstract class Mob extends Char {
 				Bestiary.countEncounter(getClass());
 
 				AscensionChallenge.processEnemyKill(this);
-				
-				int exp = Dungeon.hero.lvl <= maxLvl ? EXP : 0;
+
+				StoneofIntelligence stone = Dungeon.hero.belongings.getItem(StoneofIntelligence.class);
+				int inc = 0;
+				if (stone != null) inc += stone.LootandExpinc();
+				int exp = Dungeon.hero.lvl <= maxLvl + inc ? EXP : 0;
 
 				//during ascent, under-levelled enemies grant 10 xp each until level 30
 				// after this enemy kills which reduce the amulet curse still grant 10 effective xp
@@ -954,7 +959,11 @@ public abstract class Mob extends Char {
 	}
 	
 	public void rollToDropLoot(){
-		if (Dungeon.hero.lvl > maxLvl + 2) return;
+		StoneofIntelligence stone = Dungeon.hero.belongings.getItem(StoneofIntelligence.class);
+		int inc = 0;
+		if (stone != null) inc += stone.LootandExpinc();
+
+		if (Dungeon.hero.lvl > maxLvl + 2 + inc) return;
 
 		MasterThievesArmband.StolenTracker stolen = buff(MasterThievesArmband.StolenTracker.class);
 		if (stolen == null || !stolen.itemWasStolen()) {
@@ -1086,8 +1095,14 @@ public abstract class Mob extends Char {
 			if (this.alignment == Alignment.ENEMY)  alignment += Messages.get(this, "enemy");
 			if (this.alignment == Alignment.NEUTRAL)alignment += Messages.get(this, "neutral");
 			alignment += "\n\n";
-
-			desc_dev = Messages.get(this, "dev_info", HP, HT, attackSkill(this), defenseSkill(this), EXP, maxLvl, damageRoll(), attackDelay(), drRoll(), speed());
+			StoneofIntelligence stone = Dungeon.hero.belongings.getItem(StoneofIntelligence.class);
+			int inc = 0;
+			if (stone != null) inc += stone.LootandExpinc();
+			int armor = Math.round(drRoll() * AscensionChallenge.statModifier(enemy));
+			if (this.buff(BrokenArmor.class) != null){
+				armor = 0;
+			}
+			desc_dev = Messages.get(this, "dev_info", HP, HT, attackSkill(this), defenseSkill(this), EXP, maxLvl + inc, damageRoll(), attackDelay(), armor, speed());
 		}
 
 		return desc_dev + property + State + alignment + desc;

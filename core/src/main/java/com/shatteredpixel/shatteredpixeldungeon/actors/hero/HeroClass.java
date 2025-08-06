@@ -26,7 +26,6 @@ import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.QuickSlot;
-import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.ArmorAbility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.cleric.AscendedForm;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.cleric.PowerOfMany;
@@ -49,6 +48,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.Sh
 import com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal;
 import com.shatteredpixel.shatteredpixeldungeon.items.Goldarrow;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.KingsCrown;
+import com.shatteredpixel.shatteredpixeldungeon.items.TengusMask;
 import com.shatteredpixel.shatteredpixeldungeon.items.Waterskin;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.LamellarArmor;
@@ -79,8 +80,10 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Cudgel;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dagger;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Gloves;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Havoc;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Rapier;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Shovel;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Windblade;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WornShortsword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingKnife;
@@ -93,7 +96,7 @@ import com.zrp200.scrollofdebug.ScrollOfDebug;
 
 public enum HeroClass {
 
-	WARRIOR( HeroSubClass.BERSERKER, HeroSubClass.GLADIATOR ),
+	WARRIOR( HeroSubClass.BERSERKER, HeroSubClass.GLADIATOR, HeroSubClass.GUARD),
 	MAGE( HeroSubClass.BATTLEMAGE, HeroSubClass.WARLOCK ),
 	ROGUE( HeroSubClass.ASSASSIN, HeroSubClass.FREERUNNER ),
 	HUNTRESS( HeroSubClass.SNIPER, HeroSubClass.WARDEN ),
@@ -120,32 +123,7 @@ public enum HeroClass {
 		new VelvetPouch().collect();
 		Dungeon.LimitedDrops.VELVET_POUCH.drop();
 
-		Waterskin waterskin = new Waterskin();
-		waterskin.collect();
-
-		if (Dungeon.isChallenged(Challenges.X_U_NS_POWER)){
-			new Goldarrow().collect();
-			new ScrollOfDebug().collect();
-
-			new ScrollHolder().collect();
-			Dungeon.LimitedDrops.SCROLL_HOLDER.drop();
-			new MagicalHolster().collect();
-			Dungeon.LimitedDrops.MAGICAL_HOLSTER.drop();
-			new PotionBandolier().collect();
-			Dungeon.LimitedDrops.POTION_BANDOLIER.drop();
-			new FoodPocket().collect();
-			Dungeon.LimitedDrops.FOOD_POCKET.drop();
-
-			new PotionOfStrength().quantity(127).identify().collect();
-			new PotionOfExperience().quantity(29).identify().collect();
-			new PotionOfHealing().quantity(127).identify().collect();
-			new ScrollOfUpgrade().quantity(65520).identify().collect();
-
-			LamellarArmor lamellararmor = new LamellarArmor();
-			Windblade windblade = new Windblade();
-			lamellararmor.upgrade(210).identify().collect();
-			windblade.upgrade(105).identify().collect();
-		}
+		new Waterskin().collect();
 
 		new ScrollOfIdentify().identify();
 
@@ -174,16 +152,45 @@ public enum HeroClass {
 				initCleric( hero );
 				break;
 		}
-		/*
-		if (SPDSettings.quickslotWaterskin()) {
+
+		if (Dungeon.isChallenged(Challenges.X_U_NS_POWER)){
+			Goldarrow goldarrow = new Goldarrow();
+			goldarrow.collect();
+			ScrollOfDebug scrollOfDebug = new ScrollOfDebug();
+			scrollOfDebug.collect();
+
+			new ScrollHolder().collect();
+			Dungeon.LimitedDrops.SCROLL_HOLDER.drop();
+			new MagicalHolster().collect();
+			Dungeon.LimitedDrops.MAGICAL_HOLSTER.drop();
+			new PotionBandolier().collect();
+			Dungeon.LimitedDrops.POTION_BANDOLIER.drop();
+			new FoodPocket().collect();
+			Dungeon.LimitedDrops.FOOD_POCKET.drop();
+
+			new TengusMask().collect();
+			new KingsCrown().collect();
+
+			new PotionOfStrength().quantity(127).identify().collect();
+			new PotionOfExperience().quantity(29).identify().collect();
+			new PotionOfHealing().quantity(127).identify().collect();
+			new ScrollOfUpgrade().quantity(65520).identify().collect();
+
+			Havoc havoc = new Havoc();
+			havoc.Enemieskilled = 55;
+			havoc.identify().collect();
+			new LamellarArmor().upgrade(210).identify().collect();
+			new Windblade().upgrade(105).identify().collect();
+			new Shovel().identify().collect();
+
 			for (int s = 0; s < QuickSlot.SIZE; s++) {
 				if (Dungeon.quickslot.getItem(s) == null) {
-					Dungeon.quickslot.setSlot(s, waterskin);
+					Dungeon.quickslot.setSlot(s, goldarrow);
+					Dungeon.quickslot.setSlot(s+1, scrollOfDebug);
 					break;
 				}
 			}
 		}
-		*/
 	}
 
 	public Badges.Badge masteryBadge() {
@@ -342,6 +349,10 @@ public enum HeroClass {
 		}
 	}
 
+	public static String spritesheetmita(){
+		return Assets.Sprites.MITA;
+	}
+
 	public String splashArt(){
 		switch (this) {
 			case WARRIOR: default:
@@ -362,9 +373,6 @@ public enum HeroClass {
 	public boolean isUnlocked(){
 		//always unlock on debug builds
 		if (DeviceCompat.isDebug()) return true;
-		//if (DeviceCompat.isAndroid()) return true;
-		//if (DeviceCompat.isDesktop()) return true;
-		//if (DeviceCompat.isiOS()) return true;
 
 		switch (this){
 			case WARRIOR: default:

@@ -105,6 +105,10 @@ public class WndUpgrade extends Window {
 			levelTo--;
 		}
 
+		if (toUpgrade instanceof Ring && ((Ring) toUpgrade).powderBonus > 0){
+			levelTo--;
+		}
+
 		boolean curseInfused = (toUpgrade instanceof Weapon && ((Weapon) toUpgrade).curseInfusionBonus)
 				|| (toUpgrade instanceof Armor && ((Armor) toUpgrade).curseInfusionBonus)
 				|| (toUpgrade instanceof Wand && ((Wand) toUpgrade).curseInfusionBonus);
@@ -388,9 +392,12 @@ public class WndUpgrade extends Window {
 			}
 		}
 
-		//warning relating to arcane resin
+		//warning relating to arcane resin & gem powder
 		if (toUpgrade instanceof Wand && ((Wand) toUpgrade).resinBonus > 0){
 			bottom = addMessage(Messages.get(this, "resin"), CharSprite.WARNING, bottom);
+		}
+		if (toUpgrade instanceof Ring && ((Ring) toUpgrade).powderBonus > 0){
+			bottom = addMessage(Messages.get(this, "powder"), CharSprite.WARNING, bottom);
 		}
 
 		// *** Buttons for confirming/cancelling ***

@@ -23,6 +23,8 @@ package com.shatteredpixel.shatteredpixeldungeon.items.bags;
 
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.FrozenCarpaccio;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.MysteryMeat;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
 public class FoodPocket extends Bag {
@@ -30,8 +32,6 @@ public class FoodPocket extends Bag {
     {
         image = ItemSpriteSheet.FOOD_POCKET;
     }
-
-    public static final float POCKET_SATISFY_FACTOR = 1.2f;
 
     @Override
     public boolean canHold( Item item ) {
@@ -44,6 +44,37 @@ public class FoodPocket extends Bag {
 
     public int capacity(){
         return 19;
+    }
+
+    @Override
+    public boolean collect( Bag container ) {
+        if (super.collect( container )) {
+            if (owner != null) {
+                for (Item item : items) {
+                    if (item instanceof FrozenCarpaccio) {
+                        ((FrozenCarpaccio)item).pocket = true;
+                    } else if (item instanceof MysteryMeat){
+                        ((MysteryMeat)item).pocket = true;
+                    }
+                }
+            }
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public void onDetach( ) {
+        super.onDetach();
+        for (Item item : items) {
+            if (item instanceof FrozenCarpaccio) {
+                ((FrozenCarpaccio)item).pocket = false;
+            } else if (item instanceof MysteryMeat){
+                ((MysteryMeat)item).pocket = false;
+
+            }
+        }
     }
 
     @Override
