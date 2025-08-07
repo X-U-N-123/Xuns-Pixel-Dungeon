@@ -48,9 +48,12 @@ public class MazeConnectionRoom extends ConnectionRoom {
 			}
 		
 		for (Door door : connected.values()) {
+
 			WornLock lock = Dungeon.hero.belongings.getItem(WornLock.class);
 			if (lock != null && Random.Float() <= lock.revealHiddenDoorChance()) {
 				door.set( Door.Type.HIDDEN );
+			} else {
+				door.set( Door.Type.UNLOCKED );
 			}
 		}
 	}

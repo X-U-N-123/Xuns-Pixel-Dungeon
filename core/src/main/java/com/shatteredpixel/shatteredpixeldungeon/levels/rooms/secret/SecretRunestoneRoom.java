@@ -83,10 +83,11 @@ public class SecretRunestoneRoom extends SecretRoom {
 		} while (level.map[dropPos] != Terrain.EMPTY_SP);
 		level.drop( new StoneOfEnchantment(), dropPos);
 
-
 		WornLock lock = Dungeon.hero.belongings.getItem(WornLock.class);
 		if (lock != null && Random.Float() <= lock.revealHiddenDoorChance()) {
 			entrance.set( Door.Type.HIDDEN );
+		} else {
+			entrance.set( Door.Type.UNLOCKED );
 		}
 	}
 	

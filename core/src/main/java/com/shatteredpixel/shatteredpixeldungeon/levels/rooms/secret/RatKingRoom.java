@@ -54,9 +54,12 @@ public class RatKingRoom extends SecretRoom {
 		Painter.fill( level, this, 1, Terrain.EMPTY_SP );
 		
 		Door entrance = entrance();
+
 		WornLock lock = Dungeon.hero.belongings.getItem(WornLock.class);
 		if (lock != null && Random.Float() <= lock.revealHiddenDoorChance()) {
 			entrance.set( Door.Type.HIDDEN );
+		} else {
+			entrance.set( Door.Type.UNLOCKED );
 		}
 		int door = entrance.x + entrance.y * level.width();
 		
