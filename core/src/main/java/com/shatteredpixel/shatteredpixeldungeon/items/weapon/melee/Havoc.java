@@ -18,6 +18,8 @@ import com.watabou.utils.Callback;
 
 public class Havoc extends MeleeWeapon {
 
+    public int Enemieskilled = 0;
+
     {
         image = ItemSpriteSheet.Havoc;
         hitSound = Assets.Sounds.HIT_SLASH;
@@ -37,8 +39,6 @@ public class Havoc extends MeleeWeapon {
         return  4 * (tier + 1) +    //10 base, down from 15
                 lvl*(tier + 2); //+4 scaling, up from +3
     }
-
-    public int Enemieskilled = 0;
 
     @Override
     public int proc(Char attacker, Char defender, int damage) {
@@ -129,7 +129,7 @@ public class Havoc extends MeleeWeapon {
     @Override
     public void restoreFromBundle( Bundle bundle ) {
         super.restoreFromBundle( bundle );
-        Enemieskilled = Math.round(bundle.getFloat(ENEMIESKILLED));
+        Enemieskilled = bundle.getInt(ENEMIESKILLED);
     }
 
 }

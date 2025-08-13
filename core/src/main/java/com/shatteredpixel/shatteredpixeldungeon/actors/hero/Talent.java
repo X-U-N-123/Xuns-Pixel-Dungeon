@@ -29,21 +29,24 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ArtifactRecharge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.BrokenArmor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.CounterBuff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedRings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LostInventory;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MonkEnergy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.PhysicalEmpower;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Recharging;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RevealedArea;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Roots;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ScrollEmpower;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.WandEmpower;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MonkEnergy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.ArmorAbility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.Ratmogrify;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.duelist.Challenge;
@@ -72,6 +75,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ShardOfOblivion;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.BladeOfUnreal;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dagger;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
@@ -129,7 +133,7 @@ public enum Talent {
 	//Warlock T3
 	SOUL_EATER(46, 3), SOUL_SIPHON(47, 3), NECROMANCERS_MINIONS(48, 3), CLEAR_YOUR_SOUL(226, 3),MANA_EATING(227, 3),
     //Switcher T3
-    SHARED_UPGRADE(259, 3), SWITCH_MASTER(260, 3), RELAY_CHARGING(261, 3), ENERGY_RECYCLING(262, 3),
+    SHARED_ARCANA(259, 3), SWITCH_MASTER(260, 3), RELAY_RECHARGING(261, 3), ENERGY_RECYCLING(262, 3),
 	//Elemental Blast T4
 	BLAST_RADIUS(49, 4), ELEMENTAL_POWER(50, 4), REACTIVE_BARRIER(51, 4), RECHARGING_BLAST(239, 4),
 	//Wild Magic T4
@@ -147,6 +151,8 @@ public enum Talent {
 	ENHANCED_LETHALITY(75, 3), ASSASSINS_REACH(76, 3), TERRORIST_ATTACK(77, 3), CHARGE_RECYCLING(94, 3), HASHASHINS(95, 3),
 	//Freerunner T3
 	EVASIVE_ARMOR(78, 3), PROJECTILE_MOMENTUM(79, 3), SPEEDY_STEALTH(80, 3), ARCANE_STEP(228, 3), STRETCHING(229, 3),
+	//Ninja T3
+	BLADE_OF_UNREAL(264, 3), HIDDEN_IN_THE_CITY(265, 3), FLYING_LOCUST_STONE(266, 3), STEALTH_LEAP(267, 3), WEAKENING_SNEAK(268, 3),
 	//Smoke Bomb T4
 	HASTY_RETREAT(81, 4), BODY_REPLACEMENT(82, 4), SHADOW_STEP(83, 4), STATIC_SMOKE(242, 4),
 	//Death Mark T4
@@ -214,14 +220,14 @@ public enum Talent {
 		public int icon() { return BuffIndicator.TIME; }
 		public void tintIcon(Image icon) { icon.hardlight(0.15f, 0.2f, 0.5f); }
 		public float iconFadePercent() { return Math.max(0, visualcooldown() / 50); }
-	};
-	public static class LethalMomentumTracker extends FlavourBuff{};
-	public static class StrikingWaveTracker extends FlavourBuff{};
-	public static class WandPreservationCounter extends CounterBuff{{revivePersists = true;}};
+	}
+	public static class LethalMomentumTracker extends FlavourBuff{}
+	public static class StrikingWaveTracker extends FlavourBuff{}
+	public static class WandPreservationCounter extends CounterBuff{{revivePersists = true;}}
 	public static class EmpoweredStrikeTracker extends FlavourBuff{
 		//blast wave on-hit doesn't resolve instantly, so we delay detaching for it
 		public boolean delayedDetach = false;
-	};
+	}
 	public static class ProtectiveShadowsTracker extends Buff {
 		float barrierInc = 0.5f;
 
@@ -321,14 +327,14 @@ public enum Talent {
 		public int icon() { return BuffIndicator.TIME; }
 		public void tintIcon(Image icon) { icon.hardlight(0f, 0.35f, 0.15f); }
 		public float iconFadePercent() { return GameMath.gate(0, visualcooldown() / (15 - 5*Dungeon.hero.pointsInTalent(REJUVENATING_STEPS)), 1); }
-	};
-	public static class RejuvenatingStepsFurrow extends CounterBuff{{revivePersists = true;}};
+	}
+	public static class RejuvenatingStepsFurrow extends CounterBuff{{revivePersists = true;}}
 	public static class SeerShotCooldown extends FlavourBuff{
 		public int icon() { return target.buff(RevealedArea.class) != null ? BuffIndicator.NONE : BuffIndicator.TIME; }
 		public void tintIcon(Image icon) { icon.hardlight(0.7f, 0.4f, 0.7f); }
 		public float iconFadePercent() { return Math.max(0, visualcooldown() / 20); }
-	};
-	public static class SpiritBladesTracker extends FlavourBuff{};
+	}
+	public static class SpiritBladesTracker extends FlavourBuff{}
 	public static class PatientStrikeTracker extends Buff {
 		public int pos;
 		{ type = Buff.buffType.POSITIVE; }
@@ -354,13 +360,13 @@ public enum Talent {
 			super.restoreFromBundle(bundle);
 			pos = bundle.getInt(POS);
 		}
-	};
+	}
 	public static class AggressiveBarrierCooldown extends FlavourBuff{
 		public int icon() { return BuffIndicator.TIME; }
 		public void tintIcon(Image icon) { icon.hardlight(0.35f, 0f, 0.7f); }
 		public float iconFadePercent() { return Math.max(0, visualcooldown() / 25); }
-	};
-	public static class LiquidAgilEVATracker extends FlavourBuff{};
+	}
+	public static class LiquidAgilEVATracker extends FlavourBuff{}
 	public static class LiquidAgilACCTracker extends FlavourBuff{
 		public int uses;
 
@@ -380,17 +386,17 @@ public enum Talent {
 			super.restoreFromBundle(bundle);
 			uses = bundle.getInt(USES);
 		}
-	};
+	}
 	public static class AgileCountATKTracker extends FlavourBuff{
 		public int icon() { return BuffIndicator.INVERT_MARK; }
 		public void tintIcon(Image icon) { icon.hardlight(0.7f, 0f, 0f); }
 		public float iconFadePercent() { return Math.max(0, 1f - (visualcooldown()/3)); }
-	};
+	}
 	public static class LethalHasteCooldown extends FlavourBuff{
 		public int icon() { return BuffIndicator.TIME; }
 		public void tintIcon(Image icon) { icon.hardlight(0.35f, 0f, 0.7f); }
 		public float iconFadePercent() { return Math.max(0, visualcooldown() / 100); }
-	};
+	}
 	public static class SwiftEquipCooldown extends FlavourBuff{
 		public boolean secondUse;
 		public boolean hasSecondUse(){
@@ -415,7 +421,7 @@ public enum Talent {
 			super.restoreFromBundle(bundle);
 			secondUse = bundle.getBoolean(SECOND_USE);
 		}
-	};
+	}
 	public static class MarchForwardTracker extends Buff{
 		{ type = Buff.buffType.POSITIVE; }
 		public int icon() { return BuffIndicator.MOMENTUM; }
@@ -487,7 +493,7 @@ public enum Talent {
 		public int icon() { return BuffIndicator.INVERT_MARK; }
 		public void tintIcon(Image icon) { icon.hardlight(1f, 1f, 0.0f); }
 		public float iconFadePercent() { return Math.max(0, 1f - (visualcooldown() / 5)); }
-	};
+	}
 	public static class VariedChargeTracker extends Buff{
 		public Class weapon;
 
@@ -518,7 +524,7 @@ public enum Talent {
 				Wep = wep;
 				Stack = Math.min(Stack+Dungeon.hero.pointsInTalent(SKILLED_DUAL), 10*Dungeon.hero.pointsInTalent(SKILLED_DUAL));
 				time = 10;
-			};
+			}
 		}
 
 		@Override
@@ -566,7 +572,7 @@ public enum Talent {
 
 	public static class CombinedLethalityAbilityTracker extends FlavourBuff{
 		public MeleeWeapon weapon;
-	};
+	}
 	public static class CombinedEnergyAbilityTracker extends FlavourBuff{
 		public boolean monkAbilused = false;
 		public boolean wepAbilUsed = false;
@@ -715,7 +721,7 @@ public enum Talent {
 				//0.4/0.6 point of tome charge
 				HolyTome tome = hero.belongings.getItem(HolyTome.class);
 				if (tome != null) {
-					tome.directCharge( 0.2f + 0.2f*(+hero.pointsInTalent(TESTED_HOLINESS)));
+					tome.directCharge( 0.2f + 0.2f*(hero.pointsInTalent(TESTED_HOLINESS)));
 					ScrollOfRecharging.charge(hero);
 				}
 			} else {
@@ -821,6 +827,13 @@ public enum Talent {
 				}
 			}
 		}
+		if (talent == BLADE_OF_UNREAL){
+            if (hero.pointsInTalent(talent) == 1) {
+                new BladeOfUnreal().identify().collect();
+            } else if (hero.belongings.getItem(BladeOfUnreal.class) != null) {
+				hero.belongings.getItem(BladeOfUnreal.class).upgrade(true);
+			}
+		}
 
 		//if we happen to have spirit form applied with a ring of might
 		if (talent == SPIRIT_FORM){
@@ -828,8 +841,8 @@ public enum Talent {
 		}
 	}
 
-	public static class CachedRationsDropped extends CounterBuff{{revivePersists = true;}};
-	public static class NatureBerriesDropped extends CounterBuff{{revivePersists = true;}};
+	public static class CachedRationsDropped extends CounterBuff{{revivePersists = true;}}
+	public static class NatureBerriesDropped extends CounterBuff{{revivePersists = true;}}
 
 	public static void onFoodEaten( Hero hero, float foodVal, Item foodSource ){
 		if (hero.hasTalent(HEARTY_MEAL)){
@@ -1111,11 +1124,19 @@ public enum Talent {
 			hero.buff(LingeringMagicTracker.class).detach();
 		}
 
-		if (hero.hasTalent(Talent.SUCKER_PUNCH)
-				&& enemy instanceof Mob && ((Mob) enemy).surprisedBy(hero)
-				&& enemy.buff(SuckerPunchTracker.class) == null){
-			dmg += Random.IntRange(hero.pointsInTalent(Talent.SUCKER_PUNCH) , 2);
-			Buff.affect(enemy, SuckerPunchTracker.class);
+		if (enemy instanceof Mob && ((Mob) enemy).surprisedBy(hero)){
+			if (hero.hasTalent(Talent.SUCKER_PUNCH) && enemy.buff(SuckerPunchTracker.class) == null){
+				dmg += Random.IntRange(hero.pointsInTalent(Talent.SUCKER_PUNCH) , 2);
+				Buff.affect(enemy, SuckerPunchTracker.class);
+			}
+
+			int point = hero.pointsInTalent(WEAKENING_SNEAK);
+			if (point > 0 && enemy.buff(WeakeningSneakTracker.class) == null){
+				Buff.affect(enemy, Blindness.class, 3f);
+				Buff.affect(enemy, WeakeningSneakTracker.class);
+				if (point > 1) Buff.affect(enemy, Vertigo.class, 3f);
+				if (point > 2) Buff.affect(enemy, Cripple.class, 3f);
+			}
 		}
 
 		if (hero.hasTalent(Talent.FOLLOWUP_STRIKE) && enemy.isAlive() && enemy.alignment == Char.Alignment.ENEMY) {
@@ -1192,7 +1213,8 @@ public enum Talent {
 		public void tintIcon(Image icon) { icon.hardlight(1.43f, 1.43f, 0f); }
 		public float iconFadePercent() { return Math.max(0, 1f - (visualcooldown() / 5)); }
 	}
-	public static class SuckerPunchTracker extends Buff{};
+	public static class SuckerPunchTracker extends Buff{}
+	public static class WeakeningSneakTracker extends Buff{}
 	public static class FollowupStrikeTracker extends FlavourBuff{
 		public int object;
 		{ type = Buff.buffType.POSITIVE; }
@@ -1210,7 +1232,7 @@ public enum Talent {
 			super.restoreFromBundle(bundle);
 			object = bundle.getInt(OBJECT);
 		}
-	};
+	}
 
 	public static final int MAX_TALENT_TIERS = 4;
 
@@ -1350,14 +1372,17 @@ public enum Talent {
 			case WARLOCK:
 				Collections.addAll(tierTalents, SOUL_EATER, SOUL_SIPHON, NECROMANCERS_MINIONS, CLEAR_YOUR_SOUL, MANA_EATING);
 				break;
-            case SWITCHER:
-                Collections.addAll(tierTalents, SHARED_UPGRADE, SWITCH_MASTER, RELAY_CHARGING, ENERGY_RECYCLING);
-                break;
+            /*case SWITCHER:
+                Collections.addAll(tierTalents, SHARED_ARCANA, SWITCH_MASTER, RELAY_RECHARGING, ENERGY_RECYCLING);
+                break;*/
 			case ASSASSIN:
 				Collections.addAll(tierTalents, ENHANCED_LETHALITY, ASSASSINS_REACH, TERRORIST_ATTACK, CHARGE_RECYCLING, HASHASHINS);
 				break;
 			case FREERUNNER:
 				Collections.addAll(tierTalents, EVASIVE_ARMOR, PROJECTILE_MOMENTUM, SPEEDY_STEALTH, ARCANE_STEP, STRETCHING);
+				break;
+			case NINJA:
+				Collections.addAll(tierTalents, BLADE_OF_UNREAL, HIDDEN_IN_THE_CITY, FLYING_LOCUST_STONE, STEALTH_LEAP, WEAKENING_SNEAK);
 				break;
 			case SNIPER:
 				Collections.addAll(tierTalents, FARSIGHT, SHARED_ENCHANTMENT, SHARED_UPGRADES, SUPRESSING_MARK, RESONANCE_FETCH);

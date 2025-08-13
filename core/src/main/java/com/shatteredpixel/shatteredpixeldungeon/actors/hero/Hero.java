@@ -43,6 +43,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barkskin;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Berserk;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bless;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.BrokenArmor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Charm;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Combo;
@@ -1520,6 +1522,11 @@ public class Hero extends Char {
 
 		damage = Talent.onAttackProc( this, enemy, damage );
 
+		if (enemy instanceof Mob && ((Mob) enemy).surprisedBy(Dungeon.hero)
+		&& Dungeon.hero.subClass == HeroSubClass.NINJA){
+			Buff.prolong(enemy, BrokenArmor.class, 5f);
+		}
+
 		if (wep != null) {
 			damage = wep.proc( this, enemy, damage );
 		} else {
@@ -1561,7 +1568,7 @@ public class Hero extends Char {
 							}
 
 							if (Dungeon.hero.hasTalent(Talent.SUPRESSING_MARK) && enemy.buff(SupressingmarkTracker.class) == null){
-								Buff.prolong(enemy, Paralysis.class, 1+Dungeon.hero.pointsInTalent(Talent.SUPRESSING_MARK));
+								Buff.prolong(enemy, Blindness.class, 2*Dungeon.hero.pointsInTalent(Talent.SUPRESSING_MARK));
 								Buff.affect(enemy, SupressingmarkTracker.class);
 							}
 						}

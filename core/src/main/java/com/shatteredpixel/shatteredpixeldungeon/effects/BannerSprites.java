@@ -26,14 +26,13 @@ import com.watabou.noosa.Image;
 
 public class BannerSprites {
 
-	public enum  Type {
+	public enum Type {
 		TITLE_PORT,
 		TITLE_GLOW_PORT,
 		TITLE_LAND,
 		TITLE_GLOW_LAND,
 		BOSS_SLAIN,
 		GAME_OVER,
-		SELECT_YOUR_HERO
 	}
 
 	public static Image get( Type type ) {
@@ -52,13 +51,10 @@ public class BannerSprites {
 				icon.frame( icon.texture.uvRect( 240, 100, 480, 164 ) );
 				break;
 			case BOSS_SLAIN:
-				icon.frame( icon.texture.uvRect( 0, 164, 128, 199 ) );
+				icon.frame( icon.texture.uvRect( 0, 164, 127, 232 ) );
 				break;
 			case GAME_OVER:
-				icon.frame( icon.texture.uvRect( 0, 199, 128, 234 ) );
-				break;
-			case SELECT_YOUR_HERO:
-				icon.frame( icon.texture.uvRect( 0, 234, 128, 255 ) );
+				icon.frame( icon.texture.uvRect( 128, 164, 256, 199 ) );
 				break;
 		}//move down 7 pixels
 		return icon;

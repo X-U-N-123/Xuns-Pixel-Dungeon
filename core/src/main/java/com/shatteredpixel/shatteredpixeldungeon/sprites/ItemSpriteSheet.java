@@ -160,6 +160,8 @@ public class ItemSpriteSheet {
 	public static final int WATER_SHOVEL        = MISC_CONSUMABLE +27;
 	public static final int PLANT_SHOVEL        = MISC_CONSUMABLE +28;
 	public static final int CHASM_SHOVEL        = MISC_CONSUMABLE +29;
+	public static final int BLADE_OF_REAL       = MISC_CONSUMABLE +30;
+	public static final int BLADE_OF_UNREAL     = MISC_CONSUMABLE +31;
 	static{
 		assignItemRect(ANKH,            10, 16);
 		assignItemRect(STYLUS,          12, 13);
@@ -197,6 +199,9 @@ public class ItemSpriteSheet {
 		assignItemRect(WATER_SHOVEL,    16, 16);
 		assignItemRect(PLANT_SHOVEL,    16, 16);
 		assignItemRect(CHASM_SHOVEL,    16, 16);
+
+		assignItemRect(BLADE_OF_REAL,   15, 16);
+		assignItemRect(BLADE_OF_UNREAL, 15, 16);
 	}
 	
 	private static final int BOMBS          = xy(1, 4);   //16 slots
@@ -389,7 +394,7 @@ public class ItemSpriteSheet {
 		assignItemRect(Miaoblade,         13, 16);
 		assignItemRect(HeavyFlail,        14, 15);
 		assignItemRect(Lightsword,        15, 15);
-		assignItemRect(DMdrill,           16 ,16);
+		assignItemRect(DMdrill,           16, 16);
 	}
 
 	private static final int WEP_TIER6 = xy(17,  7);   //16 slots
@@ -602,6 +607,7 @@ public class ItemSpriteSheet {
 	public static final int ARTIFACT_TOME       = ARTIFACTS+23;
 	public static final int ARTIFACT_TOOLKIT2   = ARTIFACTS+24;
 	public static final int ARTIFACT_TOOLKIT1   = ARTIFACTS+25;
+	public static final int ARTIFACT_MASK       = ARTIFACTS+26;
 	static{
 		assignItemRect(ARTIFACT_CLOAK,      9,  15);
 		assignItemRect(ARTIFACT_ARMBAND,    16, 13);
@@ -629,6 +635,7 @@ public class ItemSpriteSheet {
 		assignItemRect(ARTIFACT_TOME,       14, 16);
 		assignItemRect(ARTIFACT_TOOLKIT2,   15, 13);
 		assignItemRect(ARTIFACT_TOOLKIT1,   15, 13);
+		assignItemRect(ARTIFACT_MASK,       13, 13);
 	}
 
 	private static final int TRINKETS       = xy(1, 12);  //32 slots

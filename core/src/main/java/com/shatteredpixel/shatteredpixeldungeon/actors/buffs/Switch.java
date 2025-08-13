@@ -21,8 +21,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 
+import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
-import com.watabou.noosa.Image;
 
 public class Switch extends FlavourBuff{
 
@@ -30,16 +30,21 @@ public class Switch extends FlavourBuff{
         type = buffType.POSITIVE;
     }
 
+    public boolean staffUsed = false;
+    public boolean wandUsed = false;
+    public int level = 2;
+
     public static final float DURATION = 5f;
 
     @Override
-    public int icon() {
-        return BuffIndicator.WAND;
+    public void detach() {
+        super.detach();
+        Item.updateQuickslot();
     }
 
     @Override
-    public void tintIcon(Image icon) {
-        icon.hardlight(0.84f, 0.79f, 0.65f); //scroll colors
+    public int icon() {
+        return BuffIndicator.SWITCH;
     }
 
 }

@@ -32,6 +32,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RoundShield;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
+import com.watabou.utils.Random;
 
 public class Invisibility extends FlavourBuff {
 
@@ -88,6 +89,8 @@ public class Invisibility extends FlavourBuff {
 	}
 
 	public static void dispel(Char ch){
+
+		if (Random.Float() <= 0.1f*Dungeon.hero.pointsInTalent(Talent.HIDDEN_IN_THE_CITY) && ch == Dungeon.hero) return;
 
 		for ( Buff invis : ch.buffs( Invisibility.class )){
 			invis.detach();

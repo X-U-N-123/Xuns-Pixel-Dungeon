@@ -68,7 +68,7 @@ import java.util.ArrayList;
 public class ElementalMask extends Artifact {//will replace Ring of Elements
 
     {
-        image = ItemSpriteSheet.ARTIFACT_HOLDER;//Is there anyone willing to draw its sprite for me?
+        image = ItemSpriteSheet.ARTIFACT_MASK;
 
         levelCap = 5;
 

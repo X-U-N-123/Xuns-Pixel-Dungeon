@@ -116,7 +116,7 @@ public class Goldarrow extends Item {
         if (action.equals(AC_GOTO)){
             GameScene.selectCell(new CellSelector.Listener() {
                 @Override public String prompt() {
-                    return Messages.get(this, "where");
+                    return Messages.get(Goldarrow.class, "where");
                 }
                 @Override public void onSelect(Integer cell) {
                     if (cell == null)return;

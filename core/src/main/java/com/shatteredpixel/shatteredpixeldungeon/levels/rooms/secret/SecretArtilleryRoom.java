@@ -55,9 +55,9 @@ public class SecretArtilleryRoom extends SecretRoom {
 
 		WornLock lock = Dungeon.hero.belongings.getItem(WornLock.class);
 		if (lock != null && Random.Float() <= lock.revealHiddenDoorChance()) {
-			entrance().set( Door.Type.HIDDEN );
-		} else {
 			entrance().set( Door.Type.UNLOCKED );
+		} else {
+			entrance().set( Door.Type.HIDDEN );
 		}
 	}
 }

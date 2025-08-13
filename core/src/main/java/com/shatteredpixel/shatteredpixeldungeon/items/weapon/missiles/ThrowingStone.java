@@ -22,6 +22,10 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
 public class ThrowingStone extends MissileWeapon {
@@ -37,9 +41,29 @@ public class ThrowingStone extends MissileWeapon {
 		baseUses = 5;
 		sticky = false;
 	}
-	
+
 	@Override
-	public int value() {
-		return super.value()/2; //half normal value
+	public int damageRoll(Char owner) {
+		if (owner instanceof Hero) {
+			Hero hero = (Hero)owner;
+			Char enemy = hero.attackTarget();
+			if (enemy instanceof Mob && ((Hero) owner).pointsInTalent(Talent.FLYING_LOCUST_STONE) > 1) {
+				//deals max on surprise, instead of min to max.
+				int damage = augment.damageFactor(max());
+				int exStr = hero.STR() - STRReq();
+				if (exStr > 0) {
+					if (((Hero) owner).pointsInTalent(Talent.FLYING_LOCUST_STONE) > 1) damage += exStr;
+					else damage += Hero.heroDamageIntRange(0, exStr);
+				}
+				return damage;
+			}
+		}
+		return super.damageRoll(owner);
+	}
+
+	@Override
+	public float delayFactor(Char owner) {
+		if (owner instanceof Hero && ((Hero) owner).justMoved && ((Hero) owner).pointsInTalent(Talent.FLYING_LOCUST_STONE) > 2) return 0;
+		else                                                    return super.delayFactor(owner);
 	}
 }

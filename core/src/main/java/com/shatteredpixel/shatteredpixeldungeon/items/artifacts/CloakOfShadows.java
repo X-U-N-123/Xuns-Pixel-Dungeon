@@ -21,7 +21,6 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.artifacts;
 
-
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -32,18 +31,29 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Regeneration;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
+import com.shatteredpixel.shatteredpixeldungeon.items.Goldarrow;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfEnergy;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.shatteredpixel.shatteredpixeldungeon.ui.ActionIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
+import com.shatteredpixel.shatteredpixeldungeon.ui.HeroIcon;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.watabou.noosa.BitmapText;
 import com.watabou.noosa.Image;
+import com.watabou.noosa.Visual;
 import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.BArray;
 import com.watabou.utils.Bundle;
+import com.watabou.utils.PathFinder;
 
 import java.util.ArrayList;
 
@@ -227,7 +237,7 @@ public class CloakOfShadows extends Artifact {
 		return 0;
 	}
 
-	public class cloakRecharge extends ArtifactBuff{
+	public class cloakRecharge extends ArtifactBuff implements ActionIndicator.Action {
 		@Override
 		public boolean act() {
 			if (charge < chargeCap && !cursed && target.buff(MagicImmune.class) == null) {
@@ -264,9 +274,98 @@ public class CloakOfShadows extends Artifact {
 
 			updateQuickslot();
 
+			if (Dungeon.hero.subClass == HeroSubClass.NINJA){
+				ActionIndicator.setAction(this);
+			}
+
 			spend( TICK );
 
 			return true;
+		}
+
+		@Override
+		public void restoreFromBundle(Bundle bundle) {
+			super.restoreFromBundle(bundle);
+			if (Dungeon.hero.subClass == HeroSubClass.NINJA){
+				ActionIndicator.setAction(this);
+			}
+		}
+
+		@Override
+		public String actionName() {
+			return Messages.get(this, "action_name");
+		}
+
+		@Override
+		public int actionIcon() {
+			return HeroIcon.NINJA_TELEPORT;
+		}
+
+		@Override
+		public Visual secondaryVisual() {
+			BitmapText txt = new BitmapText(PixelScene.pixelFont);
+			txt.text( String.valueOf((int)Math.floor((charge + partialCharge)
+				/ (0.8f - 0.1f * Dungeon.hero.pointsInTalent(Talent.STEALTH_LEAP)))));
+			txt.hardlight(CharSprite.POSITIVE);
+			txt.measure();
+			return txt;
+		}
+
+		@Override
+		public int indicatorColor(){
+			return 0x26058B;
+		}
+
+		@Override
+		public void doAction() {
+			GameScene.selectCell(new CellSelector.Listener() {
+				@Override public String prompt() {
+					return Messages.get(Goldarrow.class, "where");
+				}
+
+				@Override public void onSelect(Integer cell) {
+					if (cell == null)return;
+
+					float perBlockChargeUse = 0.8f - 0.1f * Dungeon.hero.pointsInTalent(Talent.STEALTH_LEAP);
+
+					if (!Dungeon.level.passable[cell] || !Dungeon.level.heroFOV[cell]
+					|| Dungeon.level.distance(Dungeon.hero.pos, cell) > Math.floor((charge + partialCharge) / perBlockChargeUse)) {
+						GLog.w(Messages.get(this, "reach"));
+						return;
+					}
+					int oldPos = Dungeon.hero.pos;
+
+					if (ScrollOfTeleportation.teleportToLocation(Dungeon.hero, cell)){
+						PathFinder.buildDistanceMap(oldPos, BArray.or(Dungeon.level.passable, Dungeon.level.avoid, null));
+						partialCharge -= PathFinder.distance[Dungeon.hero.pos] * perBlockChargeUse;
+						do {
+							partialCharge++;
+							charge--;
+							//target hero level is 1 + 2*cloak level
+							int lvlDiffFromTarget = ((Hero) target).lvl - (1+level()*2);
+							//plus an extra one for each level after 6
+							if (level() >= 7){
+								lvlDiffFromTarget -= level()-6;
+							}
+							if (lvlDiffFromTarget >= 0){
+								exp += Math.round(10f * Math.pow(1.1f, lvlDiffFromTarget));
+							} else {
+								exp += Math.round(10f * Math.pow(0.75f, -lvlDiffFromTarget));
+							}
+
+							if (exp >= (level() + 1) * 50 && level() < levelCap) {
+								upgrade();
+								Catalog.countUse(CloakOfShadows.class);
+								exp -= level() * 50;
+								GLog.p(Messages.get(CloakOfShadows.cloakStealth.class, "levelup"));
+
+							}
+						} while (partialCharge < 0);
+						updateQuickslot();
+						Dungeon.hero.checkVisibleMobs();
+					}
+				}
+			});
 		}
 
 	}

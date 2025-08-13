@@ -316,6 +316,10 @@ public class MagesStaff extends MeleeWeapon {
 		return wand != null ? wand.getClass() : null;
 	}
 
+	public Wand wand(){
+		return wand != null ? wand : null;
+	}
+
 	@Override
 	public Item upgrade(boolean enchant) {
 		super.upgrade( enchant );

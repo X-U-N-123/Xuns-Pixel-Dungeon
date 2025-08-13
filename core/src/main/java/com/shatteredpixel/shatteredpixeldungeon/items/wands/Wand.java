@@ -39,6 +39,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Recharging;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Regeneration;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ScrollEmpower;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.SoulMark;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Switch;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
@@ -430,6 +431,15 @@ public abstract class Wand extends Item {
 			if (buff != null && buff.level() > lvl){
 				return buff.level();
 			}
+
+			Switch buff1 = charger.target.buff(Switch.class);
+			int maxLvl = 2147483647;
+			if (Dungeon.hero.belongings.getItem(MagesStaff.class) != null){
+				maxLvl = Dungeon.hero.belongings.getItem(MagesStaff.class).level();
+			}
+			if (buff1 != null){
+				lvl = Math.min(lvl + buff1.level, maxLvl);
+			}
 		}
 		return lvl;
 	}
@@ -486,6 +496,7 @@ public abstract class Wand extends Item {
 			}
 		}
 
+		boolean isSwitched = false;
 		//inside staff
 		if (charger != null && charger.target == Dungeon.hero && !Dungeon.hero.belongings.contains(this)){
 			if (Dungeon.hero.hasTalent(Talent.EXCESS_CHARGE) && curCharges >= maxCharges){
@@ -493,6 +504,11 @@ public abstract class Wand extends Item {
 				Buff.affect(Dungeon.hero, Barrier.class).setShield(shieldToGive);
 				Dungeon.hero.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(shieldToGive), FloatingText.SHIELDING);
 			}
+
+			/*if (Dungeon.hero.subClass == HeroSubClass.SWITCHER) {
+				Buff.affect(Dungeon.hero, Switch.class, Switch.DURATION).staffUsed = true;
+				Dungeon.hero.buff(Switch.class).level = 2 + Dungeon.hero.pointsInTalent(Talent.SHARED_ARCANA);
+			}*/
 		}
 		
 		curCharges -= cursed ? 1 : chargesPerCast();
@@ -518,6 +534,9 @@ public abstract class Wand extends Item {
 				&& !Dungeon.hero.belongings.contains(this)){
 
 			Buff.prolong(Dungeon.hero, Talent.EmpoweredStrikeTracker.class, 10f);
+		} else if (Dungeon.hero.buff(Switch.class) != null){
+			Dungeon.hero.buff(Switch.class).detach();
+			isSwitched = true;
 		}
 
 		if (Dungeon.hero.hasTalent(Talent.LINGERING_MAGIC)
@@ -549,7 +568,8 @@ public abstract class Wand extends Item {
 		Invisibility.dispel();
 		updateQuickslot();
 
-		curUser.spendAndNext( TIME_TO_ZAP );
+		if (!isSwitched) curUser.spendAndNext( TIME_TO_ZAP );
+		else             curUser.spendAndNext(TIME_TO_ZAP/2);
 	}
 	
 	@Override
@@ -871,6 +891,14 @@ public abstract class Wand extends Item {
 			if (Dungeon.hero.hasTalent(Talent.POWER_ACCUMULATION) && Dungeon.hero.heroClass != HeroClass.DUELIST){
 				turnsToCharge /= 1f + 0.07f*Dungeon.hero.pointsInTalent(Talent.POWER_ACCUMULATION);
 			}
+
+			for (Wand wand :Dungeon.hero.belongings.getAllItems(Wand.class)){
+				if (wand.curCharges >= wand.maxCharges) turnsToCharge /= 1f + 0.04f * Dungeon.hero.pointsInTalent(Talent.RELAY_RECHARGING);
+			}
+
+			MagesStaff staff = Dungeon.hero.belongings.getItem(MagesStaff.class);
+			if (staff != null && staff.wand() != null && staff.wand().curCharges >= staff.wand().maxCharges)
+				turnsToCharge /= 1f + 0.04f * Dungeon.hero.pointsInTalent(Talent.RELAY_RECHARGING);
 
 			if (charger.target instanceof Hero && ((Hero)charger.target).hasTalent(Talent.ARCANE_STEP)
 					&& charger.target.buff(Momentum.class)!=null && charger.target.buff(Momentum.class).freerunning()){
