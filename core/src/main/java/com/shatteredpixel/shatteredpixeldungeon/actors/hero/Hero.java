@@ -751,8 +751,8 @@ public class Hero extends Char {
 
 		if (hasTalent(Talent.JUNGLE_GUERRILLA) &&
 		(Dungeon.level.map[pos] == Terrain.GRASS
-		|| Dungeon.level.map[pos] == Terrain.HIGH_GRASS)
-		|| Dungeon.level.map[pos] == Terrain.FURROWED_GRASS) {
+		|| Dungeon.level.map[pos] == Terrain.HIGH_GRASS
+		|| Dungeon.level.map[pos] == Terrain.FURROWED_GRASS)) {
 			speed *= 1.15f;
 		}
 

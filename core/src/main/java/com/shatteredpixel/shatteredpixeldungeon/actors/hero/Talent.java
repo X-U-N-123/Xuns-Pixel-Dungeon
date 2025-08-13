@@ -827,11 +827,10 @@ public enum Talent {
 				}
 			}
 		}
-		if (talent == BLADE_OF_UNREAL){
-            if (hero.pointsInTalent(talent) == 1) {
-                new BladeOfUnreal().identify().collect();
-            } else if (hero.belongings.getItem(BladeOfUnreal.class) != null) {
-				hero.belongings.getItem(BladeOfUnreal.class).upgrade(true);
+		if (talent == BLADE_OF_UNREAL && hero.pointsInTalent(talent) == 1){
+            Item toGive = new BladeOfUnreal().identify();
+			if (!toGive.collect()){
+				Dungeon.level.drop(toGive, hero.pos).sprite.drop();
 			}
 		}
 
