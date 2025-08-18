@@ -910,4 +910,9 @@ public class Armor extends EquipableItem {
 		}
 		
 	}
+
+	@Override
+	public float weight(){
+		return STRReq() / 10f;
+	}
 }

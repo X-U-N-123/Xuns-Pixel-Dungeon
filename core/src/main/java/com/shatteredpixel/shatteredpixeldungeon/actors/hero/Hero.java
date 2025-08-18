@@ -69,6 +69,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.SnipersMark;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.TimeStasis;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.ArmorAbility;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.Ratmogrify;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.cleric.AscendedForm;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.duelist.Challenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.duelist.ElementalStrike;
@@ -113,6 +114,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.MasterThievesArm
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TalismanOfForesight;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.MagicalHolster;
+import com.shatteredpixel.shatteredpixeldungeon.items.devShield;
 import com.shatteredpixel.shatteredpixeldungeon.items.journal.Guidebook;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.CrystalKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.GoldenKey;
@@ -173,6 +175,7 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSprite;
+import com.shatteredpixel.shatteredpixeldungeon.ui.ActionIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.AttackIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.QuickSlotButton;
@@ -349,6 +352,11 @@ public class Hero extends Char {
 		STR = bundle.getInt( STRENGTH );
 
 		belongings.restoreFromBundle( bundle );
+
+		CloakOfShadows.cloakRecharge teleport = buff(CloakOfShadows.cloakRecharge.class);
+		if (subClass == HeroSubClass.NINJA && teleport != null){
+			ActionIndicator.setAction(teleport);
+		}
 	}
 	
 	public static void preview( GamesInProgress.Info info, Bundle bundle ) {
@@ -510,6 +518,17 @@ public class Hero extends Char {
 		float accuracy = 1;
 		accuracy *= RingOfAccuracy.accuracyMultiplier( this );
 
+		float weight = 0;
+		if (!belongings.lostInventory()) {
+			for (Item i : belongings.backpack.items) {
+				weight += i.weight();
+			}
+		}
+
+		if (weight > STR() + 0.001f && Dungeon.isChallenged(Challenges.HEAVY_BURDEN)){
+			accuracy *= 1 + (STR() - weight) * 0.25f;
+		}
+
 		//precise assault and liquid agility
 		if (!(wep instanceof MissileWeapon)) {
 			if ((hasTalent(Talent.PRECISE_ASSAULT) || hasTalent(Talent.LIQUID_AGILITY))
@@ -584,6 +603,17 @@ public class Hero extends Char {
 		
 		evasion *= RingOfEvasion.evasionMultiplier( this );
 
+		float weight = 0;
+		if (!belongings.lostInventory()) {
+			for (Item i : belongings.backpack.items) {
+				weight += i.weight();
+			}
+		}
+
+		if (weight > STR() + 0.001f && Dungeon.isChallenged(Challenges.HEAVY_BURDEN)){
+			evasion *= 1 + (STR() - weight) * 0.25f;
+		}
+
 		if (buff(Talent.LiquidAgilEVATracker.class) != null){
 			if (pointsInTalent(Talent.LIQUID_AGILITY) == 1){
 				evasion *= 3f;
@@ -652,10 +682,15 @@ public class Hero extends Char {
 			if (armDr > 0) dr += armDr;
 		}
 
-		if (hasTalent(Talent.ARMOR_SEIZING)){
-			dr += Math.round(TargetHealthIndicator.instance.target().drRoll()
-			* AscensionChallenge.statModifier(TargetHealthIndicator.instance.target())
-			* pointsInTalent(Talent.ARMOR_SEIZING) / 3f);
+		Char target = TargetHealthIndicator.instance.target();
+
+		if (hasTalent(Talent.ARMOR_SEIZING) && target != null){
+			if (!(target instanceof Ratmogrify.TransmogRat)
+			|| ((Ratmogrify.TransmogRat) target).getOriginal() != null){
+				dr += Math.round(TargetHealthIndicator.instance.target().drRoll()
+				* AscensionChallenge.statModifier(TargetHealthIndicator.instance.target())
+				* pointsInTalent(Talent.ARMOR_SEIZING) / 3f);
+			}
 		}
 
 		if (buff(MonkEnergy.MonkAbility.UnarmedAbilityTracker.class) != null){
@@ -734,6 +769,20 @@ public class Hero extends Char {
 		
 		if (belongings.armor() != null) {
 			speed = belongings.armor().speedFactor(this, speed);
+		}
+
+		float weight = 0;
+		if (!belongings.lostInventory()) {
+			for (Item i : belongings.backpack.items) {
+				weight += i.weight();
+			}
+		}
+
+		if (weight > STR() + 0.001f && Dungeon.isChallenged(Challenges.HEAVY_BURDEN)){
+			speed *= 1 + (STR() - weight) * 0.25f;
+			if (speed < 0.25f){
+				speed = 0.25f;
+			}
 		}
 		
 		Momentum momentum = buff(Momentum.class);
@@ -1676,16 +1725,22 @@ public class Hero extends Char {
 
 		dmg = Math.round(damage);
 
-		//we ceil this one to avoid letting the player easily take 0 dmg from tenacity early
-		//向下取整，作为对韧性戒指的加强
-		dmg = (int)Math.floor(dmg * RingOfTenacity.damageMultiplier( this ));
-
 		if (buff(Talent.HashashinsTracker.class) != null){
 			buff(Talent.HashashinsTracker.class).hurt(dmg);
 		}
 
+		//we ceil this one to avoid letting the player easily take 0 dmg from tenacity early
+		//向下取整，作为对韧性戒指的加强
+		dmg = (int)Math.floor(dmg * RingOfTenacity.damageMultiplier( this ));
+
 		int preHP = HP + shielding();
 		if (src instanceof Hunger) preHP -= shielding();
+
+		if (buff(devShield.devShieldBuff.class) != null) {
+			sprite.showStatusWithIcon(0x2222FF, String.valueOf(dmg), FloatingText.devSHIELD);
+			return;
+		}
+
 		super.damage( dmg, src );
 		int postHP = HP + shielding();
 		if (src instanceof Hunger) postHP -= shielding();

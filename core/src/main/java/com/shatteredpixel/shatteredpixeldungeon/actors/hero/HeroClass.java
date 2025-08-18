@@ -60,6 +60,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.bags.MagicalHolster;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.PotionBandolier;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.ScrollHolder;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.VelvetPouch;
+import com.shatteredpixel.shatteredpixeldungeon.items.devShield;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfExperience;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
@@ -83,7 +84,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Gloves;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Havoc;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Rapier;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Shovel;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Windblade;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WornShortsword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingKnife;
@@ -158,6 +158,8 @@ public enum HeroClass {
 			goldarrow.collect();
 			ScrollOfDebug scrollOfDebug = new ScrollOfDebug();
 			scrollOfDebug.collect();
+			devShield devshield = new devShield();
+			devshield.collect();
 
 			new ScrollHolder().collect();
 			Dungeon.LimitedDrops.SCROLL_HOLDER.drop();
@@ -171,9 +173,8 @@ public enum HeroClass {
 			new TengusMask().collect();
 			new KingsCrown().collect();
 
-			new PotionOfStrength().quantity(127).identify().collect();
+			new PotionOfStrength().quantity(10).identify().collect();
 			new PotionOfExperience().quantity(29).identify().collect();
-			new PotionOfHealing().quantity(127).identify().collect();
 			new ScrollOfUpgrade().quantity(65520).identify().collect();
 
 			Havoc havoc = new Havoc();
@@ -181,12 +182,12 @@ public enum HeroClass {
 			havoc.identify().collect();
 			new LamellarArmor().upgrade(210).identify().collect();
 			new Windblade().upgrade(105).identify().collect();
-			new Shovel().identify().collect();
 
 			for (int s = 0; s < QuickSlot.SIZE; s++) {
 				if (Dungeon.quickslot.getItem(s) == null) {
 					Dungeon.quickslot.setSlot(s, goldarrow);
 					Dungeon.quickslot.setSlot(s+1, scrollOfDebug);
+					Dungeon.quickslot.setSlot(s+2, devshield);
 					break;
 				}
 			}

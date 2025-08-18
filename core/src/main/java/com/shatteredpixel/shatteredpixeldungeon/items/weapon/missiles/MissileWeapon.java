@@ -540,4 +540,9 @@ abstract public class MissileWeapon extends Weapon {
 			return "";
 		}
 	}
+
+	@Override
+	public float weight(){
+		return STRReq() * quantity() / 20f;
+	}
 }

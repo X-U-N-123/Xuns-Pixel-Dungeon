@@ -657,4 +657,9 @@ abstract public class Weapon extends KindOfWeapon {
 		}
 		
 	}
+
+	@Override
+	public float weight(){
+		return STRReq() / 10f;
+	}
 }

@@ -31,6 +31,11 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Foresight;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicalSight;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MindVision;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Blacksmith;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Ghost;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Imp;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Wandmaker;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfFeatherFall;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
@@ -50,6 +55,9 @@ public class Goldarrow extends Item {
     String AC_RETURN = "return";
     String AC_AWARE = "aware";
     String AC_GOTO = "goto";
+    String AC_RESET = "reset";
+
+    public static int questDepth;
 
     {
         defaultAction = AC_GOTO;
@@ -66,6 +74,7 @@ public class Goldarrow extends Item {
         actions.add(AC_RETURN);
         actions.add(AC_AWARE);
         actions.add(AC_GOTO);
+        actions.add(AC_RESET);
         return actions;
     }
 
@@ -74,7 +83,7 @@ public class Goldarrow extends Item {
 
         super.execute(hero, action);
         if (action.equals(AC_TELEPORT)) {
-            Buff.affect(hero, ElixirOfFeatherFall.FeatherBuff.class, 2f);
+            Buff.affect(hero, ElixirOfFeatherFall.FeatherBuff.class, 10f);
             Chasm.heroFall(hero.pos);
             defaultAction = AC_TELEPORT;
         }
@@ -126,6 +135,44 @@ public class Goldarrow extends Item {
                 }
             });
             defaultAction = AC_GOTO;
+        }
+        if (action.contains(AC_RESET)){
+            switch (Dungeon.depth){
+                case 2: case 3: case 4:
+                    for (Mob m: Dungeon.level.mobs){
+                        if (m instanceof Ghost) {
+                            questDepth = Dungeon.depth;
+                            Ghost.Quest.reset();
+                        }
+                    }
+                    break;
+                case 7: case 8: case 9:
+                    for (Mob m: Dungeon.level.mobs){
+                        if (m instanceof Wandmaker) {
+                            questDepth = Dungeon.depth;
+                            Wandmaker.Quest.reset();
+                        }
+                    }
+                    break;
+                case 12: case 13: case 14:
+                    for (Mob m: Dungeon.level.mobs){
+                        if (m instanceof Blacksmith) {
+                            questDepth = Dungeon.depth;
+                            Blacksmith.Quest.reset();
+                        }
+                    }
+                    break;
+                case 17: case 18: case 19:
+                    for (Mob m: Dungeon.level.mobs){
+                        if (m instanceof Imp) {
+                            questDepth = Dungeon.depth;
+                            Imp.Quest.reset();
+                        }
+                    }
+                    break;
+            }
+            InterlevelScene.mode = InterlevelScene.Mode.RESET;
+            Game.switchScene(InterlevelScene.class);
         }
         GameScene.updateFog();
     }

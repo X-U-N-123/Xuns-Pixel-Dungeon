@@ -284,16 +284,8 @@ public class CloakOfShadows extends Artifact {
 		}
 
 		@Override
-		public void restoreFromBundle(Bundle bundle) {
-			super.restoreFromBundle(bundle);
-			if (Dungeon.hero.subClass == HeroSubClass.NINJA){
-				ActionIndicator.setAction(this);
-			}
-		}
-
-		@Override
 		public String actionName() {
-			return Messages.get(this, "action_name");
+			return Messages.get(cloakStealth.class, "name");
 		}
 
 		@Override
@@ -304,7 +296,7 @@ public class CloakOfShadows extends Artifact {
 		@Override
 		public Visual secondaryVisual() {
 			BitmapText txt = new BitmapText(PixelScene.pixelFont);
-			txt.text( String.valueOf((int)Math.floor((charge + partialCharge)
+			txt.text(String.valueOf((int)Math.floor((charge + partialCharge)
 				/ (0.8f - 0.1f * Dungeon.hero.pointsInTalent(Talent.STEALTH_LEAP)))));
 			txt.hardlight(CharSprite.POSITIVE);
 			txt.measure();
@@ -338,7 +330,7 @@ public class CloakOfShadows extends Artifact {
 					if (ScrollOfTeleportation.teleportToLocation(Dungeon.hero, cell)){
 						PathFinder.buildDistanceMap(oldPos, BArray.or(Dungeon.level.passable, Dungeon.level.avoid, null));
 						partialCharge -= PathFinder.distance[Dungeon.hero.pos] * perBlockChargeUse;
-						do {
+						while (partialCharge < 0) {
 							partialCharge++;
 							charge--;
 							//target hero level is 1 + 2*cloak level
@@ -360,8 +352,9 @@ public class CloakOfShadows extends Artifact {
 								GLog.p(Messages.get(CloakOfShadows.cloakStealth.class, "levelup"));
 
 							}
-						} while (partialCharge < 0);
+						}
 						updateQuickslot();
+						ActionIndicator.refresh();
 						Dungeon.hero.checkVisibleMobs();
 					}
 				}

@@ -85,6 +85,8 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.shatteredpixel.shatteredpixeldungeon.ui.ActionIndicator;
+import com.shatteredpixel.shatteredpixeldungeon.ui.AttackIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.Image;
@@ -827,11 +829,20 @@ public enum Talent {
 				}
 			}
 		}
-		if (talent == BLADE_OF_UNREAL && hero.pointsInTalent(talent) == 1){
-            Item toGive = new BladeOfUnreal().identify();
-			if (!toGive.collect()){
-				Dungeon.level.drop(toGive, hero.pos).sprite.drop();
+
+		if (talent == BLADE_OF_UNREAL){
+			if (hero.pointsInTalent(talent) == 1){
+	            Item toGive = new BladeOfUnreal().identify();
+				if (!toGive.collect()){
+					Dungeon.level.drop(toGive, hero.pos).sprite.drop();
+				}
+			} else if (hero.pointsInTalent(talent) == 3) {
+				AttackIndicator.updateState();
 			}
+		}
+
+		if (talent == STEALTH_LEAP){
+			ActionIndicator.refresh();
 		}
 
 		//if we happen to have spirit form applied with a ring of might

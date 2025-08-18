@@ -504,4 +504,9 @@ public class Ring extends KindofMisc {
 			return Messages.get(this, "unknown_desc");
 		}
 	}
+
+	@Override
+	public float weight(){
+		return 0.3f;
+	}
 }

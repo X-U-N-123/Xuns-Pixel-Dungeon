@@ -224,7 +224,7 @@ public abstract class Plant implements Bundlable {
 				Statistics.foodEaten++;
 				Badges.validateFoodEaten();
 
-				Talent.onFoodEaten(hero, Hunger.HUNGRY/3f, this);
+				Talent.onFoodEaten(hero, Hunger.HUNGRY/2f, this);
 				if ((Dungeon.hero.pointsInTalent(Talent.GRASSMAN)) > 1) {
 					if (this instanceof Icecap.Seed){
 						Buff.affect(Dungeon.hero, FrostImbue.class, FrostImbue.DURATION*0.3f);

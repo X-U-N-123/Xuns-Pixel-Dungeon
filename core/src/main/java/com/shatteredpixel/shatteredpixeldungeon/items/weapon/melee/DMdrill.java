@@ -51,11 +51,21 @@ public class DMdrill extends MeleeWeapon {
     @Override
     public int proc(Char attacker, Char defender, int damage) {
         Buff.affect(attacker, DMcombo.class).hit(3 + level());
-        if (attacker.buff(DMcombo.class)!=null){
-            ACC = (float)Math.pow(1.1f, attacker.buff(DMcombo.class).Getcount());
-            damage = (int)(damage*Math.pow(1.1f, attacker.buff(DMcombo.class).Getcount()));
+        DMcombo dmcombo = attacker.buff(DMcombo.class);
+        if (dmcombo != null){
+            damage = (int)(damage * Math.pow(1.1f, attacker.buff(DMcombo.class).Getcount()));
         }
         return super.proc( attacker, defender, damage );
+    }
+
+    @Override
+    public float accuracyFactor(Char owner, Char target) {
+        DMcombo dmcombo = owner.buff(DMcombo.class);
+        if (dmcombo != null) {
+            return (float)Math.pow(1.1f, dmcombo.Getcount());
+        } else {
+            return super.accuracyFactor(owner, target);
+        }
     }
 
     @Override

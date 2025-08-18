@@ -1201,7 +1201,8 @@ public abstract class Char extends Actor {
 		if (Dungeon.hero.buff(Talent.RejuvenatingStepsFurrow.class) != null && Dungeon.hero.buff(Talent.RejuvenatingStepsFurrow.class).count() >= 200){
 			Level.set(Pos, Terrain.FURROWED_GRASS);
 		} else {
-			Level.set(Pos, Terrain.HIGH_GRASS);Buff.count(hero, Talent.RejuvenatingStepsFurrow.class, 4 - Dungeon.hero.pointsInTalent(Talent.ORGANIC_FERTILIZER));
+			Level.set(Pos, Terrain.HIGH_GRASS);
+			Buff.count(hero, Talent.RejuvenatingStepsFurrow.class, 4 - Dungeon.hero.pointsInTalent(Talent.ORGANIC_FERTILIZER));
 		}
 	}
 

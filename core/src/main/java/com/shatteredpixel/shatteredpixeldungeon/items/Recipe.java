@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items;
 
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Blandfruit;
@@ -52,6 +53,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.spells.Alchemize;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.BeaconOfReturning;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.CurseInfusion;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.MagicalInfusion;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.MagicalTran;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.PhaseShift;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.ReclaimTrap;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Recycle;
@@ -198,6 +200,7 @@ public abstract class Recipe {
 		new BeaconOfReturning.Recipe(),
 		new PhaseShift.Recipe(),
 		new Recycle.Recipe(),
+		new MagicalTran.Recipe(),
 		new TelekineticGrab.Recipe(),
 		new SummonElemental.Recipe(),
 		new StewedMeat.oneMeat(),
@@ -264,8 +267,9 @@ public abstract class Recipe {
 	
 	public static boolean usableInRecipe(Item item){
 		if (item instanceof EquipableItem){
-			//only thrown weapons and wands allowed among equipment items
-			return item.isIdentified() && !item.cursed && ((item instanceof MissileWeapon && !(item instanceof Antimatter))|| item instanceof Ring);
+			//only thrown weapons(except antimatter), wands and unequipped rings allowed among equipment items
+			return item.isIdentified() && !item.cursed && ((item instanceof MissileWeapon && !(item instanceof Antimatter))
+			|| (item instanceof Ring && item != Dungeon.hero.belongings.ring && item != Dungeon.hero.belongings.misc));
 		} else if (item instanceof Wand) {
 			return item.isIdentified() && !item.cursed;
 		} else {

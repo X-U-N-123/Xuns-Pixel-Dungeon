@@ -195,7 +195,7 @@ public class ScrollOfTransmutation extends InventoryScroll {
 		}
 	}
 	
-	private static MagesStaff changeStaff( MagesStaff staff ){
+	public static MagesStaff changeStaff( MagesStaff staff ){
 		Class<?extends Wand> wandClass = staff.wandClass();
 		
 		if (wandClass == null){
@@ -223,7 +223,7 @@ public class ScrollOfTransmutation extends InventoryScroll {
 		return n;
 	}
 	
-	private static Weapon changeWeapon( Weapon w ) {
+	public static Weapon changeWeapon( Weapon w ) {
 		Weapon n;
 		Generator.Category c;
 		if (w instanceof MeleeWeapon) {
@@ -258,7 +258,7 @@ public class ScrollOfTransmutation extends InventoryScroll {
 		
 	}
 	
-	private static Ring changeRing( Ring r ) {
+	public static Ring changeRing( Ring r ) {
 		Ring n;
 		do {
 			n = (Ring)Generator.randomUsingDefaults( Generator.Category.RING );
@@ -281,7 +281,7 @@ public class ScrollOfTransmutation extends InventoryScroll {
 		return n;
 	}
 	
-	private static Artifact changeArtifact( Artifact a ) {
+	public static Artifact changeArtifact( Artifact a ) {
 		Artifact n;
 		do {
 			n = Generator.randomArtifact();
@@ -304,11 +304,11 @@ public class ScrollOfTransmutation extends InventoryScroll {
 			n.transferUpgrade(a.visiblyUpgraded());
 			return n;
 		}
-		
+
 		return null;
 	}
 
-	private static Trinket changeTrinket( Trinket t ){
+	public static Trinket changeTrinket( Trinket t ){
 		Trinket n;
 		do {
 			n = (Trinket)Generator.random(Generator.Category.TRINKET);
@@ -322,7 +322,7 @@ public class ScrollOfTransmutation extends InventoryScroll {
 		return n;
 	}
 	
-	private static Wand changeWand( Wand w ) {
+	public static Wand changeWand( Wand w ) {
 		Wand n;
 		do {
 			n = (Wand)Generator.randomUsingDefaults( Generator.Category.WAND );
@@ -345,7 +345,7 @@ public class ScrollOfTransmutation extends InventoryScroll {
 		return n;
 	}
 	
-	private static Plant.Seed changeSeed( Plant.Seed s ) {
+	public static Plant.Seed changeSeed( Plant.Seed s ) {
 		Plant.Seed n;
 		
 		do {
@@ -355,7 +355,7 @@ public class ScrollOfTransmutation extends InventoryScroll {
 		return n;
 	}
 	
-	private static Runestone changeStone( Runestone r ) {
+	public static Runestone changeStone( Runestone r ) {
 		Runestone n;
 		
 		do {

@@ -255,4 +255,9 @@ public class Bag extends Item implements Iterable<Item> {
 			}
 		}
 	}
+
+	@Override
+	public float weight(){
+		return 0.5f;
+	}
 }

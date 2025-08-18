@@ -208,7 +208,7 @@ public class ElementalMask extends Artifact {//will replace Ring of Elements
                             ((PotionOfDragonsBreath)fpotion).drink(Dungeon.hero);
                             updateQuickslot();
                             return;
-                        } else if(fpotion instanceof PotionOfEarthenArmor) {
+                        } else if (fpotion instanceof PotionOfEarthenArmor) {
                             fpotion.apply(Dungeon.hero);
                             Sample.INSTANCE.play(Assets.Sounds.DRINK);
                             updateQuickslot();
@@ -352,8 +352,8 @@ public class ElementalMask extends Artifact {//will replace Ring of Elements
         super.restoreFromBundle(bundle);
         potions.clear();
         if (bundle.contains(POTIONS) && bundle.getClassArray(POTIONS) != null) {
-            for (Class<?> scroll : bundle.getClassArray(POTIONS)) {
-                if (scroll != null) potions.add(scroll);
+            for (Class<?> potion : bundle.getClassArray(POTIONS)) {
+                if (potion != null) potions.add(potion);
             }
         }
     }
@@ -390,7 +390,7 @@ public class ElementalMask extends Artifact {//will replace Ring of Elements
                     item.detach(hero.belongings.backpack);
 
                     upgrade();
-                    Catalog.countUse(ElementalMask.class);
+                    Catalog.countUses(ElementalMask.class, 2);
                     GLog.p( Messages.get(ElementalMask.class, "infuse_potion") );
                     return;
                 }
@@ -442,6 +442,7 @@ public class ElementalMask extends Artifact {//will replace Ring of Elements
                 } else if (fpotion != null){
 
                     fpotion.shatter(cell);
+                    charge --;
                     checkForArtifactProc(cell);
                     Invisibility.dispel(curUser);
 

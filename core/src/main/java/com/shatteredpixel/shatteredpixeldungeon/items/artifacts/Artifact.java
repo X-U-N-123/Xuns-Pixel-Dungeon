@@ -298,4 +298,9 @@ public class Artifact extends KindofMisc {
 		else                charge = bundle.getInt( CHARGE );
 		partialCharge = bundle.getFloat( PARTIALCHARGE );
 	}
+
+	@Override
+	public float weight(){
+		return 0.3f;
+	}
 }

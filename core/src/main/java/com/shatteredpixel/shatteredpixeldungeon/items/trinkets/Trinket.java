@@ -134,4 +134,9 @@ public abstract class Trinket extends Item {
 			return ingredients.get(0).duplicate().upgrade();
 		}
 	}
+
+	@Override
+	public float weight(){
+		return 0.3f;
+	}
 }

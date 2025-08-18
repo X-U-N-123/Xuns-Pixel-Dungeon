@@ -943,4 +943,9 @@ public abstract class Wand extends Item {
 		public void tintIcon(Image icon) { icon.hardlight(1f, 1f, 0.7f); }
 		public float iconFadePercent() { return Math.max(0, visualcooldown() / 80); }
 	}
+
+	@Override
+	public float weight(){
+		return 0.3f;
+	}
 }

@@ -577,4 +577,10 @@ public class MeleeWeapon extends Weapon {
 		}
 	}
 
+	@Override
+	public float weight(){
+		if (this == Dungeon.hero.belongings.weapon() || this == Dungeon.hero.belongings.secondWep) return 0;
+		return STRReq() / 10f;
+	}
+
 }

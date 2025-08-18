@@ -435,6 +435,7 @@ public class ItemSpriteSheet {
 	public static final int THROWING_SPIKE  = MISSILE_WEP+1;
 	public static final int THROWING_KNIFE  = MISSILE_WEP+2;
 	public static final int THROWING_STONE  = MISSILE_WEP+3;
+	public static final int CLAY            = MISSILE_WEP+4;
 	
 	public static final int FISHING_SPEAR   = MISSILE_WEP+6;
 	public static final int SHURIKEN        = MISSILE_WEP+7;
@@ -467,6 +468,7 @@ public class ItemSpriteSheet {
 		assignItemRect(THROWING_SPIKE,  11, 10);
 		assignItemRect(THROWING_KNIFE,  12, 13);
 		assignItemRect(THROWING_STONE,  12, 10);
+		assignItemRect(CLAY,            12, 10);
 		
 		assignItemRect(FISHING_SPEAR,   11, 11);
 		assignItemRect(SHURIKEN,        12, 12);
@@ -832,6 +834,7 @@ public class ItemSpriteSheet {
 	public static final int ALCHEMIZE       = SPELLS+13;
 	public static final int RECYCLE         = SPELLS+14;
 	public static final int EXTRACT         = SPELLS+15;
+	public static final int MAGICAL_TRAN     = SPELLS+16;
 
 	public static final int RECLAIM_TRAP    = SPELLS+22;
 	public static final int RETURN_BEACON   = SPELLS+23;
@@ -848,6 +851,7 @@ public class ItemSpriteSheet {
 		assignItemRect(ALCHEMIZE,       10, 15);
 		assignItemRect(RECYCLE,         10, 15);
 		assignItemRect(EXTRACT,         10, 15);
+		assignItemRect(MAGICAL_TRAN,    10, 15);
 
 		assignItemRect(RECLAIM_TRAP,     8, 16);
 		assignItemRect(RETURN_BEACON,    8, 16);
@@ -923,6 +927,7 @@ public class ItemSpriteSheet {
 	public static final int TOKEN   = QUEST+6;
 	public static final int BLOB    = QUEST+7;
 	public static final int SHARD   = QUEST+8;
+	public static final int SHIELD  = QUEST+9;
 	static{
 		assignItemRect(DUST,    12, 11);
 		assignItemRect(CANDLE,  12, 12);
@@ -930,8 +935,9 @@ public class ItemSpriteSheet {
 		assignItemRect(PICKAXE, 14, 14);
 		assignItemRect(ORE,     15, 15);
 		assignItemRect(TOKEN,   12, 12);
-		assignItemRect(BLOB,    10,  9);
-		assignItemRect(SHARD,    8, 10);
+		assignItemRect(BLOB,    10, 9 );
+		assignItemRect(SHARD,   8 , 10);
+		assignItemRect(SHIELD,  15, 16);
 	}
 
 	private static final int BAGS       = xy(1, 19);  //16 slots

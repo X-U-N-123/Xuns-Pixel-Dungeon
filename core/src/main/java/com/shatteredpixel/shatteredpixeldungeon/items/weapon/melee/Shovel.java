@@ -81,7 +81,7 @@ public class Shovel extends MeleeWeapon{
 
                 @Override public void onSelect(Integer cell) {
                     if (cell == null)return;
-                    if (Dungeon.level.distance(cell, curUser.pos) != 1 || !Dungeon.level.heroFOV[cell]) {
+                    if (!Dungeon.level.adjacent(cell, Dungeon.hero.pos) || !Dungeon.level.heroFOV[cell] || Actor.findChar(cell) != null) {
                         GLog.w(Messages.get(this, "reach"));
                         return;
                     }
@@ -114,10 +114,8 @@ public class Shovel extends MeleeWeapon{
                         hero.next();
                     } else if (curUser.buff(BarricadeCooldown.class) != null){
                         GLog.w(Messages.get(this, "cd"));
-                        return;
                     } else {
                         GLog.w(Messages.get(this, "hard"));
-                        return;
                     }
                 }
             });

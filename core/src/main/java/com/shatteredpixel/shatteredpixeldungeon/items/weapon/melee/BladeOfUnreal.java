@@ -24,6 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ShieldBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
@@ -31,6 +32,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.shatteredpixel.shatteredpixeldungeon.ui.AttackIndicator;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
@@ -84,10 +86,13 @@ public class BladeOfUnreal extends MeleeWeapon {
                 }
                 attacker.HP = Math.min(attacker.HP + toHeal, attacker.HT);
                 attacker.sprite.showStatusWithIcon(CharSprite.POSITIVE, String.valueOf(toHeal), FloatingText.HEALING);
-                defender.sprite.showStatusWithIcon(CharSprite.NEGATIVE, String.valueOf(damage), FloatingText.PHYS_DMG_NO_BLOCK);
-                defender.HP -= damage;
-                if (!defender.isAlive()) {
+                defender.sprite.showStatusWithIcon(CharSprite.NEGATIVE, String.valueOf(damage), FloatingText.REALITY);
+                damage = ShieldBuff.processDamage(defender, damage, this);
+
+                if (defender.isAlive()) {
                     defender.die(this);
+                } else {
+                    defender.HP -= damage;
                 }
                 damage = 0;
             }
@@ -111,6 +116,11 @@ public class BladeOfUnreal extends MeleeWeapon {
         if (isReal) isRealDesc = Messages.get(this, "real");
         else        isRealDesc = Messages.get(this, "unreal");
         return super.info() + isRealDesc;
+    }
+
+    @Override
+    public String abilityInfo() {
+        return "";
     }
 
     @Override
@@ -144,6 +154,7 @@ public class BladeOfUnreal extends MeleeWeapon {
             }
             Sample.INSTANCE.play(Assets.Sounds.MELD, 0.5f);
             updateQuickslot();
+            AttackIndicator.updateState();
         }
     }
 

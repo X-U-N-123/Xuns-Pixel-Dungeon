@@ -41,7 +41,7 @@ public class Extract extends InventorySpell {
 		image = ItemSpriteSheet.EXTRACT;
 
 		talentFactor = 2;
-		talentChance = 1/(float) Recipe.OUT_QUANTITY;
+		talentChance = 1;
 	}
 
 	@Override
@@ -70,12 +70,12 @@ public class Extract extends InventorySpell {
 	
 	@Override
 	public int value() {
-		return (int)(100 * (quantity/(float) Recipe.OUT_QUANTITY));
+		return 125 * quantity;
 	}
 
 	@Override
 	public int energyVal() {
-		return (int)(20 * (quantity/(float) Recipe.OUT_QUANTITY));
+		return 25 * quantity;
 	}
 	
 	public static class Recipe extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe.SimpleRecipe {

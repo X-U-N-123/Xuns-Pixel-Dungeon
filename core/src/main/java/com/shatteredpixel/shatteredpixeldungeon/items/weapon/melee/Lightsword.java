@@ -45,15 +45,21 @@ public class Lightsword extends MeleeWeapon{
     @Override
     public int proc(Char attacker, Char defender, int damage) {
         Buff.affect(attacker, Light.class, 3 + buffedLvl());
-        if ((attacker != Dungeon.hero || Dungeon.hero.STR >= STRReq())
-            && (defender.properties().contains(Char.Property.DEMONIC) || defender.properties().contains(Char.Property.UNDEAD))){
-            ACC = Char.INFINITE_ACCURACY;
+        if ((defender.properties().contains(Char.Property.DEMONIC) || defender.properties().contains(Char.Property.UNDEAD))){
             defender.sprite.emitter().start( ShadowParticle.UP, 0.05f, 10 );
             Sample.INSTANCE.play( Assets.Sounds.BURNING );
-        } else {
-            ACC = 1f;
         }
         return super.proc( attacker, defender, damage );
+    }
+
+    @Override
+    public float accuracyFactor(Char owner, Char target) {
+        if ((owner != Dungeon.hero || Dungeon.hero.STR >= STRReq())
+        && (target.properties().contains(Char.Property.UNDEAD) || target.properties().contains(Char.Property.DEMONIC))) {
+            return Float.POSITIVE_INFINITY;
+        } else {
+            return super.accuracyFactor(owner, target);
+        }
     }
 
     @Override
