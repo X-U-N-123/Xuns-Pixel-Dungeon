@@ -61,7 +61,7 @@ public class BladeOfUnreal extends MeleeWeapon {
     @Override
     public int max(int lvl) {
         return  4*(tier+1) +    //24 base, down from 30
-                lvl*(tier+1);   //scaling unchanged
+                lvl*(tier);   //+5 scaling, down from +6
     }
 
     @Override
@@ -80,9 +80,9 @@ public class BladeOfUnreal extends MeleeWeapon {
                     exStr = 0;
                 }
                 damage = Random.NormalIntRange(min(), max() + exStr);
-                int toHeal = Math.round(0.15f * damage);
+                int toHeal = Math.round(0.1f * damage);
                 if (((Hero) attacker).pointsInTalent(Talent.BLADE_OF_UNREAL) > 2) {
-                    toHeal = Math.round(0.2f * damage);
+                    toHeal = Math.round(0.15f * damage);
                 }
                 attacker.HP = Math.min(attacker.HP + toHeal, attacker.HT);
                 attacker.sprite.showStatusWithIcon(CharSprite.POSITIVE, String.valueOf(toHeal), FloatingText.HEALING);
@@ -129,8 +129,11 @@ public class BladeOfUnreal extends MeleeWeapon {
             Hero hero = (Hero)owner;
             Char enemy = hero.attackTarget();
             if (enemy instanceof Mob && ((Mob) enemy).surprisedBy(hero)) {
-                //deals max on surprise, instead of min to max.
-                int damage = augment.damageFactor(max());
+                //deals 80% toward max to max on surprise, instead of min to max.
+                int diff = max() - min();
+                int damage = augment.damageFactor(Hero.heroDamageIntRange(
+                min() + Math.round(diff*0.85f),
+                max()));
                 int exStr = hero.STR() - STRReq();
                 if (exStr > 0) {
                     damage += Hero.heroDamageIntRange(0, exStr);

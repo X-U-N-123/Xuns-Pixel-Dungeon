@@ -28,7 +28,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Recharging;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
-import com.shatteredpixel.shatteredpixeldungeon.effects.SpellSprite;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HolyTome;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRecharging;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -51,7 +50,7 @@ public class SharedCharge extends ClericSpell{
 
     @Override
     public String desc(){
-        return Messages.get(this, "desc", 1+Dungeon.hero.pointsInTalent(Talent.SHARED_CHARGE)) + "\n\n" + Messages.get(this, "charge_cost", (int)chargeUse(Dungeon.hero));
+        return Messages.get(this, "desc", 2+Dungeon.hero.pointsInTalent(Talent.SHARED_CHARGE)) + "\n\n" + Messages.get(this, "charge_cost", (int)chargeUse(Dungeon.hero));
     }
 
     @Override
@@ -62,9 +61,11 @@ public class SharedCharge extends ClericSpell{
     @Override
     public void onCast(HolyTome tome, Hero hero) {
 
-        Buff.affect(hero, Recharging.class, 1+hero.pointsInTalent(Talent.SHARED_CHARGE));
-        Buff.affect(hero, ArtifactRecharge.class).extend(1+Dungeon.hero.pointsInTalent(Talent.SHARED_CHARGE)).ignoreHornOfPlenty = false;
-        Buff.affect(hero, ArtifactRecharge.class).extend(0f).ignoreHolyTome = true;
+        Buff.affect(hero, Recharging.class, 2+hero.pointsInTalent(Talent.SHARED_CHARGE));
+        //2/3 turns of artifact recharging
+        ArtifactRecharge recharge = Buff.affect(hero, ArtifactRecharge.class).extend(2 + hero.pointsInTalent(Talent.SHARED_CHARGE));
+        recharge.ignoreHornOfPlenty = false;
+        recharge.ignoreHolyTome = true;
 
         Sample.INSTANCE.play( Assets.Sounds.CHARGEUP );
         ScrollOfRecharging.charge(hero);

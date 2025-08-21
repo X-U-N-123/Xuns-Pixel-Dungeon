@@ -427,7 +427,12 @@ public enum Talent {
 	public static class MarchForwardTracker extends Buff{
 		{ type = Buff.buffType.POSITIVE; }
 		public int icon() { return BuffIndicator.MOMENTUM; }
-		public void tintIcon(Image icon) { icon.hardlight(1f, 0f, 1f); }
+
+		public void tintIcon(Image icon) {
+			float a = Math.min(2/3f, Step / 120f);
+			icon.hardlight(1/3f + a, 0f, 1/3f + a);
+		}
+
 		private int Step = 0;
 		private int Time = 3;
 
@@ -596,11 +601,12 @@ public enum Talent {
 	}
 
 	public static int MonkViewBoost(){
-		MonkEnergy Energy =Dungeon.hero.buff(MonkEnergy.class);
+		MonkEnergy Energy = Dungeon.hero.buff(MonkEnergy.class);
 		if (Energy != null && Dungeon.hero.hasTalent(Talent.YANG_SEEING)) {
-			return Math.min((int)Math.floor(Energy.Getenergy() / (5 - Dungeon.hero.pointsInTalent(Talent.YANG_SEEING))),
+			return Math.min((Energy.Getenergy() / (5 - Dungeon.hero.pointsInTalent(Talent.YANG_SEEING))),
 			1+2*Dungeon.hero.pointsInTalent(YANG_SEEING));
-		} else return 0;
+		}
+		return 0;
 	}
 
 	public static class CounterAbilityTacker extends FlavourBuff{}
@@ -700,9 +706,10 @@ public enum Talent {
 		}
 		if (hero.hasTalent(TESTED_MYST)){
 			//2/3 turns of artifact recharging
-			Buff.affect(hero, ArtifactRecharge.class)
-					.extend(1f + hero.pointsInTalent(TESTED_MYST)).ignoreHornOfPlenty = false;
-			Buff.affect(hero, ArtifactRecharge.class).extend(0).ignoreHolyTome = false;
+			ArtifactRecharge recharge = Buff.affect(hero, ArtifactRecharge.class)
+					.extend(1f + hero.pointsInTalent(TESTED_MYST));
+			recharge.ignoreHornOfPlenty = false;
+			recharge.ignoreHolyTome = false;
 		}
 		if (hero.hasTalent(TESTED_SWIFTNESS)){
 			//2/3 turns of adrenaline
@@ -730,10 +737,10 @@ public enum Talent {
 				//1/2 turns of recharging
 				ArtifactRecharge buff = Buff.affect( hero, ArtifactRecharge.class);
 				if (buff.left() < 1 + (hero.pointsInTalent(TESTED_HOLINESS))){
-					Buff.affect( hero, ArtifactRecharge.class)
-							.set(hero.pointsInTalent(TESTED_HOLINESS)).ignoreHornOfPlenty = false;
-					Buff.affect( hero, ArtifactRecharge.class)
-						.extend(0).ignoreHolyTome = false;
+					ArtifactRecharge recharge = Buff.affect(hero, ArtifactRecharge.class)
+					.set(hero.pointsInTalent(TESTED_HOLINESS));
+					recharge.ignoreHornOfPlenty = false;
+					recharge.ignoreHolyTome = false;
 				}
 				Buff.prolong( hero, Recharging.class, hero.pointsInTalent(ENLIGHTENING_MEAL));
 				ScrollOfRecharging.charge( hero );
@@ -796,7 +803,7 @@ public enum Talent {
 			}
 		}
 
-		if (talent == HEIGHTENED_SENSES || talent == FARSIGHT || talent == DIVINE_SENSE){
+		if (talent == HEIGHTENED_SENSES || talent == FARSIGHT || talent == DIVINE_SENSE || talent == YANG_SEEING){
 			Dungeon.observe();
 			Dungeon.hero.checkVisibleMobs();
 		}
@@ -884,8 +891,11 @@ public enum Talent {
 			//3/5 turns of recharging
 			ArtifactRecharge buff = Buff.affect( hero, ArtifactRecharge.class);
 			if (buff.left() < 1 + 2*(hero.pointsInTalent(MYSTICAL_MEAL))){
-				Buff.affect( hero, ArtifactRecharge.class).set(1 + 2*(hero.pointsInTalent(MYSTICAL_MEAL))).ignoreHornOfPlenty = foodSource instanceof HornOfPlenty;
-				Buff.affect( hero, ArtifactRecharge.class).extend(0).ignoreHornOfPlenty = false;
+				//2/3 turns of artifact recharging
+				ArtifactRecharge recharge = Buff.affect(hero, ArtifactRecharge.class)
+				.set(1f + hero.pointsInTalent(MYSTICAL_MEAL));
+				recharge.ignoreHornOfPlenty = foodSource instanceof HornOfPlenty;
+				recharge.ignoreHolyTome = false;
 			}
 			ScrollOfRecharging.charge( hero );
 			SpellSprite.show(hero, SpellSprite.CHARGE, 0, 1, 1);
@@ -933,8 +943,11 @@ public enum Talent {
 				//2/3 turns of recharging
 				ArtifactRecharge buff = Buff.affect( hero, ArtifactRecharge.class);
 				if (buff.left() < 1 + (hero.pointsInTalent(ENLIGHTENING_MEAL))){
-					Buff.affect( hero, ArtifactRecharge.class).set(1 + (hero.pointsInTalent(ENLIGHTENING_MEAL))).ignoreHornOfPlenty = foodSource instanceof HornOfPlenty;
-					Buff.affect( hero, ArtifactRecharge.class).extend(0).ignoreHolyTome = false;
+					//2/3 turns of artifact recharging
+					ArtifactRecharge recharge = Buff.affect(hero, ArtifactRecharge.class)
+						.set(1f + hero.pointsInTalent(ENLIGHTENING_MEAL));
+					recharge.ignoreHornOfPlenty = foodSource instanceof HornOfPlenty;
+					recharge.ignoreHolyTome = false;
 				}
 				Buff.prolong( hero, Recharging.class, 1 + (hero.pointsInTalent(ENLIGHTENING_MEAL)) );
 				ScrollOfRecharging.charge( hero );

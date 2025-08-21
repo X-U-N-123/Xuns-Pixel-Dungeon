@@ -33,6 +33,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Freezing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Amok;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.BrokenArmor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Charm;
@@ -47,6 +48,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.ArmorAbility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
@@ -55,6 +57,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClassArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMagicMapping;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfAvalanche;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfCorrosion;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfCorruption;
@@ -104,6 +107,7 @@ public class ElementalBlast extends ArmorAbility {
 		effectTypes.put(WandOfTransfusion.class,    MagicMissile.BLOOD_CONE);
 		effectTypes.put(WandOfCorruption.class,     MagicMissile.SHADOW_CONE);
 		effectTypes.put(WandOfRegrowth.class,       MagicMissile.FOLIAGE_CONE);
+		effectTypes.put(WandOfAvalanche.class,      null);
 	}
 
 	private static final HashMap<Class<?extends Wand>, Float> damageFactors = new HashMap<>();
@@ -121,6 +125,7 @@ public class ElementalBlast extends ArmorAbility {
 		damageFactors.put(WandOfTransfusion.class,      0f);
 		damageFactors.put(WandOfCorruption.class,       0f);
 		damageFactors.put(WandOfRegrowth.class,         0f);
+		damageFactors.put(WandOfAvalanche.class,        1f);
 	}
 
 	{
@@ -168,11 +173,11 @@ public class ElementalBlast extends ArmorAbility {
 		if (wandCls == WandOfDisintegration.class){
 			projectileProps = Ballistica.STOP_TARGET;
 
-		//*** Wand of Fireblast ***
-		} else if (wandCls == WandOfFireblast.class){
+		//*** Wand of Fireblast and Wand of Avalanche ***
+		} else if (wandCls == WandOfFireblast.class || wandCls == WandOfAvalanche.class){
 			projectileProps = projectileProps | Ballistica.IGNORE_SOFT_SOLID;
 
-		//*** Wand of Warding ***
+			//*** Wand of Warding ***
 		} else if (wandCls == WandOfWarding.class){
 			projectileProps = Ballistica.STOP_TARGET;
 
@@ -180,13 +185,22 @@ public class ElementalBlast extends ArmorAbility {
 
 		ConeAOE aoe = new ConeAOE(aim, aoeSize, 360, projectileProps);
 
-		for (Ballistica ray : aoe.outerRays){
+
+
+		if (wandCls == WandOfAvalanche.class) {
+			for (int cell : aoe.cells){
+				CellEmitter.get( cell - Dungeon.level.width() ).start(Speck.factory(Speck.ROCK), 0.07f, 8);
+			}
+			Sample.INSTANCE.play( Assets.Sounds.ROCKS);
+		} else {
+			for (Ballistica ray : aoe.outerRays){
 			((MagicMissile)hero.sprite.parent.recycle( MagicMissile.class )).reset(
-					effectTypes.get(wandCls),
-					hero.sprite,
-					ray.path.get(ray.dist),
-					null
+			effectTypes.get(wandCls),
+			hero.sprite,
+			ray.path.get(ray.dist),
+			null
 			);
+		}
 		}
 
 		final float effectMulti = 1f + 0.25f*hero.pointsInTalent(Talent.ELEMENTAL_POWER);
@@ -379,6 +393,12 @@ public class ElementalBlast extends ArmorAbility {
 								} else if (finalWandCls == WandOfRegrowth.class){
 									if (mob.alignment != Char.Alignment.ALLY) {
 										Buff.prolong( mob, Roots.class, effectMulti*Roots.DURATION );
+										charsHit++;
+									}
+								} else if (finalWandCls == WandOfAvalanche.class){
+									if (mob.alignment != Char.Alignment.ALLY) {
+										Buff.prolong( mob, BrokenArmor.class, effectMulti*8f );
+										Buff.prolong( mob, Paralysis.class, effectMulti*8f );
 										charsHit++;
 									}
 								}

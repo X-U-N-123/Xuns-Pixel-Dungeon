@@ -118,7 +118,7 @@ public class ElementalMask extends Artifact {//will replace Ring of Elements
 
         for (Class c : RingOfElements.RESISTS){
             if (c.isAssignableFrom(effect)){
-                return 1-(2 + level)*0.07f;
+                return 1-(2 + level)*0.08f;
             }
         }
 
@@ -186,6 +186,7 @@ public class ElementalMask extends Artifact {//will replace Ring of Elements
         curUser = hero;
 
         fpotion = potion;
+        charge --;
 
         //if there are charges left and the potion has been given to the mask
         if (charge > 0 && !potions.contains(potion.getClass())) {
@@ -442,7 +443,6 @@ public class ElementalMask extends Artifact {//will replace Ring of Elements
                 } else if (fpotion != null){
 
                     fpotion.shatter(cell);
-                    charge --;
                     checkForArtifactProc(cell);
                     Invisibility.dispel(curUser);
 

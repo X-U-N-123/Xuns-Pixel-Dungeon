@@ -55,6 +55,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfRegrowth;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WornShortsword;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Antimatter;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -538,6 +539,9 @@ public class Trinity extends ArmorAbility {
 		}
 		if (cls.equals(WandOfFireblast.class) || cls.equals(WandOfRegrowth.class)){
 			return 2*chargeUse;
+		}
+		if (cls.equals(Antimatter.class)){
+			return 1.4f*chargeUse; //35 charge
 		}
 		if (Artifact.class.isAssignableFrom(cls)){
 			if (cls.equals(DriedRose.class) || cls.equals(UnstableSpellbook.class)){

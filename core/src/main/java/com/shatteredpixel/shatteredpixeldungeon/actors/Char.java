@@ -156,6 +156,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.features.Door;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.GeyserTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.GnollRockfallTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.GrimTrap;
+import com.shatteredpixel.shatteredpixeldungeon.levels.traps.Trap;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Earthroot;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
@@ -552,10 +553,13 @@ public abstract class Char extends Actor {
 			if (buff(FireImbue.class) != null)  buff(FireImbue.class).proc(enemy);
 			if (buff(FrostImbue.class) != null) buff(FrostImbue.class).proc(enemy);
 
-			if (Dungeon.hero.hasTalent(Talent.CHARGE_RECYCLING) && prep != null && this instanceof Hero &&
+			if (hero.hasTalent(Talent.CHARGE_RECYCLING) && prep != null && this instanceof Hero &&
 			enemy.HP <= effectiveDamage && enemy.buff(Brute.BruteRage.class) == null) {
-				Buff.affect(this, ArtifactRecharge.class).extend(Dungeon.hero.pointsInTalent(Talent.CHARGE_RECYCLING)).ignoreHornOfPlenty = false;
-				Buff.affect(this, ArtifactRecharge.class).extend(0).ignoreHolyTome = false;
+				//2/3 turns of artifact recharging
+				ArtifactRecharge recharge = Buff.affect(hero, ArtifactRecharge.class)
+				.extend(1f + hero.pointsInTalent(Talent.CHARGE_RECYCLING));
+				recharge.ignoreHornOfPlenty = false;
+				recharge.ignoreHolyTome = false;
 			}
 
 			if (enemy.isAlive() && enemy.alignment != alignment && prep != null && prep.canKO(enemy)){
@@ -983,7 +987,8 @@ public abstract class Char extends Actor {
 				dmg = Math.round(0.8f * dmg);
 			}
 
-			if (this instanceof Hero && buff(Talent.MarchForwardTracker.class) != null && !(src instanceof Buff) && !(src instanceof Chasm)){
+			if (this instanceof Hero && buff(Talent.MarchForwardTracker.class) != null
+			&& !(src instanceof Buff) && !(src instanceof Chasm) && !(src instanceof Trap)){
 				dmg = Math.round(buff(Talent.MarchForwardTracker.class).DmgResist(dmg));
 			}
 
@@ -1159,7 +1164,7 @@ public abstract class Char extends Actor {
 		}
 
 		int point = Dungeon.hero.pointsInTalent(Talent.ORGANIC_FERTILIZER);
-		if (point > 0 && Dungeon.level.heroFOV[pos]){
+		if (point > 0 && Dungeon.level.heroFOV[pos] && alignment != Alignment.ALLY){
 			if (Dungeon.level.map[pos] == Terrain.EMBERS || Dungeon.level.map[pos] == Terrain.EMPTY || Dungeon.level.map[pos] == Terrain.EMPTY_DECO){
 				Level.set(pos, Terrain.GRASS);//+1
 				if (point > 2) {
@@ -1180,7 +1185,7 @@ public abstract class Char extends Actor {
 			GameScene.updateMap(pos);
 		}
 
-		if (Random.Float() <= Dungeon.hero.pointsInTalent(Talent.DEW_COLLECTING)/4f && Dungeon.level.heroFOV[pos] &&
+		if (Random.Float() <= Dungeon.hero.pointsInTalent(Talent.DEW_COLLECTING)/4f && Dungeon.level.heroFOV[pos] && alignment != Alignment.ALLY &&
 		(Dungeon.level.map[Dungeon.hero.pos] == Terrain.GRASS ||
 		Dungeon.level.map[Dungeon.hero.pos] == Terrain.HIGH_GRASS ||
 		Dungeon.level.map[Dungeon.hero.pos] == Terrain.FURROWED_GRASS)){
