@@ -29,7 +29,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Slow;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Chill;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Frost;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfDragonsBreath;
@@ -78,6 +79,11 @@ public class HeatBrew extends Brew {
 		for (int i : PathFinder.NEIGHBOURS9){
 			Char ch = Actor.findChar(cell + i);
 			if (ch != null){
+
+				Buff buff = ch.buff(Chill.class);
+				if (buff != null) buff.detach();
+				buff = ch.buff(Frost.class);
+				if (buff != null) buff.detach();
 
 				//does the equivalent of a bomb's damage against icy enemies.
 				if (Char.hasProp(ch, Char.Property.ICY)){

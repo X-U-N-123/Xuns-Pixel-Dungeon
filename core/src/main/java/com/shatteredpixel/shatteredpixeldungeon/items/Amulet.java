@@ -99,7 +99,7 @@ public class Amulet extends Item {
 	}
 	
 	private void showAmuletScene( boolean showText ) {
-		if (!Dungeon.isChallenged(Challenges.X_U_NS_POWER)){
+		if (Dungeon.isChallenged(Challenges.X_U_NS_POWER)) return;
 		AmuletScene.noText = !showText;
 		Game.switchScene( AmuletScene.class, new Game.SceneChangeCallback() {
 			@Override
@@ -110,7 +110,7 @@ public class Amulet extends Item {
 			@Override
 			public void afterCreate() {
 				Badges.validateVictory();
-				Badges.validateChampion(Challenges.activeChallenges());
+				Badges.validateChampion(Challenges.activeChallenges(), Dungeon.isChallenged(Challenges.X_U_NS_POWER));
 				try {
 					Dungeon.saveAll();
 					Badges.saveGlobal();
@@ -118,7 +118,7 @@ public class Amulet extends Item {
 					ShatteredPixelDungeon.reportException(e);
 				}
 			}
-		});}
+		});
 	}
 	
 	@Override

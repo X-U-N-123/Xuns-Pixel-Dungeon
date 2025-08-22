@@ -21,9 +21,12 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 
+import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Scorpio;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Scorpiospike;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Dart;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.TippedDart;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -51,6 +54,14 @@ public class PinCushion extends Buff {
 			}
 		}
 		items.add(projectile);
+
+		int spikeQuantity = 0;
+		for (MissileWeapon wep : items){
+			if (wep instanceof Scorpiospike){
+				spikeQuantity ++;
+			}
+		}
+		if (spikeQuantity >= 5 && target instanceof Scorpio) Badges.validateRefutation();
 	}
 
 	public Item grabOne(){

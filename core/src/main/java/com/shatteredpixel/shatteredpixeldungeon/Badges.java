@@ -35,7 +35,9 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Pickaxe;
 import com.shatteredpixel.shatteredpixeldungeon.items.remains.RemainsItem;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.DMdrill;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Ripperclaw;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Bestiary;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Document;
@@ -135,6 +137,8 @@ public class Badges {
 		RESEARCHER_2                ( 55, BadgeType.JOURNAL ),
 		GAMES_PLAYED_2              ( 56, BadgeType.GLOBAL ),
 		HIGH_SCORE_2                ( 57 ),
+		RIPPER_HUMAN                ( 58 ),
+		REFUTATION                  ( 59 ),
 
 		//gold
 		ENEMY_HAZARDS               ( 64 ),
@@ -168,6 +172,8 @@ public class Badges {
 		RESEARCHER_3                ( 85, BadgeType.JOURNAL ),
 		GAMES_PLAYED_3              ( 86, BadgeType.GLOBAL ),
 		HIGH_SCORE_3                ( 87 ),
+		ENGINEER                    ( 88 ),
+		XUANWU                      ( 89 ),
 
 		//platinum
 		MANY_BUFFS                  ( 96 ),
@@ -220,7 +226,8 @@ public class Badges {
 		GAMES_PLAYED_5              ( 116, BadgeType.GLOBAL ),
 		HIGH_SCORE_5                ( 117 ),
 		CHAMPION_2                  ( 118 ),
-		CHAMPION_3                  ( 119 );
+		CHAMPION_3                  ( 119 ),
+		CHAMPION_4                  ( 120 );
 
 		public boolean meta;
 
@@ -1059,6 +1066,39 @@ public class Badges {
 		}
 	}
 
+	public static void validateRefutation() {
+		if (!local.contains( Badge.REFUTATION )) {
+			Badge badge = Badge.REFUTATION;
+			local.add( badge );
+			displayBadge( badge );
+		}
+	}
+
+	public static void validateXuanwu() {
+		if (!local.contains( Badge.XUANWU)) {
+			Badge badge = Badge.XUANWU;
+			local.add( badge );
+			displayBadge( badge );
+		}
+	}
+
+	public static void validateEngineer(Object cause){
+		if (cause == Dungeon.hero &&
+		Dungeon.hero.belongings.attackingWeapon() instanceof DMdrill
+		&& Dungeon.hero.belongings.attackingWeapon().level() >= 12){
+			local.add( Badge.ENGINEER );
+			displayBadge(Badge.ENGINEER);
+		}
+	}
+
+	public static void validateRipperHuman(Object cause){
+		if (cause == Dungeon.hero &&
+		Dungeon.hero.belongings.attackingWeapon() instanceof Ripperclaw){
+			local.add( Badge.RIPPER_HUMAN );
+			displayBadge(Badge.RIPPER_HUMAN);
+		}
+	}
+
 	public static void validateTakingTheMick(Object cause){
 		if (cause == Dungeon.hero &&
 				Dungeon.hero.belongings.attackingWeapon() instanceof Pickaxe
@@ -1163,8 +1203,8 @@ public class Badges {
 		}
 	}
 
-	public static void validateChampion( int challenges ) {
-		if (challenges == 0) return;
+	public static void validateChampion( int challenges, boolean xun) {
+		if (challenges == 0 || xun) return;
 		Badge badge = null;
 		if (challenges >= 1) {
 			badge = Badge.CHAMPION_1;
@@ -1176,6 +1216,10 @@ public class Badges {
 		if (challenges >= 6){
 			unlock(badge);
 			badge = Badge.CHAMPION_3;
+		}
+		if (challenges >= 10){
+			unlock(badge);
+			badge = Badge.CHAMPION_4;
 		}
 		local.add(badge);
 		displayBadge( badge );
@@ -1253,11 +1297,11 @@ public class Badges {
 			{Badge.STRENGTH_ATTAINED_1, Badge.STRENGTH_ATTAINED_2, Badge.STRENGTH_ATTAINED_3, Badge.STRENGTH_ATTAINED_4, Badge.STRENGTH_ATTAINED_5},
 			{Badge.FOOD_EATEN_1, Badge.FOOD_EATEN_2, Badge.FOOD_EATEN_3, Badge.FOOD_EATEN_4, Badge.FOOD_EATEN_5},
 			{Badge.ITEMS_CRAFTED_1, Badge.ITEMS_CRAFTED_2, Badge.ITEMS_CRAFTED_3, Badge.ITEMS_CRAFTED_4, Badge.ITEMS_CRAFTED_5},
-			{Badge.BOSS_SLAIN_1, Badge.BOSS_SLAIN_2, Badge.BOSS_SLAIN_3, Badge.BOSS_SLAIN_4},
+			{Badge.BOSS_SLAIN_1, Badge.BOSS_SLAIN_2, Badge.BOSS_SLAIN_3, Badge.BOSS_SLAIN_4, Badge.VICTORY, Badge.HAPPY_END, Badge.PACIFIST_ASCENT},
 			{Badge.RESEARCHER_1, Badge.RESEARCHER_2, Badge.RESEARCHER_3, Badge.RESEARCHER_4, Badge.RESEARCHER_5},
 			{Badge.HIGH_SCORE_1, Badge.HIGH_SCORE_2, Badge.HIGH_SCORE_3, Badge.HIGH_SCORE_4, Badge.HIGH_SCORE_5},
 			{Badge.GAMES_PLAYED_1, Badge.GAMES_PLAYED_2, Badge.GAMES_PLAYED_3, Badge.GAMES_PLAYED_4, Badge.GAMES_PLAYED_5},
-			{Badge.CHAMPION_1, Badge.CHAMPION_2, Badge.CHAMPION_3},
+			{Badge.CHAMPION_1, Badge.CHAMPION_2, Badge.CHAMPION_3, Badge.CHAMPION_4},
 			{Badge.PIRANHAS, Badge.PIRANHAS_2}
 	};
 
@@ -1268,11 +1312,13 @@ public class Badges {
 			{Badge.BOSS_SLAIN_1, Badge.BOSS_CHALLENGE_1},
 			{Badge.BOSS_SLAIN_2, Badge.BOSS_CHALLENGE_2},
 			{Badge.BOSS_SLAIN_3, Badge.BOSS_CHALLENGE_3},
+			{Badge.BOSS_SLAIN_3, Badge.ENGINEER},
 			{Badge.BOSS_SLAIN_4, Badge.BOSS_CHALLENGE_4},
+			{Badge.BOSS_SLAIN_4, Badge.XUANWU},
 			{Badge.VICTORY,      Badge.BOSS_CHALLENGE_5},
-			{Badge.HAPPY_END,    Badge.PACIFIST_ASCENT},
 			{Badge.VICTORY,      Badge.TAKING_THE_MICK},
 			{Badge.VICTORY,      Badge.DEATH_IN_DEVMODE},
+			{Badge.HAPPY_END,    Badge.HAPPY_END_REMAINS},
 	};
 
 	//If the summary badge is unlocked, don't show the component badges

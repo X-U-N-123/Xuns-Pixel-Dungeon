@@ -53,6 +53,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfForce;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfLightning;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Shangfang;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Bestiary;
 import com.shatteredpixel.shatteredpixeldungeon.levels.CityBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
@@ -296,6 +297,8 @@ public class DwarfKing extends Mob {
 			if (summonSubject(Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? 2 : 3)) summonsMade++;
 		}
 
+		if (!(Dungeon.hero.belongings.weapon instanceof Shangfang) && !(Dungeon.hero.belongings.secondWep instanceof Shangfang))
+			Buff.affect(this, CityBossLevel.xuanwuTracker.class);
 		return super.act();
 	}
 
@@ -561,6 +564,7 @@ public class DwarfKing extends Mob {
 		}
 
 		Badges.validateBossSlain();
+		if ( buff(CityBossLevel.xuanwuTracker.class) == null) Badges.validateXuanwu();
 		if (Statistics.qualifiedForBossChallengeBadge){
 			Badges.validateBossChallengeCompleted();
 		}

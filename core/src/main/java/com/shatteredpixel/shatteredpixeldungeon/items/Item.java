@@ -25,6 +25,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
@@ -48,6 +49,7 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MissileSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.QuickSlotButton;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.utils.Bundlable;
@@ -129,6 +131,14 @@ public class Item implements Bundlable {
 			GameScene.pickUp( this, pos );
 			Sample.INSTANCE.play( Assets.Sounds.ITEM );
 			hero.spendAndNext( TIME_TO_PICK_UP );
+
+			float difference = hero.STR() - hero.weight();
+			if (!Dungeon.isChallenged(Challenges.HEAVY_BURDEN)) difference = 99;
+			if (difference < -0.001){
+				GLog.n( Messages.get(this, "heavy"));
+			} else if (difference < 1.001) {
+				GLog.w( Messages.get(this, "heavy_warn"));
+			}
 			return true;
 			
 		} else {
@@ -137,9 +147,14 @@ public class Item implements Bundlable {
 	}
 	
 	public void doDrop( Hero hero ) {
+		boolean overweight = hero.STR() - hero.weight() < -0.001;
 		hero.spendAndNext(TIME_TO_DROP);
 		int pos = hero.pos;
 		Dungeon.level.drop(detachAll(hero.belongings.backpack), pos).sprite.drop(pos);
+		boolean isBurdenEased = hero.STR() - hero.weight() > -0.001;
+		if (overweight && isBurdenEased && Dungeon.isChallenged(Challenges.HEAVY_BURDEN)){
+			GLog.p( Messages.get(this, "light"));
+		}
 	}
 
 	//resets an item's properties, to ensure consistency between runs
@@ -647,6 +662,7 @@ public class Item implements Bundlable {
 		user.busy();
 
 		throwSound();
+		boolean overweight = hero.STR() - hero.weight() < -0.001;
 
 		Char enemy = Actor.findChar( cell );
 		QuickSlotButton.target(enemy);
@@ -667,11 +683,16 @@ public class Item implements Bundlable {
 							if (curUser.hasTalent(Talent.IMPROVISED_PROJECTILES)
 									&& !(Item.this instanceof MissileWeapon)
 									&& curUser.buff(Talent.ImprovisedProjectileCooldown.class) == null){
-								if (enemy != null && enemy.alignment != curUser.alignment){
+								if (enemy.alignment != curUser.alignment){
 									Sample.INSTANCE.play(Assets.Sounds.HIT);
 									Buff.affect(enemy, Blindness.class, 2f * curUser.pointsInTalent(Talent.IMPROVISED_PROJECTILES));
 									Buff.affect(curUser, Talent.ImprovisedProjectileCooldown.class, 50f);
 								}
+							}
+
+							boolean isBurdenEased = hero.STR() - hero.weight() > -0.001;
+							if (overweight && isBurdenEased && Dungeon.isChallenged(Challenges.HEAVY_BURDEN)){
+								GLog.p( Messages.get(this, "light"));
 							}
 							if (user.buff(Talent.LethalMomentumTracker.class) != null){
 								user.buff(Talent.LethalMomentumTracker.class).detach();

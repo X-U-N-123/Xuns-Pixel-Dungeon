@@ -51,12 +51,12 @@ public class Challenges {
 			"swarm_intelligence",
 			"darkness",
 			"no_scrolls",
-			"x_u_ns_power",
-			"heavy_burden"
+			"heavy_burden",
+			"x_u_ns_power"
 	};
 
 	public static final int[] MASKS = {
-			CHAMPION_ENEMIES, STRONGER_BOSSES, NO_FOOD, NO_ARMOR, NO_HEALING, NO_HERBALISM, SWARM_INTELLIGENCE, DARKNESS, NO_SCROLLS, X_U_NS_POWER, HEAVY_BURDEN
+			CHAMPION_ENEMIES, STRONGER_BOSSES, NO_FOOD, NO_ARMOR, NO_HEALING, NO_HERBALISM, SWARM_INTELLIGENCE, DARKNESS, NO_SCROLLS, HEAVY_BURDEN, X_U_NS_POWER
 	};
 
 	public static int activeChallenges(){

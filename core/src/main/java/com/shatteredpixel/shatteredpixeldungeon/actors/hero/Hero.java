@@ -518,15 +518,8 @@ public class Hero extends Char {
 		float accuracy = 1;
 		accuracy *= RingOfAccuracy.accuracyMultiplier( this );
 
-		float weight = 0;
-		if (!belongings.lostInventory()) {
-			for (Item i : belongings.backpack.items) {
-				weight += i.weight();
-			}
-		}
-
-		if (weight > STR() + 0.001f && Dungeon.isChallenged(Challenges.HEAVY_BURDEN)){
-			accuracy *= 1 + (STR() - weight) * 0.25f;
+		if (weight() > STR() + 0.001f && Dungeon.isChallenged(Challenges.HEAVY_BURDEN)){
+			accuracy *= 1 + (STR() - weight()) * 0.25f;
 		}
 
 		//precise assault and liquid agility
@@ -603,15 +596,8 @@ public class Hero extends Char {
 		
 		evasion *= RingOfEvasion.evasionMultiplier( this );
 
-		float weight = 0;
-		if (!belongings.lostInventory()) {
-			for (Item i : belongings.backpack.items) {
-				weight += i.weight();
-			}
-		}
-
-		if (weight > STR() + 0.001f && Dungeon.isChallenged(Challenges.HEAVY_BURDEN)){
-			evasion *= 1 + (STR() - weight) * 0.25f;
+		if (weight() > STR() + 0.001f && Dungeon.isChallenged(Challenges.HEAVY_BURDEN)){
+			evasion *= 1 + (STR() - weight()) * 0.25f;
 		}
 
 		if (buff(Talent.LiquidAgilEVATracker.class) != null){
@@ -771,15 +757,8 @@ public class Hero extends Char {
 			speed = belongings.armor().speedFactor(this, speed);
 		}
 
-		float weight = 0;
-		if (!belongings.lostInventory()) {
-			for (Item i : belongings.backpack.items) {
-				weight += i.weight();
-			}
-		}
-
-		if (weight > STR() + 0.001f && Dungeon.isChallenged(Challenges.HEAVY_BURDEN)){
-			speed *= 1 + (STR() - weight) * 0.25f;
+		if (weight() > STR() + 0.001f && Dungeon.isChallenged(Challenges.HEAVY_BURDEN)){
+			speed *= 1 + (STR() - weight()) * 0.25f;
 			if (speed < 0.25f){
 				speed = 0.25f;
 			}
@@ -2702,5 +2681,16 @@ public class Hero extends Char {
 	public static interface Doom {
 		public void onDeath();
 	}
+
 	public static class SupressingmarkTracker extends Buff {}
+
+	public float weight(){
+		float weight = 0;
+		if (!belongings.lostInventory()) {
+			for (Item i : belongings.backpack.items) {
+				weight += i.weight();
+			}
+		}
+		return weight;
+	}
 }
