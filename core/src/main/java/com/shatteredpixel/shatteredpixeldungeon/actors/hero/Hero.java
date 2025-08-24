@@ -1698,8 +1698,8 @@ public class Hero extends Char {
 		}
 
 		if (buff(Talent.WarriorFoodImmunity.class) != null){
-			if (pointsInTalent(Talent.IRON_STOMACH) == 1)       dmg /= 4f;
-			else if (pointsInTalent(Talent.IRON_STOMACH) == 2)  dmg = 0;
+			if (pointsInTalent(Talent.IRON_STOMACH) == 1)       damage /= 4f;
+			else if (pointsInTalent(Talent.IRON_STOMACH) == 2)  damage = 0;
 		}
 
 		dmg = Math.round(damage);
