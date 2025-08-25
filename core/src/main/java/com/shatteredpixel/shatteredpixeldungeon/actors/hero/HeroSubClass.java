@@ -39,7 +39,7 @@ public enum HeroSubClass {
 
 	BATTLEMAGE(HeroIcon.BATTLEMAGE),
 	WARLOCK(HeroIcon.WARLOCK),
-	//SWITCHER(HeroIcon.SWITCHER),
+	SWITCHER(HeroIcon.SWITCHER),
 	//SPELLCASTER
 	
 	ASSASSIN(HeroIcon.ASSASSIN),

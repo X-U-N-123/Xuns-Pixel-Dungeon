@@ -438,7 +438,7 @@ public abstract class Wand extends Item {
 				maxLvl = Dungeon.hero.belongings.getItem(MagesStaff.class).level();
 			}
 			if (buff1 != null){
-				lvl = Math.min(lvl + buff1.level, maxLvl);
+				//lvl = Math.min(lvl + buff1.level, maxLvl);
 			}
 		}
 		return lvl;

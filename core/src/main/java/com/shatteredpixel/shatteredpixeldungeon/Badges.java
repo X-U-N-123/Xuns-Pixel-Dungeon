@@ -199,7 +199,7 @@ public class Badges {
 		BOSS_SLAIN_3_GUARD,
 		BOSS_SLAIN_3_WARLOCK,
 		BOSS_SLAIN_3_BATTLEMAGE,
-		//BOSS_SLAIN_3_SWITCHER,
+		BOSS_SLAIN_3_SWITCHER,
 		BOSS_SLAIN_3_FREERUNNER,
 		BOSS_SLAIN_3_ASSASSIN,
 		BOSS_SLAIN_3_NINJA,
@@ -852,7 +852,7 @@ public class Badges {
 		thirdBossSubclassBadges.put(HeroSubClass.GUARD, Badge.BOSS_SLAIN_3_GUARD);
 		thirdBossSubclassBadges.put(HeroSubClass.BATTLEMAGE, Badge.BOSS_SLAIN_3_BATTLEMAGE);
 		thirdBossSubclassBadges.put(HeroSubClass.WARLOCK, Badge.BOSS_SLAIN_3_WARLOCK);
-		//thirdBossSubclassBadges.put(HeroSubClass.SWITCHER, Badge.BOSS_SLAIN_3_SWITCHER);
+		thirdBossSubclassBadges.put(HeroSubClass.SWITCHER, Badge.BOSS_SLAIN_3_SWITCHER);
 		thirdBossSubclassBadges.put(HeroSubClass.ASSASSIN, Badge.BOSS_SLAIN_3_ASSASSIN);
 		thirdBossSubclassBadges.put(HeroSubClass.FREERUNNER, Badge.BOSS_SLAIN_3_FREERUNNER);
 		thirdBossSubclassBadges.put(HeroSubClass.NINJA, Badge.BOSS_SLAIN_3_NINJA);
@@ -1035,7 +1035,7 @@ public class Badges {
 	}
 	
 	public static void validateMasteryCombo( int n ) {
-		if (!local.contains( Badge.MASTERY_COMBO ) && n == 10) {
+		if (!local.contains( Badge.MASTERY_COMBO ) && n >= 10) {
 			Badge badge = Badge.MASTERY_COMBO;
 			local.add( badge );
 			displayBadge( badge );

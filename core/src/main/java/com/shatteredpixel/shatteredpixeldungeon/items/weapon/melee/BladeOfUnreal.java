@@ -89,7 +89,7 @@ public class BladeOfUnreal extends MeleeWeapon {
                 defender.sprite.showStatusWithIcon(CharSprite.NEGATIVE, String.valueOf(damage), FloatingText.REALITY);
                 damage = ShieldBuff.processDamage(defender, damage, this);
 
-                if (defender.isAlive()) {
+                if (defender.HP <= damage) {
                     defender.die(this);
                 } else {
                     defender.HP -= damage;

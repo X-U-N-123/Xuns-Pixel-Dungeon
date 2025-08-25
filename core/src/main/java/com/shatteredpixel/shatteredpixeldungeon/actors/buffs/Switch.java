@@ -22,19 +22,30 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
+import com.watabou.noosa.Image;
+import com.watabou.utils.Bundle;
 
 public class Switch extends FlavourBuff{
 
     {
         type = buffType.POSITIVE;
+        announced = true;
     }
 
-    public boolean staffUsed = false;
-    public boolean wandUsed = false;
-    public int level = 2;
+    public static float DURATION = 4f;
 
-    public static final float DURATION = 5f;
+    private int level = 0;
+    private Wand wandJustApplied; //we don't bundle this as it's only used right as the buff is applied
+
+    public void setup(Wand wand){
+        if (level < wand.buffedLvl()){
+            this.level = wand.buffedLvl();
+            this.wandJustApplied = wand;
+        }
+    }
 
     @Override
     public void detach() {
@@ -42,9 +53,49 @@ public class Switch extends FlavourBuff{
         Item.updateQuickslot();
     }
 
+    public int level(){
+        return this.level;
+    }
+
+    //this is used briefly so that a wand of magic missile can't clear the buff it just applied
+    public Wand wandJustApplied(){
+        Wand result = this.wandJustApplied;
+        this.wandJustApplied = null;
+        return result;
+    }
+
     @Override
     public int icon() {
-        return BuffIndicator.SWITCH;
+        return BuffIndicator.UPGRADE;
+    }
+
+    @Override
+    public void tintIcon(Image icon) {
+        icon.hardlight(0.2f, 0.6f, 1f);
+    }
+
+    @Override
+    public float iconFadePercent() {
+        return Math.max(0, (DURATION - visualcooldown()) / DURATION);
+    }
+
+    @Override
+    public String desc() {
+        return Messages.get(this, "desc", level(), dispTurns());
+    }
+
+    private static final String LEVEL = "level";
+
+    @Override
+    public void storeInBundle(Bundle bundle) {
+        super.storeInBundle(bundle);
+        bundle.put(LEVEL, level);
+    }
+
+    @Override
+    public void restoreFromBundle(Bundle bundle) {
+        super.restoreFromBundle(bundle);
+        level = bundle.getInt(LEVEL);
     }
 
 }

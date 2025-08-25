@@ -24,6 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon.ui;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.items.ArcaneResin;
+import com.shatteredpixel.shatteredpixeldungeon.items.EmptyPot;
 import com.shatteredpixel.shatteredpixeldungeon.items.GemPowder;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
@@ -316,6 +317,7 @@ public class QuickRecipe extends Component {
 								return "";
 							}
 						}));
+				result.add(new QuickRecipe( new EmptyPot.Recipe() ));
 				return result;
 			case 3:
 				r = new ExoticPotion.PotionToExotic();

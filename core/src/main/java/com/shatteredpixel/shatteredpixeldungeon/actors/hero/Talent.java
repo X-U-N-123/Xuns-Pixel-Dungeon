@@ -1395,9 +1395,9 @@ public enum Talent {
 			case WARLOCK:
 				Collections.addAll(tierTalents, SOUL_EATER, SOUL_SIPHON, NECROMANCERS_MINIONS, CLEAR_YOUR_SOUL, MANA_EATING);
 				break;
-            /*case SWITCHER:
+            case SWITCHER:
                 Collections.addAll(tierTalents, SHARED_ARCANA, SWITCH_MASTER, RELAY_RECHARGING, ENERGY_RECYCLING);
-                break;*/
+                break;
 			case ASSASSIN:
 				Collections.addAll(tierTalents, ENHANCED_LETHALITY, ASSASSINS_REACH, TERRORIST_ATTACK, CHARGE_RECYCLING, HASHASHINS);
 				break;
