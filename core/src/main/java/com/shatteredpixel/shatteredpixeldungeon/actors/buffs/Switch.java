@@ -21,40 +21,36 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
-import com.watabou.noosa.Image;
 import com.watabou.utils.Bundle;
 
-public class Switch extends FlavourBuff{
+public class Switch extends FlavourBuff {
+
+    public static float DURATION = 4f;
+    public boolean used = false;
 
     {
         type = buffType.POSITIVE;
         announced = true;
     }
 
-    public static float DURATION = 4f;
-
-    private int level = 0;
+    public int staffLevel = 0;
     private Wand wandJustApplied; //we don't bundle this as it's only used right as the buff is applied
 
     public void setup(Wand wand){
-        if (level < wand.buffedLvl()){
-            this.level = wand.buffedLvl();
-            this.wandJustApplied = wand;
-        }
+        this.wandJustApplied = wand;
     }
 
     @Override
     public void detach() {
         super.detach();
+        if (!used) ArtifactRecharge.chargeArtifacts(Dungeon.hero, Dungeon.hero.pointsInTalent(Talent.MYSTICAL_SWITCH)*2f/3f);
         Item.updateQuickslot();
-    }
-
-    public int level(){
-        return this.level;
     }
 
     //this is used briefly so that a wand of magic missile can't clear the buff it just applied
@@ -66,12 +62,7 @@ public class Switch extends FlavourBuff{
 
     @Override
     public int icon() {
-        return BuffIndicator.UPGRADE;
-    }
-
-    @Override
-    public void tintIcon(Image icon) {
-        icon.hardlight(0.2f, 0.6f, 1f);
+        return BuffIndicator.SWITCH;
     }
 
     @Override
@@ -81,7 +72,7 @@ public class Switch extends FlavourBuff{
 
     @Override
     public String desc() {
-        return Messages.get(this, "desc", level(), dispTurns());
+        return Messages.get(this, "desc", 2 + Dungeon.hero.pointsInTalent(Talent.SWITCH_MASTER), staffLevel);
     }
 
     private static final String LEVEL = "level";
@@ -89,13 +80,13 @@ public class Switch extends FlavourBuff{
     @Override
     public void storeInBundle(Bundle bundle) {
         super.storeInBundle(bundle);
-        bundle.put(LEVEL, level);
+        bundle.put(LEVEL, staffLevel);
     }
 
     @Override
     public void restoreFromBundle(Bundle bundle) {
         super.restoreFromBundle(bundle);
-        level = bundle.getInt(LEVEL);
+        staffLevel = bundle.getInt(LEVEL);
     }
 
 }

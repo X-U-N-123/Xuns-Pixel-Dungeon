@@ -173,6 +173,7 @@ public class Goldarrow extends Item {
             }
             InterlevelScene.mode = InterlevelScene.Mode.RESET;
             Game.switchScene(InterlevelScene.class);
+            defaultAction = AC_RESET;
         }
         GameScene.updateFog();
     }

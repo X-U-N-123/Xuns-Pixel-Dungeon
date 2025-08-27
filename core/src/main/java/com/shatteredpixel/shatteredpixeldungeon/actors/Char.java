@@ -134,6 +134,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfCha
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfPsionicBlast;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAggression;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.FerretTuft;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfFireblast;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfFrost;
@@ -720,9 +721,6 @@ public abstract class Char extends Actor {
 		return acuRoll >= defRoll;
 	}
 
-	//TODO this is messy and hacky atm, should consider standardizing this so we can have many 'dodge reasons'
-	private static boolean tuftDodged = false;
-
 	public int attackSkill( Char target ) {
 		return 0;
 	}
@@ -856,7 +854,7 @@ public abstract class Char extends Actor {
 		}
 
 		if (this instanceof Hero && hero.hasTalent(Talent.EMERGENCY_SHIELD) && dmg > 1
-		&& !(src instanceof Hunger) && !(src instanceof Buff) && !(src instanceof Chasm)){
+		&& !(src instanceof Buff) && !(src instanceof Chasm)){
 			int shield = (int)(Math.log(dmg)/Math.log(Math.pow(5 - hero.pointsInTalent(Talent.EMERGENCY_SHIELD), 0.5)));
 			Buff.affect(this, Barrier.class).incShield(shield);
 			sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(shield), FloatingText.SHIELDING);
@@ -1065,6 +1063,7 @@ public abstract class Char extends Actor {
 			//defaults to normal damage icon if no other ones apply
 			int                                                         icon = FloatingText.PHYS_DMG;
 			if (NO_ARMOR_PHYSICAL_SOURCES.contains(src.getClass()))     icon = FloatingText.PHYS_DMG_NO_BLOCK;
+			if (buff(BrokenArmor.class) != null)                        icon = FloatingText.PHYS_DMG_NO_BLOCK;
 			if (AntiMagic.RESISTS.contains(src.getClass()))             icon = FloatingText.MAGIC_DMG;
 			if (src instanceof Pickaxe)                                 icon = FloatingText.PICK_DMG;
 
@@ -1083,7 +1082,6 @@ public abstract class Char extends Actor {
 			}
 
 			if (src instanceof Hunger)                                  icon = FloatingText.HUNGER;
-			if (src instanceof Burning)                                 icon = FloatingText.BURNING;
 			if (src instanceof Chill || src instanceof Frost)           icon = FloatingText.FROST;
 			if (src instanceof GeyserTrap || src instanceof StormCloud) icon = FloatingText.WATER;
 			if (src instanceof Burning)                                 icon = FloatingText.BURNING;
@@ -1199,6 +1197,10 @@ public abstract class Char extends Actor {
 			} else {
 				Dungeon.level.drop(new Dewdrop(), Dungeon.hero.pos).sprite.drop();
 			}
+		}
+
+		if (src instanceof Wand && hero.hasTalent(Talent.ENERGY_RECYCLING) && alignment != Alignment.ALLY){
+			((Wand)src).gainCharge(hero.pointsInTalent(Talent.ENERGY_RECYCLING) *0.3f);
 		}
 	}
 

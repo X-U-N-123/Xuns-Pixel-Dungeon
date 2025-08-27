@@ -135,7 +135,7 @@ public enum Talent {
 	//Warlock T3
 	SOUL_EATER(46, 3), SOUL_SIPHON(47, 3), NECROMANCERS_MINIONS(48, 3), CLEAR_YOUR_SOUL(226, 3),MANA_EATING(227, 3),
     //Switcher T3
-    SHARED_ARCANA(259, 3), SWITCH_MASTER(260, 3), RELAY_RECHARGING(261, 3), ENERGY_RECYCLING(262, 3),
+    SHARED_ARCANA(259, 3), SWITCH_MASTER(260, 3), RELAY_RECHARGING(261, 3), ENERGY_RECYCLING(262, 3),MYSTICAL_SWITCH(263, 3),
 	//Elemental Blast T4
 	BLAST_RADIUS(49, 4), ELEMENTAL_POWER(50, 4), REACTIVE_BARRIER(51, 4), RECHARGING_BLAST(239, 4),
 	//Wild Magic T4
@@ -808,7 +808,7 @@ public enum Talent {
 			Dungeon.hero.checkVisibleMobs();
 		}
 
-		if (talent == INTACT_SEAL || talent == TWIN_UPGRADES || talent == DESPERATE_POWER
+		if (talent == INTACT_SEAL || talent == TWIN_UPGRADES || talent == DESPERATE_POWER || talent == SHARED_ARCANA
 				|| talent == STRONGMAN || talent == DURABLE_PROJECTILES || talent == ARCANE_STEP){
 			if (Dungeon.hero.belongings.getItem(BrokenSeal.class) != null && talent == INTACT_SEAL){
 				Dungeon.hero.belongings.getItem(BrokenSeal.class).image = ItemSpriteSheet.INTACT_SEAL;
@@ -1396,7 +1396,7 @@ public enum Talent {
 				Collections.addAll(tierTalents, SOUL_EATER, SOUL_SIPHON, NECROMANCERS_MINIONS, CLEAR_YOUR_SOUL, MANA_EATING);
 				break;
             case SWITCHER:
-                Collections.addAll(tierTalents, SHARED_ARCANA, SWITCH_MASTER, RELAY_RECHARGING, ENERGY_RECYCLING);
+                Collections.addAll(tierTalents, SHARED_ARCANA, SWITCH_MASTER, RELAY_RECHARGING, ENERGY_RECYCLING, MYSTICAL_SWITCH);
                 break;
 			case ASSASSIN:
 				Collections.addAll(tierTalents, ENHANCED_LETHALITY, ASSASSINS_REACH, TERRORIST_ATTACK, CHARGE_RECYCLING, HASHASHINS);

@@ -34,7 +34,9 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
@@ -264,6 +266,14 @@ public class WndBlacksmith extends Window {
 						first = btnItem2.item();
 						second = btnItem1.item();
 					}
+					if (btnItem1.item() instanceof MagesStaff && btnItem2.item() instanceof Wand){
+						first = btnItem1.item();
+						second = btnItem2.item();
+					}
+					if (btnItem2.item() instanceof MagesStaff && btnItem1.item() instanceof Wand){
+						first = btnItem2.item();
+						second = btnItem1.item();
+					}
 
 					Sample.INSTANCE.play( Assets.Sounds.EVOKE );
 					ScrollOfUpgrade.upgrade( Dungeon.hero );
@@ -341,6 +351,11 @@ public class WndBlacksmith extends Window {
 					//need 2 items
 					if (item1 == null || item2 == null) {
 						btnReforge.enable(false);
+
+					//staff and the same kind of wand can reforge
+					} else if ((item1 instanceof MagesStaff && ((MagesStaff)item1).wandClass() == item2.getClass())
+					|| (item2 instanceof MagesStaff && ((MagesStaff)item2).wandClass() == item1.getClass())){
+						btnReforge.enable(true);
 
 					//both of the same type
 					} else if (item1.getClass() != item2.getClass()) {

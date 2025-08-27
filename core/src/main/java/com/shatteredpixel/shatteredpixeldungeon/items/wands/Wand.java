@@ -432,13 +432,9 @@ public abstract class Wand extends Item {
 				return buff.level();
 			}
 
-			Switch buff1 = charger.target.buff(Switch.class);
-			int maxLvl = 2147483647;
-			if (Dungeon.hero.belongings.getItem(MagesStaff.class) != null){
-				maxLvl = Dungeon.hero.belongings.getItem(MagesStaff.class).level();
-			}
-			if (buff1 != null){
-				//lvl = Math.min(lvl + buff1.level, maxLvl);
+			Switch s = charger.target.buff(Switch.class);
+			if (s != null && s.staffLevel > lvl){
+				lvl = Math.min(lvl + 2 + Dungeon.hero.pointsInTalent(Talent.SWITCH_MASTER), s.staffLevel);
 			}
 		}
 		return lvl;
@@ -495,8 +491,6 @@ public abstract class Wand extends Item {
 				Buff.prolong(curUser, ShardOfOblivion.WandUseTracker.class, 50f);
 			}
 		}
-
-		boolean isSwitched = false;
 		//inside staff
 		if (charger != null && charger.target == Dungeon.hero && !Dungeon.hero.belongings.contains(this)){
 			if (Dungeon.hero.hasTalent(Talent.EXCESS_CHARGE) && curCharges >= maxCharges){
@@ -504,15 +498,12 @@ public abstract class Wand extends Item {
 				Buff.affect(Dungeon.hero, Barrier.class).setShield(shieldToGive);
 				Dungeon.hero.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(shieldToGive), FloatingText.SHIELDING);
 			}
-
-			/*if (Dungeon.hero.subClass == HeroSubClass.SWITCHER) {
-				Buff.affect(Dungeon.hero, Switch.class, Switch.DURATION).staffUsed = true;
-				Dungeon.hero.buff(Switch.class).level = 2 + Dungeon.hero.pointsInTalent(Talent.SHARED_ARCANA);
-			}*/
 		}
 		
 		curCharges -= cursed ? 1 : chargesPerCast();
 
+		Switch buff1 = curUser.buff(Switch.class);
+		int switchLvl = 0;
 		//remove magic charge at a higher priority, if we are benefiting from it are and not the
 		//wand that just applied it
 		WandOfMagicMissile.MagicCharge buff = curUser.buff(WandOfMagicMissile.MagicCharge.class);
@@ -521,10 +512,24 @@ public abstract class Wand extends Item {
 				&& buff.level() == buffedLvl()
 				&& buffedLvl() > super.buffedLvl()){
 			buff.detach();
-		} else {
+		} else if (buff1 == null || buff1.wandJustApplied() == this){
 			ScrollEmpower empower = curUser.buff(ScrollEmpower.class);
 			if (empower != null){
 				empower.use();
+			}
+		} else if (buffedLvl() > super.buffedLvl()){
+			buff1.used = true;
+			buff1.detach();
+			switchLvl += 1;
+			int point = curUser.pointsInTalent(Talent.SWITCH_MASTER);
+			if (point > 0){
+				switchLvl += 1;
+				if (point > 1){
+					this.gainCharge(0.15f);
+					if (point > 2 && curUser.belongings.getItem(MagesStaff.class) != null){
+						curUser.belongings.getItem(MagesStaff.class).gainCharge(0.15f);
+					}
+				}
 			}
 		}
 
@@ -534,9 +539,6 @@ public abstract class Wand extends Item {
 				&& !Dungeon.hero.belongings.contains(this)){
 
 			Buff.prolong(Dungeon.hero, Talent.EmpoweredStrikeTracker.class, 10f);
-		} else if (Dungeon.hero.buff(Switch.class) != null){
-			Dungeon.hero.buff(Switch.class).detach();
-			isSwitched = true;
 		}
 
 		if (Dungeon.hero.hasTalent(Talent.LINGERING_MAGIC)
@@ -568,8 +570,7 @@ public abstract class Wand extends Item {
 		Invisibility.dispel();
 		updateQuickslot();
 
-		if (!isSwitched) curUser.spendAndNext( TIME_TO_ZAP );
-		else             curUser.spendAndNext(TIME_TO_ZAP/2);
+		curUser.spendAndNext(TIME_TO_ZAP - 0.2f*switchLvl);
 	}
 	
 	@Override
@@ -808,6 +809,21 @@ public abstract class Wand extends Item {
 						curWand.fx(shot, new Callback() {
 							public void call() {
 								curWand.onZap(shot);
+
+								if (curWand.charger != null
+								&& curWand.charger.target == Dungeon.hero
+								&& !Dungeon.hero.belongings.contains(curWand)){//inside the staff
+									int highestLvl = -1;
+									//apply the magic charge buff if we have another wand in inventory of a lower level, or already have the buff
+									for (Wand w : Dungeon.hero.belongings.getAllItems(Wand.class)){
+										highestLvl = Math.max(highestLvl, w.level());
+									}
+									if (0 <= highestLvl && highestLvl < curWand.level()){
+										Switch s = Buff.prolong(curUser, Switch.class, Switch.DURATION);
+										s.setup(curWand);
+										s.staffLevel = curWand.level();
+									}
+								}
 								if (Random.Float() < WondrousResin.extraCurseEffectChance()){
 									WondrousResin.forcePositive = true;
 									CursedWand.cursedZap(curWand,

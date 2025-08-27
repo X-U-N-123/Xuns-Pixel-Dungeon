@@ -17,13 +17,13 @@ allprojects {
         appName = 'Xun’s Pixel Dungeon'
         appPackageName = 'com.xun.xunspixeldungeon'
 
-        appVersionCode = 855
-        appVersionName = '0.3.4_fix2'
+        appVersionCode = 856
+        appVersionName = '0.3.5'
 
         appJavaCompatibility = JavaVersion.VERSION_1_8
 
         appAndroidCompileSDK = 35   //Android 15
-        appAndroidMinSDK = 16       //Android 4.0
+        appAndroidMinSDK = 16       //Android 4.1
         //significant layout management changes required for API 35+ as edge-to-edge is forced on
         //will do this at the same time as dropping support for Android 4.4- (later in 2025)
         appAndroidTargetSDK = 35    //Android 15
