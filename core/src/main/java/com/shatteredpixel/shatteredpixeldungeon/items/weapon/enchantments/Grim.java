@@ -78,6 +78,6 @@ public class Grim extends Weapon.Enchantment {
 			detach();
 			return true;
 		}
-	};
+	}
 
 }

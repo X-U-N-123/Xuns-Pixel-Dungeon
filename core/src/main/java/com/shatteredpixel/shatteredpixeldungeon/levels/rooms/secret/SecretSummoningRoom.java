@@ -21,7 +21,6 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.levels.rooms.secret;
 
-import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.TrapMechanism;
@@ -71,8 +70,7 @@ public class SecretSummoningRoom extends SecretRoom {
 			}
 		}
 
-		WornLock lock = Dungeon.hero.belongings.getItem(WornLock.class);
-		if (lock != null && Random.Float() <= lock.revealHiddenDoorChance()) {
+		if (Random.Float() <= WornLock.revealHiddenDoorChance()) {
 			entrance().set( Door.Type.UNLOCKED );
 		} else {
 			entrance().set( Door.Type.HIDDEN );

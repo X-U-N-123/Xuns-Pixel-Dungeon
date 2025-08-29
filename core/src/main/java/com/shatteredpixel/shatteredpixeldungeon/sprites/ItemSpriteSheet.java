@@ -155,13 +155,8 @@ public class ItemSpriteSheet {
 	public static final int TRINKET_CATA        = MISC_CONSUMABLE +22;
 	public static final int GOLDARROW           = MISC_CONSUMABLE +23;
     public static final int INTACT_SEAL         = MISC_CONSUMABLE +24;
-	public static final int SHOVEL              = MISC_CONSUMABLE +25;
-	public static final int STONE_SHOVEL        = MISC_CONSUMABLE +26;
-	public static final int WATER_SHOVEL        = MISC_CONSUMABLE +27;
-	public static final int PLANT_SHOVEL        = MISC_CONSUMABLE +28;
-	public static final int CHASM_SHOVEL        = MISC_CONSUMABLE +29;
-	public static final int BLADE_OF_REAL       = MISC_CONSUMABLE +30;
-	public static final int BLADE_OF_UNREAL     = MISC_CONSUMABLE +31;
+	public static final int SHIELD              = MISC_CONSUMABLE +25;
+	public static final int POT                 = MISC_CONSUMABLE +26;
 	static{
 		assignItemRect(ANKH,            10, 16);
 		assignItemRect(STYLUS,          12, 13);
@@ -182,6 +177,7 @@ public class ItemSpriteSheet {
 		assignItemRect(AMULET,          16, 16);
 		assignItemRect(MASTERY,         13, 16);
 		assignItemRect(KIT,             16, 15);
+		assignItemRect(POT,             14, 12);
 
 		assignItemRect(SEAL_SHARD,      11, 11);
 		assignItemRect(BROKEN_STAFF,    14, 10);
@@ -193,15 +189,7 @@ public class ItemSpriteSheet {
 		assignItemRect(TRINKET_CATA,    12, 11);
 
 		assignItemRect(GOLDARROW,       16, 16);
-
-		assignItemRect(SHOVEL,          16, 16);
-		assignItemRect(STONE_SHOVEL,    16, 16);
-		assignItemRect(WATER_SHOVEL,    16, 16);
-		assignItemRect(PLANT_SHOVEL,    16, 16);
-		assignItemRect(CHASM_SHOVEL,    16, 16);
-
-		assignItemRect(BLADE_OF_REAL,   15, 16);
-		assignItemRect(BLADE_OF_UNREAL, 15, 16);
+		assignItemRect(SHIELD,          15, 16);
 	}
 	
 	private static final int BOMBS          = xy(1, 4);   //16 slots
@@ -495,7 +483,27 @@ public class ItemSpriteSheet {
 		assignItemRect(Anti_matter,     12, 11);
 		assignItemRect(HEAVYBOOMERANG,  15, 15);
 	}
-	
+
+	public static final int CHANGEABLE_WEP = xy(1, 9);//16 slots
+	public static final int SHOVEL              = CHANGEABLE_WEP +25;
+	public static final int STONE_SHOVEL        = CHANGEABLE_WEP +26;
+	public static final int WATER_SHOVEL        = CHANGEABLE_WEP +27;
+	public static final int PLANT_SHOVEL        = CHANGEABLE_WEP +28;
+	public static final int CHASM_SHOVEL        = CHANGEABLE_WEP +29;
+
+	public static final int BLADE_OF_REAL       = CHANGEABLE_WEP +30;
+	public static final int BLADE_OF_UNREAL     = CHANGEABLE_WEP +31;
+	static {
+		assignItemRect(SHOVEL,          16, 16);
+		assignItemRect(STONE_SHOVEL,    16, 16);
+		assignItemRect(WATER_SHOVEL,    16, 16);
+		assignItemRect(PLANT_SHOVEL,    16, 16);
+		assignItemRect(CHASM_SHOVEL,    16, 16);
+
+		assignItemRect(BLADE_OF_REAL,   15, 16);
+		assignItemRect(BLADE_OF_UNREAL, 15, 16);
+	}
+
 	public static final int DARTS           = xy(17, 4);  //16 slots
 	public static final int DART            = DARTS+0;
 	public static final int ROT_DART        = DARTS+1;
@@ -660,6 +668,7 @@ public class ItemSpriteSheet {
 	public static final int FERRET_TUFT     = TRINKETS+15;
 	public static final int WORN_LOCK       = TRINKETS+16;
 	public static final int STONE_INTE      = TRINKETS+17;
+	public static final int MEMBER_CARD     = TRINKETS+18;
 	static{
 		assignItemRect(RAT_SKULL,       16, 11);
 		assignItemRect(PARCHMENT_SCRAP, 10, 14);
@@ -679,6 +688,7 @@ public class ItemSpriteSheet {
 		assignItemRect(FERRET_TUFT,     16, 15);
 		assignItemRect(WORN_LOCK,       10, 14);
 		assignItemRect(STONE_INTE,      14, 12);
+		assignItemRect(MEMBER_CARD,     16, 12);
 	}
 
 	private static final int SCROLLS        = xy(1, 13);  //16 slots
@@ -928,8 +938,6 @@ public class ItemSpriteSheet {
 	public static final int TOKEN   = QUEST+6;
 	public static final int BLOB    = QUEST+7;
 	public static final int SHARD   = QUEST+8;
-	public static final int SHIELD  = QUEST+9;
-	public static final int POT     = QUEST+10;
 	static{
 		assignItemRect(DUST,    12, 11);
 		assignItemRect(CANDLE,  12, 12);
@@ -939,8 +947,6 @@ public class ItemSpriteSheet {
 		assignItemRect(TOKEN,   12, 12);
 		assignItemRect(BLOB,    10, 9 );
 		assignItemRect(SHARD,   8 , 10);
-		assignItemRect(SHIELD,  15, 16);
-		assignItemRect(POT,     14, 12);
 	}
 
 	private static final int BAGS       = xy(1, 19);  //16 slots

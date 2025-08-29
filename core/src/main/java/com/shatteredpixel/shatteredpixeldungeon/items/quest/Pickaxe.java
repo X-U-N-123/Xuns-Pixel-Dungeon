@@ -33,6 +33,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Bee;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Crab;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Scorpio;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Spinner;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.StonePier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Swarm;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Splash;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
@@ -191,7 +192,8 @@ public class Pickaxe extends MeleeWeapon {
 						|| enemy instanceof Bee
 						|| enemy instanceof Crab
 						|| enemy instanceof Spinner
-						|| enemy instanceof Scorpio) {
+						|| enemy instanceof Scorpio
+						|| enemy instanceof StonePier) {
 					//+(8+2*lvl) damage, equivalent to +100% damage
 					damageBoost = augment.damageFactor(8 + 2*buffedLvl());
 				}

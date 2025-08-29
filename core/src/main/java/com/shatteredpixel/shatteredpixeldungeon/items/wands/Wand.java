@@ -818,7 +818,7 @@ public abstract class Wand extends Item {
 									for (Wand w : Dungeon.hero.belongings.getAllItems(Wand.class)){
 										highestLvl = Math.max(highestLvl, w.level());
 									}
-									if (0 <= highestLvl && highestLvl < curWand.level()){
+									if (0 <= highestLvl && highestLvl < curWand.level() && curUser.subClass == HeroSubClass.SWITCHER){
 										Switch s = Buff.prolong(curUser, Switch.class, Switch.DURATION);
 										s.setup(curWand);
 										s.staffLevel = curWand.level();

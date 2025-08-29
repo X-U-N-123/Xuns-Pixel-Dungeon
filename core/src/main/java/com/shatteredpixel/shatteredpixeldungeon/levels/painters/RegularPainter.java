@@ -214,11 +214,7 @@ public abstract class RegularPainter extends Painter {
 				Room.Door d = r.connected.get(n);
 				int door = d.x + d.y * l.width();
 
-				float lockReveal = 0;
-				WornLock lock = Dungeon.hero.belongings.getItem(WornLock.class);
-				if (lock != null) {
-					lockReveal = lock.revealHiddenDoorChance();
-				}
+				float lockReveal = WornLock.revealHiddenDoorChance();
 				
 				if (d.type == Room.Door.Type.REGULAR){
 					if (Random.Float() < hiddenDoorChance - lockReveal) {

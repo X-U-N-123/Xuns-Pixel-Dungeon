@@ -26,16 +26,17 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Charm;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Degrade;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hex;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicalSleep;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Switch;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vulnerable;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Weakness;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.Explosion;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.Judgement;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.duelist.ElementalStrike;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.mage.ElementalBlast;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.mage.WarpBeacon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.Explosion;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.GuidingLight;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.HolyLance;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.HolyWeapon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.Judgement;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.JusticeStrike;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.SharedCharge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.Smite;
@@ -86,6 +87,7 @@ public class AntiMagic extends Armor.Glyph {
 		RESISTS.add( Vulnerable.class );
 		RESISTS.add( Hex.class );
 		RESISTS.add( Degrade.class );
+		RESISTS.add( Switch.class );
 		
 		RESISTS.add( DisintegrationTrap.class );
 		RESISTS.add( GrimTrap.class );
@@ -117,6 +119,7 @@ public class AntiMagic extends Armor.Glyph {
 		RESISTS.add( WandOfLightning.class );
 		RESISTS.add( WandOfLivingEarth.class );
 		RESISTS.add( WandOfMagicMissile.class );
+		RESISTS.add( WandOfMagicMissile.MagicCharge.class );
 		RESISTS.add( WandOfPrismaticLight.class );
 		RESISTS.add( WandOfTransfusion.class );
 		RESISTS.add( WandOfWarding.Ward.class );

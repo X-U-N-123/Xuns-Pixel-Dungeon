@@ -103,6 +103,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Elemental;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GnollGeomancer;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Necromancer;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.StonePier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Tengu;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.MirrorImage;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.PrismaticImage;
@@ -141,6 +142,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfFrost;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfLightning;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfLivingEarth;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Pier;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Blazing;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Grim;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Kinetic;
@@ -1201,6 +1203,19 @@ public abstract class Char extends Actor {
 
 		if (src instanceof Wand && hero.hasTalent(Talent.ENERGY_RECYCLING) && alignment != Alignment.ALLY){
 			((Wand)src).gainCharge(hero.pointsInTalent(Talent.ENERGY_RECYCLING) *0.3f);
+		}
+
+		if (src instanceof Char && ((Char) src).buff(Pier.StonePierTracker.class) != null && !(this instanceof StonePier)){
+			Pier.StonePierTracker tracker = ((Char) src).buff(Pier.StonePierTracker.class);
+			tracker.detach();
+			StonePier pier = new StonePier();
+
+			pier.HT = (int)(HT * 1.5 * tracker.strength);
+			pier.HP = (int)(HT * 1.5 * tracker.strength);
+			pier.pos = pos;
+			GameScene.add(pier);
+			ScrollOfTeleportation.appear(pier, pier.pos);
+			Dungeon.level.occupyCell(pier);
 		}
 	}
 

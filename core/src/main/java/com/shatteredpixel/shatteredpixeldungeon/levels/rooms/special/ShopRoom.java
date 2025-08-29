@@ -33,6 +33,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Honeypot;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.Stylus;
 import com.shatteredpixel.shatteredpixeldungeon.items.Torch;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.LeatherArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.MailArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.PlateArmor;
@@ -45,6 +46,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.bags.PotionBandolier;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.ScrollHolder;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.VelvetPouch;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.SmallRation;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfIdentify;
@@ -52,7 +54,9 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMagicMappi
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRemoveCurse;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Alchemize;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAugmentation;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.MemberCard;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.TippedDart;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
@@ -224,43 +228,72 @@ public class ShopRoom extends SpecialRoom {
 		ArrayList<Item> itemsToSpawn = new ArrayList<>();
 
 		MeleeWeapon w;
+		Armor a;
+		MissileWeapon m;
 		switch (Dungeon.depth) {
 		case 6: default:
 			w = (MeleeWeapon) Generator.random(Generator.wepTiers[1]);
-			itemsToSpawn.add( Generator.random(Generator.misTiers[1]).quantity(2).identify(false) );
-			itemsToSpawn.add( new LeatherArmor().identify(false) );
+			m = (MissileWeapon) Generator.random(Generator.misTiers[1]).quantity(2).identify(false);
+			a = (Armor) new LeatherArmor().identify(false);
 			break;
 			
 		case 11:
 			w = (MeleeWeapon) Generator.random(Generator.wepTiers[2]);
-			itemsToSpawn.add( Generator.random(Generator.misTiers[2]).quantity(2).identify(false) );
-			itemsToSpawn.add( new MailArmor().identify(false) );
+			m = (MissileWeapon) Generator.random(Generator.misTiers[2]).quantity(2).identify(false);
+			a = (Armor) new MailArmor().identify(false);
 			break;
 			
 		case 16:
 			w = (MeleeWeapon) Generator.random(Generator.wepTiers[3]);
-			itemsToSpawn.add( Generator.random(Generator.misTiers[3]).quantity(2).identify(false) );
-			itemsToSpawn.add( new ScaleArmor().identify(false) );
+			m = (MissileWeapon) Generator.random(Generator.misTiers[3]).quantity(2).identify(false);
+			a = (Armor) new ScaleArmor().identify(false);
 			break;
 
 		case 20: case 21:
 			w = (MeleeWeapon) Generator.random(Generator.wepTiers[4]);
-			itemsToSpawn.add( Generator.random(Generator.misTiers[4]).quantity(2).identify(false) );
-			itemsToSpawn.add( new PlateArmor().identify(false) );
+			m = (MissileWeapon) Generator.random(Generator.misTiers[4]).quantity(2).identify(false);
+			a = (Armor) new PlateArmor().identify(false);
 			itemsToSpawn.add( new Torch() );
 			itemsToSpawn.add( new Torch() );
 			itemsToSpawn.add( new Torch() );
+			if (Random.Float() * 0.6f < MemberCard.betterItemChance()){
+				itemsToSpawn.add( new Torch() );
+			}
 			break;
 		}
 		w.enchant(null);
 		w.cursed = false;
 		w.level(0);
 		w.identify(false);
+		if (Random.Float() < MemberCard.betterItemChance()){
+			w.upgrade();
+		}
+		if (Random.Float() < MemberCard.betterItemChance()){
+			w.enchant();
+		}
 		itemsToSpawn.add(w);
+
+		if (Random.Float() < MemberCard.betterItemChance()){
+			a.upgrade();
+		}
+		if (Random.Float() < MemberCard.betterItemChance()){
+			a.inscribe();
+		}
+		itemsToSpawn.add(a);
+
+		while (Random.Float() < MemberCard.betterItemChance()){
+			m.quantity(m.quantity() +1);
+		}
+		itemsToSpawn.add(m);
 		
 		itemsToSpawn.add( TippedDart.randomTipped(2) );
 
-		itemsToSpawn.add( new Alchemize().quantity(Random.IntRange(2, 3)));
+		Alchemize al = new Alchemize();
+		al.quantity(Random.IntRange(2, 3));
+		while (Random.Float() < MemberCard.betterItemChance()){
+			al.quantity(al.quantity()+1);
+		}
+		itemsToSpawn.add(al);
 
 		Bag bag = ChooseBag(Dungeon.hero.belongings);
 		if (bag != null) {
@@ -280,13 +313,15 @@ public class ShopRoom extends SpecialRoom {
 					Generator.randomUsingDefaults( Generator.Category.POTION ) :
 					Generator.randomUsingDefaults( Generator.Category.SCROLL ) );
 
-
-		itemsToSpawn.add( new SmallRation() );
-		itemsToSpawn.add( new SmallRation() );
+		if (Random.Float() < MemberCard.betterItemChance() * 2f) itemsToSpawn.add( new Food() );
+		else                                                     itemsToSpawn.add(new SmallRation());
+		if (Random.Float() < (MemberCard.betterItemChance() * 2f - 1)) itemsToSpawn.add( new Food() );
+		else                                                           itemsToSpawn.add(new SmallRation());
 		
 		switch (Random.Int(4)){
 			case 0:
-				itemsToSpawn.add( new Bomb() );
+				if (Random.Float() < MemberCard.betterItemChance()) itemsToSpawn.add(new Bomb.DoubleBomb());
+				else                                                itemsToSpawn.add( new Bomb() );
 				break;
 			case 1:
 			case 2:
@@ -313,7 +348,11 @@ public class ShopRoom extends SpecialRoom {
 				case 16:
 					bags = (int)Math.ceil(( 5-hourglass.sandBags) * 0.50f ); break;
 				case 20: case 21:
-					bags = (int)Math.ceil(( 5-hourglass.sandBags) * 0.80f ); break;
+					bags = (int)Math.ceil(( 5-hourglass.sandBags) * 0.81f ); break;
+			}
+
+			while (Random.Float() < MemberCard.betterItemChance()){
+				bags = Math.min(bags+1, 5-hourglass.sandBags);
 			}
 
 			for(int i = 1; i <= bags; i++){
@@ -323,7 +362,7 @@ public class ShopRoom extends SpecialRoom {
 		}
 
 		Item rare;
-		switch (Random.Int(10)){
+		switch (Random.Int(Math.round(10 * (1 - MemberCard.betterItemChance() )))){
 			case 0:
 				rare = Generator.random( Generator.Category.WAND );
 				rare.level( 0 );

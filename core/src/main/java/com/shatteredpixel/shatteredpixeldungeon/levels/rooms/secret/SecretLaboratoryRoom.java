@@ -21,7 +21,6 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.levels.rooms.secret;
 
-import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Alchemy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.items.EnergyCrystal;
@@ -71,8 +70,7 @@ public class SecretLaboratoryRoom extends SecretRoom {
 		Painter.fill( level, this, Terrain.WALL );
 		Painter.fill( level, this, 1, Terrain.EMPTY_SP );
 
-		WornLock lock = Dungeon.hero.belongings.getItem(WornLock.class);
-		if (lock != null && Random.Float() <= lock.revealHiddenDoorChance()) {
+		if (Random.Float() <= WornLock.revealHiddenDoorChance()) {
 			entrance().set( Door.Type.UNLOCKED );
 		} else {
 			entrance().set( Door.Type.HIDDEN );

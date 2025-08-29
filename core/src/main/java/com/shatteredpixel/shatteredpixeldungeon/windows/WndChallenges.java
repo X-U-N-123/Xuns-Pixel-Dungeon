@@ -36,10 +36,11 @@ import java.util.ArrayList;
 
 public class WndChallenges extends Window {
 
-	private static final int WIDTH		= 120;
-	private static final int TTL_HEIGHT = 16;
-	private static final int BTN_HEIGHT = 16;
-	private static final int GAP        = 1;
+	private static final int WIDTH        = 120;
+	private static final int WIDTH_HORIZON= 240;
+	private static final int TTL_HEIGHT   = 16;
+	private static final int BTN_HEIGHT   = 16;
+	private static final int GAP          = 1;
 
 	private boolean editable;
 	private ArrayList<CheckBox> boxes;
@@ -52,16 +53,24 @@ public class WndChallenges extends Window {
 
 		RenderedTextBlock title = PixelScene.renderTextBlock( Messages.get(this, "title"), 12 );
 		title.hardlight( TITLE_COLOR );
-		title.setPos(
-				(WIDTH - title.width()) / 2,
-				(TTL_HEIGHT - title.height()) / 2
-		);
+		if (PixelScene.landscape()) {
+			title.setPos(
+			(WIDTH_HORIZON - title.width()) / 2,
+			(TTL_HEIGHT - title.height()) / 2
+			);
+		} else {
+			title.setPos(
+			(WIDTH - title.width()) / 2,
+			(TTL_HEIGHT - title.height()) / 2
+			);
+		}
 		PixelScene.align(title);
 		add( title );
 
 		boxes = new ArrayList<>();
 
 		float pos = TTL_HEIGHT;
+		int pos1 = 0;
 		for (int i=0; i < Challenges.NAME_IDS.length; i++) {
 
 			final String challenge = Challenges.NAME_IDS[i];
@@ -69,11 +78,15 @@ public class WndChallenges extends Window {
 			CheckBox cb = new CheckBox( Messages.titleCase(Messages.get(Challenges.class, challenge)) );
 			cb.checked( (checked & Challenges.MASKS[i]) != 0 );
 			cb.active = editable;
+			if (pos >= (BTN_HEIGHT+GAP) * Math.ceil(Challenges.NAME_IDS.length/2f) && PixelScene.landscape()){
+				pos = TTL_HEIGHT;
+				pos1 = WIDTH + GAP;
+			}
 
-			if (i > 0) {
+			if (i > 0 && pos > TTL_HEIGHT) {
 				pos += GAP;
 			}
-			cb.setRect( 0, pos, WIDTH-16, BTN_HEIGHT );
+			cb.setRect( pos1, pos, WIDTH-16, BTN_HEIGHT );
 
 			add( cb );
 			boxes.add( cb );
@@ -93,7 +106,11 @@ public class WndChallenges extends Window {
 			pos = cb.bottom();
 		}
 
-		resize( WIDTH, (int)pos );
+		if(Challenges.NAME_IDS.length % 2 != 0 && PixelScene.landscape()){
+			pos += BTN_HEIGHT;
+		}
+		if (PixelScene.landscape()) resize(WIDTH_HORIZON, (int)pos );
+		else                        resize( WIDTH, (int)pos );
 	}
 
 	@Override

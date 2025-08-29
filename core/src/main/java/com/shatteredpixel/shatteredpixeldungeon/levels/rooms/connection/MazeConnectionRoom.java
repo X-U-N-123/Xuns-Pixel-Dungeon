@@ -21,7 +21,6 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.levels.rooms.connection;
 
-import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.WornLock;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
@@ -49,8 +48,7 @@ public class MazeConnectionRoom extends ConnectionRoom {
 		
 		for (Door door : connected.values()) {
 
-			WornLock lock = Dungeon.hero.belongings.getItem(WornLock.class);
-			if (lock != null && Random.Float() <= lock.revealHiddenDoorChance()) {
+			if (Random.Float() <= WornLock.revealHiddenDoorChance()) {
 				door.set( Door.Type.UNLOCKED );
 			} else {
 				door.set( Door.Type.HIDDEN );

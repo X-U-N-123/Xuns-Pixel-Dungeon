@@ -46,6 +46,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.ArmorAbility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.StonePier;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
@@ -56,6 +57,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.KindOfWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClassArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
+import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAggression;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Annoying;
@@ -63,6 +65,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Dazzling;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Displacing;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Explosive;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Friendly;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Pier;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Polarized;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Sacrificial;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Wayward;
@@ -82,6 +85,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Vampir
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
+import com.shatteredpixel.shatteredpixeldungeon.levels.features.Chasm;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.ConeAOE;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -126,8 +130,9 @@ public class ElementalStrike extends ArmorAbility {
 		effectTypes.put(Wayward.class,      MagicMissile.SHADOW_CONE);
 		effectTypes.put(Polarized.class,    MagicMissile.SHADOW_CONE);
 		effectTypes.put(Friendly.class,     MagicMissile.SHADOW_CONE);
+		effectTypes.put(Pier.class,         MagicMissile.SHADOW_CONE);
 
-		effectTypes.put(null,               MagicMissile.MAGIC_MISS_CONE);
+		effectTypes.put(null,            MagicMissile.MAGIC_MISS_CONE);
 	}
 
 	{
@@ -195,7 +200,7 @@ public class ElementalStrike extends ArmorAbility {
 						enemy = null;
 					} else if (enemy.alignment == hero.alignment) {
 						enemy = null;
-					} else if (!hero.canAttack(enemy)) {
+					} else if (!hero.canAttack(enemy) && !(finalEnchantment instanceof Pier)) {
 						enemy = null;
 					}
 				}
@@ -205,8 +210,10 @@ public class ElementalStrike extends ArmorAbility {
 				if (enemy != null){
 					AttackIndicator.target(enemy);
 					oldEnemyPos = enemy.pos;
-					if (hero.attack(enemy, 1, 0, Char.INFINITE_ACCURACY)) {
-						Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG);
+					if (!(finalEnchantment instanceof Pier)){
+						if (hero.attack(enemy, 1, 0, Char.INFINITE_ACCURACY)) {
+							Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG);
+						}
 					}
 				}
 
@@ -554,6 +561,20 @@ public class ElementalStrike extends ArmorAbility {
 					Buff.affect(ch, Charm.class, 6f).object = hero.id();
 				}
 			}
+
+		//*** Pier ***
+		} else if (ench instanceof Pier && primaryTarget != null){
+			primaryTarget.die(Chasm.class);
+			primaryTarget.sprite.killAndErase();
+			StonePier pier = new StonePier();
+
+			pier.HT = primaryTarget.HT * 3;
+			pier.HP = primaryTarget.HT * 3;
+			pier.pos = primaryTarget.pos;
+			GameScene.add(pier);
+			ScrollOfTeleportation.appear(pier, pier.pos);
+			Dungeon.level.occupyCell(pier);
+			Buff.affect(pier, StoneOfAggression.Aggression.class, 5f * powerMulti);
 		}
 
 	}

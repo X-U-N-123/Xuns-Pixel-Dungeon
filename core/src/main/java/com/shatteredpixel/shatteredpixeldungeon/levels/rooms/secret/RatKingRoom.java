@@ -21,7 +21,6 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.levels.rooms.secret;
 
-import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.RatKing;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
@@ -55,8 +54,7 @@ public class RatKingRoom extends SecretRoom {
 		
 		Door entrance = entrance();
 
-		WornLock lock = Dungeon.hero.belongings.getItem(WornLock.class);
-		if (lock != null && Random.Float() <= lock.revealHiddenDoorChance()) {
+		if (Random.Float() <= WornLock.revealHiddenDoorChance()) {
 			entrance.set( Door.Type.UNLOCKED );
 		} else {
 			entrance.set( Door.Type.HIDDEN );

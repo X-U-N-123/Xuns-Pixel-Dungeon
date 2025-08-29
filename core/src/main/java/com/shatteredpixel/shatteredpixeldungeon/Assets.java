@@ -292,6 +292,7 @@ public class Assets {
 		public static final String WARLOCK  = "sprites/warlock.png";
 		public static final String GOLEM    = "sprites/golem.png";
 		public static final String STATUE   = "sprites/statue.png";
+		public static final String STONEPIER= "sprites/stonepier.png";
 		public static final String SUCCUBUS = "sprites/succubus.png";
 		public static final String SCORPIO  = "sprites/scorpio.png";
 		public static final String FISTS    = "sprites/yog_fists.png";
