@@ -62,17 +62,13 @@ public class StonePier extends Mob {
     public void damage( int dmg, Object src ) {
         if (src instanceof Char){
             ArrayList<Class<? extends FlavourBuff>> debuff = new ArrayList<>();
-            debuff.add(Weakness.class);
-            debuff.add(Vertigo.class);
-            debuff.add(Daze.class);
-            debuff.add(Vulnerable.class);
-            debuff.add(Slow.class);
-            debuff.add(Paralysis.class);
-            int i;
-            do {
-                i = Random.Int(debuff.size());
-            } while (((Char)src).buff(debuff.get(i)) != null);
-            Buff.affect((Char)src, debuff.get(i), 8f);
+            if (((Char)src).buff(Weakness.class) == null)   debuff.add(Weakness.class);
+            if (((Char)src).buff(Vertigo.class) == null)    debuff.add(Vertigo.class);
+            if (((Char)src).buff(Daze.class) == null)       debuff.add(Daze.class);
+            if (((Char)src).buff(Vulnerable.class) == null) debuff.add(Vulnerable.class);
+            if (((Char)src).buff(Slow.class) == null)       debuff.add(Slow.class);
+            if (debuff.isEmpty())                           debuff.add(Paralysis.class);
+            Buff.affect((Char)src, debuff.get(Random.Int(debuff.size())), 8f);
         }
         super.damage( dmg, src );
     }

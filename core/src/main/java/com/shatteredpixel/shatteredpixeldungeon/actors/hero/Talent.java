@@ -1155,10 +1155,10 @@ public enum Talent {
 
 			int point = hero.pointsInTalent(WEAKENING_SNEAK);
 			if (point > 0 && enemy.buff(WeakeningSneakTracker.class) == null){
-				Buff.affect(enemy, Blindness.class, 3f);
+				Buff.affect(enemy, Blindness.class, 5f);
 				Buff.affect(enemy, WeakeningSneakTracker.class);
-				if (point > 1) Buff.affect(enemy, Vertigo.class, 3f);
-				if (point > 2) Buff.affect(enemy, Cripple.class, 3f);
+				if (point > 1) Buff.affect(enemy, Vertigo.class, 5f);
+				if (point > 2) Buff.affect(enemy, Cripple.class, 5f);
 			}
 		}
 

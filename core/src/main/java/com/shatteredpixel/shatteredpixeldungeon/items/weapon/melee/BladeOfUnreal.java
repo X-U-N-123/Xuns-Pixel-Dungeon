@@ -24,7 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ShieldBuff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
@@ -35,7 +35,6 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.AttackIndicator;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
-import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 
@@ -75,26 +74,11 @@ public class BladeOfUnreal extends MeleeWeapon {
     public int proc(Char attacker, Char defender, int damage) {
         if (isReal){
             if (attacker == Dungeon.hero){
-                int exStr = Dungeon.hero.STR() - STRReq();
-                if (exStr < 0) {
-                    exStr = 0;
+                if (((Hero) attacker).pointsInTalent(Talent.BLADE_OF_UNREAL) > 1 && attacker.HP < attacker.HT) {
+                    attacker.HP += 1;
+                    attacker.sprite.showStatusWithIcon(CharSprite.POSITIVE, "1", FloatingText.HEALING);
                 }
-                damage = Random.NormalIntRange(min(), max() + exStr);
-                int toHeal = Math.round(0.1f * damage);
-                if (((Hero) attacker).pointsInTalent(Talent.BLADE_OF_UNREAL) > 2) {
-                    toHeal = Math.round(0.15f * damage);
-                }
-                attacker.HP = Math.min(attacker.HP + toHeal, attacker.HT);
-                attacker.sprite.showStatusWithIcon(CharSprite.POSITIVE, String.valueOf(toHeal), FloatingText.HEALING);
-                defender.sprite.showStatusWithIcon(CharSprite.NEGATIVE, String.valueOf(damage), FloatingText.REALITY);
-                damage = ShieldBuff.processDamage(defender, damage, this);
-
-                if (defender.HP <= damage) {
-                    defender.die(this);
-                } else {
-                    defender.HP -= damage;
-                }
-                damage = 0;
+                Buff.affect(defender, UnRealTracker.class).damage = damage;
             }
         }
         return super.proc( attacker, defender, damage );
@@ -103,10 +87,7 @@ public class BladeOfUnreal extends MeleeWeapon {
     @Override
     public int reachFactor(Char owner) {
         int reach = super.reachFactor(owner);
-        if (!isReal) {
-            reach ++;
-            if (owner instanceof Hero && ((Hero) owner).pointsInTalent(Talent.BLADE_OF_UNREAL) > 2) reach ++;
-        }
+        if (!isReal) reach ++;
         return reach;
     }
 
@@ -125,14 +106,14 @@ public class BladeOfUnreal extends MeleeWeapon {
 
     @Override
     public int damageRoll(Char owner) {
-        if (owner instanceof Hero) {
+        if (owner instanceof Hero && !isReal) {
             Hero hero = (Hero)owner;
             Char enemy = hero.attackTarget();
-            if (enemy instanceof Mob && ((Mob) enemy).surprisedBy(hero)) {
-                //deals 80% toward max to max on surprise, instead of min to max.
+            if (enemy instanceof Mob && ((Mob) enemy).surprisedBy(hero) && hero.pointsInTalent(Talent.BLADE_OF_UNREAL) > 2) {
+                //deals 60% toward max to max on surprise, instead of min to max.
                 int diff = max() - min();
                 int damage = augment.damageFactor(Hero.heroDamageIntRange(
-                min() + Math.round(diff*0.85f),
+                min() + Math.round(diff*0.6f),
                 max()));
                 int exStr = hero.STR() - STRReq();
                 if (exStr > 0) {
@@ -178,5 +159,9 @@ public class BladeOfUnreal extends MeleeWeapon {
         } else {
             image = ItemSpriteSheet.BLADE_OF_UNREAL;
         }
+    }
+
+    public static class UnRealTracker extends Buff {
+        public int damage = 0;
     }
 }

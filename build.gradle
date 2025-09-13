@@ -7,7 +7,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.11.0'
+        classpath 'com.android.tools.build:gradle:8.11.1'
     }
 }
 
@@ -17,8 +17,8 @@ allprojects {
         appName = 'Xun’s Pixel Dungeon'
         appPackageName = 'com.xun.xunspixeldungeon'
 
-        appVersionCode = 857
-        appVersionName = '0.3.6'
+        appVersionCode = 858
+        appVersionName = '0.3.7'
 
         appJavaCompatibility = JavaVersion.VERSION_1_8
 

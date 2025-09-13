@@ -69,7 +69,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Momentum;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MonkEnergy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Ooze;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.PhysicalEmpower;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Poison;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Preparation;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ShieldBuff;
@@ -147,7 +146,9 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Blazin
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Grim;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Kinetic;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Shocking;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.BladeOfUnreal;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.DMdrill;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Darkgoldsword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sickle;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
@@ -992,26 +993,25 @@ public abstract class Char extends Actor {
 				dmg = Math.round(buff(Talent.MarchForwardTracker.class).DmgResist(dmg));
 			}
 
-
 			BrokenSeal.WarriorShield shield = buff(BrokenSeal.WarriorShield.class);
 			if (this instanceof Hero && ((Hero)this).hasTalent(Talent.FIGHTING_BACK)){
 				if (shield != null && Dungeon.hero.heroClass == HeroClass.WARRIOR){
 					if (dmg >= shield.maxShield()
 					&& !shield.coolingDown()){
-						shield.enterCooldown(1f, 0);
-						if (((Hero)this).pointsInTalent(Talent.FIGHTING_BACK) > 1){
-							Buff.affect(this, PhysicalEmpower.class).set(shield.maxShield(), 1);
-						}
+						float percent = 1f - (dmg-shield.maxShield()) / (hero.lvl*1.5f);
+						if (percent < 0f) percent = 0f;
+						if (((Hero)this).pointsInTalent(Talent.FIGHTING_BACK) < 2) percent = 1f;
+						shield.enterCooldown(percent, 0);
 						sprite.showStatusWithIcon(CharSprite.POSITIVE, String.valueOf(dmg), FloatingText.SHIELDING);
 						dmg = 0;
 					}
 				} else if (Dungeon.hero.heroClass != HeroClass.WARRIOR){
 					if (dmg >= HT/5f
 					&& (buff(FightingbackCooldown.class) == null)){
-						Buff.affect(this, FightingbackCooldown.class, 100f);
-						if (((Hero)this).pointsInTalent(Talent.FIGHTING_BACK) > 1){
-							Buff.affect(this, PhysicalEmpower.class).set(Math.round(HT/5f), 1);
-						}
+						float percent = 1f - (dmg-HT/5f) / (hero.lvl*1.5f);
+						if (percent < 0f) percent = 0f;
+						if (((Hero)this).pointsInTalent(Talent.FIGHTING_BACK) < 2) percent = 1f;
+						Buff.affect(this, FightingbackCooldown.class, 100f * percent);
 						sprite.showStatusWithIcon(CharSprite.POSITIVE, String.valueOf(dmg), FloatingText.SHIELDING);
 						dmg = 0;
 					}
@@ -1025,6 +1025,14 @@ public abstract class Char extends Actor {
 				sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(buff(BrokenSeal.WarriorShield.class).maxShield()), FloatingText.SHIELDING);
 				shield.activate();
 			}
+		}
+
+		boolean isReal = false;
+		BladeOfUnreal.UnRealTracker buff = buff(BladeOfUnreal.UnRealTracker.class);
+		if (buff != null){
+			dmg = buff.damage;
+			buff.detach();
+			isReal = true;
 		}
 
 		int shielded = dmg;
@@ -1068,6 +1076,7 @@ public abstract class Char extends Actor {
 			if (buff(BrokenArmor.class) != null)                        icon = FloatingText.PHYS_DMG_NO_BLOCK;
 			if (AntiMagic.RESISTS.contains(src.getClass()))             icon = FloatingText.MAGIC_DMG;
 			if (src instanceof Pickaxe)                                 icon = FloatingText.PICK_DMG;
+			if (isReal)                                                 icon = FloatingText.REALITY;
 
 			//special case for sniper when using ranged attacks
 			if (src == Dungeon.hero
@@ -1106,6 +1115,9 @@ public abstract class Char extends Actor {
 			die( src );
 		} else if (HP == 0 && buff(DeathMark.DeathMarkTracker.class) != null){
 			DeathMark.processFearTheReaper(this);
+		} else if (buff(Darkgoldsword.HTDecreaseTracker.class) != null) {
+			HT -= dmg;
+			buff(Darkgoldsword.HTDecreaseTracker.class).detach();
 		}
 	}
 

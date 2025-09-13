@@ -485,14 +485,14 @@ public class ItemSpriteSheet {
 	}
 
 	public static final int CHANGEABLE_WEP = xy(1, 9);//16 slots
-	public static final int SHOVEL              = CHANGEABLE_WEP +25;
-	public static final int STONE_SHOVEL        = CHANGEABLE_WEP +26;
-	public static final int WATER_SHOVEL        = CHANGEABLE_WEP +27;
-	public static final int PLANT_SHOVEL        = CHANGEABLE_WEP +28;
-	public static final int CHASM_SHOVEL        = CHANGEABLE_WEP +29;
+	public static final int SHOVEL              = CHANGEABLE_WEP +0;
+	public static final int STONE_SHOVEL        = CHANGEABLE_WEP +1;
+	public static final int WATER_SHOVEL        = CHANGEABLE_WEP +2;
+	public static final int PLANT_SHOVEL        = CHANGEABLE_WEP +3;
+	public static final int CHASM_SHOVEL        = CHANGEABLE_WEP +4;
 
-	public static final int BLADE_OF_REAL       = CHANGEABLE_WEP +30;
-	public static final int BLADE_OF_UNREAL     = CHANGEABLE_WEP +31;
+	public static final int BLADE_OF_REAL       = CHANGEABLE_WEP +5;
+	public static final int BLADE_OF_UNREAL     = CHANGEABLE_WEP +6;
 	static {
 		assignItemRect(SHOVEL,          16, 16);
 		assignItemRect(STONE_SHOVEL,    16, 16);

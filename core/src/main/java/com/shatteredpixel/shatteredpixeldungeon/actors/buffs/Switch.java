@@ -49,7 +49,7 @@ public class Switch extends FlavourBuff {
     @Override
     public void detach() {
         super.detach();
-        if (!used) ArtifactRecharge.chargeArtifacts(Dungeon.hero, Dungeon.hero.pointsInTalent(Talent.MYSTICAL_SWITCH)*2f/3f);
+        if (!used) ArtifactRecharge.chargeArtifacts(Dungeon.hero, Dungeon.hero.pointsInTalent(Talent.MYSTICAL_SWITCH));
         Item.updateQuickslot();
     }
 

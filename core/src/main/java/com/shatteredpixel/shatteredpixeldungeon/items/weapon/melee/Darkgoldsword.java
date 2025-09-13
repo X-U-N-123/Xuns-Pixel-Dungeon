@@ -28,11 +28,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Brute;
-import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfMight;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.AttackIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
@@ -59,14 +56,7 @@ public class Darkgoldsword extends MeleeWeapon{
     public int proc(Char attacker, Char defender, int damage) {
         if (defender != Dungeon.hero &&
                 !(defender.properties().contains(Char.Property.BOSS) || defender.properties().contains(Char.Property.MINIBOSS))){
-            if (defender.HT <= damage) {
-                if (!(defender instanceof Brute)) {
-                    defender.sprite.showStatusWithIcon(CharSprite.NEGATIVE, Integer.toString(damage), FloatingText.PHYS_DMG);
-                }
-                defender.die(this);//在最大生命值小于伤害值时使敌人死亡
-            } else {
-                defender.HT -= damage;
-            }
+            Buff.affect(defender, HTDecreaseTracker.class);
         }
         return super.proc(attacker, defender, damage);
     }
@@ -133,6 +123,8 @@ public class Darkgoldsword extends MeleeWeapon{
         int dmgBoost = 5 + level;
         return augment.damageFactor(min(level)+dmgBoost) + "-" + augment.damageFactor(max(level)+dmgBoost);
     }
+
+    public static class HTDecreaseTracker extends Buff {}
 }
 
 
