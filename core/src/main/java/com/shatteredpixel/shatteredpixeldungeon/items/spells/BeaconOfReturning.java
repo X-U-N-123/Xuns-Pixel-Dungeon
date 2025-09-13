@@ -257,4 +257,9 @@ public class BeaconOfReturning extends Spell {
 		}
 		
 	}
+
+	@Override
+	public float weight(){
+		return 0.1f * quantity() / Recipe.OUT_QUANTITY;
+	}
 }

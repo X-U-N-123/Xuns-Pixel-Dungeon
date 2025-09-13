@@ -93,4 +93,9 @@ public class devShield extends Item {
         return false;
     }
 
+    @Override
+    public float weight(){
+        return 0;
+    }
+
 }

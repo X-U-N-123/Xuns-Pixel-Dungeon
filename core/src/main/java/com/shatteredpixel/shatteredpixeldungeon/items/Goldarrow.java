@@ -188,4 +188,9 @@ public class Goldarrow extends Item {
         return false;
     }
 
+    @Override
+    public float weight(){
+        return 0;
+    }
+
 }

@@ -25,33 +25,28 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.Chasm;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.GuardianTrap;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
-import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MobSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.StatueSprite;
-import com.shatteredpixel.shatteredpixeldungeon.ui.AttackIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
-import com.watabou.utils.BArray;
-import com.watabou.utils.Callback;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 
-public class StoneCudgel extends MeleeWeapon{
+public class StoneCudgel extends MeleeWeapon {
 
     {
         image = ItemSpriteSheet.Stonecudgel;
@@ -88,12 +83,12 @@ public class StoneCudgel extends MeleeWeapon{
 
             if (!spawnPoints.isEmpty() && !(attacker instanceof StoneGuardian)){
                 StoneGuardian guardian = new StoneGuardian();
-                guardian.createWeapon(false);
+                guardian.createWeapon(this);
                 guardian.state = guardian.WANDERING;
                 guardian.pos = Random.element(spawnPoints);
                 GameScene.add(guardian);
                 Dungeon.level.occupyCell(guardian);
-                if (!(attacker == Dungeon.hero) && attacker.alignment == Char.Alignment.ENEMY){
+                if (attacker != Dungeon.hero){
                     guardian.alignment = Char.Alignment.ENEMY;
                 }
 
@@ -169,8 +164,7 @@ public class StoneCudgel extends MeleeWeapon{
             alignment = Alignment.ALLY;
         }
 
-        @Override
-        public void createWeapon( boolean useDecks ) {
+        public void createWeapon(Weapon wep) {
             weapon = (MeleeWeapon) Dungeon.hero.belongings.weapon();
         }
 

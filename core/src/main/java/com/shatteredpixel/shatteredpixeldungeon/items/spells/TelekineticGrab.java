@@ -142,4 +142,9 @@ public class TelekineticGrab extends TargetedSpell {
 
 	}
 
+	@Override
+	public float weight(){
+		return 0.1f * quantity() / Recipe.OUT_QUANTITY;
+	}
+
 }

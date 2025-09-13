@@ -57,6 +57,7 @@ public class Extract extends InventorySpell {
 		if (item instanceof Armor && ((Armor)item).checkSeal() != null && ((Armor)item).checkSeal().level() > 0){
 			toget --;
 		}
+		if (toget > 2) toget = 2;
 		item.degrade(toget);
 		result = new ScrollOfUpgrade().quantity(toget + 1);
 
@@ -92,5 +93,10 @@ public class Extract extends InventorySpell {
 			outQuantity = OUT_QUANTITY;
 		}
 		
+	}
+
+	@Override
+	public float weight(){
+		return 0.1f * quantity() / Recipe.OUT_QUANTITY;
 	}
 }

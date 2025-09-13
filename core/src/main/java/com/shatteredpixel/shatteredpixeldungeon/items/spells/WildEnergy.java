@@ -102,4 +102,9 @@ public class WildEnergy extends TargetedSpell {
 			return super.brew(ingredients);
 		}
 	}
+
+	@Override
+	public float weight(){
+		return 0.1f * quantity() / Recipe.OUT_QUANTITY;
+	}
 }

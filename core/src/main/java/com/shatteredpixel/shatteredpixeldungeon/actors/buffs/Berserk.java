@@ -57,9 +57,6 @@ public class Berserk extends ShieldBuff implements ActionIndicator.Action {
 	}
 	private State state = State.NORMAL;
 
-	private static final float LEVEL_RECOVER_START = 4f;
-	private float levelRecovery;
-
 	private static final int TURN_RECOVERY_START = 40;
 	private int turnRecovery;
 
@@ -67,7 +64,6 @@ public class Berserk extends ShieldBuff implements ActionIndicator.Action {
 	private float power = 0;
 
 	private static final String STATE = "state";
-	private static final String LEVEL_RECOVERY = "levelrecovery";
 	private static final String TURN_RECOVERY = "turn_recovery";
 	private static final String POWER = "power";
 	private static final String POWER_BUFFER = "power_buffer";
@@ -78,7 +74,6 @@ public class Berserk extends ShieldBuff implements ActionIndicator.Action {
 		bundle.put(STATE, state);
 		bundle.put(POWER, power);
 		bundle.put(POWER_BUFFER, powerLossBuffer);
-		bundle.put(LEVEL_RECOVERY, levelRecovery);
 		bundle.put(TURN_RECOVERY, turnRecovery);
 	}
 
@@ -89,7 +84,6 @@ public class Berserk extends ShieldBuff implements ActionIndicator.Action {
 		state = bundle.getEnum(STATE, State.class);
 		power = bundle.getFloat(POWER);
 		powerLossBuffer = bundle.getInt(POWER_BUFFER);
-		levelRecovery = bundle.getFloat(LEVEL_RECOVERY);
 		turnRecovery = bundle.getInt(TURN_RECOVERY);
 
 		if (power >= 1f && state == State.NORMAL){
@@ -129,8 +123,8 @@ public class Berserk extends ShieldBuff implements ActionIndicator.Action {
 			if (powerLossBuffer > 0){
 				powerLossBuffer--;
 			} else {
-				power -= GameMath.gate(0.1f, power, 1f) * 0.067f * Math.pow((target.HP / (float) target.HT), 2)
-						* (1f-Dungeon.hero.pointsInTalent(Talent.BEAR_GRUDGES)*0.15f);
+				power -= (float)(GameMath.gate(0.1f, power, 1f) * 0.067f * Math.pow((target.HP / (float) target.HT), 2)
+						* (1f-Dungeon.hero.pointsInTalent(Talent.BEAR_GRUDGES)*0.15f));
 
 				if (power < 1f){
 					ActionIndicator.clearAction(this);
@@ -142,7 +136,7 @@ public class Berserk extends ShieldBuff implements ActionIndicator.Action {
 					detach();
 				}
 			}
-		} else if (state == State.RECOVERING && levelRecovery == 0 && Regeneration.regenOn()){
+		} else if (state == State.RECOVERING && Regeneration.regenOn()){
 			turnRecovery--;
 			if (turnRecovery <= 0){
 				turnRecovery = 0;
@@ -187,13 +181,11 @@ public class Berserk extends ShieldBuff implements ActionIndicator.Action {
 
 		if (target.HP > 0) {
 			turnRecovery = TURN_RECOVERY_START;
-			levelRecovery = 0;
-		} else {
-			levelRecovery = LEVEL_RECOVER_START - ((Hero)target).pointsInTalent(Talent.DEATHLESS_FURY);
-			turnRecovery = 0;
-		}
+        } else {
+			turnRecovery = (int)(TURN_RECOVERY_START * Math.pow(2, 3 - ((Hero)target).pointsInTalent(Talent.DEATHLESS_FURY)));
+        }
 
-		int shieldAmount = currentShieldBoost();
+        int shieldAmount = currentShieldBoost();
 		setShield(shieldAmount);
 		target.sprite.showStatusWithIcon( CharSprite.POSITIVE, Integer.toString(shieldAmount), FloatingText.SHIELDING );
 
@@ -207,7 +199,6 @@ public class Berserk extends ShieldBuff implements ActionIndicator.Action {
 		//Endless rage effect on shield and cooldown
 		if (power > 1f){
 			shieldMultiplier *= power;
-			levelRecovery *= 2f - power;
 			turnRecovery *= 2f - power;
 		}
 
@@ -235,18 +226,6 @@ public class Berserk extends ShieldBuff implements ActionIndicator.Action {
 		powerLossBuffer = 1 + (int)Math.pow(3, Dungeon.hero.pointsInTalent(Talent.BEAR_GRUDGES)+1);//3/9/27/81 turns until rage starts dropping
 		if (power >= 1f){
 			ActionIndicator.setAction(this);
-		}
-	}
-
-	public void recover(float percent){
-		if (state == State.RECOVERING && levelRecovery > 0){
-			levelRecovery -= percent;
-			if (levelRecovery <= 0) {
-				levelRecovery = 0;
-				if (turnRecovery == 0){
-					state = State.NORMAL;
-				}
-			}
 		}
 	}
 
@@ -315,11 +294,7 @@ public class Berserk extends ShieldBuff implements ActionIndicator.Action {
 			case BERSERK:
 				return 1f - shielding() / (float)maxShieldBoost();
 			case RECOVERING:
-				if (levelRecovery > 0) {
-					return levelRecovery/(LEVEL_RECOVER_START-Dungeon.hero.pointsInTalent(Talent.DEATHLESS_FURY));
-				} else {
-					return turnRecovery/(float)TURN_RECOVERY_START;
-				}
+				return turnRecovery/(float)TURN_RECOVERY_START;
 		}
 	}
 
@@ -330,11 +305,7 @@ public class Berserk extends ShieldBuff implements ActionIndicator.Action {
 			case BERSERK:
 				return Integer.toString(shielding());
 			case RECOVERING:
-				if (levelRecovery > 0) {
-					return Messages.decimalFormat("#.##", levelRecovery);
-				} else {
-					return Integer.toString(turnRecovery);
-				}
+				return Integer.toString(turnRecovery);
 		}
 	}
 
@@ -359,11 +330,7 @@ public class Berserk extends ShieldBuff implements ActionIndicator.Action {
 			case BERSERK:
 				return Messages.get(this, "berserk_desc", shielding());
 			case RECOVERING:
-				if (levelRecovery > 0){
-					return Messages.get(this, "recovering_desc") + "\n\n" + Messages.get(this, "recovering_desc_levels", levelRecovery);
-				} else {
-					return Messages.get(this, "recovering_desc") + "\n\n" + Messages.get(this, "recovering_desc_turns", turnRecovery);
-				}
+				return Messages.get(this, "recovering_desc") + "\n\n" + Messages.get(this, "recovering_desc_turns", turnRecovery);
 		}
 		
 	}

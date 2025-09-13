@@ -266,4 +266,9 @@ public class Alchemize extends Spell {
 		}
 
 	}
+
+	@Override
+	public float weight(){
+		return 0.15f * quantity() / Recipe.OUT_QUANTITY;
+	}
 }

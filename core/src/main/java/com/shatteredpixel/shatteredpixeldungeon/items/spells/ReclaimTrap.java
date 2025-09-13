@@ -207,5 +207,10 @@ public class ReclaimTrap extends TargetedSpell {
 			trap = bundle.getClass(TRAP);
 		}
 	}
+
+	@Override
+	public float weight(){
+		return 0.1f * quantity() / Recipe.OUT_QUANTITY;
+	}
 	
 }

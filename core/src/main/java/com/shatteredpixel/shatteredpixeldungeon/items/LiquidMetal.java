@@ -231,4 +231,8 @@ public class LiquidMetal extends Item {
 		}
 	}
 
+	@Override
+	public float weight(){
+		return 0.03f * quantity();
+	}
 }

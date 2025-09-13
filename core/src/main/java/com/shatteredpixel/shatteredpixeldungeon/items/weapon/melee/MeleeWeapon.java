@@ -583,4 +583,9 @@ public class MeleeWeapon extends Weapon {
 		return STRReq() / 10f;
 	}
 
+	@Override
+	public float unidWeight(){
+		return 0.2f * (tier + 4);
+	}
+
 }

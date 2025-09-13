@@ -915,4 +915,9 @@ public class Armor extends EquipableItem {
 	public float weight(){
 		return STRReq() / 10f;
 	}
+
+	@Override
+	public float unidWeight(){
+		return 0.2f * (tier + 4);
+	}
 }

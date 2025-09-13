@@ -55,16 +55,16 @@ public class UnstableSpell extends Spell {
 	
 	private static HashMap<Class<? extends Scroll>, Float> scrollChances = new HashMap<>();
 	static{
-		scrollChances.put( ScrollOfIdentify.class,      3f );
-		scrollChances.put( ScrollOfRemoveCurse.class,   2f );
-		scrollChances.put( ScrollOfMagicMapping.class,  2f );
-		scrollChances.put( ScrollOfMirrorImage.class,   2f );
-		scrollChances.put( ScrollOfRecharging.class,    2f );
-		scrollChances.put( ScrollOfLullaby.class,       2f );
-		scrollChances.put( ScrollOfRetribution.class,   2f );
-		scrollChances.put( ScrollOfRage.class,          2f );
-		scrollChances.put( ScrollOfTeleportation.class, 2f );
-		scrollChances.put( ScrollOfTerror.class,        2f );
+		scrollChances.put( ScrollOfIdentify.class,      1f );
+		scrollChances.put( ScrollOfRemoveCurse.class,   1f );
+		scrollChances.put( ScrollOfMagicMapping.class,  1f );
+		scrollChances.put( ScrollOfMirrorImage.class,   1f );
+		scrollChances.put( ScrollOfRecharging.class,    1f );
+		scrollChances.put( ScrollOfLullaby.class,       1f );
+		scrollChances.put( ScrollOfRetribution.class,   1f );
+		scrollChances.put( ScrollOfRage.class,          1f );
+		scrollChances.put( ScrollOfTeleportation.class, 1f );
+		scrollChances.put( ScrollOfTerror.class,        1f );
 		scrollChances.put( ScrollOfTransmutation.class, 1f );
 	}
 

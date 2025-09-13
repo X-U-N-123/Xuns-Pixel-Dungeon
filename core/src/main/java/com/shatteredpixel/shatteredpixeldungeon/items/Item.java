@@ -533,21 +533,27 @@ public class Item implements Bundlable {
 	
 	public String info() {
 
+		String desc = desc();
+		if (Dungeon.isChallenged(Challenges.HEAVY_BURDEN)){
+			if (isIdentified()) desc += "\n\n" + Messages.get(this, "weight", weight());
+			else                desc += "\n\n" + Messages.get(this, "weight_unid", unidWeight());
+		}
+
 		if (Dungeon.hero != null) {
 			Notes.CustomRecord note = Notes.findCustomRecord(customNoteID);
 			if (note != null) {
 				//we swap underscore(0x5F) with low macron(0x2CD) here to avoid highlighting in the item window
-				return Messages.get(this, "custom_note", note.title().replace('_', 'ˍ')) + "\n\n" + desc();
+				return Messages.get(this, "custom_note", note.title().replace('_', 'ˍ')) + "\n\n" + desc;
 			} else {
 				note = Notes.findCustomRecord(getClass());
 				if (note != null) {
 					//we swap underscore(0x5F) with low macron(0x2CD) here to avoid highlighting in the item window
-					return Messages.get(this, "custom_note_type", note.title().replace('_', 'ˍ')) + "\n\n" + desc();
+					return Messages.get(this, "custom_note_type", note.title().replace('_', 'ˍ')) + "\n\n" + desc;
 				}
 			}
 		}
 
-		return desc();
+		return desc;
 	}
 	
 	public String desc() {
@@ -746,5 +752,9 @@ public class Item implements Bundlable {
 
 	public float weight(){
 		return 0.1f * quantity();
+	}
+
+	public float unidWeight(){
+		return weight();
 	}
 }

@@ -572,9 +572,9 @@ public class Hero extends Char {
 		}
 
 		if (!RingOfForce.fightingUnarmed(this)) {
-			return (int)((attackSkill) * accuracy * wep.accuracyFactor(this, target));
+			return (int)(attackSkill * accuracy * wep.accuracyFactor(this, target));
 		} else {
-			return (int)((attackSkill) * accuracy);
+			return (int)(attackSkill * accuracy);
 		}
 	}
 	
@@ -759,8 +759,8 @@ public class Hero extends Char {
 
 		if (weight() > STR() + 0.001f && Dungeon.isChallenged(Challenges.HEAVY_BURDEN)){
 			speed *= 1 + (STR() - weight()) * 0.25f;
-			if (speed < 0.25f){
-				speed = 0.25f;
+			if (speed < 0.1f){
+				speed = 0.1f;
 			}
 		}
 		
@@ -2071,9 +2071,6 @@ public class Hero extends Char {
 
 		MasterThievesArmband.Thievery armband = buff(MasterThievesArmband.Thievery.class);
 		if (armband != null) armband.gainCharge(percent);
-
-		Berserk berserk = buff(Berserk.class);
-		if (berserk != null) berserk.recover(percent);
 		
 		if (source != PotionOfExperience.class) {
 			for (Item i : belongings) {

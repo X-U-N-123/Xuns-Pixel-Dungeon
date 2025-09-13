@@ -541,4 +541,9 @@ public class SpiritBow extends Weapon {
 		public void tintIcon(Image icon) { icon.hardlight(0f, 0f, 0.8f); }
 		public float iconFadePercent() { return GameMath.gate(0, visualcooldown() / 200, 1); }
 	}
+
+	@Override
+	public float weight(){
+		return STRReq() / 20f;
+	}
 }

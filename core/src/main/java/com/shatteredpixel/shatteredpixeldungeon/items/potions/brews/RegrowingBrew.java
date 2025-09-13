@@ -56,7 +56,8 @@ public class RegrowingBrew extends Brew {
 			|| Dungeon.level.map[i + cell] == Terrain.EMBERS
 			|| Dungeon.level.map[i + cell] == Terrain.EMPTY_DECO
 			|| Dungeon.level.map[i + cell] == Terrain.GRASS
-			|| Dungeon.level.map[i + cell] == Terrain.FURROWED_GRASS){
+			|| Dungeon.level.map[i + cell] == Terrain.FURROWED_GRASS
+			|| Dungeon.level.map[i + cell] == Terrain.WATER){
 				if (Dungeon.level.map[i + cell] != Terrain.FURROWED_GRASS){
 					Level.set(i + cell, Terrain.GRASS);
 				}
@@ -104,6 +105,11 @@ public class RegrowingBrew extends Brew {
 			outQuantity = OUT_QUANTITY;
 		}
 
+	}
+
+	@Override
+	public float weight(){
+		return 0.1f * quantity() / Recipe.OUT_QUANTITY;
 	}
 
 }

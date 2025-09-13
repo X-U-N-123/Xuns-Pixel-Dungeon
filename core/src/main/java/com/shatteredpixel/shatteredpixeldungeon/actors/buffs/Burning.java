@@ -96,12 +96,17 @@ public class Burning extends Buff implements Hero.Doom {
 		} else if (target.isAlive() && !target.isImmune(getClass())) {
 
 			acted = true;
-			int damage = Random.NormalIntRange( 1, 3 + Dungeon.scalingDepth()/4 );
 			Buff.detach( target, Chill.class);
+
+			float multi = 1f - target.glyphLevel(Brimstone.class);
+			if (multi < 0) multi = 0f;
+
+			int damage = (int)Math.floor(Random.NormalIntRange( 1, 3 + Dungeon.scalingDepth()/4 ) * multi);
 
 			if (target instanceof Hero
 					&& target.buff(TimekeepersHourglass.timeStasis.class) == null
-					&& target.buff(TimeStasis.class) == null) {
+					&& target.buff(TimeStasis.class) == null
+					&& multi == 1f) {
 				
 				Hero hero = (Hero)target;
 
@@ -135,7 +140,7 @@ public class Burning extends Buff implements Hero.Doom {
 					}
 				}
 				
-			} else {
+			} else if (multi > 0){
 				target.damage( damage, this );
 			}
 
@@ -154,7 +159,6 @@ public class Burning extends Buff implements Hero.Doom {
 			}
 
 		} else {
-
 			detach();
 		}
 		

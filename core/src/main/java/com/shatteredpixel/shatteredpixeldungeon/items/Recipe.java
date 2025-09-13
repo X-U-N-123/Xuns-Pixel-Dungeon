@@ -52,6 +52,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ExoticScrol
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Alchemize;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.BeaconOfReturning;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.CurseInfusion;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Extract;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.MagicalInfusion;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.MagicalTran;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.PhaseShift;
@@ -220,6 +221,8 @@ public abstract class Recipe {
 		new UnstableSpell.Recipe(),
 		new Alchemize.Recipe(),
 		new CurseInfusion.Recipe(),
+		new Extract.Recipe(),
+		new MagicalTran.Recipe(),
 		new ReclaimTrap.Recipe(),
 		new WildEnergy.Recipe(),
 		new StewedMeat.twoMeat()
