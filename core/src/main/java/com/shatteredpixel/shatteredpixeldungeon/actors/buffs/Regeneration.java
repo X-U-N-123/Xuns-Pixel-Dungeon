@@ -23,6 +23,7 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.SpiritForm;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ChaliceOfBlood;
@@ -84,13 +85,11 @@ public class Regeneration extends Buff {
 				if (Dungeon.hero.hasTalent(Talent.STEALTH_METABOLISM) && Dungeon.hero.invisible > 0){
 					delay /= 1+Dungeon.hero.pointsInTalent(Talent.STEALTH_METABOLISM)/3f;
 				}
-				if (Dungeon.hero.hasTalent(Talent.INTACT_SEAL)){
+				if (Dungeon.hero.hasTalent(Talent.INTACT_SEAL) && Dungeon.hero.heroClass != HeroClass.WARRIOR){
 					delay /= 1+Dungeon.hero.pointsInTalent(Talent.INTACT_SEAL)/8f;
 				}
-
-				//salt cube is turned off while regen is disabled.
-				if (target.buff(LockedFloor.class) == null) {
-					delay /= SaltCube.healthRegenMultiplier();
+				if (Dungeon.hero.hasTalent(Talent.EMERGENCY_CHARGE) && Dungeon.hero.heroClass != HeroClass.ROGUE){
+					delay /= 1+Dungeon.hero.pointsInTalent(Talent.EMERGENCY_CHARGE)*0.2f* (target.HT - target.HP)/ target.HT;
 				}
 
 				partialRegen += 1f / delay;

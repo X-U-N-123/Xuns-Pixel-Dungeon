@@ -99,7 +99,7 @@ public class HeroicLeap extends ArmorAbility {
 
 					int point = hero.pointsInTalent(Talent.SHIELDING_JUMP);
 					if(point > 0){
-						Buff.affect(hero, BrokenSeal.WarriorShield.class).reduceCooldown(Math.min(point/3f, 1));
+						Buff.affect(hero, BrokenSeal.WarriorShield.class).reduceCooldown(Math.min(point/3f, 1), 0);
 						if(point > 3){
 							Buff.affect(hero, Barrier.class).incShield(hero.lvl/2);
 						}

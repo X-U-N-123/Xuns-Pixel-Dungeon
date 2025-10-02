@@ -67,7 +67,6 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.Wound;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
-import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.AntiMagic;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.MasterThievesArmband;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.ExoticPotion;
@@ -756,7 +755,7 @@ public abstract class Mob extends Char {
 				Buff.affect(Dungeon.hero, Hunger.class).affectHunger(restoration*Dungeon.hero.pointsInTalent(Talent.SOUL_EATER)/3f);
 
 				if (Dungeon.hero.HP < Dungeon.hero.HT) {
-					int heal = (int)Math.ceil(restoration * (0.4f + 0.12f*Dungeon.hero.pointsInTalent(Talent.CLEAR_YOUR_SOUL)));
+					int heal = (int)Math.ceil(restoration * (0.4f + 0.15f*Dungeon.hero.pointsInTalent(Talent.CLEAR_YOUR_SOUL)));
 					Dungeon.hero.HP = Math.min(Dungeon.hero.HT, Dungeon.hero.HP + heal);
 					Dungeon.hero.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(heal), FloatingText.HEALING);
 				}
@@ -827,7 +826,7 @@ public abstract class Mob extends Char {
 		}
 
 		//TODO improve this when I have proper damage source logic
-		if (AntiMagic.RESISTS.contains(src.getClass()) && this.buff(SoulMark.class)!=null && Dungeon.hero.hasTalent(Talent.MANA_EATING)){
+		if (src instanceof Wand && this.buff(SoulMark.class) != null && Dungeon.hero.hasTalent(Talent.MANA_EATING)){
 			int heal = Math.round(Dungeon.hero.pointsInTalent(Talent.MANA_EATING)*0.2f*dmg);
 			Dungeon.hero.HP = Math.min(Dungeon.hero.HT, Dungeon.hero.HP + heal);
 			Dungeon.hero.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(heal), FloatingText.HEALING);
@@ -1208,7 +1207,8 @@ public abstract class Mob extends Char {
 				for (Mob mob : Dungeon.level.mobs) {
 					if (mob.paralysed <= 0
 							&& Dungeon.level.distance(pos, mob.pos) <= 8
-							&& mob.state != mob.HUNTING) {
+							&& mob.state != mob.HUNTING
+							&& !(mob instanceof StonePier)) {
 						mob.beckon(target);
 					}
 				}
@@ -1246,7 +1246,8 @@ public abstract class Mob extends Char {
 				for (Mob mob : Dungeon.level.mobs) {
 					if (mob.paralysed <= 0
 							&& Dungeon.level.distance(pos, mob.pos) <= 8
-							&& mob.state != mob.HUNTING) {
+							&& mob.state != mob.HUNTING
+							&& !(mob instanceof StonePier)) {
 						mob.beckon( target );
 					}
 				}

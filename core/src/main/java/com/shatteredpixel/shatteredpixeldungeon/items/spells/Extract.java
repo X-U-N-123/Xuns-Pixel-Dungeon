@@ -21,19 +21,27 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.spells;
 
+import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Transmuting;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.KindOfWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.MetalShard;
+import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.Trinket;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.Random;
 
 public class Extract extends InventorySpell {
 	
@@ -51,6 +59,18 @@ public class Extract extends InventorySpell {
 	}
 
 	@Override
+	protected void onCast(Hero hero) {
+		if (Math.pow(1.2f, Statistics.extractUsed)-1f >= Random.Float()){
+			Statistics.extractUsed++;
+			GLog.n(Messages.get(this, "shattered"));
+			Sample.INSTANCE.play( Assets.Sounds.SHATTER);
+			detach(hero.belongings.backpack);
+			return;
+		}
+		GameScene.selectItem( itemSelector );
+	}
+
+	@Override
 	protected void onItemSelected(Item item) {
 		Item result;
 		int toget = item.trueLevel();
@@ -58,7 +78,21 @@ public class Extract extends InventorySpell {
 			toget --;
 		}
 		if (toget > 2) toget = 2;
-		item.degrade(toget);
+		if (item.unique) item.degrade(toget);
+		else {
+			if (item instanceof Armor && ((Armor) item).checkSeal() != null){
+				item.execute(Dungeon.hero, Armor.AC_DETACH);
+			}
+			item.detach(Dungeon.hero.belongings.backpack);
+			if (Dungeon.hero.belongings.weapon == item || Dungeon.hero.belongings.secondWep == item){
+				((KindOfWeapon) item).doUnequip(Dungeon.hero, false);
+			} else if (Dungeon.hero.belongings.armor == item) {
+				((Armor) item).doUnequip(Dungeon.hero, false);
+			} else if (Dungeon.hero.belongings.ring == item || Dungeon.hero.belongings.misc == item) {
+				((Ring) item).doUnequip(Dungeon.hero, false);
+			}
+		}
+		Statistics.extractUsed++;
 		result = new ScrollOfUpgrade().quantity(toget + 1);
 
 		GLog.p(Messages.get(this, "extracted", toget + 1));
@@ -67,6 +101,11 @@ public class Extract extends InventorySpell {
 		}
 		Transmuting.show(curUser, item, result);
 		curUser.sprite.emitter().start(Speck.factory(Speck.CHANGE), 0.2f, 10);
+	}
+
+	@Override
+	public String desc() {
+		return Messages.get(this, "desc", Statistics.extractUsed);
 	}
 	
 	@Override

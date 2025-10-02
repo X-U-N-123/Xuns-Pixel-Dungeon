@@ -34,6 +34,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Sheep;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Beam;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
+import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
 import com.shatteredpixel.shatteredpixeldungeon.effects.TargetedCell;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.PurpleParticle;
@@ -409,7 +410,7 @@ public class YogDzewa extends Mob {
 
 			updateVisibility(Dungeon.level);
 			GLog.n(Messages.get(this, "darkness"));
-			sprite.showStatus(CharSprite.POSITIVE, Messages.get(this, "invulnerable"));
+			sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(dmg-dmgTaken), FloatingText.INVULNERABLE);
 
 			addFist((YogFist)Reflection.newInstance(fistSummons.remove(0)));
 

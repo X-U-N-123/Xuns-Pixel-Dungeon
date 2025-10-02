@@ -401,7 +401,8 @@ public class BrokenSeal extends Item {
 			cooldown += turn;
 		}
 
-		public void reduceCooldown(float percentage){
+		public void reduceCooldown(float percentage, int turn){
+			cooldown -= turn;
 			cooldown -= Math.round((COOLDOWN_START - CDdecrease())*percentage);
 			cooldown = Math.max(cooldown, -COOLDOWN_START + CDdecrease());
 		}

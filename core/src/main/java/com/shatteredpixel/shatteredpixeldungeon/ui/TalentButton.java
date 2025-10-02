@@ -25,7 +25,9 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.cleric.Trinity;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Transmuting;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfMetamorphosis;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -58,7 +60,8 @@ public class TalentButton extends Button {
 		INFO,
 		UPGRADE,
 		METAMORPH_CHOOSE,
-		METAMORPH_REPLACE
+		METAMORPH_REPLACE,
+		MIMICFORM_SELECT
 	}
 
 	public TalentButton(int tier, Talent talent, int points, Mode mode){
@@ -207,6 +210,28 @@ public class TalentButton extends Button {
 						ScrollOfMetamorphosis.WndMetamorphReplace.INSTANCE.hide();
 					}
 
+				}
+			});
+		} else if (mode == Mode.MIMICFORM_SELECT && Dungeon.hero != null && Dungeon.hero.isAlive()) {
+			toAdd = new WndInfoTalent(talent, pointsInTalent, new WndInfoTalent.TalentButtonCallback() {
+				@Override
+				public String prompt() {
+					return Messages.titleCase(Messages.get(Trinity.class, "select_talent"));
+				}
+
+				@Override
+				public boolean metamorphDesc() {
+					return true;
+				}
+
+				@Override
+				public void call() {
+					Trinity.WndTalentSelect.INSTANCE.hide();
+					((Trinity)Dungeon.hero.armorAbility).mimicForm = talent;
+
+					Dungeon.hero.sprite.operate(Dungeon.hero.pos);
+					Transmuting.show(Dungeon.hero, talent, talent);
+					Sample.INSTANCE.play(Assets.Sounds.TELEPORT);
 				}
 			});
 		} else {

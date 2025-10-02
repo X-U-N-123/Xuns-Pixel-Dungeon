@@ -35,12 +35,17 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Charm;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Corrosion;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Corruption;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.CounterBuff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Dread;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hex;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Ooze;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Poison;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Roots;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
@@ -55,6 +60,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.KindOfWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClassArmor;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Viscosity;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAggression;
@@ -78,6 +84,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Elasti
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Grim;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Kinetic;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Lucky;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Peaceful;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Projecting;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Shocking;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Unstable;
@@ -118,6 +125,7 @@ public class ElementalStrike extends ArmorAbility {
 		effectTypes.put(Lucky.class,        MagicMissile.RAINBOW_CONE);
 		effectTypes.put(Projecting.class,   MagicMissile.PURPLE_CONE);
 		effectTypes.put(Unstable.class,     MagicMissile.RAINBOW_CONE);
+		effectTypes.put(Peaceful.class,     MagicMissile.RAINBOW_CONE);
 		effectTypes.put(Corrupting.class,   MagicMissile.SHADOW_CONE);
 		effectTypes.put(Grim.class,         MagicMissile.SHADOW_CONE);
 		effectTypes.put(Vampiric.class,     MagicMissile.BLOOD_CONE);
@@ -488,6 +496,30 @@ public class ElementalStrike extends ArmorAbility {
 						ch.damage( ch.HP, Grim.class );
 						ch.sprite.emitter().burst( ShadowParticle.UP, 5 );
 					}
+				}
+			}
+
+		//*** Peaceful ***
+		} else if (ench instanceof Peaceful){
+			for (Char ch : affected){
+				for (Buff b : ch.buffs()){
+					ch.sprite.emitter().start(Speck.factory(Speck.DOWN), 0.15f, 4);
+
+					if (b.type != Buff.buffType.NEGATIVE || b.peacefulEleExtended){
+						continue;
+					}
+
+					//this might need a nerf of aggression vs bosses. (perhaps nerf the extension?)
+					if (b instanceof FlavourBuff)       Buff.affect(ch, (Class<?extends FlavourBuff>)b.getClass(), 4f*powerMulti);
+					else if (b instanceof Bleeding)     ((Bleeding) b).extend( 4f*powerMulti );
+					else if (b instanceof Burning)      ((Burning) b).extend( 4f*powerMulti );
+					else if (b instanceof Corrosion)    ((Corrosion) b).extend( 4f*powerMulti );
+					else if (b instanceof Dread)        ((Dread) b).extend( 4f*powerMulti );
+					else if (b instanceof Ooze)         ((Ooze) b).extend( 4f*powerMulti );
+					else if (b instanceof Poison)       ((Poison) b).extend( 4f*powerMulti );
+					else if (b instanceof Viscosity.DeferedDamage)  ((Viscosity.DeferedDamage) b).extend( 4f*powerMulti );
+
+					b.peacefulEleExtended = true;
 				}
 			}
 

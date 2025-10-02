@@ -29,13 +29,16 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.ArmorAbility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.BodyForm;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.ClericSpell;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.MimicForm;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.MindForm;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.SpiritForm;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Enchanting;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Transmuting;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClassArmor;
@@ -60,21 +63,30 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWea
 import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.HeroIcon;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ItemButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.QuickSlotButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
+import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
+import com.shatteredpixel.shatteredpixeldungeon.ui.TalentButton;
+import com.shatteredpixel.shatteredpixeldungeon.ui.TalentIcon;
+import com.shatteredpixel.shatteredpixeldungeon.ui.TalentsPane;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.shatteredpixel.shatteredpixeldungeon.windows.IconTitle;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndTitledMessage;
 import com.watabou.noosa.audio.Sample;
+import com.watabou.noosa.ui.Component;
 import com.watabou.utils.Bundlable;
 import com.watabou.utils.Bundle;
+import com.watabou.utils.Random;
 import com.watabou.utils.Reflection;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 
 public class Trinity extends ArmorAbility {
 
@@ -85,11 +97,12 @@ public class Trinity extends ArmorAbility {
 	private Bundlable bodyForm = null;
 	private Bundlable mindForm = null;
 	private Bundlable spiritForm = null;
+	public  Talent    mimicForm = null;
 
 	@Override
-	protected void activate(ClassArmor armor, Hero hero, Integer target) {
+	public void activate(ClassArmor armor, Hero hero, Integer target) {
 
-		if (bodyForm == null && mindForm == null && spiritForm == null){
+		if (bodyForm == null && mindForm == null && spiritForm == null && mimicForm == null){
 			GLog.w(Messages.get(this, "no_imbue"));
 		} else {
 			GameScene.show(new WndUseTrinity(armor));
@@ -113,6 +126,8 @@ public class Trinity extends ArmorAbility {
 					Messages.get(WndUseTrinity.class, "text"));
 
 			int top = height;
+
+			ArrayList<Component> toAdd = new ArrayList<>();
 
 			if (bodyForm != null){
 				RedButton btnBody = null;
@@ -271,6 +286,34 @@ public class Trinity extends ArmorAbility {
 				btnSpirit.enable(Dungeon.hero.buff(MagicImmune.class) == null && armor.charge >= trinityChargeUsePerEffect(spiritForm.getClass()));
 			}
 
+			if (mimicForm != null){
+				RedButton btnMimic = new RedButton(Messages.get(WndUseTrinity.class, "mimic",
+						Messages.titleCase((mimicForm).title()))
+						+ " " + trinityItemUseText(mimicForm.getClass()), 6){
+					@Override
+					protected void onClick() {
+						Invisibility.dispel();
+						Buff.prolong(Dungeon.hero, MimicForm.MimicFormBuff.class, MimicForm.duration()).setEffect(mimicForm);
+						Dungeon.hero.spendAndNext(1f);
+						Sample.INSTANCE.play(Assets.Sounds.TELEPORT);
+						Transmuting.show(Dungeon.hero, mimicForm, mimicForm);
+						Dungeon.hero.sprite.operate(Dungeon.hero.pos);
+						armor.charge -= trinityChargeUsePerEffect(mimicForm.getClass());
+						armor.updateQuickslot();
+						hide();
+					}
+				};
+
+				btnMimic.icon(new TalentIcon(mimicForm));
+				btnMimic.multiline = true;
+				btnMimic.setSize(width, 100); //for text layout
+				btnMimic.setRect(0, top + 2, width, btnMimic.reqHeight());
+				add(btnMimic);
+				top = (int)btnMimic.bottom();
+
+				btnMimic.enable(Dungeon.hero.buff(MagicImmune.class) == null && armor.charge >= trinityChargeUsePerEffect(mimicForm.getClass()));
+			}
+
 			resize(width, top);
 
 		}
@@ -280,6 +323,7 @@ public class Trinity extends ArmorAbility {
 	private static final String BODY = "body_form";
 	private static final String MIND = "mind_form";
 	private static final String SPIRIT = "spirit_form";
+	private static final String MIMIC = "mimic_form";
 
 	@Override
 	public void storeInBundle(Bundle bundle) {
@@ -287,6 +331,7 @@ public class Trinity extends ArmorAbility {
 		if (bodyForm != null)   bundle.put(BODY, bodyForm);
 		if (mindForm != null)   bundle.put(MIND, mindForm);
 		if (spiritForm != null) bundle.put(SPIRIT, spiritForm);
+		if (mimicForm != null) bundle.put(MIMIC, mimicForm.name());
 	}
 
 	@Override
@@ -295,6 +340,7 @@ public class Trinity extends ArmorAbility {
 		if (bundle.contains(BODY))  bodyForm = bundle.get(BODY);
 		if (bundle.contains(MIND))  mindForm = bundle.get(MIND);
 		if (bundle.contains(SPIRIT))spiritForm = bundle.get(SPIRIT);
+		if (bundle.contains(MIMIC))  mimicForm = bundle.getEnum(MIMIC, Talent.class);
 	}
 
 	@Override
@@ -304,7 +350,7 @@ public class Trinity extends ArmorAbility {
 
 	@Override
 	public Talent[] talents() {
-		return new Talent[]{Talent.BODY_FORM, Talent.MIND_FORM, Talent.SPIRIT_FORM, Talent.HEROIC_ENERGY};
+		return new Talent[]{Talent.BODY_FORM, Talent.MIND_FORM, Talent.SPIRIT_FORM, Talent.MIMIC_FORM, Talent.HEROIC_ENERGY};
 	}
 
 	public static class WndItemtypeSelect extends WndTitledMessage {
@@ -489,6 +535,76 @@ public class Trinity extends ArmorAbility {
 
 	}
 
+	public static class WndTalentSelect extends Window {
+
+		public static WndTalentSelect INSTANCE;
+		ArrayList<Talent> replaceOptions;
+
+		public WndTalentSelect(){
+			super();
+			INSTANCE = this;
+
+			ArrayList<Talent> possibleTalents = new ArrayList<>();
+
+			ArrayList<Talent> allTalents = new ArrayList<>();
+			for (HeroClass heroClass: HeroClass.values()){
+				ArrayList<LinkedHashMap<Talent, Integer>> talents = new ArrayList<>();
+				Talent.initClassTalents(heroClass, talents);
+				for (LinkedHashMap<Talent, Integer> tier : talents){
+                    allTalents.addAll(tier.keySet());
+				}
+			}
+
+			for (Talent talent: allTalents){
+				for(LinkedHashMap<Talent,Integer> tier : Dungeon.hero.talents)
+					if(!tier.containsKey(talent))
+						possibleTalents.add(talent);
+			}
+
+			ArrayList<Talent> options = new ArrayList<>();
+			while (options.size() < 12){
+				Talent talent = Random.element(possibleTalents);
+				if (!options.contains(talent) && !Dungeon.hero.hasTalent(talent))
+					options.add(talent);
+			}
+
+			replaceOptions = options;
+			setup(options);
+		}
+
+		private void setup(ArrayList<Talent> replaceOptions){
+			float top;
+
+			IconTitle title = new IconTitle( new HeroIcon(MimicForm.INSTANCE), Messages.titleCase(MimicForm.INSTANCE.name()) );
+			title.color( TITLE_COLOR );
+			title.setRect(0, 0, 120, 0);
+			add(title);
+
+			top = title.bottom() + 2;
+
+			RenderedTextBlock text = PixelScene.renderTextBlock(Messages.get(WndTalentSelect.class, "text"), 6);
+			text.maxWidth(120);
+			text.setPos(0, top);
+			add(text);
+
+			top = text.bottom() + 2;
+
+			LinkedHashMap<Talent, Integer> talentMap = new LinkedHashMap<>();
+			for (Talent talent: replaceOptions){
+				talentMap.put(talent, talent.maxPoints());
+			}
+
+			TalentsPane.TalentTierPane optionsPane = new TalentsPane.TalentTierPane(talentMap, 4, TalentButton.Mode.MIMICFORM_SELECT);
+			add(optionsPane);
+			optionsPane.title.text("");
+			optionsPane.setPos(0, top);
+			optionsPane.setSize(120, optionsPane.height());
+			resize((int)optionsPane.width(), (int)optionsPane.bottom());
+
+			resize(120, (int)optionsPane.bottom());
+		}
+	}
+
 	public static String trinityItemUseText(Class<?> cls ){
 		float chargeUse = trinityChargeUsePerEffect(cls);
 		if (Weapon.Enchantment.class.isAssignableFrom(cls) || Armor.Glyph.class.isAssignableFrom(cls)) {
@@ -518,6 +634,9 @@ public class Trinity extends ArmorAbility {
 		}
 		if (Artifact.class.isAssignableFrom(cls)){
 			return Messages.get(Trinity.class, cls.getSimpleName() + "_use", SpiritForm.artifactLevel(), Messages.decimalFormat("#.##", chargeUse));
+		}
+		if (Talent.class.isAssignableFrom(cls)){
+			return Messages.get(Trinity.class, "talent_use", MimicForm.duration(), Messages.decimalFormat("#.##", chargeUse));
 		}
 		return "error!";
 
@@ -550,6 +669,9 @@ public class Trinity extends ArmorAbility {
 			if (cls.equals(EtherealChains.class) || cls.equals(TalismanOfForesight.class) || cls.equals(TimekeepersHourglass.class)){
 				return 1.4f*chargeUse; //35 charge
 			}
+		}
+		if (Talent.class.isAssignableFrom(cls)){
+			return 2.4f*chargeUse; //60 charge
 		}
 		//all other effects are standard charge use, 25 at base
 		return chargeUse;

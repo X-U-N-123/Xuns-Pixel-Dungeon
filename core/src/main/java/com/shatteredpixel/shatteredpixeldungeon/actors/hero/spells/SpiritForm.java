@@ -34,6 +34,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClassArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.AlchemistsToolkit;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ElementalMask;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.EtherealChains;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HolyTome;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HornOfPlenty;
@@ -213,6 +214,8 @@ public class SpiritForm extends ClericSpell {
 			Talent.onArtifactUsed(Dungeon.hero);
 			Dungeon.hero.spendAndNext(1f);
 
+		} else if (effect instanceof ElementalMask){
+			((ElementalMask) effect).doReleaseEffect(Dungeon.hero);
 		} else if (effect instanceof EtherealChains){
 			GameScene.selectCell(((EtherealChains) effect).caster);
 			if (Dungeon.quickslot.contains(armor)) {

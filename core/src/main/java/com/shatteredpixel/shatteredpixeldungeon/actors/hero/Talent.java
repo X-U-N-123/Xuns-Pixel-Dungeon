@@ -209,7 +209,7 @@ public enum Talent {
 	//Ascended Form T4
 	DIVINE_INTERVENTION(177, 4), JUDGEMENT(178, 4), FLASH(179, 4), HOLY_REGENERATION(251, 4),
 	//Trinity T4
-	BODY_FORM(180, 4), MIND_FORM(181, 4), SPIRIT_FORM(182, 4), //MIMIC_FORM(252, 4),
+	BODY_FORM(180, 4), MIND_FORM(181, 4), SPIRIT_FORM(182, 4), MIMIC_FORM(252, 4),
 	//Power of Many T4
 	BEAMING_RAY(183, 4), LIFE_LINK(184, 4), STASIS(185, 4), HOLY_CHAMPION(253, 4),
 
@@ -1087,6 +1087,12 @@ public enum Talent {
 		if (Dungeon.hero.heroClass != HeroClass.CLERIC
 				&& Dungeon.hero.hasTalent(Talent.DIVINE_SENSE)){
 			Buff.prolong(Dungeon.hero, DivineSense.DivineSenseTracker.class, Dungeon.hero.cooldown()+1);
+		}
+
+		if (Dungeon.hero.heroClass != HeroClass.CLERIC
+		&& Random.Float() < Dungeon.hero.pointsInTalent(Talent.SHARED_CHARGE) * 0.15f){
+			Buff.prolong( hero, Recharging.class, 1);
+			ScrollOfRecharging.charge( hero );
 		}
 
 		// 10/20/30%

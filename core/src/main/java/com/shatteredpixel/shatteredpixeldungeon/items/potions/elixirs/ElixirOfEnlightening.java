@@ -23,6 +23,7 @@ package com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bless;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
@@ -30,12 +31,10 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfDivineInspiration;
-import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.StatusPane;
-import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndHero;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
@@ -49,15 +48,13 @@ public class ElixirOfEnlightening extends Elixir {
 
     @Override
     public void apply(Hero hero) {
-        EnlighteningTracker tracker = hero.buff(EnlighteningTracker.class);
-
-        if (tracker != null && tracker.Boostamount() >= 3){
+        if (Statistics.enlighteningDrunk >= 3){
             hero.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(hero.maxExp()), FloatingText.EXPERIENCE);
             hero.earnExp( hero.maxExp(), getClass() );
             new Flare( 6, 32 ).color(0xFFFF00, true).show( curUser.sprite, 2f );
-            Buff.affect(hero, Bless.class, 100f);
+            Buff.affect(hero, Bless.class, 200f);
         } else {
-            Buff.affect(curUser, EnlighteningTracker.class).Boost();
+            Statistics.enlighteningDrunk ++;
 
             curUser.busy();
             curUser.sprite.operate(curUser.pos);
@@ -83,7 +80,7 @@ public class ElixirOfEnlightening extends Elixir {
             Sample.INSTANCE.playDelayed(Assets.Sounds.LEVELUP, 0.6f, 0.7f, 1.2f);
             Sample.INSTANCE.playDelayed(Assets.Sounds.LEVELUP, 0.8f, 0.7f, 1.2f);
             new Flare( 6, 32 ).color(0xFFFF00, true).show( curUser.sprite, 2f );
-            GLog.p(Messages.get(ElixirOfEnlightening.class, "bonus"));
+            curUser.sprite.showStatusWithIcon(CharSprite.NEUTRAL, "4", FloatingText.TALENT);
 
             if (!anonymous) {
                 if (Random.Float() < talentChance) {
@@ -101,6 +98,13 @@ public class ElixirOfEnlightening extends Elixir {
         }
 
         private int boost = 0;
+
+        @Override
+        public boolean act() {
+            Statistics.enlighteningDrunk = boost;
+            detach();
+            return true;
+        }
 
         public void Boost(){
             boost += 1;

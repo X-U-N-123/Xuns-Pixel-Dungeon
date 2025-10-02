@@ -79,6 +79,8 @@ public class FloatingText extends RenderedTextBlock {
 
 	public static int devSHIELD = 25;
 	public static int REALITY   = 26;
+	public static int INVULNERABLE= 27;
+	public static int TALENT    = 28;
 
 	private Image icon;
 	private boolean iconLeft;

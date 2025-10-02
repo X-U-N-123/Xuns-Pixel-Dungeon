@@ -203,6 +203,9 @@ public abstract class ClericSpell {
 			if (cleric.hasTalent(Talent.SPIRIT_FORM)){
 				spells.add(SpiritForm.INSTANCE);
 			}
+			if (cleric.hasTalent(Talent.MIMIC_FORM)){
+				spells.add(MimicForm.INSTANCE);
+			}
 
 			if (cleric.hasTalent(Talent.BEAMING_RAY)){
 				spells.add(BeamingRay.INSTANCE);
@@ -252,6 +255,7 @@ public abstract class ClericSpell {
 		spells.add(BodyForm.INSTANCE);
 		spells.add(MindForm.INSTANCE);
 		spells.add(SpiritForm.INSTANCE);
+		spells.add(MimicForm.INSTANCE);
 		spells.add(BeamingRay.INSTANCE);
 		spells.add(LifeLinkSpell.INSTANCE);
 		spells.add(Stasis.INSTANCE);

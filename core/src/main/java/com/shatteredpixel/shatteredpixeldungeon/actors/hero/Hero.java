@@ -80,6 +80,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.BodyForm;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.HallowedGround;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.HolyWard;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.HolyWeapon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.MimicForm;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.Smite;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
@@ -376,6 +377,12 @@ public class Hero extends Char {
 	}
 
 	public int pointsInTalent( Talent talent ){
+		if (buff(MimicForm.MimicFormBuff.class) != null){
+			Talent mimicTalent = buff(MimicForm.MimicFormBuff.class).talent;
+			if (mimicTalent == talent){
+				return mimicTalent.maxPoints;
+			}
+		}
 		for (LinkedHashMap<Talent, Integer> tier : talents){
 			for (Talent f : tier.keySet()){
 				if (f == talent) return tier.get(f);
@@ -419,7 +426,7 @@ public class Hero extends Char {
 				|| (tier == 4 && armorAbility == null)) {
 			return 0;
 		}
-		int Bonus = 0;
+		int Bonus = Statistics.enlighteningDrunk;
 		if (buff(PotionOfDivineInspiration.DivineInspirationTracker.class) != null
 				&& buff(PotionOfDivineInspiration.DivineInspirationTracker.class).isBoosted(tier)) {
 			Bonus += 2;
@@ -2137,7 +2144,7 @@ public class Hero extends Char {
 				Sample.INSTANCE.play( Assets.Sounds.LEVELUP );
 				if (lvl < Talent.tierLevelThresholds[Talent.MAX_TALENT_TIERS+1]){
 					GLog.newLine();
-					GLog.p( Messages.get(this, "new_talent") );
+					sprite.showStatusWithIcon(CharSprite.NEUTRAL, "1", FloatingText.TALENT);
 					StatusPane.talentBlink = 10f;
 					WndHero.lastIdx = 1;
 				}

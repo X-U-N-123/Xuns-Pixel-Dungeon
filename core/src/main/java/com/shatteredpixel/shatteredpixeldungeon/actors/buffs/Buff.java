@@ -35,8 +35,9 @@ public class Buff extends Actor {
 	
 	public Char target;
 
-	//whether this buff was already extended by the mnemonic prayer spell
+	//whether this buff was already extended by the mnemonic prayer spell or peaceful elemental strike
 	public boolean mnemonicExtended = false;
+	public boolean peacefulEleExtended = false;
 
 	{
 		actPriority = BUFF_PRIO; //low priority, towards the end of a turn
@@ -143,11 +144,13 @@ public class Buff extends Actor {
 	}
 
 	private static final String MNEMONIC_EXTENDED    = "mnemonic_extended";
+	private static final String PEACEFULELE_EXTENDED    = "peacefulele_extended";
 
 	@Override
 	public void storeInBundle(Bundle bundle) {
 		super.storeInBundle(bundle);
 		if (mnemonicExtended) bundle.put(MNEMONIC_EXTENDED, mnemonicExtended);
+		if (peacefulEleExtended) bundle.put(PEACEFULELE_EXTENDED, peacefulEleExtended);
 	}
 
 	@Override
@@ -155,6 +158,9 @@ public class Buff extends Actor {
 		super.restoreFromBundle(bundle);
 		if (bundle.contains(MNEMONIC_EXTENDED)) {
 			mnemonicExtended = bundle.getBoolean(MNEMONIC_EXTENDED);
+		}
+		if (bundle.contains(PEACEFULELE_EXTENDED)) {
+			peacefulEleExtended = bundle.getBoolean(PEACEFULELE_EXTENDED);
 		}
 	}
 

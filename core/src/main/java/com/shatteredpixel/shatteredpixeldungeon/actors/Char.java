@@ -118,6 +118,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.armor.curses.Bulk;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.AntiMagic;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Brimstone;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Flow;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Freezingglyph;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Obfuscation;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Potential;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Swiftness;
@@ -145,6 +146,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Pier;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Blazing;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Grim;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Kinetic;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Peaceful;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Shocking;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.BladeOfUnreal;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.DMdrill;
@@ -400,7 +402,7 @@ public abstract class Char extends Actor {
 		if (enemy.isInvulnerable(getClass())) {
 
 			if (visibleFight) {
-				enemy.sprite.showStatus( CharSprite.POSITIVE, Messages.get(this, "invulnerable") );
+				enemy.sprite.showStatusWithIcon( CharSprite.NEUTRAL, "", FloatingText.INVULNERABLE );
 
 				Sample.INSTANCE.play(Assets.Sounds.HIT_PARRY, 1f, Random.Float(0.96f, 1.05f));
 			}
@@ -852,7 +854,7 @@ public abstract class Char extends Actor {
 		}
 
 		if(isInvulnerable(src.getClass())){
-			sprite.showStatus(CharSprite.POSITIVE, Messages.get(this, "invulnerable"));
+			sprite.showStatusWithIcon(CharSprite.NEUTRAL, Integer.toString(dmg), FloatingText.INVULNERABLE);
 			return;
 		}
 
@@ -908,22 +910,27 @@ public abstract class Char extends Actor {
 			}
 		}
 
+		float percentage = 1f;
+		if (buff(Peaceful.PeaccefulTracker.class) != null){
+			percentage = buff(Peaceful.PeaccefulTracker.class).chance;
+		}
+
 		Terror t = buff(Terror.class);
 		if (t != null){
-			t.recover();
+			t.recover(percentage);
 		}
 		Dread d = buff(Dread.class);
 		if (d != null){
-			d.recover();
+			d.recover(percentage);
 		}
 		Charm c = buff(Charm.class);
 		if (c != null){
-			c.recover(src);
+			c.recover(src, percentage);
 		}
-		if (this.buff(Frost.class) != null){
+		if (this.buff(Frost.class) != null && Random.Float() < percentage){
 			Buff.detach( this, Frost.class );
 		}
-		if (this.buff(MagicalSleep.class) != null){
+		if (this.buff(MagicalSleep.class) != null && Random.Float() < percentage){
 			Buff.detach(this, MagicalSleep.class);
 		}
 		if (this.buff(Doom.class) != null && !isImmune(Doom.class)){
@@ -980,8 +987,10 @@ public abstract class Char extends Actor {
 		}
 		
 		if (buff( Paralysis.class ) != null) {
-			buff( Paralysis.class ).processDamage(dmg);
+			buff( Paralysis.class ).processDamage(Math.round(dmg * percentage));
 		}
+
+		Buff.detach(this, Peaceful.PeaccefulTracker.class);
 
 		if (!(src instanceof Hunger)) {
 			if (this instanceof Hero && hero.subClass == HeroSubClass.GUARD && shielding() > 0){
@@ -998,11 +1007,11 @@ public abstract class Char extends Actor {
 				if (shield != null && Dungeon.hero.heroClass == HeroClass.WARRIOR){
 					if (dmg >= shield.maxShield()
 					&& !shield.coolingDown()){
-						float percent = 1f - (dmg-shield.maxShield()) / (hero.lvl*1.5f);
-						if (percent < 0f) percent = 0f;
-						if (((Hero)this).pointsInTalent(Talent.FIGHTING_BACK) < 2) percent = 1f;
-						shield.enterCooldown(percent, 0);
-						sprite.showStatusWithIcon(CharSprite.POSITIVE, String.valueOf(dmg), FloatingText.SHIELDING);
+						shield.enterCooldown(1f, 0);
+						if (((Hero)this).pointsInTalent(Talent.FIGHTING_BACK) > 1) {
+							shield.reduceCooldown(0f, (dmg-shield.maxShield())*67 / hero.lvl);
+						}
+						sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(dmg), FloatingText.SHIELDING);
 						dmg = 0;
 					}
 				} else if (Dungeon.hero.heroClass != HeroClass.WARRIOR){
@@ -1213,8 +1222,10 @@ public abstract class Char extends Actor {
 			}
 		}
 
-		if (src instanceof Wand && hero.hasTalent(Talent.ENERGY_RECYCLING) && alignment != Alignment.ALLY){
+		if (src instanceof Wand && hero.hasTalent(Talent.ENERGY_RECYCLING) && alignment != Alignment.ALLY
+			&& hero.buff(EnergyRecyclingCooldown.class) == null){
 			((Wand)src).gainCharge(hero.pointsInTalent(Talent.ENERGY_RECYCLING) *0.3f);
+			Buff.affect(hero, EnergyRecyclingCooldown.class, 5f);
 		}
 
 		if (src instanceof Char && ((Char) src).buff(Pier.StonePierTracker.class) != null && !(this instanceof StonePier)){
@@ -1494,6 +1505,10 @@ public abstract class Char extends Actor {
 		if (glyphLevel(Brimstone.class) >= 0){
 			immunes.add(Burning.class);
 		}
+		if (glyphLevel(Freezingglyph.class) >= 0){
+			immunes.add(Frost.class);
+			immunes.add(Chill.class);
+		}
 		
 		for (Class c : immunes){
 			if (c.isAssignableFrom(effect)){
@@ -1577,5 +1592,11 @@ public abstract class Char extends Actor {
 		public int icon() { return BuffIndicator.SEAL_SHIELD; }
 		public void tintIcon(Image icon) { icon.hardlight(0.7f, 0.7f, 0.7f); }
 		public float iconFadePercent() { return Math.max(0, visualcooldown() / 100); }
+	}
+
+	public static class EnergyRecyclingCooldown extends FlavourBuff {
+		public int icon() { return BuffIndicator.TIME; }
+		public void tintIcon(Image icon) { icon.hardlight(0.7f, 0.7f, 0f); }
+		public float iconFadePercent() { return Math.max(0, visualcooldown()); }
 	}
 }

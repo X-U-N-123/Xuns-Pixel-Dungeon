@@ -26,6 +26,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ArtifactRecharge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
@@ -567,6 +568,14 @@ public abstract class Wand extends Item {
 			if (removed) new Flare( 6, 32 ).color(0xFF4CD2, true).show( Dungeon.hero.sprite, 2f );
 		}
 
+		if (Dungeon.hero.heroClass != HeroClass.CLERIC
+		&& Random.Float() < Dungeon.hero.pointsInTalent(Talent.SHARED_CHARGE) * 0.15f){
+			ArtifactRecharge recharge = Buff.affect(Dungeon.hero, ArtifactRecharge.class).set(1f);
+			recharge.ignoreHornOfPlenty = false;
+			recharge.ignoreHolyTome = false;
+			ScrollOfRecharging.charge( Dungeon.hero );
+		}
+
 		Invisibility.dispel();
 		updateQuickslot();
 
@@ -905,7 +914,7 @@ public abstract class Wand extends Item {
 					+ (SCALING_CHARGE_ADDITION * Math.pow(scalingFactor, missingCharges)));
 
 			if (Dungeon.hero.hasTalent(Talent.POWER_ACCUMULATION) && Dungeon.hero.heroClass != HeroClass.DUELIST){
-				turnsToCharge /= 1f + 0.07f*Dungeon.hero.pointsInTalent(Talent.POWER_ACCUMULATION);
+				turnsToCharge /= 1f + 0.12f*Dungeon.hero.pointsInTalent(Talent.POWER_ACCUMULATION) * missingCharges / maxCharges;
 			}
 
 			for (Wand wand :Dungeon.hero.belongings.getAllItems(Wand.class)){

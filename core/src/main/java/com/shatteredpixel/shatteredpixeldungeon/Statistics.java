@@ -38,6 +38,8 @@ public class Statistics {
 	public static int piranhasKilled;
 	public static int hazardAssistedKills;
 	public static int ankhsUsed;
+	public static int extractUsed;
+	public static int enlighteningDrunk;
 	//tracks every item type 'seen' this run (i.e. would be added to catalogs)
 	public static HashSet<Class> itemTypesDiscovered = new HashSet<>();
 
@@ -62,20 +64,20 @@ public class Statistics {
 	public static int thrownAttacks;
 
 	public static int spawnersAlive;
-	
+
 	public static float duration;
-	
+
 	public static boolean qualifiedForNoKilling = false;
 	public static boolean completedWithNoKilling = false;
 	public static boolean qualifiedForBossRemainsBadge = false;
 	public static boolean qualifiedForBossChallengeBadge = false;
-	
+
 	public static boolean amuletObtained = false;
 	public static boolean gameWon = false;
 	public static boolean ascended = false;
-	
+
 	public static void reset() {
-		
+
 		goldCollected	= 0;
 		deepestFloor	= 0;
 		highestAscent	= 0;
@@ -85,6 +87,8 @@ public class Statistics {
 		piranhasKilled	= 0;
 		hazardAssistedKills = 0;
 		ankhsUsed		= 0;
+		extractUsed     = 0;
+		enlighteningDrunk = 0;
 		itemTypesDiscovered.clear();
 
 		progressScore   = 0;
@@ -99,25 +103,25 @@ public class Statistics {
 		winMultiplier   = 1;
 		chalMultiplier  = 1;
 		totalScore      = 0;
-		
+
 		upgradesUsed    = 0;
 		sneakAttacks    = 0;
 		thrownAttacks   = 0;
 
 		spawnersAlive   = 0;
-		
+
 		duration	    = 0;
-		
+
 		qualifiedForNoKilling = false;
 		qualifiedForBossRemainsBadge = false;
 		qualifiedForBossChallengeBadge = false;
-		
+
 		amuletObtained = false;
 		gameWon = false;
 		ascended = false;
-		
+
 	}
-	
+
 	private static final String GOLD		= "score";
 	private static final String DEEPEST		= "maxDepth";
 	private static final String HIGHEST		= "maxAscent";
@@ -127,6 +131,8 @@ public class Statistics {
 	private static final String PIRANHAS	= "priranhas";
 	private static final String HAZARD_ASSISTS	= "hazard_assists";
 	private static final String ANKHS		= "ankhsUsed";
+	private static final String EXTRACT		= "extractUsed";
+	private static final String ENLIGHTENING= "enlighteningUsed";
 
 	private static final String PROG_SCORE	    = "prog_score";
 	private static final String ITEM_VAL	    = "item_val";
@@ -140,7 +146,7 @@ public class Statistics {
 	private static final String WIN_MULT		= "win_mult";
 	private static final String CHAL_MULT		= "chal_mult";
 	private static final String TOTAL_SCORE		= "total_score";
-	
+
 	private static final String UPGRADES	= "upgradesUsed";
 	private static final String SNEAKS		= "sneakAttacks";
 	private static final String THROWN		= "thrownAssists";
@@ -148,17 +154,17 @@ public class Statistics {
 	private static final String ITEM_TYPES_DISCOVERED    = "item_types_discovered";
 
 	private static final String SPAWNERS	= "spawnersAlive";
-	
+
 	private static final String DURATION	= "duration";
 
 	private static final String NO_KILLING_QUALIFIED	= "qualifiedForNoKilling";
 	private static final String BOSS_REMAINS_QUALIFIED	= "qualifiedForBossRemainsBadge";
 	private static final String BOSS_CHALLENGE_QUALIFIED= "qualifiedForBossChallengeBadge";
-	
+
 	private static final String AMULET          = "amuletObtained";
 	private static final String WON		        = "won";
 	private static final String ASCENDED		= "ascended";
-	
+
 	public static void storeInBundle( Bundle bundle ) {
 		bundle.put( GOLD,		goldCollected );
 		bundle.put( DEEPEST,	deepestFloor );
@@ -169,6 +175,8 @@ public class Statistics {
 		bundle.put( PIRANHAS,	piranhasKilled );
 		bundle.put(HAZARD_ASSISTS, hazardAssistedKills);
 		bundle.put( ANKHS,		ankhsUsed );
+		bundle.put( EXTRACT,    extractUsed );
+		bundle.put( ENLIGHTENING, enlighteningDrunk);
 		bundle.put( ITEM_TYPES_DISCOVERED, itemTypesDiscovered.toArray(new Class<?>[0]) );
 
 		bundle.put( PROG_SCORE,  progressScore );
@@ -187,24 +195,24 @@ public class Statistics {
 		bundle.put( WIN_MULT,    winMultiplier );
 		bundle.put( CHAL_MULT,   chalMultiplier );
 		bundle.put( TOTAL_SCORE, totalScore );
-		
+
 		bundle.put( UPGRADES,   upgradesUsed );
 		bundle.put( SNEAKS,		sneakAttacks );
 		bundle.put( THROWN,     thrownAttacks);
 
 		bundle.put( SPAWNERS,	spawnersAlive );
-		
+
 		bundle.put( DURATION,	duration );
 
 		bundle.put(NO_KILLING_QUALIFIED, qualifiedForNoKilling);
 		bundle.put(BOSS_REMAINS_QUALIFIED, qualifiedForBossRemainsBadge);
 		bundle.put(BOSS_CHALLENGE_QUALIFIED, qualifiedForBossChallengeBadge);
-		
+
 		bundle.put( AMULET,		amuletObtained );
 		bundle.put( WON,        gameWon );
 		bundle.put( ASCENDED,   ascended );
 	}
-	
+
 	public static void restoreFromBundle( Bundle bundle ) {
 		goldCollected	= bundle.getInt( GOLD );
 		deepestFloor	= bundle.getInt( DEEPEST );
@@ -215,6 +223,8 @@ public class Statistics {
 		piranhasKilled	= bundle.getInt( PIRANHAS );
 		hazardAssistedKills = bundle.getInt( HAZARD_ASSISTS );
 		ankhsUsed		= bundle.getInt( ANKHS );
+		extractUsed		= bundle.getInt( EXTRACT );
+		enlighteningDrunk= bundle.getInt( ENLIGHTENING );
 
 		if (bundle.contains( ITEM_TYPES_DISCOVERED )) {
 			itemTypesDiscovered = new HashSet<>(Arrays.asList(bundle.getClassArray(ITEM_TYPES_DISCOVERED)));
