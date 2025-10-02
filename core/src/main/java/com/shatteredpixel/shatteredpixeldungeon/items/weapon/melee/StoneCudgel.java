@@ -111,7 +111,7 @@ public class StoneCudgel extends MeleeWeapon {
         int a=0;
         for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
             ArrayList<Integer> telePoints = new ArrayList<>();
-            if (mob instanceof StoneGuardian && a < 2+buffedLvl() ) {
+            if (mob instanceof StoneGuardian && a < 2+buffedLvl() && mob.alignment == Char.Alignment.ALLY) {
                 for (int i = 0; i < PathFinder.NEIGHBOURS25.length; i++) {
                     int p = target + PathFinder.NEIGHBOURS25[i];
                     if (Actor.findChar(p) == null && Dungeon.level.passable[p]) {

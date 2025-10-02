@@ -173,7 +173,6 @@ public class Badges {
 		GAMES_PLAYED_3              ( 86, BadgeType.GLOBAL ),
 		HIGH_SCORE_3                ( 87 ),
 		ENGINEER                    ( 88 ),
-		XUANWU                      ( 89 ),
 
 		//platinum
 		MANY_BUFFS                  ( 96 ),
@@ -1074,14 +1073,6 @@ public class Badges {
 		}
 	}
 
-	public static void validateXuanwu() {
-		if (!local.contains( Badge.XUANWU)) {
-			Badge badge = Badge.XUANWU;
-			local.add( badge );
-			displayBadge( badge );
-		}
-	}
-
 	public static void validateEngineer(Object cause){
 		if (cause == Dungeon.hero &&
 		Dungeon.hero.belongings.attackingWeapon() instanceof DMdrill
@@ -1314,7 +1305,6 @@ public class Badges {
 			{Badge.BOSS_SLAIN_3, Badge.BOSS_CHALLENGE_3},
 			{Badge.BOSS_SLAIN_3, Badge.ENGINEER},
 			{Badge.BOSS_SLAIN_4, Badge.BOSS_CHALLENGE_4},
-			{Badge.BOSS_SLAIN_4, Badge.XUANWU},
 			{Badge.VICTORY,      Badge.BOSS_CHALLENGE_5},
 			{Badge.VICTORY,      Badge.TAKING_THE_MICK},
 			{Badge.VICTORY,      Badge.DEATH_IN_DEVMODE},
