@@ -49,15 +49,17 @@ public class Zhouyi extends MeleeWeapon{
 
     @Override
     public int proc(Char attacker, Char defender, int damage) {
-        if (!defender.properties().contains(Char.Property.BOSS) && !defender.properties().contains(Char.Property.MINIBOSS)
-        && attacker.HP > 0 && defender.HP > 0){
+        if (!defender.properties().contains(Char.Property.BOSS) && !defender.properties().contains(Char.Property.MINIBOSS)){
             float exchangechance = 0.2f;
             float atkhp = (float)attacker.HP / attacker.HT;
             float defhp = (float)defender.HP / defender.HT;
             exchangechance += (defhp - atkhp)/5f;//0% ~ 40%
-            if (Random.Float() < exchangechance){
-                attacker.HP = Math.round(attacker.HT * defhp);
-                defender.HP = Math.round(defender.HT * atkhp);
+            int atkaftHP = Math.round(attacker.HT * defhp);
+            int defaftHP = Math.round(defender.HT * atkhp);
+
+            if (Random.Float() < exchangechance && atkaftHP > 0 && defaftHP > 0 && attacker.alignment != defender.alignment){
+                attacker.HP = atkaftHP;
+                defender.HP = defaftHP;
                 if (atkhp <= defhp){
                     attacker.sprite.emitter().start(Speck.factory(Speck.UP),   0.2f, 3);
                     defender.sprite.emitter().start(Speck.factory(Speck.DOWN), 0.2f, 3);
@@ -77,7 +79,6 @@ public class Zhouyi extends MeleeWeapon{
 
     @Override
     protected void duelistAbility(Hero hero, Integer target) {
-        float dmgmulti = Random.Float(0.5f, 2+0.3f*buffedLvl());
         if (target == null) {
             return;
         }
@@ -101,7 +102,7 @@ public class Zhouyi extends MeleeWeapon{
             public void call() {
                 beforeAbilityUsed(hero, enemy);
                 AttackIndicator.target(enemy);
-                if (hero.attack(enemy, dmgmulti, 0, Char.INFINITE_ACCURACY)){
+                if (hero.attack(enemy, 1f, 0, Char.INFINITE_ACCURACY)){
                     Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG);
                 }
                 int heropos = hero.pos;
@@ -126,7 +127,8 @@ public class Zhouyi extends MeleeWeapon{
                     hero.next();
                     onAbilityKill(hero, enemy);
                 }
-                hero.spendAndNext(hero.attackDelay());
+                float timeMulti = Random.NormalFloat(0, 1f/(level()+1));
+                hero.spendAndNext(hero.attackDelay()*timeMulti);
 
                 afterAbilityUsed(hero);
             }
@@ -135,17 +137,16 @@ public class Zhouyi extends MeleeWeapon{
 
     @Override
     public String abilityInfo() {
-        float maxMulti = 2 + 0.3f*buffedLvl();
+        float maxMulti = 1f/(buffedLvl()+1);
         if (levelKnown){
-            return Messages.get(this, "ability_desc", 0.5f, maxMulti);
+            return Messages.get(this, "ability_desc", maxMulti);
         } else {
-            return Messages.get(this, "typical_ability_desc", 0.5f, maxMulti);
+            return Messages.get(this, "typical_ability_desc", maxMulti);
         }
     }
 
     public String upgradeAbilityStat(int level){
-        float maxMulti = 2 + 0.3f*level;
-        return "0.5-" + maxMulti;
+        return String.valueOf(1f/(level+1));
     }
 
 }

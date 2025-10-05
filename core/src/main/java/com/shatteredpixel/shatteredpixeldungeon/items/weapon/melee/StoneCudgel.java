@@ -41,6 +41,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.MobSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.StatueSprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.Bundle;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
@@ -88,9 +89,7 @@ public class StoneCudgel extends MeleeWeapon {
                 guardian.pos = Random.element(spawnPoints);
                 GameScene.add(guardian);
                 Dungeon.level.occupyCell(guardian);
-                if (attacker != Dungeon.hero){
-                    guardian.alignment = Char.Alignment.ENEMY;
-                }
+                guardian.alignment = attacker.alignment;
 
                 ScrollOfTeleportation.appear(guardian, guardian.pos);
             }
@@ -165,7 +164,7 @@ public class StoneCudgel extends MeleeWeapon {
         }
 
         public void createWeapon(Weapon wep) {
-            weapon = (MeleeWeapon) Dungeon.hero.belongings.weapon();
+            weapon = wep;
         }
 
         @Override
@@ -187,6 +186,20 @@ public class StoneCudgel extends MeleeWeapon {
                     ((MobSprite) sprite).fall();
                 }
             }//Char.java super method
+        }
+
+        private static final String ALIGNMENT = "alignment";
+
+        @Override
+        public void storeInBundle( Bundle bundle ){
+            super.storeInBundle(bundle);
+            bundle.put(ALIGNMENT, alignment);
+        }
+
+        @Override
+        public void restoreFromBundle( Bundle bundle ){
+            super.restoreFromBundle(bundle);
+            alignment = bundle.getEnum(ALIGNMENT, Char.Alignment.class);
         }
     }
 

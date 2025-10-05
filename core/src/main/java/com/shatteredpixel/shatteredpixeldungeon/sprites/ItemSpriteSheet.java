@@ -814,6 +814,7 @@ public class ItemSpriteSheet {
 	public static final int BREW_UNSTABLE   = BREWS+5;
 	public static final int BREW_HEAT       = BREWS+6;
 	public static final int BREW_REGROWING  = BREWS+7;
+	public static final int BREW_TRACKING   = BREWS+8;
 
 	private static final int ELIXIRS        = xy(17, 17);  //16 slots
 	public static final int ELIXIR_HONEY    = ELIXIRS+0;
@@ -824,7 +825,8 @@ public class ItemSpriteSheet {
 	public static final int ELIXIR_ICY      = ELIXIRS+5;
 	public static final int ELIXIR_ARCANE   = ELIXIRS+6;
 	public static final int ELIXIR_FEATHER  = ELIXIRS+7;
-	public static final int ELIXIR_ENLIGHTENING= ELIXIRS+8;
+	public static final int ELIXIR_ENLIGHT  = ELIXIRS+8;
+	public static final int ELIXIR_OVERDRAFT= ELIXIRS+9;
 	static{
 		for (int i = BREWS; i < BREWS+32; i++)
 			assignItemRect(i, 12, 14);
@@ -832,6 +834,7 @@ public class ItemSpriteSheet {
 		assignItemRect(BREW_AQUA      ,9, 11);
 		assignItemRect(BREW_HEAT      ,9, 11);
 		assignItemRect(BREW_REGROWING ,9, 11);
+		assignItemRect(BREW_TRACKING  ,9, 11);
 	}
 
 	private static final int SPELLS         = xy(1, 16);  //32 slots
@@ -839,6 +842,8 @@ public class ItemSpriteSheet {
 	public static final int PHASE_SHIFT     = SPELLS+1;
 	public static final int TELE_GRAB       = SPELLS+2;
 	public static final int UNSTABLE_SPELL  = SPELLS+3;
+	public static final int SUMMON_WRAITH   = SPELLS+4;
+	public static final int WATCHTOWER      = SPELLS+5;
 
 	public static final int CURSE_INFUSE    = SPELLS+11;
 	public static final int MAGIC_INFUSE    = SPELLS+12;
@@ -850,12 +855,15 @@ public class ItemSpriteSheet {
 	public static final int RECLAIM_TRAP    = SPELLS+22;
 	public static final int RETURN_BEACON   = SPELLS+23;
 	public static final int SUMMON_ELE      = SPELLS+24;
+	public static final int SCOUT           = SPELLS+25;
 
 	static{
 		assignItemRect(WILD_ENERGY,     12, 11);
 		assignItemRect(PHASE_SHIFT,     12, 11);
 		assignItemRect(TELE_GRAB,       12, 11);
 		assignItemRect(UNSTABLE_SPELL,  12, 13);
+		assignItemRect(SUMMON_WRAITH,   12, 11);
+		assignItemRect(WATCHTOWER,      12, 11);
 
 		assignItemRect(CURSE_INFUSE,    10, 15);
 		assignItemRect(MAGIC_INFUSE,    10, 15);
@@ -867,6 +875,7 @@ public class ItemSpriteSheet {
 		assignItemRect(RECLAIM_TRAP,     8, 16);
 		assignItemRect(RETURN_BEACON,    8, 16);
 		assignItemRect(SUMMON_ELE,       8, 16);
+		assignItemRect(SCOUT,            8, 16);
 	}
 	
 	private static final int FOOD           = xy(1, 18);  //16 slots

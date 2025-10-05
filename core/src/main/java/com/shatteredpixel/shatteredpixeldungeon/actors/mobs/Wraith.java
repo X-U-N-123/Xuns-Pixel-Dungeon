@@ -105,7 +105,7 @@ public class Wraith extends Mob {
 	
 	public static void spawnAround( int pos, Class<? extends Wraith> wraithClass ) {
 		for (int n : PathFinder.NEIGHBOURS4) {
-			spawnAt( pos + n, wraithClass, false );
+			spawnAt( pos + n, wraithClass, false, true );
 		}
 	}
 
@@ -114,10 +114,10 @@ public class Wraith extends Mob {
 	}
 
 	public static Wraith spawnAt( int pos, Class<? extends Wraith> wraithClass ) {
-		return spawnAt( pos, wraithClass, true );
+		return spawnAt( pos, wraithClass, true, true );
 	}
 
-	private static Wraith spawnAt( int pos, Class<? extends Wraith> wraithClass, boolean allowAdjacent ) {
+	public static Wraith spawnAt(int pos, Class<? extends Wraith> wraithClass, boolean allowAdjacent, boolean delayed) {
 
 		//if the position itself is blocked, try to place in an adjacent cell if allowed
 		if (Dungeon.level.solid[pos] || Actor.findChar( pos ) != null){
@@ -154,7 +154,8 @@ public class Wraith extends Mob {
 			w.adjustStats( Dungeon.scalingDepth() );
 			w.pos = pos;
 			w.state = w.HUNTING;
-			GameScene.add( w, SPAWN_DELAY );
+			if (delayed) GameScene.add( w, SPAWN_DELAY );
+			else GameScene.add(w);
 			Dungeon.level.occupyCell(w);
 
 			w.sprite.alpha( 0 );

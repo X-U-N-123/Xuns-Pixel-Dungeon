@@ -92,6 +92,12 @@ public class ElixirOfMight extends Elixir {
 		public void reset(int lvl){
 			left = lvl;
 		}
+
+		public void extend(int lvl){
+			left += lvl;
+			//prevent hero's HT from decreasing to 0
+			left = Math.max(left, -17-Math.round((Dungeon.hero.lvl)*1.7f));
+		}
 		
 		public int boost(){
 			return Math.round(left*boost(15 + 5*((Hero)target).lvl)/5f);
@@ -102,8 +108,9 @@ public class ElixirOfMight extends Elixir {
 		}
 		
 		public void onLevelUp(){
-			left --;
-			if (left <= 0){
+			if (left < 0) left ++;
+			else left --;
+			if (left == 0){
 				detach();
 			}
 		}

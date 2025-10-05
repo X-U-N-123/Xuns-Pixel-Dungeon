@@ -50,7 +50,7 @@ public class DMdrill extends MeleeWeapon {
 
     @Override
     public int proc(Char attacker, Char defender, int damage) {
-        Buff.affect(attacker, DMcombo.class).hit(3 + level());
+        Buff.affect(attacker, DMcombo.class).hit(4 + level());
         DMcombo dmcombo = attacker.buff(DMcombo.class);
         if (dmcombo != null){
             damage = (int)(damage * Math.pow(1.1f, attacker.buff(DMcombo.class).Getcount()));
@@ -70,12 +70,12 @@ public class DMdrill extends MeleeWeapon {
 
     @Override
     protected void duelistAbility(Hero hero, Integer target) {
-        hero.buff(DMcombo.class).Overload(2+buffedLvl());
+        Buff.affect(hero, DMcombo.class).Overload(4+buffedLvl());
     }
 
     @Override
     public String abilityInfo() {
-        int Overloadtime = levelKnown ? 3 + buffedLvl() : 3;
+        int Overloadtime = levelKnown ? 4 + buffedLvl() : 4;
         if (levelKnown){
             return Messages.get(this, "ability_desc", Overloadtime);
         } else {
@@ -84,7 +84,7 @@ public class DMdrill extends MeleeWeapon {
     }
 
     public String upgradeAbilityStat(int level){
-        return String.valueOf(3+level);
+        return String.valueOf(4+level);
     }
 
     public static class DMcombo extends Buff {
@@ -105,7 +105,7 @@ public class DMdrill extends MeleeWeapon {
         @Override
         public void tintIcon(Image icon) {
             if (Overloadtime > 0){
-                icon.hardlight(0.7f, 0, 0.8f);//Purple
+                icon.hardlight(0.8f, 0, 0.9f);//Purple
             } else {
                 switch (count){
                     case 0://White
@@ -158,7 +158,7 @@ public class DMdrill extends MeleeWeapon {
         }
 
         public boolean isOverloading(){
-            return Overloadtime>0 ;
+            return Overloadtime > 0;
         }
 
         protected int Getcount(){
@@ -168,7 +168,7 @@ public class DMdrill extends MeleeWeapon {
         protected void hit(int time){
             count++;
             if (Overloadtime > 0){
-                Time += time - 1;
+                Time += time;
             } else if (Time <= 5){
                 Time = time;
             }
@@ -201,7 +201,7 @@ public class DMdrill extends MeleeWeapon {
 
         @Override
         public String iconTextDisplay() {
-            return String.valueOf(count);
+            return String.valueOf(Time);
         }
 
         @Override

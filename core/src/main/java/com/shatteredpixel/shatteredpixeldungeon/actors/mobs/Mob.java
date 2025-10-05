@@ -696,10 +696,11 @@ public abstract class Mob extends Char {
 		if ( !surprisedBy(enemy)
 				&& paralysed == 0
 				&& !(alignment == Alignment.ALLY && enemy == Dungeon.hero)) {
-			if (this.buff(JusticeStrike.JusticeStrikeBuff.class) != null){
-				return Math.round(1f-0.15f*(1+ Dungeon.hero.pointsInTalent(Talent.JUSTICE_STRIKE))*this.defenseSkill);
+
+			if (buff(JusticeStrike.JusticeStrikeBuff.class) != null){
+				return Math.round((0.85f - 0.15f*Dungeon.hero.pointsInTalent(Talent.JUSTICE_STRIKE))*defenseSkill);
 			} else {
-				return this.defenseSkill;
+				return defenseSkill;
 			}
 		} else {
 			return 0;

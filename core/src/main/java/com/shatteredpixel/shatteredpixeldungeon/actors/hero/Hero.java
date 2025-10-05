@@ -44,11 +44,11 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Berserk;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bless;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.BrokenArmor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Charm;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Combo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Drowsy;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Foresight;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.GreaterHaste;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HeroDisguise;
@@ -86,6 +86,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Monk;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Snake;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.MirrorImage;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CheckedCell;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
@@ -187,6 +188,7 @@ import com.shatteredpixel.shatteredpixeldungeon.windows.WndHero;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndResurrect;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndTradeItem;
 import com.watabou.noosa.Game;
+import com.watabou.noosa.Image;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.tweeners.Delayer;
 import com.watabou.utils.BArray;
@@ -629,6 +631,10 @@ public class Hero extends Char {
 
 		if (belongings.armor() != null) {
 			evasion = belongings.armor().evasionFactor(this, evasion);
+		}
+
+		for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
+			if (mob instanceof MirrorImage) evasion += pointsInTalent(Talent.MULTIPLE_DODGE);
 		}
 
 		return Math.round(evasion);
@@ -1557,9 +1563,9 @@ public class Hero extends Char {
 
 		damage = Talent.onAttackProc( this, enemy, damage );
 
-		if (enemy instanceof Mob && ((Mob) enemy).surprisedBy(Dungeon.hero)
-		&& Dungeon.hero.subClass == HeroSubClass.NINJA){
-			Buff.prolong(enemy, BrokenArmor.class, 5f);
+		if (enemy instanceof Mob && ((Mob) enemy).surprisedBy(this)
+		&& subClass == HeroSubClass.NINJA && buff(NinjaInvisCooldown.class) == null){
+			Buff.affect(this, NinjaInvisCooldown.class, 25f);
 		}
 
 		if (wep != null) {
@@ -2407,6 +2413,12 @@ public class Hero extends Char {
 		boolean hit = attack(attackTarget);
 		
 		Invisibility.dispel();
+
+		NinjaInvisCooldown invis = buff(NinjaInvisCooldown.class);
+		if (invis != null && !invis.invisGiven){
+			Buff.affect(this, Invisibility.class, 3f);
+			invis.invisGiven = true;
+		}
 		spend( attackDelay() );
 
 		if (hit && subClass == HeroSubClass.GLADIATOR && wasEnemy){
@@ -2696,5 +2708,26 @@ public class Hero extends Char {
 			}
 		}
 		return weight;
+	}
+
+	public static class NinjaInvisCooldown extends FlavourBuff {
+		public boolean invisGiven = false;
+		public int icon() { return BuffIndicator.TIME; }
+		public void tintIcon(Image icon) { icon.hardlight(0f, 0f, 0.7f); }
+		public float iconFadePercent() { return Math.max(0, visualcooldown() / 25); }
+
+		private static String GIVEN = "given";
+
+		@Override
+		public void storeInBundle(Bundle bundle) {
+			super.storeInBundle(bundle);
+			bundle.put( GIVEN, invisGiven );
+		}
+
+		@Override
+		public void restoreFromBundle(Bundle bundle) {
+			super.restoreFromBundle(bundle);
+			invisGiven = bundle.getBoolean(GIVEN);
+		}
 	}
 }

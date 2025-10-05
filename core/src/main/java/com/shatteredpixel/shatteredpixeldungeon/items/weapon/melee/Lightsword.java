@@ -44,6 +44,7 @@ public class Lightsword extends MeleeWeapon{
 
     @Override
     public int proc(Char attacker, Char defender, int damage) {
+        //light the attacker
         Buff.affect(attacker, Light.class, 3 + buffedLvl());
         if ((defender.properties().contains(Char.Property.DEMONIC) || defender.properties().contains(Char.Property.UNDEAD))){
             defender.sprite.emitter().start( ShadowParticle.UP, 0.05f, 10 );
@@ -56,6 +57,7 @@ public class Lightsword extends MeleeWeapon{
     public float accuracyFactor(Char owner, Char target) {
         if ((owner != Dungeon.hero || Dungeon.hero.STR >= STRReq())
         && (target.properties().contains(Char.Property.UNDEAD) || target.properties().contains(Char.Property.DEMONIC))) {
+            //always hit while fighting against undead and demonic enemies
             return Float.POSITIVE_INFINITY;
         } else {
             return super.accuracyFactor(owner, target);
@@ -92,6 +94,7 @@ public class Lightsword extends MeleeWeapon{
             public void call() {
                 beforeAbilityUsed(hero, enemy);
                 AttackIndicator.target(enemy);
+                //deal 50% extra damage to undead and demonic enemies
                 if (hero.attack(enemy, (enemy.properties().contains(Char.Property.DEMONIC) || enemy.properties().contains(Char.Property.UNDEAD)) ? 1.5f : 1f,
                         0, Char.INFINITE_ACCURACY)){
                     Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG);

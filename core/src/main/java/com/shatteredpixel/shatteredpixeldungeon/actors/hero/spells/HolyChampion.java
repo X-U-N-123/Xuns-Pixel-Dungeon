@@ -33,7 +33,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.cleric.Pow
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HolyTome;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
-import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.HeroIcon;
 
 public class HolyChampion extends ClericSpell {
@@ -75,7 +74,8 @@ public class HolyChampion extends ClericSpell {
         }
 
         if (ally == Stasis.getStasisAlly()){
-            ally.buff(LifeLink.class).clearTime();
+            LifeLink lifeLink = ally.buff(LifeLink.class);
+            if (lifeLink != null) lifeLink.clearTime();
             ally.buff(LifeLinkSpell.LifeLinkSpellBuff.class).clearTime();
         }
 

@@ -54,8 +54,8 @@ public enum HeroSubClass {
 
 	CHAMPION(HeroIcon.CHAMPION),
 	MONK(HeroIcon.MONK),
+	PHANTOM(HeroIcon.PHANTOM),
 	//SKILL
-	//PHANTOM
 
 	PRIEST(HeroIcon.PRIEST),
 	PALADIN(HeroIcon.PALADIN);

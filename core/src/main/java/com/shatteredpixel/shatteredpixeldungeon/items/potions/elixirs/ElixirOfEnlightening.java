@@ -43,7 +43,7 @@ import com.watabou.utils.Random;
 public class ElixirOfEnlightening extends Elixir {
 
     {
-        image = ItemSpriteSheet.ELIXIR_ENLIGHTENING;
+        image = ItemSpriteSheet.ELIXIR_ENLIGHT;
     }
 
     @Override

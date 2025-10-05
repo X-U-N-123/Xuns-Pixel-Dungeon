@@ -26,8 +26,10 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Corruption;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Wraith;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfMight;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
@@ -54,9 +56,12 @@ public class Darkgoldsword extends MeleeWeapon{
 
     @Override
     public int proc(Char attacker, Char defender, int damage) {
-        if (defender != Dungeon.hero &&
-                !(defender.properties().contains(Char.Property.BOSS) || defender.properties().contains(Char.Property.MINIBOSS))){
-            Buff.affect(defender, HTDecreaseTracker.class);
+        if (!defender.properties().contains(Char.Property.BOSS) && !defender.properties().contains(Char.Property.MINIBOSS)){
+            if (defender != Dungeon.hero) Buff.affect(defender, HTDecreaseTracker.class);
+            else {
+                Buff.affect(defender, ElixirOfMight.HTBoost.class).extend(-1-level());
+                Dungeon.hero.updateHT(false);
+            }
         }
         return super.proc(attacker, defender, damage);
     }
@@ -97,12 +102,16 @@ public class Darkgoldsword extends MeleeWeapon{
                 }
 
                 Invisibility.dispel();
+                hero.spendAndNext(hero.attackDelay());
 
                 if (!enemy.isAlive()){
                     hero.next();
                     onAbilityKill(hero, enemy);
-                    Buff.affect(hero, ElixirOfMight.HTBoost.class).reset(1);
-                    Dungeon.hero.updateHT(true);
+
+                    Wraith w = Wraith.spawnAt(enemy.pos, Wraith.class, true, false);
+                    Buff.affect(w, Corruption.class);
+
+                    Sample.INSTANCE.play(Assets.Sounds.CURSED);
                 }
                 afterAbilityUsed(hero);
             }

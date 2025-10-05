@@ -69,6 +69,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Momentum;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MonkEnergy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Ooze;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Phantom;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Poison;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Preparation;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ShieldBuff;
@@ -643,8 +644,14 @@ public abstract class Char extends Actor {
 			}
 
 			if (enemy instanceof Hero){
-				if (Dungeon.hero.hasTalent(Talent.AGILE_COUNTATK)){
-					Buff.affect(Dungeon.hero, Talent.AgileCountATKTracker.class, 2f);
+				if (hero.hasTalent(Talent.AGILE_COUNTATK)){
+					Buff.affect(hero, Talent.AgileCountATKTracker.class, 2f);
+				}
+
+				Phantom p = hero.buff(Phantom.class);
+				if (hero.subClass == HeroSubClass.PHANTOM && p != null && p.getCD() <= 0){
+					p.summon();
+					p.reduceCD(5f*hero.pointsInTalent(Talent.FLEXIBLE_FOOTWORK));
 				}
 			}
 
@@ -1294,6 +1301,10 @@ public abstract class Char extends Actor {
 		if (buff( Speed.class ) != null) {
 			timeScale *= 2.0f;
 		}
+		MonkEnergy energy = Dungeon.hero.buff(MonkEnergy.class);
+		if (this == Dungeon.hero && Dungeon.hero.hasTalent(Talent.YIN_GAIT) && energy != null) {
+			timeScale *= 1f + (0.2f/3) * Dungeon.hero.pointsInTalent(Talent.YIN_GAIT) * energy.Getenergy()/energy.energyCap();
+		}
 		
 		super.spend( time / timeScale );
 	}
@@ -1402,11 +1413,6 @@ public abstract class Char extends Actor {
 		float stealth = 0;
 
 		stealth += Obfuscation.stealthBoost(this, glyphLevel(Obfuscation.class));
-
-		MonkEnergy energy = Dungeon.hero.buff(MonkEnergy.class);
-		if (this == Dungeon.hero && Dungeon.hero.hasTalent(Talent.YIN_GAIT) && energy != null) {
-			stealth += 0.2f * Dungeon.hero.pointsInTalent(Talent.YIN_GAIT) * energy.Getenergy();
-		}
 
 		return stealth;
 	}

@@ -30,8 +30,10 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AllyBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Phantom;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.BodyForm;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.HolyWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
@@ -85,6 +87,13 @@ public class MirrorImage extends NPC {
 		
 		return super.act();
 	}
+
+	@Override
+	public void die(Object cause) {
+		super.die(cause);
+		if (hero.hasTalent(Talent.DIFFUSED_IMAGE))
+			hero.buff(Phantom.class).reduceCD(1 + 3 * hero.pointsInTalent(Talent.DIFFUSED_IMAGE));
+	}
 	
 	private static final String HEROID	= "hero_id";
 	
@@ -114,7 +123,8 @@ public class MirrorImage extends NPC {
 		} else {
 			damage = hero.damageRoll(); //handles ring of force
 		}
-		return (damage+1)/2; //half hero damage, rounded up
+		//half hero damage, rounded up, can be boosted by talent
+		return Math.round( (damage+1) * (0.5f+0.1f*hero.pointsInTalent(Talent.ENRAGED_SHADOW)) );
 	}
 	
 	@Override
@@ -155,11 +165,17 @@ public class MirrorImage extends NPC {
 	@Override
 	public int drRoll() {
 		int dr = super.drRoll();
-		if (hero != null && hero.belongings.weapon() != null){
-			return dr + Random.NormalIntRange(0, hero.belongings.weapon().defenseFactor(this)/2);
-		} else {
-			return dr;
+		if (hero != null){
+			if (hero.belongings.weapon() != null){
+				dr += Random.NormalIntRange(0,
+				Math.round(hero.belongings.weapon().defenseFactor(this) * (0.5f+0.1f*hero.pointsInTalent(Talent.ENRAGED_SHADOW))) );
+			}
+			if (hero.belongings.armor() != null && hero.hasTalent(Talent.EIDOLON)){
+				dr += Math.round(Random.NormalIntRange( hero.belongings.armor().DRMin(), hero.belongings.armor().DRMax())
+					* 0.2f * hero.pointsInTalent(Talent.EIDOLON));
+			}
 		}
+		return dr;
 	}
 	
 	@Override

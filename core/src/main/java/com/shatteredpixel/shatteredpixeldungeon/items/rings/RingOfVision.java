@@ -70,6 +70,7 @@ public class RingOfVision extends Ring {
     }
 
     private void updateView(){
+        if (Dungeon.level == null) return;
         for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
             if (mob.alignment == Char.Alignment.ALLY){
                 Dungeon.level.updateFieldOfView(mob, mob.fieldOfView);
