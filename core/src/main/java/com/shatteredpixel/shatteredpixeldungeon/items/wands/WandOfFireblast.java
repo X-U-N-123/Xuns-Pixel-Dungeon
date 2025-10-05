@@ -135,8 +135,8 @@ public class WandOfFireblast extends DamageWand {
 		}
 
 		for ( Char ch : affectedChars ){
-			wandProc(ch, chargesPerCast());
-			ch.damage(damageRoll(), this);
+			int dmg = wandProc(ch, chargesPerCast(), damageRoll());
+			ch.damage(dmg, this);
 			if (ch.isAlive()) {
 				Buff.affect(ch, Burning.class).reignite(ch);
 				switch (chargesPerCast()) {

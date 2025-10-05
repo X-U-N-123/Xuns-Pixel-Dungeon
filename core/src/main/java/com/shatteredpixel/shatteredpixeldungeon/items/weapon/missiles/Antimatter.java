@@ -35,6 +35,7 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.BArray;
 import com.watabou.utils.PathFinder;
 
 import java.util.ArrayList;
@@ -42,7 +43,7 @@ import java.util.ArrayList;
 public class Antimatter extends MissileWeapon{
 
     {
-        image = ItemSpriteSheet.Anti_matter;
+        image = ItemSpriteSheet.ANTIMATTER;
 
         tier = 6;
         baseUses = 1;
@@ -62,7 +63,7 @@ public class Antimatter extends MissileWeapon{
 
     @Override
     public int max(int lvl) {
-        return  30 * tier;                   //180 base, up from 30
+        return  30 * tier;    //180 base, up from 30
                               //no scaling
     }
 
@@ -84,17 +85,21 @@ public class Antimatter extends MissileWeapon{
         ArrayList<Char> targets = new ArrayList<>();
         if (Actor.findChar(cell) != null) targets.add(Actor.findChar(cell));
 
-        for (int i : PathFinder.NEIGHBOURS25){
-            if (Dungeon.level.distance(cell, i) <= 2){
-                if (!(Dungeon.level.traps.get(cell+i) instanceof TenguDartTrap)) Dungeon.level.pressCell(cell+i);
-                if ((Actor.findChar(cell + i) != null) && i != 0) targets.add(Actor.findChar(cell + i));
-                if (Dungeon.level.map[cell + i] == Terrain.WATER
-                        || Dungeon.level.map[cell + i] == Terrain.MINE_CRYSTAL
-                        || Dungeon.level.map[cell + i] == Terrain.MINE_BOULDER
-                        || (Terrain.flags[Dungeon.level.map[i + cell]] & Terrain.FLAMABLE) != 0){
-                    Level.set(cell + i, Terrain.EMPTY);
-                    GameScene.updateMap(cell + i);
+        PathFinder.buildDistanceMap( cell, BArray.not( Dungeon.level.solid, null ), 2 );
+        for (int i = 0; i < PathFinder.distance.length; i++) {
+            if (PathFinder.distance[i] <= 2){
+                if (!(Dungeon.level.traps.get(i) instanceof TenguDartTrap)) Dungeon.level.pressCell(i);
+                if (Actor.findChar(i) != null && i != cell) targets.add(Actor.findChar(i));
+
+                if (Dungeon.level.map[i] == Terrain.WATER
+                || Dungeon.level.map[i] == Terrain.EMBERS
+                || Dungeon.level.map[i] == Terrain.MINE_CRYSTAL
+                || Dungeon.level.map[i] == Terrain.MINE_BOULDER
+                || (Terrain.flags[Dungeon.level.map[i]] & Terrain.FLAMABLE) != 0){
+                    Level.set(i, Terrain.EMPTY);
+                    GameScene.updateMap(i);
                 }
+
             }
         }
 
@@ -108,7 +113,7 @@ public class Antimatter extends MissileWeapon{
         }
         PixelScene.shake( 5, 1.5f );
         for (int j = 0; j < 3; j++){
-            Sample.INSTANCE.play(Assets.Sounds.BLAST);
+            Sample.INSTANCE.playDelayed(Assets.Sounds.BLAST, j*0.1f);
         }
     }
 

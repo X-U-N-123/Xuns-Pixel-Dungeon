@@ -27,20 +27,26 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Freezing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Chill;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Frost;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Splash;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfDragonsBreath;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
-import com.shatteredpixel.shatteredpixeldungeon.levels.traps.BlazingTrap;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.shatteredpixel.shatteredpixeldungeon.tiles.CustomTilemap;
+import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
 import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.BArray;
 import com.watabou.utils.PathFinder;
+import com.watabou.utils.Point;
+import com.watabou.utils.PointF;
 import com.watabou.utils.Random;
 
 public class HeatBrew extends Brew {
@@ -53,52 +59,103 @@ public class HeatBrew extends Brew {
 
 	@Override
 	public void shatter(int cell) {
-
+		Splash.at( DungeonTilemap.tileCenterToWorld( cell ), -PointF.PI/2, PointF.PI/2, 0xf38b24, 10, 0.01f);
 		Sample.INSTANCE.play(Assets.Sounds.BURNING);
 
-		for (int i : PathFinder.NEIGHBOURS25) {
-			if ((Terrain.flags[Dungeon.level.map[i + cell]] & Terrain.FLAMABLE) != 0){
-				if (Dungeon.level.distance(i+cell, cell) == 2 && Random.Int(3) > 0){
-					Level.set(i + cell, Terrain.EMBERS);
-				} else if (Dungeon.level.distance(i+cell, cell) < 2){
-					Level.set(i + cell, Terrain.EMBERS);
+		Freezing freezing = (Freezing) Dungeon.level.blobs.get(Freezing.class);
+		PathFinder.buildDistanceMap( cell, BArray.not( Dungeon.level.solid, null ), 2 );
+		for (int i = 0; i < PathFinder.distance.length; i++) {
+			if (PathFinder.distance[i] == 2 && Random.Int(3) > 0){
+				HeatTile(i);
+				if (freezing != null){
+					freezing.clear(i);
+				}
+			} else if (PathFinder.distance[i] < 2){
+				HeatTile(i);
+				if (freezing != null){
+					freezing.clear(i);
 				}
 			}
-			if (Dungeon.level.map[i + cell] == Terrain.WATER){
-				if (Dungeon.level.distance(i + cell, cell) == 2 && Random.Int(3) > 0){
-					Level.set(i + cell, Terrain.EMPTY);
-					CellEmitter.get(i + cell).burst( Speck.factory( Speck.STEAM ), 5 );
-				} else if (Dungeon.level.distance(i+cell, cell) < 2){
-					Level.set(i + cell, Terrain.EMPTY);
-					CellEmitter.get(i + cell).burst( Speck.factory( Speck.STEAM ), 5 );
-				}
-			}
-			GameScene.updateMap(cell + i);
 		}
 
-		for (int i : PathFinder.NEIGHBOURS9){
+		for (int i : PathFinder.NEIGHBOURS8){
 			Char ch = Actor.findChar(cell + i);
 			if (ch != null){
-
-				Buff buff = ch.buff(Chill.class);
-				if (buff != null) buff.detach();
-				buff = ch.buff(Frost.class);
-				if (buff != null) buff.detach();
 
 				//does the equivalent of a bomb's damage against icy enemies.
 				if (Char.hasProp(ch, Char.Property.ICY)){
 					int dmg = Random.NormalIntRange(5 + scalingDepth(), 10 + scalingDepth()*2);
 					dmg *= 0.67f;
-					if (!ch.isImmune(BlazingTrap.class)){
+					if (!ch.isImmune(HeatBrew.class)){
 						ch.damage(dmg, this);
 					}
 				}
 
 				if (ch.isAlive()) {
+					if (ch.buff(Chill.class) != null){
+						ch.buff(Chill.class).detach();
+					}
+					if (ch.buff(Frost.class) != null){
+						ch.buff(Frost.class).detach();
+					}
 					Buff.prolong(ch, Blindness.class, 4f);
 				}
 			}
 		}
+
+		Char ch = Actor.findChar(cell);
+		if (ch != null){
+
+			//does the equivalent of a bomb's damage against icy enemies.
+			if (Char.hasProp(ch, Char.Property.ICY)){
+				int dmg = Random.NormalIntRange(5 + scalingDepth(), 10 + scalingDepth()*2);
+				if (!ch.isImmune(HeatBrew.class)){
+					ch.damage(dmg, this);
+				}
+			}
+
+			if (ch.isAlive()) {
+				if (ch.buff(Chill.class) != null){
+					ch.buff(Chill.class).detach();
+				}
+				if (ch.buff(Frost.class) != null){
+					ch.buff(Frost.class).detach();
+				}
+				Buff.prolong(ch, Blindness.class, 6f);
+			}
+		}
+
+	}
+
+	public boolean HeatTile(int cell) {
+		Point p = Dungeon.level.cellToPoint(cell);
+
+		//if a custom tilemap is over that cell, don't heat there
+		for (CustomTilemap cust : Dungeon.level.customTiles){
+			Point custPoint = new Point(p);
+			custPoint.x -= cust.tileX;
+			custPoint.y -= cust.tileY;
+			if (custPoint.x >= 0 && custPoint.y >= 0
+			&& custPoint.x < cust.tileW && custPoint.y < cust.tileH){
+				if (cust.image(custPoint.x, custPoint.y) != null){
+					return false;
+				}
+			}
+		}
+
+		if ((Terrain.flags[Dungeon.level.map[cell]] & Terrain.FLAMABLE) != 0){
+			Level.set(cell, Terrain.EMBERS);
+			GameScene.updateMap(cell);
+			return true;
+		}
+		if (Dungeon.level.map[cell] == Terrain.WATER){
+			Level.set(cell, Terrain.EMPTY);
+			CellEmitter.get(cell).burst( Speck.factory( Speck.STEAM ), 5 );
+			GameScene.updateMap(cell);
+			return true;
+		}
+
+		return false;
 
 	}
 

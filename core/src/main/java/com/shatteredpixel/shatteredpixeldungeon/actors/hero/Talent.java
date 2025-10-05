@@ -223,7 +223,7 @@ public enum Talent {
 	public static class ImprovisedProjectileCooldown extends FlavourBuff{
 		public int icon() { return BuffIndicator.TIME; }
 		public void tintIcon(Image icon) { icon.hardlight(0.15f, 0.2f, 0.5f); }
-		public float iconFadePercent() { return Math.max(0, visualcooldown() / 50); }
+		public float iconFadePercent() { return Math.max(0, visualcooldown() / 25); }
 	}
 	public static class LethalMomentumTracker extends FlavourBuff{}
 	public static class StrikingWaveTracker extends FlavourBuff{}
@@ -1165,8 +1165,8 @@ public enum Talent {
 			if (point > 0 && enemy.buff(WeakeningSneakTracker.class) == null){
 				Buff.affect(enemy, Blindness.class, 5f);
 				Buff.affect(enemy, WeakeningSneakTracker.class);
-				if (point > 1) Buff.affect(enemy, Vertigo.class, 5f);
-				if (point > 2) Buff.affect(enemy, Cripple.class, 5f);
+				if (point > 2) Buff.affect(enemy, Vertigo.class, 5f);
+				if (point > 1) Buff.affect(enemy, Cripple.class, 5f);
 			}
 		}
 

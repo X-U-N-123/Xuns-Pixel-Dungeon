@@ -72,6 +72,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Phantom;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Poison;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Preparation;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Regeneration;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ShieldBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Sleep;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Slow;
@@ -127,6 +128,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Viscosity;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ElementalMask;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.HeatBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfCleansing;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Pickaxe;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfElements;
@@ -1112,6 +1114,7 @@ public abstract class Char extends Actor {
 			if (src instanceof Chill || src instanceof Frost)           icon = FloatingText.FROST;
 			if (src instanceof GeyserTrap || src instanceof StormCloud) icon = FloatingText.WATER;
 			if (src instanceof Burning)                                 icon = FloatingText.BURNING;
+			if (src instanceof HeatBrew)                                icon = FloatingText.HEAT;
 			if (src instanceof Electricity)                             icon = FloatingText.SHOCKING;
 			if (src instanceof Bleeding)                                icon = FloatingText.BLEEDING;
 			if (src instanceof ToxicGas)                                icon = FloatingText.TOXIC;
@@ -1213,7 +1216,7 @@ public abstract class Char extends Actor {
 			GameScene.updateMap(pos);
 		}
 
-		if (Random.Float() <= Dungeon.hero.pointsInTalent(Talent.DEW_COLLECTING)/4f && Dungeon.level.heroFOV[pos] && alignment != Alignment.ALLY &&
+		if (Random.Float() <= Dungeon.hero.pointsInTalent(Talent.DEW_COLLECTING)/5f && Dungeon.level.heroFOV[pos] && alignment != Alignment.ALLY &&
 		(Dungeon.level.map[Dungeon.hero.pos] == Terrain.GRASS ||
 		Dungeon.level.map[Dungeon.hero.pos] == Terrain.HIGH_GRASS ||
 		Dungeon.level.map[Dungeon.hero.pos] == Terrain.FURROWED_GRASS)){
@@ -1250,7 +1253,8 @@ public abstract class Char extends Actor {
 	}
 
 	public void OrganicGrass(int Pos) {
-		if (Dungeon.hero.buff(Talent.RejuvenatingStepsFurrow.class) != null && Dungeon.hero.buff(Talent.RejuvenatingStepsFurrow.class).count() >= 200){
+		if ((Dungeon.hero.buff(Talent.RejuvenatingStepsFurrow.class) != null && Dungeon.hero.buff(Talent.RejuvenatingStepsFurrow.class).count() >= 200)
+		|| !Regeneration.regenOn()){
 			Level.set(Pos, Terrain.FURROWED_GRASS);
 		} else {
 			Level.set(Pos, Terrain.HIGH_GRASS);

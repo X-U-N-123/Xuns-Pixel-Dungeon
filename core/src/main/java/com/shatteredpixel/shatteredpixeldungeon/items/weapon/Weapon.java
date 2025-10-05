@@ -44,6 +44,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfForce;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfFuror;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ParchmentScrap;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ShardOfOblivion;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Annoying;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Dazzling;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Displacing;
@@ -547,6 +548,11 @@ abstract public class Weapon extends KindOfWeapon {
 			if (attacker.buff(RunicBlade.RunicSlashTracker.class) != null){
 				multi += attacker.buff(RunicBlade.RunicSlashTracker.class).boost;
 				attacker.buff(RunicBlade.RunicSlashTracker.class).detach();
+			}
+
+			if (attacker.buff(Wand.MysticalEnergyTracker.class) != null){
+				multi *= 0.3f*Dungeon.hero.pointsInTalent(Talent.MYSTICAL_SWITCH);
+				attacker.buff(Wand.MysticalEnergyTracker.class).detach();
 			}
 
 			if (attacker.buff(Smite.SmiteTracker.class) != null){

@@ -117,7 +117,7 @@ public class WandOfRegrowth extends Wand {
 					if (ch instanceof DwarfKing){
 						Statistics.qualifiedForBossChallengeBadge = false;
 					}
-					wandProc(ch, chargesPerCast());
+					wandProc(ch, chargesPerCast(), 2+buffedLvl());
 					Buff.prolong( ch, Roots.class, 4f * chrgUsed );
 				}
 			}

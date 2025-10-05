@@ -28,14 +28,20 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Roots;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Splash;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.LeafParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.shatteredpixel.shatteredpixeldungeon.tiles.CustomTilemap;
+import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
 import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.BArray;
 import com.watabou.utils.PathFinder;
+import com.watabou.utils.Point;
+import com.watabou.utils.PointF;
 import com.watabou.utils.Random;
 
 public class RegrowingBrew extends Brew {
@@ -48,36 +54,60 @@ public class RegrowingBrew extends Brew {
 
 	@Override
 	public void shatter(int cell) {
+		Splash.at( DungeonTilemap.tileCenterToWorld( cell ), -PointF.PI/2, PointF.PI/2, 0x2ee62e, 10, 0.01f);
+		Sample.INSTANCE.play(Assets.Sounds.PLANT, 1.4f);
 
-		Sample.INSTANCE.play(Assets.Sounds.PLANT, 1.3f);
-
-		for (int i : PathFinder.NEIGHBOURS25) {
-			if (Dungeon.level.map[i + cell] == Terrain.EMPTY
-			|| Dungeon.level.map[i + cell] == Terrain.EMBERS
-			|| Dungeon.level.map[i + cell] == Terrain.EMPTY_DECO
-			|| Dungeon.level.map[i + cell] == Terrain.GRASS
-			|| Dungeon.level.map[i + cell] == Terrain.FURROWED_GRASS
-			|| Dungeon.level.map[i + cell] == Terrain.WATER){
-				if (Dungeon.level.map[i + cell] != Terrain.FURROWED_GRASS){
-					Level.set(i + cell, Terrain.GRASS);
-				}
-				if (Dungeon.level.distance(i+cell, cell) == 2 && Random.Int(2) > 0){
-					Level.set(i + cell, Terrain.HIGH_GRASS);
-					CellEmitter.get( cell + i ).burst( LeafParticle.LEVEL_SPECIFIC, 5 );
-				} else if (Dungeon.level.distance(i+cell, cell) < 2){
-					Level.set(i + cell, Terrain.HIGH_GRASS);
-					CellEmitter.get( cell + i ).burst( LeafParticle.LEVEL_SPECIFIC, 5 );
-				}
+		PathFinder.buildDistanceMap( cell, BArray.not( Dungeon.level.solid, null ), 2 );
+		for (int i = 0; i < PathFinder.distance.length; i++) {
+			if (PathFinder.distance[i] == 2 && Random.Int(3) > 0){
+				GrowGrass(i);
+			} else if (PathFinder.distance[i] < 2){
+				GrowGrass(i);
 			}
-			GameScene.updateMap(cell + i);
 		}
 
-		for (int i : PathFinder.NEIGHBOURS9){
+		for (int i : PathFinder.NEIGHBOURS8){
 			Char ch = Actor.findChar(cell + i);
-			if (ch != null){
-				Buff.prolong(ch, Roots.class, 3f);
+			if (ch != null && ch.isAlive()){
+				Buff.prolong(ch, Roots.class, 4f);
 			}
 		}
+
+		Char ch = Actor.findChar(cell);
+		if (ch != null && ch.isAlive()){
+			Buff.prolong(ch, Roots.class, 6f);
+		}
+
+	}
+
+	public boolean GrowGrass(int cell) {
+		Point p = Dungeon.level.cellToPoint(cell);
+
+		//if a custom tilemap is over that cell, don't grow plants there
+		for (CustomTilemap cust : Dungeon.level.customTiles){
+			Point custPoint = new Point(p);
+			custPoint.x -= cust.tileX;
+			custPoint.y -= cust.tileY;
+			if (custPoint.x >= 0 && custPoint.y >= 0
+			&& custPoint.x < cust.tileW && custPoint.y < cust.tileH){
+				if (cust.image(custPoint.x, custPoint.y) != null){
+					return false;
+				}
+			}
+		}
+
+		if (Dungeon.level.map[cell] == Terrain.EMPTY
+		|| Dungeon.level.map[cell] == Terrain.EMBERS
+		|| Dungeon.level.map[cell] == Terrain.EMPTY_DECO
+		|| Dungeon.level.map[cell] == Terrain.GRASS
+		|| Dungeon.level.map[cell] == Terrain.FURROWED_GRASS){
+			Level.set(cell, Terrain.HIGH_GRASS);
+			CellEmitter.get(cell).burst( LeafParticle.LEVEL_SPECIFIC, 5 );
+			GameScene.updateMap(cell);
+			return true;
+		}
+
+		return false;
 
 	}
 

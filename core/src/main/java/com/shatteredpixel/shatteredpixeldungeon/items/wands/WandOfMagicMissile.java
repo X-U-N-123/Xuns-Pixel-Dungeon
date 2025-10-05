@@ -58,8 +58,8 @@ public class WandOfMagicMissile extends DamageWand {
 		Char ch = Actor.findChar( bolt.collisionPos );
 		if (ch != null) {
 
-			wandProc(ch, chargesPerCast());
-			ch.damage(damageRoll(), this);
+			int dmg = wandProc(ch, chargesPerCast(), damageRoll());
+			ch.damage(dmg, this);
 			Sample.INSTANCE.play( Assets.Sounds.HIT_MAGIC, 1, Random.Float(0.87f, 1.15f) );
 
 			ch.sprite.burst(0xFFFFFFFF, buffedLvl() / 2 + 2);

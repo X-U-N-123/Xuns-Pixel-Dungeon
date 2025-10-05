@@ -76,6 +76,8 @@ public class RingOfVision extends Ring {
                 Dungeon.level.updateFieldOfView(mob, mob.fieldOfView);
             }
         }
+        Dungeon.observe();
+        Dungeon.hero.checkVisibleMobs();
     }
 
     public String statsInfo() {

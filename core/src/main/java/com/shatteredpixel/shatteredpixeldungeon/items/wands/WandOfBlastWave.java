@@ -84,8 +84,9 @@ public class WandOfBlastWave extends DamageWand {
 			Char ch = Actor.findChar(bolt.collisionPos + i);
 
 			if (ch != null){
-				wandProc(ch, chargesPerCast());
-				if (ch.alignment != Char.Alignment.ALLY) ch.damage(damageRoll(), this);
+				int dmg = damageRoll();
+				wandProc(ch, chargesPerCast(), dmg);
+				if (ch.alignment != Char.Alignment.ALLY) ch.damage(dmg, this);
 
 				//do not push chars that are dieing over a pit, or that move due to the damage
 				if ((ch.isAlive() || ch.flying || !Dungeon.level.pit[ch.pos])
@@ -101,8 +102,8 @@ public class WandOfBlastWave extends DamageWand {
 		//throws the char at the center of the blast
 		Char ch = Actor.findChar(bolt.collisionPos);
 		if (ch != null){
-			wandProc(ch, chargesPerCast());
-			ch.damage(damageRoll(), this);
+			int dmg = wandProc(ch, chargesPerCast(), damageRoll());
+			ch.damage(dmg, this);
 
 			//do not push chars that are dieing over a pit, or that move due to the damage
 			if ((ch.isAlive() || ch.flying || !Dungeon.level.pit[ch.pos])

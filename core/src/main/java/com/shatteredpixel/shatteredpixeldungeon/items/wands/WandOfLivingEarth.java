@@ -106,7 +106,7 @@ public class WandOfLivingEarth extends DamageWand {
 		if (guardian != null && guardian == ch){
 			guardian.sprite.centerEmitter().burst(MagicMissile.EarthParticle.ATTRACT, 8 + buffedLvl() / 2);
 			guardian.setInfo(curUser, buffedLvl(), armorToAdd);
-			wandProc(guardian, chargesPerCast());
+			wandProc(guardian, chargesPerCast(), armorToAdd);
 			Sample.INSTANCE.play( Assets.Sounds.HIT_MAGIC, 1, 0.9f * Random.Float(0.87f, 1.15f) );
 
 		//shooting the guardian at a location
@@ -126,7 +126,7 @@ public class WandOfLivingEarth extends DamageWand {
 
 				ch.sprite.centerEmitter().burst(MagicMissile.EarthParticle.BURST, 5 + buffedLvl()/2);
 
-				wandProc(ch, chargesPerCast());
+				damage = wandProc(ch, chargesPerCast(), damage);
 				ch.damage(damage, this);
 
 				int closest = -1;
@@ -172,7 +172,7 @@ public class WandOfLivingEarth extends DamageWand {
 
 				ch.sprite.centerEmitter().burst(MagicMissile.EarthParticle.BURST, 5 + buffedLvl() / 2);
 
-				wandProc(ch, chargesPerCast());
+				damage = wandProc(ch, chargesPerCast(), damage);
 				ch.damage(damage, this);
 				Sample.INSTANCE.play( Assets.Sounds.HIT_MAGIC, 1, 0.8f * Random.Float(0.87f, 1.15f) );
 				

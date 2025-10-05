@@ -58,14 +58,15 @@ public class WandOfCorrosion extends Wand {
 	public void onZap(Ballistica bolt) {
 		CorrosiveGas gas = Blob.seed(bolt.collisionPos, 50 + 10 * buffedLvl(), CorrosiveGas.class);
 		CellEmitter.get(bolt.collisionPos).burst(Speck.factory(Speck.CORROSION), 10 );
-		gas.setStrength(2 + buffedLvl(), getClass());
+		int gasQuantity = 2 + buffedLvl();
+		gas.setStrength(gasQuantity, getClass());
 		GameScene.add(gas);
 		Sample.INSTANCE.play(Assets.Sounds.GAS);
 
 		for (int i : PathFinder.NEIGHBOURS9) {
 			Char ch = Actor.findChar(bolt.collisionPos + i);
 			if (ch != null) {
-				wandProc(ch, chargesPerCast());
+				wandProc(ch, chargesPerCast(), gasQuantity);
 
 				if (i == 0 && ch instanceof DwarfKing){
 					Statistics.qualifiedForBossChallengeBadge = false;

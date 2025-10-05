@@ -29,7 +29,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 
 public class Peaceful extends Weapon.Enchantment {
 
-    private static ItemSprite.Glowing PINK = new ItemSprite.Glowing( 0xFFCCFF );
+    private static ItemSprite.Glowing PINK = new ItemSprite.Glowing( 0xFF99FF );
 
     @Override
     public int proc(Weapon weapon, Char attacker, Char defender, int damage ) {

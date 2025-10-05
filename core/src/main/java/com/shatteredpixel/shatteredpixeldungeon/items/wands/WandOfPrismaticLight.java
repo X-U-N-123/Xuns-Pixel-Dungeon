@@ -79,13 +79,12 @@ public class WandOfPrismaticLight extends DamageWand {
 		
 		Char ch = Actor.findChar(beam.collisionPos);
 		if (ch != null){
-			wandProc(ch, chargesPerCast());
-			affectTarget(ch);
+			int dmg = wandProc(ch, chargesPerCast(), damageRoll());
+			affectTarget(ch, dmg);
 		}
 	}
 
-	private void affectTarget(Char ch){
-		int dmg = damageRoll();
+	private void affectTarget(Char ch, int dmg){
 
 		//three in (5+lvl) chance of failing
 		if (Random.Int(5+buffedLvl()) >= 3) {

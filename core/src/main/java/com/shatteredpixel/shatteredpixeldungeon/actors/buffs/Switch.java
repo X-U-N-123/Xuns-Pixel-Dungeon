@@ -32,7 +32,6 @@ import com.watabou.utils.Bundle;
 public class Switch extends FlavourBuff {
 
     public static float DURATION = 4f;
-    public boolean used = false;
 
     {
         type = buffType.POSITIVE;
@@ -49,7 +48,6 @@ public class Switch extends FlavourBuff {
     @Override
     public void detach() {
         super.detach();
-        if (!used) ArtifactRecharge.chargeArtifacts(Dungeon.hero, Dungeon.hero.pointsInTalent(Talent.MYSTICAL_SWITCH));
         Item.updateQuickslot();
     }
 
@@ -72,7 +70,7 @@ public class Switch extends FlavourBuff {
 
     @Override
     public String desc() {
-        return Messages.get(this, "desc", 2 + Dungeon.hero.pointsInTalent(Talent.SWITCH_MASTER), staffLevel);
+        return Messages.get(this, "desc", 2 + Dungeon.hero.pointsInTalent(Talent.SWITCH_MASTER), staffLevel, dispTurns());
     }
 
     private static final String LEVEL = "level";

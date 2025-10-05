@@ -155,7 +155,7 @@ public class MissileSprite extends ItemSprite implements Tweener.Listener {
 			}
 		}
 		
-		angle = 135 - (float)(Math.atan2( d.x, d.y ) / 3.1415926 * 180);
+		angle = 135 - (float)(Math.atan2( d.x, d.y ) / Math.PI * 180);
 		
 		if (d.x >= 0){
 			flipHorizontal = false;

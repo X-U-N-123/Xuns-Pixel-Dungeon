@@ -25,7 +25,6 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.BrokenArmor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
@@ -102,10 +101,9 @@ public class WandOfAvalanche extends DamageWand {
 		}*/
 
 		for ( Char ch : affectedChars ){
-			wandProc(ch, chargesPerCast());
-			ch.damage(damageRoll(), this);
+			int dmg = wandProc(ch, chargesPerCast(), damageRoll());
+			ch.damage(dmg, this);
 			if (ch.isAlive()) {
-				Buff.affect(ch, BrokenArmor.class, 4f);
 				switch (chargesPerCast()) {
 					case 1: break;//do nothing
 					case 2:

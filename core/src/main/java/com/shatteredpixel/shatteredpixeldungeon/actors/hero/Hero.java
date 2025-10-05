@@ -2716,6 +2716,10 @@ public class Hero extends Char {
 		public void tintIcon(Image icon) { icon.hardlight(0f, 0f, 0.7f); }
 		public float iconFadePercent() { return Math.max(0, visualcooldown() / 25); }
 
+		public void decreaseCD(float time) {
+			spend(-time);
+		}
+
 		private static String GIVEN = "given";
 
 		@Override

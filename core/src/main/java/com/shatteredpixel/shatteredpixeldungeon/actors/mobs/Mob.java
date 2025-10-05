@@ -21,6 +21,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
@@ -44,6 +46,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MindVision;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MonkEnergy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Preparation;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Regeneration;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Sleep;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.SoulMark;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
@@ -995,8 +998,10 @@ public abstract class Mob extends Char {
 		}
 
         //flying locust stone logic
-        if (Dungeon.hero.hasTalent(Talent.FLYING_LOCUST_STONE) && Random.Float() <= 1/6f){
-            Dungeon.level.drop(new ThrowingStone().quantity(1), pos).sprite.drop();
+        if (Dungeon.hero.hasTalent(Talent.FLYING_LOCUST_STONE) && Random.Float() <= 1/10f && Regeneration.regenOn()
+		&& (Dungeon.hero.buff(Talent.RejuvenatingStepsFurrow.class) == null || Dungeon.hero.buff(Talent.RejuvenatingStepsFurrow.class).count() < 200)){
+            Dungeon.level.drop(new ThrowingStone(), pos).sprite.drop();
+			Buff.count(hero, Talent.RejuvenatingStepsFurrow.class, 2);
         }
 
 		//soul eater talent

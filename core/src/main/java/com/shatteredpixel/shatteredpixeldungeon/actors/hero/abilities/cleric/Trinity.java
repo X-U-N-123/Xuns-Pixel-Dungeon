@@ -660,7 +660,7 @@ public class Trinity extends ArmorAbility {
 			return 2*chargeUse;
 		}
 		if (cls.equals(Antimatter.class)){
-			return 1.4f*chargeUse; //35 charge
+			return 3*chargeUse; //75 charge
 		}
 		if (Artifact.class.isAssignableFrom(cls)){
 			if (cls.equals(DriedRose.class) || cls.equals(UnstableSpellbook.class)){

@@ -60,6 +60,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfEnergy;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRecharging;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ShardOfOblivion;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.WondrousResin;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Projecting;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -209,12 +210,12 @@ public abstract class Wand extends Item {
 		charger.setScaleFactor( chargeScaleFactor );
 	}
 
-	protected void wandProc(Char target, int chargesUsed){
-		wandProc(target, buffedLvl(), chargesUsed);
+	protected int wandProc(Char target, int chargesUsed, int dmg){
+		return wandProc(target, buffedLvl(), chargesUsed, dmg, this);
 	}
 
 	//TODO Consider externalizing char awareness buff
-	protected static void wandProc(Char target, int wandLevel, int chargesUsed){
+	protected static int wandProc(Char target, int wandLevel, int chargesUsed, int dmg, Wand w){
 		if (Dungeon.hero.hasTalent(Talent.ARCANE_VISION)) {
 			int dur = 5 + 5*Dungeon.hero.pointsInTalent(Talent.ARCANE_VISION);
 			Buff.append(Dungeon.hero, TalismanOfForesight.CharAwareness.class, dur).charID = target.id();
@@ -225,6 +226,13 @@ public abstract class Wand extends Item {
 				//standard 1 - 0.92^x chance, plus 7%. Starts at 15%
 				Random.Float() > (Math.pow(0.92f, (wandLevel*chargesUsed)+1) - 0.07f)){
 			SoulMark.prolong(target, SoulMark.class, SoulMark.DURATION + wandLevel);
+		}
+
+		MagesStaff staff = Dungeon.hero.belongings.getItem(MagesStaff.class);
+		if (Dungeon.hero.hasTalent(Talent.MYSTICAL_SWITCH) && w == staff.wand() && staff.enchantment != null){
+			dmg = staff.enchantment.proc(staff, curUser, target, dmg);
+			Buff.affect(curUser, MysticalEnergyTracker.class);
+			if (staff.enchantment instanceof Projecting) dmg = Math.round(dmg * 1.2f);
 		}
 
 		if (Dungeon.hero.subClass == HeroSubClass.PRIEST && target.buff(GuidingLight.Illuminated.class) != null) {
@@ -248,6 +256,7 @@ public abstract class Wand extends Item {
 				Buff.prolong(target, Blindness.class, 4f);
 			}
 		}
+		return dmg;
 	}
 
 	@Override
@@ -519,7 +528,6 @@ public abstract class Wand extends Item {
 				empower.use();
 			}
 		} else if (buffedLvl() > super.buffedLvl()){
-			buff1.used = true;
 			buff1.detach();
 			switchLvl += 1;
 			int point = curUser.pointsInTalent(Talent.SWITCH_MASTER);
@@ -968,6 +976,7 @@ public abstract class Wand extends Item {
 		public void tintIcon(Image icon) { icon.hardlight(1f, 1f, 0.7f); }
 		public float iconFadePercent() { return Math.max(0, visualcooldown() / 80); }
 	}
+	public static class MysticalEnergyTracker extends Buff {}
 
 	@Override
 	public float weight(){

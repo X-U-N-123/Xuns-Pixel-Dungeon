@@ -41,6 +41,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.MobSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.StatueSprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.BArray;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
@@ -107,26 +108,30 @@ public class StoneCudgel extends MeleeWeapon {
 
         beforeAbilityUsed(hero, null);
 
-        int a=0;
+        int a = 0;
+        int range = 0;
         for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
+
             ArrayList<Integer> telePoints = new ArrayList<>();
-            if (mob instanceof StoneGuardian && a < 2+buffedLvl() && mob.alignment == Char.Alignment.ALLY) {
-                for (int i = 0; i < PathFinder.NEIGHBOURS25.length; i++) {
-                    int p = target + PathFinder.NEIGHBOURS25[i];
-                    if (Actor.findChar(p) == null && Dungeon.level.passable[p]) {
-                        telePoints.add(p);
-                    }
+            PathFinder.buildDistanceMap( target, BArray.not( Dungeon.level.solid, null ), 2 );
+            for (int i = 0; i < PathFinder.distance.length; i++) {
+                if (PathFinder.distance[i] <= range && Actor.findChar(i) == null && Dungeon.level.passable[i]){
+                    telePoints.add(i);
                 }
-                if (telePoints.size() > 0) {
+            }
+
+            if (mob instanceof StoneGuardian && a < 2+buffedLvl() && mob.alignment == Char.Alignment.ALLY) {
+
+                if (!telePoints.isEmpty()) {
                     int point = Random.element(telePoints);
                     mob.pos = point;
                     mob.sprite.place( point );
                     Dungeon.level.occupyCell(mob);
                     CellEmitter.get( point ).burst( Speck.factory( Speck.ROCK ), 3 );
                     mob.beckon(target);
-                    a += 1;
+                    a ++;
                 } else {
-                    a = 2+buffedLvl();
+                    range ++;
                 }
             }
         }

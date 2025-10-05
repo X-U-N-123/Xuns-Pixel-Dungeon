@@ -292,7 +292,7 @@ public class WandOfWarding extends Wand {
 		}
 
 		//this class is used so that wards and sentries can have two entries in the Bestiary
-		public static class WardSentry extends Ward{};
+		public static class WardSentry extends Ward{}
 
 		public void wandHeal( int wandLevel ){
 			wandHeal( wandLevel, 1f );
@@ -375,8 +375,11 @@ public class WandOfWarding extends Wand {
 			int dmg = Hero.heroDamageIntRange( 2 + wandLevel, 8 + 4*wandLevel );
 			Char enemy = this.enemy;
 			enemy.damage( dmg, this );
+			Wand w = null;
+			if (Dungeon.hero.belongings.getItem(MagesStaff.class) != null)
+				w = Dungeon.hero.belongings.getItem(MagesStaff.class).wand();
 			if (enemy.isAlive()){
-				Wand.wandProc(enemy, wandLevel, 1);
+				Wand.wandProc(enemy, wandLevel, 1, dmg, w);
 			}
 
 			if (!enemy.isAlive() && enemy == Dungeon.hero) {

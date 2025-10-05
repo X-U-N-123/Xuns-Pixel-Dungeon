@@ -81,8 +81,8 @@ public class WandOfTransfusion extends DamageWand {
 		Char ch = Actor.findChar(cell);
 
 		if (ch instanceof Mob){
-			
-			wandProc(ch, chargesPerCast());
+
+			int dmg = wandProc(ch, chargesPerCast(), damageRoll());
 			
 			//this wand does different things depending on the target.
 			
@@ -134,7 +134,7 @@ public class WandOfTransfusion extends DamageWand {
 				
 				//harms the undead
 				} else {
-					ch.damage(damageRoll(), this);
+					ch.damage(dmg, this);
 					ch.sprite.emitter().start(ShadowParticle.UP, 0.05f, 10 + buffedLvl());
 					Sample.INSTANCE.play(Assets.Sounds.BURNING);
 				}

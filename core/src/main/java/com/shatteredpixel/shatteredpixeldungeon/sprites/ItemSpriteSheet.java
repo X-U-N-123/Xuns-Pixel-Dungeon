@@ -447,7 +447,7 @@ public class ItemSpriteSheet {
 
 	public static final int Scorpiospike    = MISSILE_WEP+26;
 	public static final int Ironball        = MISSILE_WEP+27;
-	public static final int Anti_matter     = MISSILE_WEP+28;
+	public static final int ANTIMATTER = MISSILE_WEP+28;
 	public static final int HEAVYBOOMERANG  = MISSILE_WEP+29;
 	
 	static{
@@ -480,7 +480,7 @@ public class ItemSpriteSheet {
 
 		assignItemRect(Scorpiospike,    16, 16);
 		assignItemRect(Ironball,        12, 12);
-		assignItemRect(Anti_matter,     12, 11);
+		assignItemRect(ANTIMATTER,     12, 11);
 		assignItemRect(HEAVYBOOMERANG,  15, 15);
 	}
 
