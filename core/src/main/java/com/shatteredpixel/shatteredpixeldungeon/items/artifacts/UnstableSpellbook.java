@@ -37,14 +37,13 @@ import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.ScrollHolder;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfEnergy;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
-import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfIdentify;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfLullaby;
-import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMagicMapping;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRage;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRemoveCurse;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTerror;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTransmutation;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ExoticScroll;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.UnstableSpell;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -140,23 +139,27 @@ public class UnstableSpellbook extends Artifact {
 	public void doReadEffect(Hero hero){
 		charge--;
 
-		Scroll scroll;
-		do {
-			scroll = (Scroll) Generator.randomUsingDefaults(Generator.Category.SCROLL);
-		} while (scroll == null
-				//reduce the frequency of these scrolls by half
-				||((scroll instanceof ScrollOfIdentify ||
-				scroll instanceof ScrollOfRemoveCurse ||
-				scroll instanceof ScrollOfMagicMapping) && Random.Int(2) == 0)
-				//cannot roll transmutation
-				|| (scroll instanceof ScrollOfTransmutation));
+		Scroll scroll = Reflection.newInstance(Random.chances(UnstableSpell.scrollChances));
+
+		//reroll the scroll until it is relevant for the situation (whether there are visible enemies)
+		if (hero.visibleEnemies() == 0){
+			while (!UnstableSpell.nonCombatScrolls.contains(scroll.getClass())
+			|| (scroll instanceof ScrollOfTransmutation && charge < 1)){
+				scroll = Reflection.newInstance(Random.chances(UnstableSpell.scrollChances));
+			}
+		} else {
+			while (!UnstableSpell.combatScrolls.contains(scroll.getClass())){
+				scroll = Reflection.newInstance(Random.chances(UnstableSpell.scrollChances));
+			}
+		}
 
 		scroll.anonymize();
 		curItem = scroll;
 		curUser = hero;
+		if (scroll instanceof ScrollOfTransmutation) charge --;
 
 		//if there are charges left and the scroll has been given to the book
-		if (charge > 0 && !scrolls.contains(scroll.getClass())) {
+		if (charge > 0 && !scrolls.contains(scroll.getClass()) && !(scroll instanceof ScrollOfTransmutation && level() < 10)) {
 			final Scroll fScroll = scroll;
 
 			final ExploitHandler handler = Buff.affect(hero, ExploitHandler.class);

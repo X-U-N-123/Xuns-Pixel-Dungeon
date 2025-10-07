@@ -21,8 +21,11 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs;
 
+import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
@@ -35,6 +38,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.watabou.noosa.Image;
+import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.GameMath;
 import com.watabou.utils.Random;
@@ -53,6 +57,26 @@ public class ElixirOfAquaticRejuvenation extends Elixir {
 			PotionOfHealing.pharmacophobiaProc(hero);
 		} else {
 			Buff.affect(hero, AquaHealing.class).set(Math.round(hero.HT * 1.5f));
+		}
+	}
+
+	@Override
+	public void shatter(int cell) {
+		Char ch = Actor.findChar(cell);
+
+		if (ch == null){
+			super.shatter(cell);
+		} else {
+			splash( cell );
+			if (Dungeon.level.heroFOV[cell]) {
+				Sample.INSTANCE.play(Assets.Sounds.SHATTER);
+			}
+
+			if (ch instanceof Hero && Dungeon.isChallenged(Challenges.NO_HEALING)){
+				PotionOfHealing.pharmacophobiaProc((Hero)ch);
+			} else {
+				Buff.affect(ch, AquaHealing.class).set(Math.round(Dungeon.hero.HT * 1.5f));
+			}
 		}
 	}
 	

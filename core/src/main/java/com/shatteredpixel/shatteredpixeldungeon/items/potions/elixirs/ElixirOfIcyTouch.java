@@ -21,12 +21,17 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs;
 
+import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FrostImbue;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SnowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfSnapFreeze;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.watabou.noosa.audio.Sample;
 
 public class ElixirOfIcyTouch extends Elixir {
 	
@@ -38,6 +43,23 @@ public class ElixirOfIcyTouch extends Elixir {
 	public void apply(Hero hero) {
 		Buff.prolong(hero, FrostImbue.class, FrostImbue.DURATION);
 		hero.sprite.emitter().burst(SnowParticle.FACTORY, 5);
+	}
+
+	@Override
+	public void shatter(int cell) {
+		Char ch = Actor.findChar(cell);
+
+		if (ch == null){
+			super.shatter(cell);
+		} else {
+			splash( cell );
+			if (Dungeon.level.heroFOV[cell]) {
+				Sample.INSTANCE.play(Assets.Sounds.SHATTER);
+			}
+
+			Buff.prolong(ch, FrostImbue.class, FrostImbue.DURATION);
+			ch.sprite.emitter().burst(SnowParticle.FACTORY, 5);
+		}
 	}
 	
 	public static class Recipe extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe.SimpleRecipe {

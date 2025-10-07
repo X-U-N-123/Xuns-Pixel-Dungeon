@@ -22,6 +22,8 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Slow;
@@ -46,6 +48,21 @@ public class ElixirOfOverdraft extends Elixir {
 		Buff.affect(hero, OverdraftTracker.class, 0f);
 		hero.spendConstant(-8f);
 		Sample.INSTANCE.play(Assets.Sounds.CHARGEUP);
+	}
+
+	@Override
+	public void shatter(int cell) {
+		Char ch = Actor.findChar(cell);
+
+		if (ch == null){
+			super.shatter(cell);
+		} else {
+			splash( cell );
+
+			Buff.affect(ch, OverdraftTracker.class, 0f);
+			ch.spendConstant(-8f);
+			Sample.INSTANCE.play(Assets.Sounds.CHARGEUP);
+		}
 	}
 	
 	public static class Recipe extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe.SimpleRecipe {

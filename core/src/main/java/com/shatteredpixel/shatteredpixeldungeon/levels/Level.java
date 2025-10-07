@@ -1338,9 +1338,9 @@ public abstract class Level implements Bundlable {
 		
 		int sense = 1;
 		//Currently only the hero can get mind vision
-		if (c.isAlive() && c == Dungeon.hero) {
-			for (Buff b : c.buffs( MindVision.class )) {
-				sense = Math.max( ((MindVision)b).distance, sense );
+		if (c.isAlive()) {
+			for (MindVision b : c.buffs( MindVision.class )) {
+				sense = Math.max( b.distance, sense );
 			}
 			if (c.buff(MagicalSight.class) != null){
 				sense = Math.max( MagicalSight.DISTANCE, sense );

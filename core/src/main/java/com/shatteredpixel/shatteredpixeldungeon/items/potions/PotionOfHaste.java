@@ -21,6 +21,10 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.potions;
 
+import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
@@ -28,6 +32,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.SpellSprite;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.watabou.noosa.audio.Sample;
 
 public class PotionOfHaste extends Potion {
 	
@@ -42,6 +47,25 @@ public class PotionOfHaste extends Potion {
 		GLog.w( Messages.get(this, "energetic") );
 		Buff.prolong( hero, Haste.class, Haste.DURATION);
 		SpellSprite.show(hero, SpellSprite.HASTE, 1, 1, 0);
+	}
+
+	@Override
+	public void shatter(int cell) {
+		Char ch = Actor.findChar(cell);
+
+		if (ch == null){
+			super.shatter(cell);
+		} else {
+			splash( cell );
+			if (Dungeon.level.heroFOV[cell]) {
+				Sample.INSTANCE.play(Assets.Sounds.SHATTER);
+				identify();
+			}
+
+			if (ch instanceof Hero) GLog.w( Messages.get(this, "energetic") );
+			Buff.prolong( ch, Haste.class, Haste.DURATION);
+			SpellSprite.show(ch, SpellSprite.HASTE, 1, 1, 0);
+		}
 	}
 	
 	@Override

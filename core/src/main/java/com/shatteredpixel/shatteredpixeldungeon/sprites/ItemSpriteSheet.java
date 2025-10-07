@@ -815,6 +815,7 @@ public class ItemSpriteSheet {
 	public static final int BREW_HEAT       = BREWS+6;
 	public static final int BREW_REGROWING  = BREWS+7;
 	public static final int BREW_TRACKING   = BREWS+8;
+	public static final int BREW_CONFUSION  = BREWS+9;
 
 	private static final int ELIXIRS        = xy(17, 17);  //16 slots
 	public static final int ELIXIR_HONEY    = ELIXIRS+0;

@@ -53,7 +53,7 @@ public class UnstableSpell extends Spell {
 		image = ItemSpriteSheet.UNSTABLE_SPELL;
 	}
 	
-	private static HashMap<Class<? extends Scroll>, Float> scrollChances = new HashMap<>();
+	public static HashMap<Class<? extends Scroll>, Float> scrollChances = new HashMap<>();
 	static{
 		scrollChances.put( ScrollOfIdentify.class,      1f );
 		scrollChances.put( ScrollOfRemoveCurse.class,   1f );
@@ -68,7 +68,7 @@ public class UnstableSpell extends Spell {
 		scrollChances.put( ScrollOfTransmutation.class, 1f );
 	}
 
-	private static HashSet<Class<? extends Scroll>> nonCombatScrolls = new HashSet<>();
+	public static HashSet<Class<? extends Scroll>> nonCombatScrolls = new HashSet<>();
 	static {
 		nonCombatScrolls.add( ScrollOfIdentify.class );
 		nonCombatScrolls.add( ScrollOfRemoveCurse.class );
@@ -79,7 +79,7 @@ public class UnstableSpell extends Spell {
 		nonCombatScrolls.add( ScrollOfTransmutation.class );
 	}
 
-	private static HashSet<Class<? extends Scroll>> combatScrolls = new HashSet<>();
+	public static HashSet<Class<? extends Scroll>> combatScrolls = new HashSet<>();
 	static {
 		combatScrolls.add( ScrollOfMirrorImage.class );
 		combatScrolls.add( ScrollOfRecharging.class );

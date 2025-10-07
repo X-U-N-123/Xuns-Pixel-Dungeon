@@ -79,6 +79,7 @@ import com.watabou.noosa.BitmapText;
 import com.watabou.noosa.ColorBlock;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.Visual;
+import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.ui.Component;
 import com.watabou.utils.DeviceCompat;
 import com.watabou.utils.RectF;
@@ -862,9 +863,8 @@ public class WndJournal extends WndTabbed {
 									&& Item.class.isAssignableFrom(itemClass)) {
 								Item item = (Item) Reflection.newInstance(itemClass);
 								if (item != null) {
-									if (!item.identify().doPickUp(Dungeon.hero)) {
-										Dungeon.level.drop(item, Dungeon.hero.pos).sprite.drop();
-									}
+									if (item.identify().collect() ) Sample.INSTANCE.play(Assets.Sounds.ITEM);
+									else Dungeon.level.drop(item, Dungeon.hero.pos).sprite.drop();
 								}
 							}
 						} else {

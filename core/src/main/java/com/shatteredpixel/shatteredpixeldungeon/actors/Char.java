@@ -557,10 +557,15 @@ public abstract class Char extends Actor {
 				return true;
 			}
 
+			float peacefulMulti = 1f;
+			if (buff(Peaceful.PeacefulTracker.class) != null){
+				peacefulMulti = buff(Peaceful.PeacefulTracker.class).chance;
+			}
+
 			enemy.damage( effectiveDamage, this );
 
-			if (buff(FireImbue.class) != null)  buff(FireImbue.class).proc(enemy);
-			if (buff(FrostImbue.class) != null) buff(FrostImbue.class).proc(enemy);
+			if (buff(FireImbue.class) != null)  buff(FireImbue.class).proc(enemy, peacefulMulti);
+			if (buff(FrostImbue.class) != null) buff(FrostImbue.class).proc(enemy, peacefulMulti);
 
 			if (hero.hasTalent(Talent.CHARGE_RECYCLING) && prep != null && this instanceof Hero &&
 			enemy.HP <= effectiveDamage && enemy.buff(Brute.BruteRage.class) == null) {
@@ -919,27 +924,28 @@ public abstract class Char extends Actor {
 			}
 		}
 
-		float percentage = 1f;
-		if (buff(Peaceful.PeaccefulTracker.class) != null){
-			percentage = buff(Peaceful.PeaccefulTracker.class).chance;
+		float peacefulMulti = 1f;
+		if (buff(Peaceful.PeacefulTracker.class) != null){
+			peacefulMulti = buff(Peaceful.PeacefulTracker.class).chance;
+			Buff.detach(this, Peaceful.PeacefulTracker.class);
 		}
 
 		Terror t = buff(Terror.class);
 		if (t != null){
-			t.recover(percentage);
+			t.recover(peacefulMulti);
 		}
 		Dread d = buff(Dread.class);
 		if (d != null){
-			d.recover(percentage);
+			d.recover(peacefulMulti);
 		}
 		Charm c = buff(Charm.class);
 		if (c != null){
-			c.recover(src, percentage);
+			c.recover(src, peacefulMulti);
 		}
-		if (this.buff(Frost.class) != null && Random.Float() < percentage){
+		if (this.buff(Frost.class) != null && Random.Float() < peacefulMulti){
 			Buff.detach( this, Frost.class );
 		}
-		if (this.buff(MagicalSleep.class) != null && Random.Float() < percentage){
+		if (this.buff(MagicalSleep.class) != null && Random.Float() < peacefulMulti){
 			Buff.detach(this, MagicalSleep.class);
 		}
 		if (this.buff(Doom.class) != null && !isImmune(Doom.class)){
@@ -996,10 +1002,8 @@ public abstract class Char extends Actor {
 		}
 		
 		if (buff( Paralysis.class ) != null) {
-			buff( Paralysis.class ).processDamage(Math.round(dmg * percentage));
+			buff( Paralysis.class ).processDamage(Math.round(dmg * peacefulMulti));
 		}
-
-		Buff.detach(this, Peaceful.PeaccefulTracker.class);
 
 		if (!(src instanceof Hunger)) {
 			if (this instanceof Hero && hero.subClass == HeroSubClass.GUARD && shielding() > 0){
@@ -1054,7 +1058,9 @@ public abstract class Char extends Actor {
 		}
 
 		int shielded = dmg;
+		dmg /= peacefulMulti;
 		dmg = ShieldBuff.processDamage(this, dmg, src);
+		dmg *= peacefulMulti;
 		shielded -= dmg;
 		HP -= dmg;
 
@@ -1276,7 +1282,7 @@ public abstract class Char extends Actor {
 	}
 
 	@Override
-	protected void spendConstant(float time) {
+    public void spendConstant(float time) {
 		TimekeepersHourglass.timeFreeze freeze = buff(TimekeepersHourglass.timeFreeze.class);
 		if (freeze != null) {
 			freeze.processTime(time);

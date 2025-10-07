@@ -48,6 +48,8 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 
+import java.util.ArrayList;
+
 public class MagicalTran extends InventorySpell{
 
     {
@@ -202,6 +204,12 @@ public class MagicalTran extends InventorySpell{
 
             output = MagicalTran.class;
             outQuantity = OUT_QUANTITY;
+        }
+
+        @Override
+        public Item brew(ArrayList<Item> ingredients) {
+            Catalog.countUse(MetalShard.class);
+            return super.brew(ingredients);
         }
 
     }

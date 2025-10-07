@@ -43,7 +43,7 @@ public class Peaceful extends Weapon.Enchantment {
         float maxChance = (2f / (level + 3f));
         maxChance = (float)Math.pow(maxChance, procChanceMultiplier(attacker));
 
-        Buff.affect(defender, Peaceful.PeaccefulTracker.class).chance = maxChance;
+        Buff.affect(defender, PeacefulTracker.class).chance = maxChance;
 
         return damage;
     }
@@ -53,7 +53,7 @@ public class Peaceful extends Weapon.Enchantment {
         return PINK;
     }
 
-    public static class PeaccefulTracker extends Buff {
+    public static class PeacefulTracker extends Buff {
 
         {
             actPriority = Actor.VFX_PRIO;

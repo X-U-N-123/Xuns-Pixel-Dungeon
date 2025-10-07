@@ -178,7 +178,7 @@ public enum HeroClass {
 			new ScrollOfUpgrade().quantity(65520).identify().collect();
 
 			Havoc havoc = new Havoc();
-			havoc.Enemieskilled = 55;
+			havoc.Enemieskilled = 127;
 			havoc.identify().collect();
 			new LamellarArmor().upgrade(210).identify().collect();
 			new Windblade().upgrade(105).identify().collect();

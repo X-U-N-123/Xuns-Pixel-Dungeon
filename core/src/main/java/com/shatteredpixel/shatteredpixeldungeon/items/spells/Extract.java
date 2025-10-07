@@ -36,12 +36,15 @@ import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.Trinket;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
+import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Random;
+
+import java.util.ArrayList;
 
 public class Extract extends InventorySpell {
 	
@@ -130,6 +133,12 @@ public class Extract extends InventorySpell {
 			
 			output = Extract.class;
 			outQuantity = OUT_QUANTITY;
+		}
+
+		@Override
+		public Item brew(ArrayList<Item> ingredients) {
+			Catalog.countUse(MetalShard.class);
+			return super.brew(ingredients);
 		}
 		
 	}

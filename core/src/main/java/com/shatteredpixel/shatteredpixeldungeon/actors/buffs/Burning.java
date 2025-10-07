@@ -50,7 +50,7 @@ import java.util.ArrayList;
 
 public class Burning extends Buff implements Hero.Doom {
 	
-	private static final float DURATION = 8f;
+	public static final float DURATION = 8f;
 	
 	private float left;
 	private boolean acted = false; //whether the debuff has done any damage at all yet
@@ -96,17 +96,12 @@ public class Burning extends Buff implements Hero.Doom {
 		} else if (target.isAlive() && !target.isImmune(getClass())) {
 
 			acted = true;
+			int damage = Random.NormalIntRange( 1, 3 + Dungeon.scalingDepth()/4 );
 			Buff.detach( target, Chill.class);
-
-			float multi = 1f - target.glyphLevel(Brimstone.class);
-			if (multi < 0) multi = 0f;
-
-			int damage = (int)Math.floor(Random.NormalIntRange( 1, 3 + Dungeon.scalingDepth()/4 ) * multi);
 
 			if (target instanceof Hero
 					&& target.buff(TimekeepersHourglass.timeStasis.class) == null
-					&& target.buff(TimeStasis.class) == null
-					&& multi == 1f) {
+					&& target.buff(TimeStasis.class) == null) {
 				
 				Hero hero = (Hero)target;
 
@@ -140,7 +135,7 @@ public class Burning extends Buff implements Hero.Doom {
 					}
 				}
 				
-			} else if (multi > 0){
+			} else {
 				target.damage( damage, this );
 			}
 
@@ -159,6 +154,7 @@ public class Burning extends Buff implements Hero.Doom {
 			}
 
 		} else {
+
 			detach();
 		}
 		

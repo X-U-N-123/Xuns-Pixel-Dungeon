@@ -53,7 +53,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfPurity;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfToxicGas;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.ExoticPotion;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfDragonsBreath;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfEarthenArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfEnergy;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -233,11 +232,6 @@ public class ElementalMask extends Artifact {//will replace Ring of Elements
                         charge--;
                         if (fpotion instanceof PotionOfDragonsBreath){
                             ((PotionOfDragonsBreath)fpotion).drink(Dungeon.hero);
-                            updateQuickslot();
-                            return;
-                        } else if (fpotion instanceof PotionOfEarthenArmor) {
-                            fpotion.apply(Dungeon.hero);
-                            Sample.INSTANCE.play(Assets.Sounds.DRINK);
                             updateQuickslot();
                             return;
                         }

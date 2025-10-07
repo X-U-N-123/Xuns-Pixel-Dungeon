@@ -21,9 +21,14 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic;
 
+import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barkskin;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.watabou.noosa.audio.Sample;
 
 public class PotionOfEarthenArmor extends ExoticPotion {
 	
@@ -36,6 +41,23 @@ public class PotionOfEarthenArmor extends ExoticPotion {
 		identify();
 		
 		Barkskin.conditionallyAppend( hero, 2 + hero.lvl/3, 50 );
+	}
+
+	@Override
+	public void shatter(int cell) {
+		Char ch = Actor.findChar(cell);
+
+		if (ch == null){
+			super.shatter(cell);
+		} else {
+			splash( cell );
+			if (Dungeon.level.heroFOV[cell]) {
+				Sample.INSTANCE.play(Assets.Sounds.SHATTER);
+				identify();
+			}
+
+			Barkskin.conditionallyAppend( ch, 2 + Dungeon.hero.lvl/3, 50 );
+		}
 	}
 	
 }

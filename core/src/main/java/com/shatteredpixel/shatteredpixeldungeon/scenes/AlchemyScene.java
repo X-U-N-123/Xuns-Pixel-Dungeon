@@ -37,6 +37,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.LiquidMetal;
 import com.shatteredpixel.shatteredpixeldungeon.items.Recipe;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.AlchemistsToolkit;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
+import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.TrinketCatalyst;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Document;
@@ -1071,6 +1072,10 @@ public class AlchemyScene extends PixelScene {
 				slot.item(new WndBag.Placeholder(ItemSpriteSheet.SOMETHING));
 			} else {
 				slot.item(this.item = item);
+				if (item instanceof Ring
+				&& (Dungeon.hero.belongings.ring() == item || Dungeon.hero.belongings.misc() == item)){
+					((Ring) item).doUnequip(Dungeon.hero, false);
+				}
 			}
 		}
 	}

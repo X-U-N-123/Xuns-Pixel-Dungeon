@@ -21,8 +21,11 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic;
 
+import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
@@ -30,6 +33,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.watabou.noosa.audio.Sample;
 
 public class PotionOfShielding extends ExoticPotion {
 	
@@ -47,6 +51,29 @@ public class PotionOfShielding extends ExoticPotion {
 			//~75% of a potion of healing
 			Buff.affect(hero, Barrier.class).setShield((int) (0.6f * hero.HT + 10));
 			hero.sprite.showStatusWithIcon( CharSprite.POSITIVE, Integer.toString((int) (0.6f * hero.HT + 10)), FloatingText.SHIELDING );
+		}
+	}
+
+	@Override
+	public void shatter(int cell) {
+		Char ch = Actor.findChar(cell);
+
+		if (ch == null){
+			super.shatter(cell);
+		} else {
+			splash( cell );
+			if (Dungeon.level.heroFOV[cell]) {
+				Sample.INSTANCE.play(Assets.Sounds.SHATTER);
+				identify();
+			}
+
+			if (ch instanceof Hero && Dungeon.isChallenged(Challenges.NO_HEALING)){
+				PotionOfHealing.pharmacophobiaProc((Hero)ch);
+			} else {
+				//~75% of a potion of healing
+				Buff.affect(ch, Barrier.class).setShield((int) (0.6f * Dungeon.hero.HT + 10));
+				ch.sprite.showStatusWithIcon( CharSprite.POSITIVE, Integer.toString((int) (0.6f * Dungeon.hero.HT + 10)), FloatingText.SHIELDING );
+			}
 		}
 	}
 }
