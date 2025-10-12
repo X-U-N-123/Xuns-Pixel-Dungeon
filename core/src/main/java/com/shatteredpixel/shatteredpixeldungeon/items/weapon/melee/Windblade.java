@@ -45,13 +45,17 @@ public class Windblade extends MeleeWeapon {
         hitSoundPitch = 1.3f;
 
         tier = 3;
-        RCH = 65535;    //nearly infinity reach
     }
 
     @Override
     public int max(int lvl) {
-        return  2*(tier+1) +    //10 base, up from 20
-                lvl*tier;                //+3 scaling, down from +4
+        return  5*(tier) +    //15 base, down from 20
+                lvl*tier;       //+3 per level, down from +4
+    }
+
+    @Override
+    public int reachFactor(Char owner){
+        return super.reachFactor(owner) + level();
     }
 
     @Override

@@ -322,7 +322,7 @@ abstract public class Weapon extends KindOfWeapon {
 		if (owner instanceof Hero && RingOfForce.fightingUnarmed((Hero) owner)){
 			reach = 1; //brawlers stance benefits from enchantments, but not innate reach
 			if (Dungeon.hero.pointsInTalent(Talent.FAR_STANDOFF)>=2 && owner.buff(Combo.class)!=null){
-				if (65 - 25*Dungeon.hero.pointsInTalent(Talent.FAR_STANDOFF) <= owner.buff(Combo.class).getComboCount()){
+				if (90 - 25*Dungeon.hero.pointsInTalent(Talent.FAR_STANDOFF) <= owner.buff(Combo.class).getComboCount()){
 					reach += 1;
 				}
 			}

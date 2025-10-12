@@ -296,11 +296,14 @@ public class CloakOfShadows extends Artifact {
 		@Override
 		public Visual secondaryVisual() {
 			BitmapText txt = new BitmapText(PixelScene.pixelFont);
-			txt.text(String.valueOf((int)Math.floor((charge + partialCharge)
-				/ (0.8f - 0.1f * Dungeon.hero.pointsInTalent(Talent.STEALTH_LEAP)))));
+			txt.text(String.valueOf( (int)Math.floor((charge + partialCharge) / perBlockChargeUse()) ));
 			txt.hardlight(CharSprite.POSITIVE);
 			txt.measure();
 			return txt;
+		}
+
+		private float perBlockChargeUse(){
+			return 0.8f - 0.1f * Dungeon.hero.pointsInTalent(Talent.STEALTH_LEAP);
 		}
 
 		@Override
@@ -316,20 +319,19 @@ public class CloakOfShadows extends Artifact {
 				}
 
 				@Override public void onSelect(Integer cell) {
-					if (cell == null)return;
+					if (cell == null) return;
 
-					float perBlockChargeUse = 0.8f - 0.1f * Dungeon.hero.pointsInTalent(Talent.STEALTH_LEAP);
+					PathFinder.buildDistanceMap(cell, BArray.or(Dungeon.level.passable, Dungeon.level.avoid, null));
+					float chargesToCost = PathFinder.distance[Dungeon.hero.pos] * perBlockChargeUse();
 
 					if (!Dungeon.level.passable[cell] || !Dungeon.level.heroFOV[cell]
-					|| Dungeon.level.distance(Dungeon.hero.pos, cell) > Math.floor((charge + partialCharge) / perBlockChargeUse)) {
+					|| chargesToCost > charge + partialCharge) {
 						GLog.w(Messages.get(this, "reach"));
 						return;
 					}
-					int oldPos = Dungeon.hero.pos;
 
 					if (ScrollOfTeleportation.teleportToLocation(Dungeon.hero, cell)){
-						PathFinder.buildDistanceMap(oldPos, BArray.or(Dungeon.level.passable, Dungeon.level.avoid, null));
-						partialCharge -= PathFinder.distance[Dungeon.hero.pos] * perBlockChargeUse;
+						partialCharge -= chargesToCost;
 						while (partialCharge < 0) {
 							partialCharge++;
 							charge--;

@@ -558,8 +558,8 @@ public abstract class Char extends Actor {
 			}
 
 			float peacefulMulti = 1f;
-			if (buff(Peaceful.PeacefulTracker.class) != null){
-				peacefulMulti = buff(Peaceful.PeacefulTracker.class).chance;
+			if (enemy.buff(Peaceful.PeacefulTracker.class) != null){
+				peacefulMulti = enemy.buff(Peaceful.PeacefulTracker.class).chance;
 			}
 
 			enemy.damage( effectiveDamage, this );
@@ -1062,7 +1062,9 @@ public abstract class Char extends Actor {
 		dmg = ShieldBuff.processDamage(this, dmg, src);
 		dmg *= peacefulMulti;
 		shielded -= dmg;
-		HP -= dmg;
+		if (this instanceof MirrorImage && ((MirrorImage) this).hitsToDisp < hero.pointsInTalent(Talent.EIDOLON) && dmg > 0)
+			((MirrorImage) this).hitsToDisp++;
+		else HP -= dmg;
 
 		if (HP > 0 && buff(Grim.GrimTracker.class) != null){
 

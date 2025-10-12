@@ -103,7 +103,7 @@ public class MagicalTran extends InventorySpell{
         Item Result3 = result3;
 
         GameScene.show(new WndOptions(new ItemSprite(this),
-            Messages.get(this, "title"),
+            Messages.titleCase(name()),
             Messages.get(this, "which"),
             result1.name(), result2.name(), result3.name()){
             @Override

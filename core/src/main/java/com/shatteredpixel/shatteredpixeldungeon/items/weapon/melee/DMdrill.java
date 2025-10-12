@@ -70,7 +70,12 @@ public class DMdrill extends MeleeWeapon {
 
     @Override
     protected void duelistAbility(Hero hero, Integer target) {
+
+        beforeAbilityUsed(hero, null);
         Buff.affect(hero, DMcombo.class).Overload(4+buffedLvl());
+        hero.sprite.operate(hero.pos);
+
+        afterAbilityUsed(hero);
     }
 
     @Override

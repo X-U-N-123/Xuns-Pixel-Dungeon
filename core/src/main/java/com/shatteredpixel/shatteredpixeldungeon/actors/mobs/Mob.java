@@ -998,7 +998,7 @@ public abstract class Mob extends Char {
 		}
 
         //flying locust stone logic
-        if (Dungeon.hero.hasTalent(Talent.FLYING_LOCUST_STONE) && Random.Float() <= 1/10f && Regeneration.regenOn()
+        if (Dungeon.hero.hasTalent(Talent.FLYING_LOCUST_STONE) && Random.Float() <= 1/8f && Regeneration.regenOn()
 		&& (Dungeon.hero.buff(Talent.RejuvenatingStepsFurrow.class) == null || Dungeon.hero.buff(Talent.RejuvenatingStepsFurrow.class).count() < 200)){
             Dungeon.level.drop(new ThrowingStone(), pos).sprite.drop();
 			Buff.count(hero, Talent.RejuvenatingStepsFurrow.class, 2);

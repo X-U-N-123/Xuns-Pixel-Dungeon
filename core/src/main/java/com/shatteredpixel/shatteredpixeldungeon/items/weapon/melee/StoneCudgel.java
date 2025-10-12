@@ -31,6 +31,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
+import com.shatteredpixel.shatteredpixeldungeon.journal.Bestiary;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.Chasm;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.GuardianTrap;
@@ -93,6 +94,7 @@ public class StoneCudgel extends MeleeWeapon {
                 guardian.alignment = attacker.alignment;
 
                 ScrollOfTeleportation.appear(guardian, guardian.pos);
+                Bestiary.setSeen(StoneGuardian.class);
             }
         }
         return super.proc( attacker, defender, damage );
@@ -138,7 +140,6 @@ public class StoneCudgel extends MeleeWeapon {
         hero.sprite.turnTo( Dungeon.hero.pos, target);
         hero.sprite.attack(target);
         Sample.INSTANCE.play( Assets.Sounds.ROCKS );
-        hero.sprite.operate(hero.pos);
         Dungeon.observe();
         hero.checkVisibleMobs();
 

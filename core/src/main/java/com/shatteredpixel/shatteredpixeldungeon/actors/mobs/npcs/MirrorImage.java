@@ -67,6 +67,7 @@ public class MirrorImage extends NPC {
 	private Hero hero;
 	private int heroID;
 	public int armTier;
+	public int hitsToDisp = 0;
 	
 	@Override
 	protected boolean act() {
@@ -96,17 +97,22 @@ public class MirrorImage extends NPC {
 	}
 	
 	private static final String HEROID	= "hero_id";
+	private static final String HITS	= "hits";
 	
 	@Override
 	public void storeInBundle( Bundle bundle ) {
 		super.storeInBundle( bundle );
 		bundle.put( HEROID, heroID );
+		bundle.put(HITS, hitsToDisp);
 	}
 	
 	@Override
 	public void restoreFromBundle( Bundle bundle ) {
 		super.restoreFromBundle( bundle );
 		heroID = bundle.getInt( HEROID );
+		if (bundle.contains(HITS)){
+			hitsToDisp = bundle.getInt(HITS);
+		}
 	}
 	
 	public void duplicate( Hero hero ) {
@@ -170,10 +176,6 @@ public class MirrorImage extends NPC {
 				dr += Random.NormalIntRange(0,
 				Math.round(hero.belongings.weapon().defenseFactor(this) * (0.5f+0.1f*hero.pointsInTalent(Talent.ENRAGED_SHADOW))) );
 			}
-			if (hero.belongings.armor() != null && hero.hasTalent(Talent.EIDOLON)){
-				dr += Math.round(Random.NormalIntRange( hero.belongings.armor().DRMin(), hero.belongings.armor().DRMax())
-					* 0.2f * hero.pointsInTalent(Talent.EIDOLON));
-			}
 		}
 		return dr;
 	}
@@ -196,8 +198,7 @@ public class MirrorImage extends NPC {
 				Dungeon.fail(this);
 				GLog.n( Messages.capitalize(Messages.get(Char.class, "kill", name())) );
 			}
-			return damage;
-		} else {
+        } else {
 			//hero benefits from holy weapon and body form when unarmed, so do mirror images
 			boolean wasEnemy = enemy.alignment == Alignment.ENEMY;
 			if (hero.buff(BodyForm.BodyFormBuff.class) != null
@@ -210,9 +211,9 @@ public class MirrorImage extends NPC {
 					enemy.damage(Math.round(dmg * Weapon.Enchantment.genericProcChanceMultiplier(this)), HolyWeapon.INSTANCE);
 				}
 			}
-			return damage;
-		}
-	}
+        }
+        return damage;
+    }
 	
 	@Override
 	public CharSprite sprite() {
@@ -226,6 +227,14 @@ public class MirrorImage extends NPC {
 		}
 		((MirrorSprite)s).updateArmor( armTier );
 		return s;
+	}
+
+	@Override
+	public String description() {
+		String desc = super.description() + "\n\n";
+		if (hero == null || !hero.hasTalent(Talent.EIDOLON)) desc += Messages.get(this, "desc_weak");
+		else desc += Messages.get(this, "desc_strong", hitsToDisp);
+		return desc;
 	}
 	
 	{

@@ -22,12 +22,17 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.spells;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Awareness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfForesight;
+import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.Random;
 
 public class Scout extends Spell {
 	
@@ -38,8 +43,17 @@ public class Scout extends Spell {
 	}
 
 	protected void onCast(final Hero hero){
+
 		Buff.affect(hero, Awareness.class, 0f);
+		Dungeon.observe();
+		GameScene.updateFog();
 		Sample.INSTANCE.play(Assets.Sounds.SCAN);
+
+		detach(hero.belongings.backpack);
+		Catalog.countUse(getClass());
+		if (Random.Float() < talentChance){
+			Talent.onScrollUsed(curUser, curUser.pos, talentFactor, getClass());
+		}
 	}
 	
 	@Override
