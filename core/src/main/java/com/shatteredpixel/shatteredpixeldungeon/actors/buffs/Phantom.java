@@ -117,13 +117,13 @@ public class Phantom extends Buff implements ActionIndicator.Action {
     }
 
     @Override
-    public void doAction() {
+    public void doAction() {//spawn a mirror image beside Phantom
         Sample.INSTANCE.play(Assets.Sounds.MISS);
         summon();
     }
 
     public int summon(){
-        CD += 50f;
+        CD += 40f;
         ActionIndicator.clearAction();
         BuffIndicator.refreshHero();
         return ScrollOfMirrorImage.spawnImages((Hero)target, 1);

@@ -559,7 +559,7 @@ public abstract class Char extends Actor {
 
 			float peacefulMulti = 1f;
 			if (enemy.buff(Peaceful.PeacefulTracker.class) != null){
-				peacefulMulti = enemy.buff(Peaceful.PeacefulTracker.class).chance;
+				peacefulMulti /= enemy.buff(Peaceful.PeacefulTracker.class).chance;
 			}
 
 			enemy.damage( effectiveDamage, this );
@@ -1224,10 +1224,8 @@ public abstract class Char extends Actor {
 			GameScene.updateMap(pos);
 		}
 
-		if (Random.Float() <= Dungeon.hero.pointsInTalent(Talent.DEW_COLLECTING)/5f && Dungeon.level.heroFOV[pos] && alignment != Alignment.ALLY &&
-		(Dungeon.level.map[Dungeon.hero.pos] == Terrain.GRASS ||
-		Dungeon.level.map[Dungeon.hero.pos] == Terrain.HIGH_GRASS ||
-		Dungeon.level.map[Dungeon.hero.pos] == Terrain.FURROWED_GRASS)){
+		if (Random.Float() <= Dungeon.hero.pointsInTalent(Talent.DEW_COLLECTING)/8f && Dungeon.level.heroFOV[pos] && alignment != Alignment.ALLY &&
+		(Dungeon.level.map[Dungeon.hero.pos] == Terrain.HIGH_GRASS || Dungeon.level.map[Dungeon.hero.pos] == Terrain.FURROWED_GRASS)){
 
 			Waterskin flask = (Dungeon.hero.belongings.getItem( Waterskin.class ));
 
@@ -1243,7 +1241,7 @@ public abstract class Char extends Actor {
 		if (src instanceof Wand && hero.hasTalent(Talent.ENERGY_RECYCLING) && alignment != Alignment.ALLY
 			&& hero.buff(EnergyRecyclingCooldown.class) == null){
 			((Wand)src).gainCharge(hero.pointsInTalent(Talent.ENERGY_RECYCLING) *0.3f);
-			Buff.affect(hero, EnergyRecyclingCooldown.class, 5f);
+			Buff.affect(hero, EnergyRecyclingCooldown.class, 3f);
 		}
 
 		if (src instanceof Char && ((Char) src).buff(Pier.StonePierTracker.class) != null && !(this instanceof StonePier)){

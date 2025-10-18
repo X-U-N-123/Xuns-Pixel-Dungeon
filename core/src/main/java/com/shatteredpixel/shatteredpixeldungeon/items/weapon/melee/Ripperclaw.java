@@ -47,7 +47,9 @@ public class Ripperclaw extends MeleeWeapon {
 
     @Override
     public int proc(Char attacker, Char defender, int damage) {
-        Buff.affect(defender, Bleeding.class).set(0.6f*damage);
+        if (defender.buff(Knife.Cutabilitytracker.class) == null){
+            Buff.affect(defender, Bleeding.class).set(0.6f*damage);
+        }
         return super.proc( attacker, defender, damage );
     }
 
@@ -58,7 +60,7 @@ public class Ripperclaw extends MeleeWeapon {
 
     @Override
     protected void duelistAbility(Hero hero, Integer target) {
-        Dinnerknife.cutAbility(hero, target, this, 2+buffedLvl());
+        Knife.cutAbility(hero, target, this, 2+buffedLvl());
     }
 
     @Override

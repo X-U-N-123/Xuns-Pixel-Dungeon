@@ -22,12 +22,22 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vulnerable;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.shatteredpixel.shatteredpixeldungeon.ui.AttackIndicator;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.Callback;
 
 public class Knife extends MeleeWeapon {
 
@@ -47,7 +57,7 @@ public class Knife extends MeleeWeapon {
 
     @Override
     public int proc(Char attacker, Char defender, int damage) {
-        if (defender.buff(Dinnerknife.Cutabilitytracker.class) == null){
+        if (defender.buff(Cutabilitytracker.class) == null){
             Buff.affect(defender, Bleeding.class).set(0.78f*damage);
         }
         return super.proc( attacker, defender, damage );
@@ -60,7 +70,49 @@ public class Knife extends MeleeWeapon {
 
     @Override
     protected void duelistAbility(Hero hero, Integer target) {
-        Dinnerknife.cutAbility(hero, target, this, 4+buffedLvl());
+        cutAbility(hero, target, this, 4+buffedLvl());
+    }
+
+    public static void cutAbility(Hero hero, Integer target, MeleeWeapon wep, int debuffDuration){
+        if (target == null) {
+            return;
+        }
+
+        Char enemy = Actor.findChar(target);
+        if (enemy == null || enemy == hero || hero.isCharmedBy(enemy) || !Dungeon.level.heroFOV[target]) {
+            GLog.w(Messages.get(wep, "ability_no_target"));
+            return;
+        }
+
+        hero.belongings.abilityWeapon = wep;
+        if (!hero.canAttack(enemy)){
+            GLog.w(Messages.get(wep, "ability_bad_position"));
+            hero.belongings.abilityWeapon = null;
+            return;
+        }
+        hero.belongings.abilityWeapon = null;
+
+        hero.sprite.attack(enemy.pos, new Callback() {
+            @Override
+            public void call() {
+                wep.beforeAbilityUsed(hero, enemy);
+                AttackIndicator.target(enemy);
+                Buff.affect(enemy, Cutabilitytracker.class, 0f);
+                if (hero.attack(enemy, 2, 0, Char.INFINITE_ACCURACY)){
+                    Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG);
+                }
+
+                Invisibility.dispel();
+                hero.spendAndNext(hero.attackDelay());
+                if (!enemy.isAlive()){
+                    wep.onAbilityKill(hero, enemy);
+                } else {
+                    Buff.prolong(enemy, Vulnerable.class, debuffDuration);
+                    Buff.prolong(enemy, Cripple.class, debuffDuration);
+                }
+                wep.afterAbilityUsed(hero);
+            }
+        });
     }
 
     @Override
@@ -74,7 +126,8 @@ public class Knife extends MeleeWeapon {
     }
 
     @Override
-    public String upgradeAbilityStat(int level) {return Integer.toString(4+level);
-    }
+    public String upgradeAbilityStat(int level) {return Integer.toString(4+level);}
+
+    public static class Cutabilitytracker extends FlavourBuff {}
 
 }

@@ -25,6 +25,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.MirrorImage;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -87,6 +88,11 @@ public class ScrollOfMirrorImage extends Scroll {
 			respawnPoints.remove( index );
 			nImages--;
 			spawned++;
+		}
+
+		if (spawned > 0 && hero.subClass == HeroSubClass.PHANTOM){
+			Dungeon.observe();
+			GameScene.updateFog();
 		}
 		
 		return spawned;

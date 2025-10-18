@@ -47,7 +47,7 @@ public class Jieniu extends MeleeWeapon {
 
     @Override
     public int proc(Char attacker, Char defender, int damage) {
-        if (defender.buff(Dinnerknife.Cutabilitytracker.class) == null){
+        if (defender.buff(Knife.Cutabilitytracker.class) == null){
             Buff.affect(defender, Bleeding.class).set(0.72f*damage);
         }
         return super.proc( attacker, defender, damage );
@@ -60,7 +60,7 @@ public class Jieniu extends MeleeWeapon {
 
     @Override
     protected void duelistAbility(Hero hero, Integer target) {
-        Dinnerknife.cutAbility(hero, target, this, 3+buffedLvl());
+        Knife.cutAbility(hero, target, this, 3+buffedLvl());
     }
 
     @Override

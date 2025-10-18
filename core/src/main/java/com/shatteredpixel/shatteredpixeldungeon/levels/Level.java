@@ -60,6 +60,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.MobSpawner;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Piranha;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.YogFist;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Blacksmith;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.MirrorImage;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Sheep;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.FlowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.WindParticle;
@@ -1463,7 +1464,8 @@ public abstract class Level implements Bundlable {
 				if (m instanceof WandOfWarding.Ward
 						|| m instanceof WandOfRegrowth.Lotus
 						|| m instanceof SpiritHawk.HawkAlly
-						|| m.buff(PowerOfMany.PowerBuff.class) != null){
+						|| m.buff(PowerOfMany.PowerBuff.class) != null
+						|| (m instanceof MirrorImage && ((Hero)c).subClass == HeroSubClass.PHANTOM)){
 					if (m.fieldOfView == null || m.fieldOfView.length != length()){
 						m.fieldOfView = new boolean[length()];
 						Dungeon.level.updateFieldOfView( m, m.fieldOfView );

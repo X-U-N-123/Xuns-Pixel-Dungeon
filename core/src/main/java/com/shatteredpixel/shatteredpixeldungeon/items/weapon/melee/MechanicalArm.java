@@ -22,28 +22,26 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
-public class Stonesword extends MeleeWeapon {
+public class MechanicalArm extends MeleeWeapon {
 
     {
-        image = ItemSpriteSheet.Stonesword;
-        hitSound = Assets.Sounds.HIT_SLASH;
-        hitSoundPitch = 1.1f;
+        image = ItemSpriteSheet.MECH_ARM;
+        hitSound = Assets.Sounds.HIT_STAB;
+        hitSoundPitch = 1f;
 
         tier = 1;
+        DLY = 1.5f; //0.67x speed
+        RCH = 2;    //extra reach
     }
 
     @Override
-    protected int baseChargeUse(Hero hero, Char target){
-        if (hero.buff(Sword.CleaveTracker.class) != null){
-            return 0;
-        } else {
-            return 1;
-        }
+    public int max(int lvl) {
+        return  Math.round(7f*(tier+1)) +    //14 base, up from 10
+                lvl*Math.round(1.5f*(tier+1)); //+3 per level, up from +2
     }
 
     @Override
@@ -53,24 +51,24 @@ public class Stonesword extends MeleeWeapon {
 
     @Override
     protected void duelistAbility(Hero hero, Integer target) {
-        //+(3+lvl) damage, roughly +54% base dmg, +50% scaling
-        int dmgBoost = augment.damageFactor(3 + buffedLvl());
-        Sword.cleaveAbility(hero, target, 1, dmgBoost, this);
+        //+(7+2*lvl) damage, roughly +100% base damage, +100% scaling
+        int dmgBoost = augment.damageFactor(8 + Math.round(2f*buffedLvl()));
+        Spear.spikeAbility(hero, target, 1, dmgBoost, this);
+    }
+
+    public String upgradeAbilityStat(int level){
+        int dmgBoost = 8 + Math.round(2f*level);
+        return augment.damageFactor(min(level)+dmgBoost) + "-" + augment.damageFactor(max(level)+dmgBoost);
     }
 
     @Override
     public String abilityInfo() {
-        int dmgBoost = levelKnown ? 3 + buffedLvl() : 3;
+        int dmgBoost = levelKnown ? 8 + Math.round(2f*buffedLvl()) : 8;
         if (levelKnown){
             return Messages.get(this, "ability_desc", augment.damageFactor(min()+dmgBoost), augment.damageFactor(max()+dmgBoost));
         } else {
             return Messages.get(this, "typical_ability_desc", min(0)+dmgBoost, max(0)+dmgBoost);
         }
-    }
-
-    public String upgradeAbilityStat(int level){
-        int dmgBoost = 3 + level;
-        return augment.damageFactor(min(level)+dmgBoost) + "-" + augment.damageFactor(max(level)+dmgBoost);
     }
 
 }

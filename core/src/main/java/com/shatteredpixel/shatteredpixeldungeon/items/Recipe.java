@@ -60,6 +60,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.spells.MagicalTran;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.PhaseShift;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.ReclaimTrap;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Recycle;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.RockFall;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Scout;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.SummonElemental;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.SummonWraith;
@@ -209,7 +210,6 @@ public abstract class Recipe {
 		new PhaseShift.Recipe(),
 		new Watchtower.Recipe(),
 		new Recycle.Recipe(),
-		new MagicalTran.Recipe(),
 		new TelekineticGrab.Recipe(),
 		new SummonElemental.Recipe(),
 		new Scout.Recipe(),
@@ -229,6 +229,7 @@ public abstract class Recipe {
 		new ElixirOfHoneyedHealing.Recipe(),
 		new ElixirOfOverdraft.Recipe(),
 		new UnstableSpell.Recipe(),
+		new RockFall.Recipe(),
 		new Alchemize.Recipe(),
 		new CurseInfusion.Recipe(),
 		//new Extract.Recipe(),

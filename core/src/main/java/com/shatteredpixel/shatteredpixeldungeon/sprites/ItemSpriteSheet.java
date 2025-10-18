@@ -222,17 +222,13 @@ public class ItemSpriteSheet {
 	}
 
 	private static final int WEP_TIER1      = xy(1, 5);//16 slots
-	public static final int Stonesword      = WEP_TIER1+0;
 	public static final int CUDGEL          = WEP_TIER1+1;
-	public static final int Shortspear      = WEP_TIER1+2;
-	public static final int Smallshield     = WEP_TIER1+4;
+	public static final int MECH_ARM         = WEP_TIER1+2;
 	public static final int GLOVES          = WEP_TIER1+5;
 	public static final int WORN_SHORTSWORD = WEP_TIER1+6;
 	public static final int Fork            = WEP_TIER1+7;
 	public static final int RAPIER          = WEP_TIER1+8;
 	public static final int DAGGER          = WEP_TIER1+9;
-	public static final int Wornrunicblade  = WEP_TIER1+11;
-	public static final int Dinnerknife     = WEP_TIER1+12;
 	public static final int Woodsword       = WEP_TIER1+14;
 	public static final int MAGES_STAFF     = WEP_TIER1+15;
 	static{
@@ -242,12 +238,8 @@ public class ItemSpriteSheet {
 		assignItemRect(RAPIER,          13, 14);
 		assignItemRect(DAGGER,          12, 13);
 		assignItemRect(MAGES_STAFF,     15, 16);
-		assignItemRect(Smallshield,     13, 13);
-		assignItemRect(Stonesword,      13, 13);
-		assignItemRect(Shortspear,      15, 15);
+		assignItemRect(MECH_ARM,        16, 16);
 		assignItemRect(Fork,            15, 15);
-		assignItemRect(Dinnerknife,     12, 12);
-		assignItemRect(Wornrunicblade,  11, 11);
 		assignItemRect(Woodsword,       13, 13);
 	}
 
@@ -844,7 +836,8 @@ public class ItemSpriteSheet {
 	public static final int TELE_GRAB       = SPELLS+2;
 	public static final int UNSTABLE_SPELL  = SPELLS+3;
 	public static final int SUMMON_WRAITH   = SPELLS+4;
-	public static final int WATCHTOWER      = SPELLS+5;
+    public static final int WATCHTOWER      = SPELLS+5;
+    public static final int ROCKFALL        = SPELLS+6;
 
 	public static final int CURSE_INFUSE    = SPELLS+11;
 	public static final int MAGIC_INFUSE    = SPELLS+12;
@@ -865,6 +858,7 @@ public class ItemSpriteSheet {
 		assignItemRect(UNSTABLE_SPELL,  12, 13);
 		assignItemRect(SUMMON_WRAITH,   12, 11);
 		assignItemRect(WATCHTOWER,      12, 11);
+		assignItemRect(ROCKFALL,        12, 11);
 
 		assignItemRect(CURSE_INFUSE,    10, 15);
 		assignItemRect(MAGIC_INFUSE,    10, 15);

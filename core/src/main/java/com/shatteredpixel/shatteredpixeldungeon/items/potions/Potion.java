@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.potions;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
@@ -38,12 +39,22 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.ItemStatusHandler;
 import com.shatteredpixel.shatteredpixeldungeon.items.Recipe;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.AquaBrew;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfAquaticRejuvenation;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfArcaneArmor;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfDragonsBlood;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfHoneyedHealing;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfIcyTouch;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfOverdraft;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfToxicEssence;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.ExoticPotion;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfCleansing;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfCorrosiveGas;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfEarthenArmor;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfMagicalSight;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfShielding;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfShroudingFog;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfSnapFreeze;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfStamina;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfStormClouds;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
@@ -124,12 +135,24 @@ public class Potion extends Item {
 	static{
 		canThrowPots.add(PotionOfPurity.class);
 		canThrowPots.add(PotionOfLevitation.class);
+		canThrowPots.add(PotionOfHaste.class);
+		canThrowPots.add(PotionOfInvisibility.class);
 		
 		//exotic
 		canThrowPots.add(PotionOfCleansing.class);
+		canThrowPots.add(PotionOfEarthenArmor.class);
+		canThrowPots.add(PotionOfMagicalSight.class);
+		canThrowPots.add(PotionOfShielding.class);
+		canThrowPots.add(PotionOfStamina.class);
 		
 		//elixirs
 		canThrowPots.add(ElixirOfHoneyedHealing.class);
+		canThrowPots.add(ElixirOfAquaticRejuvenation.class);
+		canThrowPots.add(ElixirOfArcaneArmor.class);
+		canThrowPots.add(ElixirOfDragonsBlood.class);
+		canThrowPots.add(ElixirOfIcyTouch.class);
+		canThrowPots.add(ElixirOfOverdraft.class);
+		canThrowPots.add(ElixirOfToxicEssence.class);
 	}
 	
 	protected static ItemStatusHandler<Potion> handler;
@@ -210,7 +233,7 @@ public class Potion extends Item {
 	public String defaultAction() {
 		if (isKnown() && mustThrowPots.contains(this.getClass())) {
 			return AC_THROW;
-		} else if (isKnown() &&canThrowPots.contains(this.getClass())){
+		} else if (isKnown() && canThrowPots.contains(this.getClass())){
 			return AC_CHOOSE;
 		} else {
 			return AC_DRINK;
@@ -235,26 +258,28 @@ public class Potion extends Item {
 			
 		} else if (action.equals( AC_DRINK )) {
 			
-			if (isKnown() && mustThrowPots.contains(getClass())) {
-				
-					GameScene.show(
-						new WndOptions(new ItemSprite(this),
-								Messages.get(Potion.class, "harmful"),
-								Messages.get(Potion.class, "sure_drink"),
-								Messages.get(Potion.class, "yes"), Messages.get(Potion.class, "no") ) {
-							@Override
-							protected void onSelect(int index) {
-								if (index == 0) {
-									drink( hero );
-								}
+			if (isKnown() && (mustThrowPots.contains(getClass())
+			|| (Dungeon.isChallenged(Challenges.NO_HEALING)
+			&& (this instanceof PotionOfHealing || this instanceof PotionOfShielding
+			|| this instanceof ElixirOfHoneyedHealing || this instanceof ElixirOfAquaticRejuvenation)) )) {
+
+				GameScene.show(
+					new WndOptions(new ItemSprite(this),
+					Messages.get(Potion.class, "harmful"),
+					Messages.get(Potion.class, "sure_drink"),
+					Messages.get(Potion.class, "yes"), Messages.get(Potion.class, "no") ) {
+						@Override
+						protected void onSelect(int index) {
+							if (index == 0) {
+								drink( hero );
 							}
 						}
-					);
-					
-				} else {
-					drink( hero );
-				}
-			
+					}
+				);
+
+			} else {
+				drink( hero );
+			}
 		}
 	}
 	

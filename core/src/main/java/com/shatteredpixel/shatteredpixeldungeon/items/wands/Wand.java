@@ -444,7 +444,7 @@ public abstract class Wand extends Item {
 
 			Switch s = charger.target.buff(Switch.class);
 			if (s != null && s.staffLevel > lvl){
-				lvl = Math.min(lvl + 2 + Dungeon.hero.pointsInTalent(Talent.SWITCH_MASTER), s.staffLevel);
+				lvl = Math.min(lvl + 2 + Dungeon.hero.pointsInTalent(Talent.SHARED_ARCANA), s.staffLevel);
 			}
 		}
 		return lvl;
@@ -534,9 +534,9 @@ public abstract class Wand extends Item {
 			if (point > 0){
 				switchLvl += 1;
 				if (point > 1){
-					this.gainCharge(0.15f);
+					this.gainCharge(0.2f);
 					if (point > 2 && curUser.belongings.getItem(MagesStaff.class) != null){
-						curUser.belongings.getItem(MagesStaff.class).gainCharge(0.15f);
+						curUser.belongings.getItem(MagesStaff.class).gainCharge(0.2f);
 					}
 				}
 			}
@@ -926,12 +926,12 @@ public abstract class Wand extends Item {
 			}
 
 			for (Wand wand :Dungeon.hero.belongings.getAllItems(Wand.class)){
-				if (wand.curCharges >= wand.maxCharges) turnsToCharge /= 1f + 0.04f * Dungeon.hero.pointsInTalent(Talent.RELAY_RECHARGING);
+				if (wand.curCharges >= wand.maxCharges) turnsToCharge /= 1f + 0.05f * Dungeon.hero.pointsInTalent(Talent.RELAY_RECHARGING);
 			}
 
 			MagesStaff staff = Dungeon.hero.belongings.getItem(MagesStaff.class);
 			if (staff != null && staff.wand() != null && staff.wand().curCharges >= staff.wand().maxCharges)
-				turnsToCharge /= 1f + 0.04f * Dungeon.hero.pointsInTalent(Talent.RELAY_RECHARGING);
+				turnsToCharge /= 1f + 0.05f * Dungeon.hero.pointsInTalent(Talent.RELAY_RECHARGING);
 
 			if (charger.target instanceof Hero && ((Hero)charger.target).hasTalent(Talent.ARCANE_STEP)
 					&& charger.target.buff(Momentum.class)!=null && charger.target.buff(Momentum.class).freerunning()){

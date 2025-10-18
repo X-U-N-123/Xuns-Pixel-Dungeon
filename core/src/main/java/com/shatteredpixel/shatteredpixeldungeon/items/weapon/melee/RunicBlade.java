@@ -62,22 +62,26 @@ public class RunicBlade extends MeleeWeapon {
 
 	@Override
 	protected void duelistAbility(Hero hero, Integer target) {
+		runicSlashAbility(hero, target, this, 3f);
+	}
+
+	public static void runicSlashAbility(Hero hero, Integer target, MeleeWeapon wep, float enchStr){
 		if (target == null) {
 			return;
 		}
 
 		Char enemy = Actor.findChar(target);
 		if (enemy == null || enemy == hero || hero.isCharmedBy(enemy) || !Dungeon.level.heroFOV[target]) {
-			GLog.w(Messages.get(this, "ability_no_target"));
+			GLog.w(Messages.get(wep, "ability_no_target"));
 			return;
 		}
 
 		//we apply here because of projecting
 		RunicSlashTracker tracker = Buff.affect(hero, RunicSlashTracker.class);
-		tracker.boost = 3f + 0.50f*buffedLvl();
-		hero.belongings.abilityWeapon = this;
+		tracker.boost = enchStr + 0.5f * wep.buffedLvl();
+		hero.belongings.abilityWeapon = wep;
 		if (!hero.canAttack(enemy)){
-			GLog.w(Messages.get(this, "ability_target_range"));
+			GLog.w(Messages.get(wep, "ability_target_range"));
 			tracker.detach();
 			hero.belongings.abilityWeapon = null;
 			return;
@@ -87,7 +91,7 @@ public class RunicBlade extends MeleeWeapon {
 		hero.sprite.attack(enemy.pos, new Callback() {
 			@Override
 			public void call() {
-				beforeAbilityUsed(hero, enemy);
+				wep.beforeAbilityUsed(hero, enemy);
 				AttackIndicator.target(enemy);
 				if (hero.attack(enemy, 1f, 0, Char.INFINITE_ACCURACY)){
 					Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG);
@@ -98,7 +102,7 @@ public class RunicBlade extends MeleeWeapon {
 				tracker.detach();
 				Invisibility.dispel();
 				hero.spendAndNext(hero.attackDelay());
-				afterAbilityUsed(hero);
+				wep.afterAbilityUsed(hero);
 			}
 		});
 	}

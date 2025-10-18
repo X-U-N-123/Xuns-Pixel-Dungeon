@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.ui;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
@@ -371,7 +372,9 @@ public enum Icons {
 				icon.frame( icon.texture.uvRectBySize( 88 + runTypeOfsX(), 80 + runTypeOfsY(), 7, 7 ) );
 				break;
 			case CHAL_COUNT:
-				icon.frame( icon.texture.uvRectBySize( 160, 80, 7, 7 ) );
+				int top = 80;
+				if (Dungeon.isChallenged(Challenges.X_U_NS_POWER)) top += 8;
+				icon.frame( icon.texture.uvRectBySize( 160, top, 7, 7 ) );
 				break;
 			case COIN_SML:
 				icon.frame( icon.texture.uvRectBySize( 168, 80, 7, 7 ) );

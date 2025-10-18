@@ -69,6 +69,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLiquidFlam
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfMindVision;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfPurity;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfStrength;
+import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfEnergy;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfIdentify;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfLullaby;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMagicMapping;
@@ -160,6 +161,10 @@ public enum HeroClass {
 			scrollOfDebug.collect();
 			devShield devshield = new devShield();
 			devshield.collect();
+			RingOfEnergy ring = new RingOfEnergy();
+			ring.identify();
+			ring.level(50);
+			Dungeon.hero.belongings.ring = ring;
 
 			new ScrollHolder().collect();
 			Dungeon.LimitedDrops.SCROLL_HOLDER.drop();

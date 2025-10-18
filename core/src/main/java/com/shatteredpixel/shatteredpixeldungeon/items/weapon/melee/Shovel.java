@@ -53,6 +53,10 @@ public class Shovel extends MeleeWeapon{
         DLY = 0.8f; //1.25x speed
 
         defaultAction = AC_BUILD;
+        usesTargeting = false;
+
+        unique = true;
+        bones = false;
     }
 
     @Override

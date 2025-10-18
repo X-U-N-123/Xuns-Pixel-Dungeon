@@ -115,6 +115,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.spells.MagicalTran;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.PhaseShift;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.ReclaimTrap;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Recycle;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.RockFall;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Scout;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.SummonElemental;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.SummonWraith;
@@ -263,7 +264,7 @@ public enum Catalog {
 				ElixirOfHoneyedHealing.class, ElixirOfAquaticRejuvenation.class, ElixirOfArcaneArmor.class, ElixirOfDragonsBlood.class,
 				ElixirOfIcyTouch.class, ElixirOfToxicEssence.class, ElixirOfMight.class, ElixirOfFeatherFall.class, ElixirOfEnlightening.class, ElixirOfOverdraft.class);
 
-		SPELLS.addItems( UnstableSpell.class, WildEnergy.class, TelekineticGrab.class, PhaseShift.class, SummonWraith.class, Watchtower.class,
+		SPELLS.addItems( UnstableSpell.class, WildEnergy.class, TelekineticGrab.class, PhaseShift.class, SummonWraith.class, Watchtower.class, RockFall.class,
 				Alchemize.class, CurseInfusion.class, MagicalInfusion.class, Recycle.class, MagicalTran.class, //Extract.class,
 				ReclaimTrap.class, SummonElemental.class, BeaconOfReturning.class, Scout.class);
 

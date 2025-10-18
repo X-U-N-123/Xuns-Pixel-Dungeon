@@ -689,7 +689,8 @@ public class Item implements Bundlable {
 							if (i != null) i.onThrow(cell);
 							if (curUser.hasTalent(Talent.IMPROVISED_PROJECTILES)
 									&& !(Item.this instanceof MissileWeapon)
-									&& curUser.buff(Talent.ImprovisedProjectileCooldown.class) == null){
+									&& curUser.buff(Talent.ImprovisedProjectileCooldown.class) == null
+									&& !(enemy.isImmune(Blindness.class) && enemy.isImmune(Blindness.class)) ){
 								if (enemy.alignment != curUser.alignment){
 									Sample.INSTANCE.play(Assets.Sounds.HIT);
 									Buff.affect(enemy, Blindness.class, 1 + 2f * curUser.pointsInTalent(Talent.IMPROVISED_PROJECTILES));

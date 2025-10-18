@@ -92,6 +92,7 @@ public class MirrorImage extends NPC {
 	@Override
 	public void die(Object cause) {
 		super.die(cause);
+		if (hero.subClass == HeroSubClass.PHANTOM) Dungeon.observe();
 		if (hero.hasTalent(Talent.DIFFUSED_IMAGE))
 			hero.buff(Phantom.class).reduceCD(1 + 3 * hero.pointsInTalent(Talent.DIFFUSED_IMAGE));
 	}
@@ -120,6 +121,11 @@ public class MirrorImage extends NPC {
 		heroID = this.hero.id();
 		Buff.affect(this, MirrorInvis.class, Short.MAX_VALUE);
 	}
+	@Override
+	public float speed() {
+		if (hero.subClass == HeroSubClass.PHANTOM) return super.speed() * 1.5f;
+		else return super.speed();
+	}
 	
 	@Override
 	public int damageRoll() {
@@ -130,7 +136,9 @@ public class MirrorImage extends NPC {
 			damage = hero.damageRoll(); //handles ring of force
 		}
 		//half hero damage, rounded up, can be boosted by talent
-		return Math.round( (damage+1) * (0.5f+0.1f*hero.pointsInTalent(Talent.ENRAGED_SHADOW)) );
+		float multi = 0.5f + 0.15f*hero.pointsInTalent(Talent.ENRAGED_SHADOW);
+		if (hero.subClass == HeroSubClass.PHANTOM) multi += 0.05f;
+		return Math.round( (damage+1) * multi );
 	}
 	
 	@Override
@@ -173,8 +181,10 @@ public class MirrorImage extends NPC {
 		int dr = super.drRoll();
 		if (hero != null){
 			if (hero.belongings.weapon() != null){
+				float multi = 0.5f + 0.15f*hero.pointsInTalent(Talent.ENRAGED_SHADOW);
+				if (hero.subClass == HeroSubClass.PHANTOM) multi += 0.05f;
 				dr += Random.NormalIntRange(0,
-				Math.round(hero.belongings.weapon().defenseFactor(this) * (0.5f+0.1f*hero.pointsInTalent(Talent.ENRAGED_SHADOW))) );
+				Math.round(hero.belongings.weapon().defenseFactor(this) * multi) );
 			}
 		}
 		return dr;

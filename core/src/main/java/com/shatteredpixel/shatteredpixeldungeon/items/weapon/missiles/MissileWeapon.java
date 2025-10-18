@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles;
 
+import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -44,6 +45,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 
@@ -263,8 +265,10 @@ abstract public class MissileWeapon extends Weapon {
 				|| Dungeon.level.map[defender.pos] ==Terrain.HIGH_GRASS)
 				&& curUser.heroClass != HeroClass.HUNTRESS
 				&& Dungeon.hero.buff(SpiritBow.IvybindCooldown.class) == null
-				&& Dungeon.hero.hasTalent(Talent.IVY_BIND)) {
+				&& Dungeon.hero.hasTalent(Talent.IVY_BIND)
+				&& !defender.flying) {
 			Buff.affect(defender, Roots.class, 1 + 2*Dungeon.hero.pointsInTalent(Talent.IVY_BIND));
+			Sample.INSTANCE.play(Assets.Sounds.PLANT);
 			Buff.affect(attacker, SpiritBow.IvybindCooldown.class, 50);
 		}
 

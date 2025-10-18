@@ -31,8 +31,6 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Crabclaw;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.DMdrill;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Darkgoldsword;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dinnerknife;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Erlangknife;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Fetter;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Fork;
@@ -42,7 +40,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Havoc;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Jieniu;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Jingubang;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Knife;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Nunchaku;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Ripperclaw;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Shangfang;
@@ -113,7 +110,7 @@ public class Annoying extends Weapon.Enchantment {
 					GLog.n(Messages.get(this, "crab"));
 					return damage;
 				}
-				if (weapon instanceof Dinnerknife || weapon instanceof Fork){
+				if (weapon instanceof Fork){
 					GLog.n(Messages.get(this, "dinner"));
 					return damage;
 				}

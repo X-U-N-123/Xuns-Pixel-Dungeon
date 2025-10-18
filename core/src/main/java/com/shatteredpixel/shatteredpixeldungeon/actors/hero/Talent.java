@@ -606,7 +606,7 @@ public enum Talent {
 		MonkEnergy Energy = Dungeon.hero.buff(MonkEnergy.class);
 		if (Energy != null && Dungeon.hero.hasTalent(Talent.YANG_SEEING)) {
 			return Math.min((Energy.Getenergy() / (5 - Dungeon.hero.pointsInTalent(Talent.YANG_SEEING))),
-			1+2*Dungeon.hero.pointsInTalent(YANG_SEEING));
+			2 * Dungeon.hero.pointsInTalent(YANG_SEEING));
 		}
 		return 0;
 	}

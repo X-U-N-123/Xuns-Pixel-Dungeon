@@ -22,9 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.items;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.VialOfBlood;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -96,18 +94,6 @@ public class Waterskin extends Item {
 				//we are getting extra heal value, scale back drops needed accordingly
 				if (dropsNeeded > 1.01f && VialOfBlood.delayBurstHealing()){
 					dropsNeeded /= VialOfBlood.totalHealMultiplier();
-				}
-
-				//add extra drops if we can gain shielding
-				int curShield = 0;
-				if (hero.buff(Barrier.class) != null) curShield = hero.buff(Barrier.class).shielding();
-				int maxShield = Math.round(hero.HT *0.2f*hero.pointsInTalent(Talent.DEW_COLLECTING));
-				if (hero.hasTalent(Talent.DEW_COLLECTING)){
-					float missingShieldPercent = 1f - (curShield / (float)maxShield);
-					missingShieldPercent *= 0.2f*hero.pointsInTalent(Talent.DEW_COLLECTING);
-					if (missingShieldPercent > 0){
-						dropsNeeded += missingShieldPercent / 0.05f;
-					}
 				}
 
 				//trimming off 0.01 drops helps with floating point errors
