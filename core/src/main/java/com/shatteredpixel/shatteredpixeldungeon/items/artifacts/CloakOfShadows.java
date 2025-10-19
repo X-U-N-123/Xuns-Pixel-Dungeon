@@ -23,6 +23,7 @@ package com.shatteredpixel.shatteredpixeldungeon.items.artifacts;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
@@ -324,7 +325,8 @@ public class CloakOfShadows extends Artifact {
 					PathFinder.buildDistanceMap(cell, BArray.or(Dungeon.level.passable, Dungeon.level.avoid, null));
 					float chargesToCost = PathFinder.distance[Dungeon.hero.pos] * perBlockChargeUse();
 
-					if (!Dungeon.level.passable[cell] || !Dungeon.level.heroFOV[cell]
+					if (Actor.findChar(cell) != null
+					|| Dungeon.level.pit[cell] || !Dungeon.level.heroFOV[cell]
 					|| chargesToCost > charge + partialCharge) {
 						GLog.w(Messages.get(this, "reach"));
 						return;
@@ -335,25 +337,7 @@ public class CloakOfShadows extends Artifact {
 						while (partialCharge < 0) {
 							partialCharge++;
 							charge--;
-							//target hero level is 1 + 2*cloak level
-							int lvlDiffFromTarget = ((Hero) target).lvl - (1+level()*2);
-							//plus an extra one for each level after 6
-							if (level() >= 7){
-								lvlDiffFromTarget -= level()-6;
-							}
-							if (lvlDiffFromTarget >= 0){
-								exp += Math.round(10f * Math.pow(1.1f, lvlDiffFromTarget));
-							} else {
-								exp += Math.round(10f * Math.pow(0.75f, -lvlDiffFromTarget));
-							}
-
-							if (exp >= (level() + 1) * 50 && level() < levelCap) {
-								upgrade();
-								Catalog.countUse(CloakOfShadows.class);
-								exp -= level() * 50;
-								GLog.p(Messages.get(CloakOfShadows.cloakStealth.class, "levelup"));
-
-							}
+							onChargescost((Hero) target);
 						}
 						updateQuickslot();
 						ActionIndicator.refresh();
@@ -426,25 +410,7 @@ public class CloakOfShadows extends Artifact {
 					GLog.w(Messages.get(this, "no_charge"));
 					((Hero) target).interrupt();
 				} else {
-					//target hero level is 1 + 2*cloak level
-					int lvlDiffFromTarget = ((Hero) target).lvl - (1+level()*2);
-					//plus an extra one for each level after 6
-					if (level() >= 7){
-						lvlDiffFromTarget -= level()-6;
-					}
-					if (lvlDiffFromTarget >= 0){
-						exp += Math.round(10f * Math.pow(1.1f, lvlDiffFromTarget));
-					} else {
-						exp += Math.round(10f * Math.pow(0.75f, -lvlDiffFromTarget));
-					}
-					
-					if (exp >= (level() + 1) * 50 && level() < levelCap) {
-						upgrade();
-						Catalog.countUse(CloakOfShadows.class);
-						exp -= level() * 50;
-						GLog.p(Messages.get(this, "levelup"));
-						
-					}
+					onChargescost((Hero) target);
 					turnsToCost = 4;
 				}
 				updateQuickslot();
@@ -494,6 +460,28 @@ public class CloakOfShadows extends Artifact {
 			super.restoreFromBundle(bundle);
 			
 			turnsToCost = bundle.getInt( TURNSTOCOST );
+		}
+	}
+
+	private void onChargescost(Hero hero){
+		//target hero level is 1 + 2*cloak level
+		int lvlDiffFromTarget = hero.lvl - (1+level()*2);
+		//plus an extra one for each level after 6
+		if (level() >= 7) {
+			lvlDiffFromTarget -= level() - 6;
+		}
+		if (lvlDiffFromTarget >= 0) {
+			exp += Math.round(10f * Math.pow(1.1f, lvlDiffFromTarget));
+		} else {
+			exp += Math.round(10f * Math.pow(0.75f, -lvlDiffFromTarget));
+		}
+
+		if (exp >= (level() + 1) * 50 && level() < levelCap) {
+			upgrade();
+			Catalog.countUse(CloakOfShadows.class);
+			exp -= level() * 50;
+			GLog.p(Messages.get(CloakOfShadows.cloakStealth.class, "levelup"));
+
 		}
 	}
 }

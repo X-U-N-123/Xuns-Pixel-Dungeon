@@ -30,6 +30,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.BlobImmunity;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HeroDisguise;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ElmoParticle;
@@ -312,7 +313,10 @@ public class Shopkeeper extends NPC {
 		}
 		switch (Dungeon.depth){
 			case 6: default:
-				return Messages.get(this, "talk_prison_intro") + "\n\n" + Messages.get(this, "talk_prison_" + Dungeon.hero.heroClass.name());
+				String text = Messages.get(this, "talk_prison_intro") + "\n\n";
+				if (Dungeon.hero.buff(HeroDisguise.class) != null)
+					return text + Messages.get(this, "talk_prison_mita");
+				return text + Messages.get(this, "talk_prison_" + Dungeon.hero.heroClass.name());
 			case 11:
 				return Messages.get(this, "talk_caves");
 			case 16:

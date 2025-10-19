@@ -64,9 +64,9 @@ public class UnstableBrew extends Brew {
 		return AC_CHOOSE;
 	}
 
-	private static HashMap<Class<? extends Potion>, Float> potionChances = new HashMap<>();
+	public static HashMap<Class<? extends Potion>, Float> potionChances = new HashMap<>();
 	static {
-		potionChances.put(PotionOfHealing.class, 3f);
+		potionChances.put(PotionOfHealing.class, 2f);
 		potionChances.put(PotionOfMindVision.class, 2f);
 		potionChances.put(PotionOfFrost.class, 2f);
 		potionChances.put(PotionOfLiquidFlame.class, 2f);
@@ -76,7 +76,7 @@ public class UnstableBrew extends Brew {
 		potionChances.put(PotionOfLevitation.class, 2f);
 		potionChances.put(PotionOfParalyticGas.class, 2f);
 		potionChances.put(PotionOfPurity.class, 2f);
-		potionChances.put(PotionOfExperience.class, 1f);
+		potionChances.put(PotionOfExperience.class, 2f);
 	}
 	
 	@Override

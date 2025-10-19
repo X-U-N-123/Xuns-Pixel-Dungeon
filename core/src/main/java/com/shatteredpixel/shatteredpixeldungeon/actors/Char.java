@@ -128,6 +128,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Viscosity;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ElementalMask;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
+import com.shatteredpixel.shatteredpixeldungeon.items.devShield;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.HeatBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfCleansing;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Pickaxe;
@@ -136,9 +137,11 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRetributio
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfPsionicBlast;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.RockFall;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAggression;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.FerretTuft;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfAvalanche;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfFireblast;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfFrost;
@@ -1058,13 +1061,16 @@ public abstract class Char extends Actor {
 		}
 
 		int shielded = dmg;
-		dmg /= peacefulMulti;
-		dmg = ShieldBuff.processDamage(this, dmg, src);
-		dmg *= peacefulMulti;
-		shielded -= dmg;
-		if (this instanceof MirrorImage && ((MirrorImage) this).hitsToDisp < hero.pointsInTalent(Talent.EIDOLON) && dmg > 0)
-			((MirrorImage) this).hitsToDisp++;
-		else HP -= dmg;
+
+		if (buff(devShield.devShieldBuff.class) == null) {
+			dmg /= peacefulMulti;
+			dmg = ShieldBuff.processDamage(this, dmg, src);
+			dmg *= peacefulMulti;
+			shielded -= dmg;
+			if (this instanceof MirrorImage && ((MirrorImage) this).hitsToDisp < hero.pointsInTalent(Talent.EIDOLON) && dmg > 0)
+				((MirrorImage) this).hitsToDisp++;
+			else HP -= dmg;
+		}
 
 		if (HP > 0 && buff(Grim.GrimTracker.class) != null){
 
@@ -1163,6 +1169,8 @@ public abstract class Char extends Actor {
 		NO_ARMOR_PHYSICAL_SOURCES.add(Heap.class); //damage from wraiths attempting to spawn from heaps
 		NO_ARMOR_PHYSICAL_SOURCES.add(Necromancer.SummoningBlockDamage.class);
 		NO_ARMOR_PHYSICAL_SOURCES.add(DriedRose.GhostHero.NoRoseDamage.class);
+		NO_ARMOR_PHYSICAL_SOURCES.add(RockFall.class);
+		NO_ARMOR_PHYSICAL_SOURCES.add(WandOfAvalanche.class);
 	}
 	
 	public void destroy() {
@@ -1249,8 +1257,8 @@ public abstract class Char extends Actor {
 			tracker.detach();
 			StonePier pier = new StonePier();
 
-			pier.HT = (int)(HT * 1.5 * tracker.strength);
-			pier.HP = (int)(HT * 1.5 * tracker.strength);
+			pier.HT = (int)(hero.lvl * 2 * tracker.strength);
+			pier.HP = (int)(hero.lvl * 2 * tracker.strength);
 			pier.pos = pos;
 			GameScene.add(pier);
 			ScrollOfTeleportation.appear(pier, pier.pos);
@@ -1258,12 +1266,12 @@ public abstract class Char extends Actor {
 		}
 	}
 
-	public void OrganicGrass(int Pos) {
+	public void OrganicGrass(int pos) {
 		if ((Dungeon.hero.buff(Talent.RejuvenatingStepsFurrow.class) != null && Dungeon.hero.buff(Talent.RejuvenatingStepsFurrow.class).count() >= 200)
 		|| !Regeneration.regenOn()){
-			Level.set(Pos, Terrain.FURROWED_GRASS);
+			Level.set(pos, Terrain.FURROWED_GRASS);
 		} else {
-			Level.set(Pos, Terrain.HIGH_GRASS);
+			Level.set(pos, Terrain.HIGH_GRASS);
 			Buff.count(hero, Talent.RejuvenatingStepsFurrow.class, 4 - Dungeon.hero.pointsInTalent(Talent.ORGANIC_FERTILIZER));
 		}
 	}
@@ -1453,9 +1461,9 @@ public abstract class Char extends Actor {
 
 		pos = step;
 		
-		if (this != Dungeon.hero) {
+		if (this != hero) {
 			sprite.visible = Dungeon.level.heroFOV[pos];
-		}
+		} else if (buff(Vertigo.class) != null) hero.interrupt();//prevent careless player from jump down chasm by accident
 		
 		Dungeon.level.occupyCell(this );
 	}

@@ -92,7 +92,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Vampir
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
-import com.shatteredpixel.shatteredpixeldungeon.levels.features.Chasm;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.ConeAOE;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -103,6 +102,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.HeroIcon;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Callback;
+import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
@@ -208,7 +208,7 @@ public class ElementalStrike extends ArmorAbility {
 						enemy = null;
 					} else if (enemy.alignment == hero.alignment) {
 						enemy = null;
-					} else if (!hero.canAttack(enemy) && !(finalEnchantment instanceof Pier)) {
+					} else if (!hero.canAttack(enemy)) {
 						enemy = null;
 					}
 				}
@@ -218,11 +218,8 @@ public class ElementalStrike extends ArmorAbility {
 				if (enemy != null){
 					AttackIndicator.target(enemy);
 					oldEnemyPos = enemy.pos;
-					if (!(finalEnchantment instanceof Pier)
-					|| enemy.properties().contains(Char.Property.BOSS) || enemy.properties().contains(Char.Property.MINIBOSS) ){
-						if (hero.attack(enemy, 1, 0, Char.INFINITE_ACCURACY)) {
-							Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG);
-						}
+					if (hero.attack(enemy, 1, 0, Char.INFINITE_ACCURACY)) {
+						Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG);
 					}
 				}
 
@@ -597,19 +594,24 @@ public class ElementalStrike extends ArmorAbility {
 
 		//*** Pier ***
 		} else if (ench instanceof Pier && primaryTarget != null){
-			if (!primaryTarget.properties().contains(Char.Property.BOSS) && !primaryTarget.properties().contains(Char.Property.MINIBOSS)){
-				primaryTarget.die(Chasm.class);
-				primaryTarget.sprite.killAndErase();
-				StonePier pier = new StonePier();
+			ArrayList<Integer> spawnPoints = new ArrayList<>();
+			for (int i : PathFinder.NEIGHBOURS8) {
+				int pos = primaryTarget.pos + i;
+				if (Actor.findChar(pos) == null && Dungeon.level.passable[pos]) {
+					spawnPoints.add(pos);
+				}
+			}
 
-				pier.HT = primaryTarget.HT * 3;
-				pier.HP = primaryTarget.HT * 3;
-				pier.pos = primaryTarget.pos;
+			if (!spawnPoints.isEmpty()){
+				StonePier pier = new StonePier();
+				pier.HT = hero.HT;
+				pier.HP = hero.HT;
+				pier.pos = Random.element(spawnPoints);
 				GameScene.add(pier);
 				ScrollOfTeleportation.appear(pier, pier.pos);
 				Dungeon.level.occupyCell(pier);
 				Buff.affect(pier, StoneOfAggression.Aggression.class, 5f * powerMulti);
-			} else Buff.affect(primaryTarget, StoneOfAggression.Aggression.class, 5f * powerMulti);
+			}
 		}
 
 	}

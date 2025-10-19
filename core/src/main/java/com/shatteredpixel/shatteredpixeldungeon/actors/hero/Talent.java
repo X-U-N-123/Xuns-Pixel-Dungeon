@@ -172,6 +172,8 @@ public enum Talent {
 	FARSIGHT(107, 3), SHARED_ENCHANTMENT(108, 3), SHARED_UPGRADES(109, 3), SUPRESSING_MARK(126, 3), RESONANCE_FETCH(127, 3),
 	//Warden T3
 	DURABLE_TIPS(110, 3), BARKSKIN(111, 3), DEW_COLLECTING(112, 3), JUNGLE_GUERRILLA(230, 3), GRASSMAN(231, 3),
+	//Scout T3
+	STRONG_MARK_SC(269, 3), TRACKING_ARROW(270, 3), SWIFT_COURIER(271, 3), EXPEL_ENEMIES(272, 3), PIONEERING_SPIRIT(273, 3),
 	//Spectral Blades T4
 	FAN_OF_BLADES(113, 4), PROJECTING_BLADES(114, 4), SPIRIT_BLADES(115, 4),INSTANT_BLADES(245, 4),
 	//Natures Power T4
@@ -223,7 +225,7 @@ public enum Talent {
 	public static class ImprovisedProjectileCooldown extends FlavourBuff{
 		public int icon() { return BuffIndicator.TIME; }
 		public void tintIcon(Image icon) { icon.hardlight(0.15f, 0.2f, 0.5f); }
-		public float iconFadePercent() { return Math.max(0, visualcooldown() / 25); }
+		public float iconFadePercent() { return Math.max(0, visualcooldown() / 40); }
 	}
 	public static class LethalMomentumTracker extends FlavourBuff{}
 	public static class StrikingWaveTracker extends FlavourBuff{}
@@ -1420,6 +1422,9 @@ public enum Talent {
 				break;
 			case WARDEN:
 				Collections.addAll(tierTalents, DURABLE_TIPS, BARKSKIN, DEW_COLLECTING, JUNGLE_GUERRILLA, GRASSMAN);
+				break;
+			case SCOUT:
+				Collections.addAll(tierTalents, STRONG_MARK_SC, TRACKING_ARROW, SWIFT_COURIER, EXPEL_ENEMIES, PIONEERING_SPIRIT);
 				break;
 			case CHAMPION:
 				Collections.addAll(tierTalents, VARIED_CHARGE, TWIN_UPGRADES, COMBINED_LETHALITY, SKILLED_DUAL, MARCH_FORWARD);

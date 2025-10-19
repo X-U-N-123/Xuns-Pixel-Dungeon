@@ -22,6 +22,8 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.BrokenArmor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Daze;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
@@ -77,6 +79,8 @@ public class StonePier extends Mob {
             if (((Char)src).buff(Daze.class) == null)       debuff.add(Daze.class);
             if (((Char)src).buff(Vulnerable.class) == null) debuff.add(Vulnerable.class);
             if (((Char)src).buff(Slow.class) == null)       debuff.add(Slow.class);
+            if (((Char)src).buff(BrokenArmor.class) == null)debuff.add(BrokenArmor.class);
+            if (((Char)src).buff(Blindness.class) == null)  debuff.add(Blindness.class);
             if (debuff.isEmpty())                           debuff.add(Paralysis.class);
             Buff.affect((Char)src, debuff.get(Random.Int(debuff.size())), 8f);
         }

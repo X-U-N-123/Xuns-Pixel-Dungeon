@@ -133,6 +133,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.VialOfBlood;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.WondrousResin;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.WornLock;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfAvalanche;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfCorrosion;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfCorruption;
@@ -474,8 +475,9 @@ public class Generator {
 					WandOfWarding.class,
 					WandOfTransfusion.class,
 					WandOfCorruption.class,
-					WandOfRegrowth.class };
-			WAND.defaultProbs = new float[]{ 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3 };
+					WandOfRegrowth.class,
+					WandOfAvalanche.class};
+			WAND.defaultProbs = new float[]{ 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3};
 			WAND.probs = WAND.defaultProbs.clone();
 			
 			//see generator.randomWeapon

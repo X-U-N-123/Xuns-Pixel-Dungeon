@@ -107,7 +107,7 @@ public class ElementalBlast extends ArmorAbility {
 		effectTypes.put(WandOfTransfusion.class,    MagicMissile.BLOOD_CONE);
 		effectTypes.put(WandOfCorruption.class,     MagicMissile.SHADOW_CONE);
 		effectTypes.put(WandOfRegrowth.class,       MagicMissile.FOLIAGE_CONE);
-		effectTypes.put(WandOfAvalanche.class,      null);
+		effectTypes.put(WandOfAvalanche.class,      MagicMissile.EARTH_CONE);
 	}
 
 	private static final HashMap<Class<?extends Wand>, Float> damageFactors = new HashMap<>();
@@ -189,7 +189,7 @@ public class ElementalBlast extends ArmorAbility {
 
 		if (wandCls == WandOfAvalanche.class) {
 			for (int cell : aoe.cells){
-				CellEmitter.get( cell - Dungeon.level.width() ).start(Speck.factory(Speck.ROCK), 0.07f, 8);
+				CellEmitter.get( cell - Dungeon.level.width() ).start(Speck.factory(Speck.ROCK), 0.07f, 5);
 			}
 			Sample.INSTANCE.play( Assets.Sounds.ROCKS);
 		} else {

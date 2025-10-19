@@ -23,6 +23,7 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfAvalanche;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
@@ -50,6 +51,13 @@ public class Paralysis extends FlavourBuff {
 	
 	public void processDamage( int damage ){
 		if (target == null) return;
+
+		if (target.buff(WandOfAvalanche.ParalysisContinueTracker.class) != null){
+			Buff.detach(target, WandOfAvalanche.ParalysisContinueTracker.class);
+			Buff.detach(target, ParalysisResist.class);
+			return;
+		}
+
 		ParalysisResist resist = target.buff(ParalysisResist.class);
 		if (resist == null){
 			resist = Buff.affect(target, ParalysisResist.class);

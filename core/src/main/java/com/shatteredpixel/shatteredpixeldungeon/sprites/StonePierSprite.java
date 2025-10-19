@@ -43,8 +43,8 @@ public class StonePierSprite extends MobSprite {
         attack = new Animation( 1, false );
         attack.frames( frames, 0 );
 
-        die = new Animation( 1, false );
-        die.frames( frames, 0 );
+        die = new Animation( 3, false );
+        die.frames( frames, 0, 1, 2, 3 );
 
         play( idle );
 

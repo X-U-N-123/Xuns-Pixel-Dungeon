@@ -116,7 +116,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.MasterThievesArm
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TalismanOfForesight;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.MagicalHolster;
-import com.shatteredpixel.shatteredpixeldungeon.items.devShield;
 import com.shatteredpixel.shatteredpixeldungeon.items.journal.Guidebook;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.CrystalKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.GoldenKey;
@@ -503,6 +502,12 @@ public class Hero extends Char {
 		belongings.thrownWeapon = wep;
 		boolean hit = attack( enemy );
 		Invisibility.dispel();
+
+		NinjaInvisCooldown invis = buff(NinjaInvisCooldown.class);
+		if (invis != null && !invis.invisGiven && hit){
+			Buff.affect(this, Invisibility.class, 3f);
+			invis.invisGiven = true;
+		}
 		belongings.thrownWeapon = null;
 
 		if (hit && subClass == HeroSubClass.GLADIATOR && wasEnemy){
@@ -795,6 +800,15 @@ public class Hero extends Char {
 		|| Dungeon.level.map[pos] == Terrain.HIGH_GRASS
 		|| Dungeon.level.map[pos] == Terrain.FURROWED_GRASS)) {
 			speed *= 1.15f;
+		}
+
+		if (hasTalent(Talent.SWIFT_COURIER)){
+			float courierFactor = 1f;
+			for (Mob m : Dungeon.level.mobs.toArray(new Mob[0])){
+				if (fieldOfView[m.pos])
+					courierFactor += 0.03f + 0.03f*pointsInTalent(Talent.SWIFT_COURIER);
+			}
+			speed *= courierFactor;
 		}
 
 		speed = AscensionChallenge.modifyHeroSpeed(speed);
@@ -1721,17 +1735,12 @@ public class Hero extends Char {
 			buff(Talent.HashashinsTracker.class).hurt(dmg);
 		}
 
-		//we ceil this one to avoid letting the player easily take 0 dmg from tenacity early
 		//向下取整，作为对韧性戒指的加强
-		dmg = (int)Math.floor(dmg * RingOfTenacity.damageMultiplier( this ));
+		//+0.1 后向下取整，作为削弱（免疫饥饿也太强了）
+		dmg = (int)Math.floor(dmg * RingOfTenacity.damageMultiplier( this ) + 0.1f);
 
 		int preHP = HP + shielding();
 		if (src instanceof Hunger) preHP -= shielding();
-
-		if (buff(devShield.devShieldBuff.class) != null) {
-			sprite.showStatusWithIcon(0x2222FF, String.valueOf(dmg), FloatingText.devSHIELD);
-			return;
-		}
 
 		super.damage( dmg, src );
 		int postHP = HP + shielding();

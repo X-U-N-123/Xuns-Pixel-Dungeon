@@ -37,6 +37,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClassArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.PhaseShift;
+import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfBlink;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -116,9 +117,9 @@ public class WarpBeacon extends ArmorAbility {
 						armor.charge -= chargeNeeded;
 						if (hero.pointsInTalent(Talent.SPACE_COLLECTING)*0.5f >= Random.Float()) {
 							new PhaseShift().collect();
-							if ((hero.pointsInTalent(Talent.SPACE_COLLECTING)-2)*0.4f >= Random.Float()) {
-								new ScrollOfTeleportation().collect();
-								GLog.p(Messages.get(this, "tele"));
+							if ((hero.pointsInTalent(Talent.SPACE_COLLECTING)-2)*0.5f >= Random.Float()) {
+								new StoneOfBlink().collect();
+								GLog.p(Messages.get(this, "blink"));
 							} else {
 								GLog.p(Messages.get(this, "shift"));
 							}

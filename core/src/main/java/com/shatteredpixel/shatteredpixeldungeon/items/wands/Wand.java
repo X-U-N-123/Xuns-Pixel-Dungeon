@@ -230,9 +230,10 @@ public abstract class Wand extends Item {
 
 		MagesStaff staff = Dungeon.hero.belongings.getItem(MagesStaff.class);
 		if (Dungeon.hero.hasTalent(Talent.MYSTICAL_SWITCH) && w == staff.wand() && staff.enchantment != null){
+			Buff.affect(curUser, MysticalSwitchTracker.class);
 			dmg = staff.enchantment.proc(staff, curUser, target, dmg);
-			Buff.affect(curUser, MysticalEnergyTracker.class);
-			if (staff.enchantment instanceof Projecting) dmg = Math.round(dmg * 1.2f);
+			if (staff.enchantment instanceof Projecting)
+				dmg = Math.round(dmg * 1f + 0.2f * Dungeon.hero.pointsInTalent(Talent.MYSTICAL_SWITCH) / 3f);
 		}
 
 		if (Dungeon.hero.subClass == HeroSubClass.PRIEST && target.buff(GuidingLight.Illuminated.class) != null) {
@@ -976,7 +977,7 @@ public abstract class Wand extends Item {
 		public void tintIcon(Image icon) { icon.hardlight(1f, 1f, 0.7f); }
 		public float iconFadePercent() { return Math.max(0, visualcooldown() / 80); }
 	}
-	public static class MysticalEnergyTracker extends Buff {}
+	public static class MysticalSwitchTracker extends Buff {}
 
 	@Override
 	public float weight(){

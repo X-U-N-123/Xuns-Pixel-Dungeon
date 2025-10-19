@@ -550,9 +550,9 @@ abstract public class Weapon extends KindOfWeapon {
 				attacker.buff(RunicBlade.RunicSlashTracker.class).detach();
 			}
 
-			if (attacker.buff(Wand.MysticalEnergyTracker.class) != null){
+			if (attacker.buff(Wand.MysticalSwitchTracker.class) != null){
 				multi *= 0.3f*Dungeon.hero.pointsInTalent(Talent.MYSTICAL_SWITCH);
-				attacker.buff(Wand.MysticalEnergyTracker.class).detach();
+				attacker.buff(Wand.MysticalSwitchTracker.class).detach();
 			}
 
 			if (attacker.buff(Smite.SmiteTracker.class) != null){

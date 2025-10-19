@@ -26,6 +26,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HeroDisguise;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Goldarrow;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
@@ -90,7 +91,8 @@ public class Blacksmith extends NPC {
 			String msg1 = "";
 			String msg2 = "";
 
-			switch (Dungeon.hero.heroClass){
+			if (Dungeon.hero.buff(HeroDisguise.class) != null) msg1 += Messages.get(this, "intro_quest_mita");
+			else switch (Dungeon.hero.heroClass){
 				case WARRIOR:   msg1 += Messages.get(Blacksmith.this, "intro_quest_warrior"); break;
 				case MAGE:      msg1 += Messages.get(Blacksmith.this, "intro_quest_mage"); break;
 				case ROGUE:     msg1 += Messages.get(Blacksmith.this, "intro_quest_rogue"); break;

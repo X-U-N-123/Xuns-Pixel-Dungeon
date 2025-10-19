@@ -53,6 +53,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourg
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.UnstableSpellbook;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfAvalanche;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfFireblast;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfRegrowth;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
@@ -624,7 +625,7 @@ public class Trinity extends ArmorAbility {
 			return Messages.get(Trinity.class, "thrown_use", MindForm.itemLevel(), Messages.decimalFormat("#.##", chargeUse));
 		}
 		if (Wand.class.isAssignableFrom(cls)){
-			if (cls.equals(WandOfFireblast.class) || cls.equals(WandOfRegrowth.class)){
+			if (cls.equals(WandOfFireblast.class) || cls.equals(WandOfRegrowth.class) || cls.equals(WandOfAvalanche.class)){
 				return Messages.get(Trinity.class, "wand_multi_use", MindForm.itemLevel(), Messages.decimalFormat("#.##", chargeUse));
 			}
 			return Messages.get(Trinity.class, "wand_use", MindForm.itemLevel(), Messages.decimalFormat("#.##", chargeUse));
@@ -656,7 +657,7 @@ public class Trinity extends ArmorAbility {
 				}
 			}
 		}
-		if (cls.equals(WandOfFireblast.class) || cls.equals(WandOfRegrowth.class)){
+		if (cls.equals(WandOfFireblast.class) || cls.equals(WandOfRegrowth.class) || cls.equals(WandOfAvalanche.class)){
 			return 2*chargeUse;
 		}
 		if (cls.equals(Antimatter.class)){

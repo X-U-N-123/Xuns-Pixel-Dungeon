@@ -49,7 +49,7 @@ public enum HeroSubClass {
 	
 	SNIPER(HeroIcon.SNIPER),
 	WARDEN(HeroIcon.WARDEN),
-	//SCOUT
+	SCOUT(HeroIcon.SCOUT),
 	//GRENADIER
 
 	CHAMPION(HeroIcon.CHAMPION),

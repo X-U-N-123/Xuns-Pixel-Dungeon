@@ -28,11 +28,9 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Amok;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.BrokenArmor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Daze;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Doom;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hex;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Roots;
@@ -278,27 +276,25 @@ public class WildMagic extends ArmorAbility {
 	}
 
 	public void giveNegativeEffect(int aim){
-		Char char1 = Actor.findChar(aim);//为什么 char 是关键字！
+		Char ch = Actor.findChar(aim);//为什么 char 是关键字！
 
-		if (char1 != null){
+		if (ch != null){
 
 			ArrayList<Class<? extends FlavourBuff>> buffs = new ArrayList<>();
-			if (char1.buff(Weakness.class) == null)    buffs.add(Weakness.class);
-			if (char1.buff(Vulnerable.class) == null)  buffs.add(Vulnerable.class);
-			if (char1.buff(BrokenArmor.class) == null) buffs.add(BrokenArmor.class);
-			if (char1.buff(Vertigo.class) == null)     buffs.add(Vertigo.class);
-			if (char1.buff(Cripple.class) == null)     buffs.add(Cripple.class);
-			if (char1.buff(Roots.class) == null)       buffs.add(Roots.class);
-			if (char1.buff(Blindness.class) == null)   buffs.add(Blindness.class);
-			if (char1.buff(Terror.class) == null)      buffs.add(Terror.class);
-			if (char1.buff(Amok.class) == null)        buffs.add(Amok.class);
-			if (char1.buff(Slow.class) == null)        buffs.add(Slow.class);
-			if (char1.buff(Hex.class) == null)         buffs.add(Hex.class);
-			if (char1.buff(Daze.class) == null)        buffs.add(Daze.class);
-			if (char1.buff(Paralysis.class) == null)   buffs.add(Paralysis.class);
+			if (ch.buff(Weakness.class) == null)    buffs.add(Weakness.class);
+			if (ch.buff(Vulnerable.class) == null)  buffs.add(Vulnerable.class);
+			if (ch.buff(BrokenArmor.class) == null) buffs.add(BrokenArmor.class);
+			if (ch.buff(Vertigo.class) == null)     buffs.add(Vertigo.class);
+			if (ch.buff(Roots.class) == null)       buffs.add(Roots.class);
+			if (ch.buff(Blindness.class) == null)   buffs.add(Blindness.class);
+			if (ch.buff(Terror.class) == null)      buffs.add(Terror.class);
+			if (ch.buff(Amok.class) == null)        buffs.add(Amok.class);
+			if (ch.buff(Slow.class) == null)        buffs.add(Slow.class);
+			if (ch.buff(Daze.class) == null)        buffs.add(Daze.class);
+			if (ch.buff(Paralysis.class) == null)   buffs.add(Paralysis.class);
 
-			if (buffs.isEmpty()) Buff.affect(char1, Doom.class);
-			else Buff.affect(char1, buffs.get(Random.Int(buffs.size())), 1 + 3f*Dungeon.hero.pointsInTalent(Talent.WILD_PUNISHMENT));
+			if (buffs.isEmpty()) Buff.affect(ch, Doom.class);
+			else Buff.affect(ch, buffs.get(Random.Int(buffs.size())), 1 + 3f*Dungeon.hero.pointsInTalent(Talent.WILD_PUNISHMENT));
 		}
 	}
 }

@@ -26,6 +26,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HeroDisguise;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Elemental;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.RotHeart;
@@ -157,7 +158,9 @@ public class Wandmaker extends NPC {
 
 			String msg1 = "";
 			String msg2 = "";
-			switch(Dungeon.hero.heroClass){
+
+			if (Dungeon.hero.buff(HeroDisguise.class) != null) msg1 += Messages.get(this, "intro_mita");
+			else switch(Dungeon.hero.heroClass){
 				case WARRIOR:
 					msg1 += Messages.get(this, "intro_warrior");
 					break;

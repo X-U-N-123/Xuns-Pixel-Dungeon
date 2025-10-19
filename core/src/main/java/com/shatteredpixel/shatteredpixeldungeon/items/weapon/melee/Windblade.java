@@ -27,6 +27,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
@@ -97,9 +98,10 @@ public class Windblade extends MeleeWeapon {
                 beforeAbilityUsed(hero, finalClosest);
                 for (Char ch : targets) {
                     //ability does 10% less base damage
+                    int oldPos = ch.pos;
                     hero.attack(ch, 1f, -2, Char.INFINITE_ACCURACY);
                     ch.sprite.emitter().burst(Speck.factory(Speck.JET), 15);
-                    if (ch.isAlive()) {
+                    if (ch.isAlive() && ch.pos == oldPos && !Pushing.pushingExistsForChar(ch)) {
                         //trace a ballistica to our target (which will also extend past them
                         Ballistica trajectory = new Ballistica(hero.pos, ch.pos, Ballistica.STOP_TARGET);
                         //trim it to just be the part that goes past them

@@ -53,7 +53,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.TimeStasis;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GoldenMimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mimic;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Piranha;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NPC;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Sheep;
@@ -73,10 +72,10 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SparkParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.HeatBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMirrorImage;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRecharging;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
-import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfMetamorphosis;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfSirensSong;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.WondrousResin;
@@ -419,7 +418,7 @@ public class CursedWand {
 		UNCOMMON_EFFECTS.add(new Geyser());
 		UNCOMMON_EFFECTS.add(new SummonSheep());
 		UNCOMMON_EFFECTS.add(new Levitate());
-		UNCOMMON_EFFECTS.add(new Alarm());
+		UNCOMMON_EFFECTS.add(new Heat());
 	}
 
 	public static CursedEffect randomUncommonEffect(){
@@ -634,25 +633,12 @@ public class CursedWand {
 		}
 	}
 
-	public static class Alarm extends CursedEffect {
-
-		@Override
-		public void FX(Item origin, Char user, Ballistica bolt, Callback callback) {
-			callback.call(); //no vfx
-		}
-
+	public static class Heat extends CursedEffect {
 		@Override
 		public boolean effect(Item origin, Char user, Ballistica bolt, boolean positiveOnly) {
-			for (Mob mob : Dungeon.level.mobs) {
-				mob.beckon( user.pos );
-			}
-			user.sprite.centerEmitter().start( Speck.factory( Speck.SCREAM ), 0.3f, 3 );
-			if (positiveOnly){
-				Buff.affect(user, ScrollOfChallenge.ChallengeArena.class).setup(user.pos);
-				Sample.INSTANCE.play( Assets.Sounds.CHALLENGE );
-			} else {
-				Sample.INSTANCE.play(Assets.Sounds.ALERT);
-			}
+			tryForWandProc(Actor.findChar(bolt.collisionPos), origin);
+			HeatBrew heat = new HeatBrew();
+			heat.shatter(bolt.collisionPos);
 			return true;
 		}
 	}

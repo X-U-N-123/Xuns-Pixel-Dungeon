@@ -31,7 +31,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Chill;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Corrosion;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Frost;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Ooze;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
@@ -46,12 +45,20 @@ import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.AntiMagic;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.PotionBandolier;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfExperience;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfFrost;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHaste;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfInvisibility;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLevitation;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLiquidFlame;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfMindVision;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfParalyticGas;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfPurity;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfToxicGas;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.UnstableBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.ExoticPotion;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfDivineInspiration;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfDragonsBreath;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfEnergy;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
@@ -79,11 +86,11 @@ public class ElementalMask extends Artifact {//will replace Ring of Elements
     {
         image = ItemSpriteSheet.ARTIFACT_MASK;
 
-        levelCap = 5;
+        levelCap = 10;
 
-        charge = level()+2;
+        charge = (int)(level()*0.6f)+2;
         partialCharge = 0;
-        chargeCap = level()+2;
+        chargeCap = (int)(level()*0.6f)+2;
 
         defaultAction = AC_RELEASE;
     }
@@ -92,6 +99,8 @@ public class ElementalMask extends Artifact {//will replace Ring of Elements
     public static final String AC_ADD = "ADD";
 
     private final ArrayList<Class> potions = new ArrayList<>();
+
+    private int rarePotionsRemain = 2;//prevent player from surviving forever by drinking PoH from this
 
     public ElementalMask() {
         super();
@@ -106,8 +115,13 @@ public class ElementalMask extends Artifact {//will replace Ring of Elements
             PotionOfFrost.class,
             PotionOfToxicGas.class,
             PotionOfParalyticGas.class,
-            PotionOfPurity.class};
-        float[] probs = new float[]{1, 1, 1, 1, 1}; //Every potion has equal chance to appear
+            PotionOfPurity.class,
+            PotionOfInvisibility.class,
+            PotionOfHaste.class,
+            PotionOfHealing.class,
+            PotionOfLevitation.class,
+            PotionOfMindVision.class};
+        float[] probs = new float[]{1, 1, 1, 1, 1, 1, 1, 1, 1, 1}; //Every potion has equal chance to appear
         int i = Random.chances(probs);
 
         while (i != -1){
@@ -143,7 +157,7 @@ public class ElementalMask extends Artifact {//will replace Ring of Elements
 
         for (Class c : RESISTS){
             if (c.isAssignableFrom(effect)){
-                return 1-(2 + level)*0.08f;
+                return 1-(2 + level)*0.07f;
             }
         }
 
@@ -188,23 +202,11 @@ public class ElementalMask extends Artifact {//will replace Ring of Elements
     public void doReleaseEffect(Hero hero){
 
         Potion potion;
-        switch (Random.Int(5)){
-            case 0:
-                potion = new PotionOfFrost();
-                break;
-            case 1:
-                potion = new PotionOfLiquidFlame();
-                break;
-            case 2:
-                potion = new PotionOfParalyticGas();
-                break;
-            case 3:
-                potion = new PotionOfToxicGas();
-                break;
-            case 4: default:
-                potion = new PotionOfPurity();
-                break;
-        }
+
+        do {
+            potion = Reflection.newInstance(Random.chances(UnstableBrew.potionChances));
+        } while ((potion instanceof PotionOfExperience && charge <= 1)
+        || ((potion instanceof PotionOfHealing || potion instanceof PotionOfExperience) && rarePotionsRemain <= 0));
 
         potion.anonymize();
         curItem = potion;
@@ -212,9 +214,12 @@ public class ElementalMask extends Artifact {//will replace Ring of Elements
 
         fpotion = potion;
         charge --;
+        if (potion instanceof PotionOfExperience) charge --;
+        if (potion instanceof PotionOfHealing || potion instanceof PotionOfExperience) rarePotionsRemain--;
 
         //if there are charges left and the potion has been given to the mask
-        if (charge > 0 && !potions.contains(potion.getClass())) {
+        if ( charge > 0 && !potions.contains(potion.getClass())
+        && (!(fpotion instanceof PotionOfExperience) || level() >= 10) ) {
 
             final ExploitHandler handler = Buff.affect(hero, ExploitHandler.class);
             handler.potion = potion;
@@ -230,7 +235,7 @@ public class ElementalMask extends Artifact {//will replace Ring of Elements
                     if (index == 1){
                         fpotion = Reflection.newInstance(ExoticPotion.regToExo.get(fpotion.getClass()));
                         charge--;
-                        if (fpotion instanceof PotionOfDragonsBreath){
+                        if (fpotion instanceof PotionOfDragonsBreath || fpotion instanceof PotionOfDivineInspiration){
                             ((PotionOfDragonsBreath)fpotion).drink(Dungeon.hero);
                             updateQuickslot();
                             return;
@@ -305,7 +310,7 @@ public class ElementalMask extends Artifact {//will replace Ring of Elements
     @Override
     public void charge(Hero target, float amount) {
         if (charge < chargeCap && !cursed && target.buff(MagicImmune.class) == null){
-            partialCharge += 0.11f*amount;
+            partialCharge += 0.1f*amount;
             while (partialCharge >= 1){
                 partialCharge--;
                 charge++;
@@ -319,7 +324,8 @@ public class ElementalMask extends Artifact {//will replace Ring of Elements
 
     @Override
     public Item upgrade() {
-        chargeCap += 1;
+        chargeCap = (int)((level()+1)*0.6f)+2;
+        if (level() % 2 == 0)rarePotionsRemain ++;
 
         //for artifact transmutation.
         while (!potions.isEmpty() && potions.size() > (levelCap-1-level())) {
@@ -340,16 +346,21 @@ public class ElementalMask extends Artifact {//will replace Ring of Elements
 
     @Override
     public String desc() {
-
-        String desc = Messages.get(this, "desc");
+        String desc = super.desc();
 
         if (isEquipped(Dungeon.hero)) {
             if (cursed) {
                 desc += "\n\n" + Messages.get(this, "desc_cursed");
             }
 
-            if (level() < levelCap && potions.size() > 0) {
-                desc += "\n\n" + Messages.get(this, "desc_index", Messages.get(potions.get(0), "name"));
+            if (level() < levelCap){
+                if (potions.size() > 1) {
+                    desc += "\n\n" + Messages.get(this, "desc_index_2",
+                        Messages.get(potions.get(0), "name"), Messages.get(potions.get(1), "name"));
+                } else if (potions.size() > 0) {
+                    desc += "\n\n" + Messages.get(this, "desc_index_1",
+                        Messages.get(potions.get(0), "name"));
+                }
             }
         }
 
@@ -357,15 +368,21 @@ public class ElementalMask extends Artifact {//will replace Ring of Elements
             desc += "\n\n" + Messages.get(this, "desc_empowered");
         }
 
+        if (rarePotionsRemain <= 0) {
+            desc += "\n\n" + Messages.get(this, "desc_exhausted");
+        }
+
         return desc;
     }
 
     private static final String POTIONS =   "potions";
+    private static final String POHREMAIN =   "pohremain";
 
     @Override
     public void storeInBundle( Bundle bundle ) {
         super.storeInBundle(bundle);
         bundle.put( POTIONS, potions.toArray(new Class[potions.size()]) );
+        bundle.put(POHREMAIN, rarePotionsRemain);
     }
 
     @Override
@@ -376,6 +393,11 @@ public class ElementalMask extends Artifact {//will replace Ring of Elements
             for (Class<?> potion : bundle.getClassArray(POTIONS)) {
                 if (potion != null) potions.add(potion);
             }
+        }
+        if (bundle.contains(POHREMAIN)) rarePotionsRemain = bundle.getInt(POHREMAIN);
+        else for (int i = 0; i < 5;){
+            upgrade();
+            i++;
         }
     }
 
@@ -400,20 +422,22 @@ public class ElementalMask extends Artifact {//will replace Ring of Elements
         public void onSelect(Item item) {
             if (item != null && item instanceof Potion && item.isIdentified()){
                 Hero hero = Dungeon.hero;
-                if (potions.get(0).equals(item.getClass())){
-                    hero.sprite.operate( hero.pos );
-                    hero.busy();
-                    hero.spend( 1f );
-                    Sample.INSTANCE.play(Assets.Sounds.DRINK);
-                    hero.sprite.emitter().burst( ElmoParticle.FACTORY, 12 );
+                for (int i = 0; ( i <= 1 && i < potions.size() ); i++){
+                    if (potions.get(i).equals(item.getClass())){
+                        hero.sprite.operate( hero.pos );
+                        hero.busy();
+                        hero.spend( 1f );
+                        Sample.INSTANCE.play(Assets.Sounds.DRINK);
+                        hero.sprite.emitter().burst( ElmoParticle.FACTORY, 12 );
 
-                    potions.remove(0);
-                    item.detach(hero.belongings.backpack);
+                        potions.remove(i);
+                        item.detach(hero.belongings.backpack);
 
-                    upgrade();
-                    Catalog.countUses(ElementalMask.class, 2);
-                    GLog.p( Messages.get(ElementalMask.class, "infuse_potion") );
-                    return;
+                        upgrade();
+                        Catalog.countUse(ElementalMask.class);
+                        GLog.p( Messages.get(ElementalMask.class, "infuse_potion") );
+                        return;
+                    }
                 }
                 GLog.w( Messages.get(ElementalMask.class, "unable_potion") );
             } else if (item instanceof Potion && !item.isIdentified()) {
@@ -429,8 +453,8 @@ public class ElementalMask extends Artifact {//will replace Ring of Elements
             && !cursed
             && target.buff(MagicImmune.class) == null
             && Regeneration.regenOn()) {
-                //110 turns to charge at full, 75 turns to charge at 0/7
-                float chargeGain = 1 / (110f - (chargeCap - charge)*5f);
+                //120 turns to charge at full, 80 turns to charge at 0/7
+                float chargeGain = 1 / (120f - (chargeCap - charge)*5f);
                 chargeGain *= RingOfEnergy.artifactChargeMultiplier(target);
                 partialCharge += chargeGain;
 
@@ -462,9 +486,13 @@ public class ElementalMask extends Artifact {//will replace Ring of Elements
                     GLog.w(Messages.get(SandalsOfNature.class, "out_of_range"));
                 } else if (fpotion != null){
 
-                    fpotion.shatter(cell);
+                    if (cell == Dungeon.hero.pos) {
+                        fpotion.apply(Dungeon.hero);
+                        Sample.INSTANCE.play(Assets.Sounds.DRINK);
+                    }
+                    else fpotion.shatter(cell);
+
                     checkForArtifactProc(cell);
-                    Invisibility.dispel(curUser);
 
                     Talent.onArtifactUsed(Dungeon.hero);
                     updateQuickslot();

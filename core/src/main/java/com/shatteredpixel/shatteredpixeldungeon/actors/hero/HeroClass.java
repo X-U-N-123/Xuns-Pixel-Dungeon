@@ -100,7 +100,7 @@ public enum HeroClass {
 	WARRIOR( HeroSubClass.BERSERKER, HeroSubClass.GLADIATOR, HeroSubClass.GUARD),
 	MAGE( HeroSubClass.BATTLEMAGE, HeroSubClass.WARLOCK, HeroSubClass.SWITCHER),
 	ROGUE( HeroSubClass.ASSASSIN, HeroSubClass.FREERUNNER, HeroSubClass.NINJA),
-	HUNTRESS( HeroSubClass.SNIPER, HeroSubClass.WARDEN ),
+	HUNTRESS( HeroSubClass.SNIPER, HeroSubClass.WARDEN, HeroSubClass.SCOUT),
 	DUELIST( HeroSubClass.CHAMPION, HeroSubClass.MONK, HeroSubClass.PHANTOM),
 	CLERIC( HeroSubClass.PRIEST, HeroSubClass.PALADIN );
 

@@ -32,12 +32,13 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Degrade;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Dart;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.TippedDart;
@@ -536,8 +537,10 @@ public class Item implements Bundlable {
 
 		String desc = desc();
 		if (Dungeon.isChallenged(Challenges.HEAVY_BURDEN)){
-			if (isIdentified()) desc += "\n\n" + Messages.get(this, "weight", weight());
-			else                desc += "\n\n" + Messages.get(this, "weight_unid", unidWeight());
+			String weight = "weight";
+			if (quantity > 1) weight += "_multi";
+			if (isIdentified()) desc += "\n\n" + Messages.get(this, weight, weight());
+			else                desc += "\n\n" + Messages.get(this, weight + "_unid", unidWeight());
 		}
 
 		if (Dungeon.hero != null) {
@@ -690,24 +693,25 @@ public class Item implements Bundlable {
 							if (curUser.hasTalent(Talent.IMPROVISED_PROJECTILES)
 									&& !(Item.this instanceof MissileWeapon)
 									&& curUser.buff(Talent.ImprovisedProjectileCooldown.class) == null
-									&& !(enemy.isImmune(Blindness.class) && enemy.isImmune(Blindness.class)) ){
+									&& !enemy.isImmune(Blindness.class)){
 								if (enemy.alignment != curUser.alignment){
 									Sample.INSTANCE.play(Assets.Sounds.HIT);
 									Buff.affect(enemy, Blindness.class, 1 + 2f * curUser.pointsInTalent(Talent.IMPROVISED_PROJECTILES));
-									Buff.affect(enemy, Cripple.class,   1 + 2f * curUser.pointsInTalent(Talent.IMPROVISED_PROJECTILES));
-									Buff.affect(curUser, Talent.ImprovisedProjectileCooldown.class, 25f);
+									Buff.affect(curUser, Talent.ImprovisedProjectileCooldown.class, 40f);
 								}
 							}
 
-							boolean isBurdenEased = hero.STR() - hero.weight() > -0.001;
-							if (overweight && isBurdenEased && Dungeon.isChallenged(Challenges.HEAVY_BURDEN)){
-								GLog.p( Messages.get(this, "light"));
-							}
 							if (user.buff(Talent.LethalMomentumTracker.class) != null){
 								user.buff(Talent.LethalMomentumTracker.class).detach();
 								user.next();
 							} else {
-								user.spendAndNext(delay);
+								float multi = 1f;
+								if (user.subClass == HeroSubClass.SCOUT && i instanceof SpiritBow.SpiritArrow) {
+									multi = Dungeon.level.distance(enemy.pos, user.pos)
+									/(Dungeon.level.distance(enemy.pos, user.pos) + 0.5f + user.pointsInTalent(Talent.PIONEERING_SPIRIT)/3f );
+								}
+
+								user.spendAndNext(delay * multi);
 							}
 						}
 					});
@@ -726,6 +730,11 @@ public class Item implements Bundlable {
 							user.next();
 						}
 					});
+		}
+
+		boolean isBurdenEased = hero.STR() - hero.weight() > -0.001;
+		if (overweight && isBurdenEased && Dungeon.isChallenged(Challenges.HEAVY_BURDEN)){
+			GLog.p( Messages.get(this, "light"));
 		}
 	}
 	

@@ -269,7 +269,7 @@ abstract public class MissileWeapon extends Weapon {
 				&& !defender.flying) {
 			Buff.affect(defender, Roots.class, 1 + 2*Dungeon.hero.pointsInTalent(Talent.IVY_BIND));
 			Sample.INSTANCE.play(Assets.Sounds.PLANT);
-			Buff.affect(attacker, SpiritBow.IvybindCooldown.class, 50);
+			Buff.affect(attacker, SpiritBow.IvybindCooldown.class, 40);
 		}
 
 		return super.proc(attacker, defender, damage);

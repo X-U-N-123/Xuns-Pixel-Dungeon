@@ -32,15 +32,20 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.PinCushion;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RevealedArea;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Roots;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.huntress.NaturesPower;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Splash;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.LeafParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TalismanOfForesight;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfSharpshooting;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
+import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Blindweed;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Firebloom;
@@ -59,6 +64,7 @@ import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.particles.Emitter;
+import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
 import com.watabou.utils.GameMath;
 import com.watabou.utils.Random;
@@ -112,6 +118,33 @@ public class SpiritBow extends Weapon {
 	@Override
 	public int proc(Char attacker, Char defender, int damage) {
 
+		int fDamage = damage;
+
+		if ( ((Hero)attacker).subClass == HeroSubClass.SCOUT){
+
+			if (defender.isAlive() && !Pushing.pushingExistsForChar(defender)
+				&& Random.Float() < ((Hero)attacker).pointsInTalent(Talent.EXPEL_ENEMIES) / 6f){
+				//trace a ballistica to our target (which will also extend past them)
+				Ballistica trajectory = new Ballistica(attacker.pos, defender.pos, Ballistica.STOP_TARGET);
+				//trim it to just be the part that goes past them
+				trajectory = new Ballistica(trajectory.collisionPos, trajectory.path.get(trajectory.path.size() - 1), Ballistica.PROJECTILE);
+				//knock them back along that ballistica
+				WandOfBlastWave.throwChar(defender, trajectory, 1, true, true, attacker);
+			}
+
+			Buff.append(Dungeon.hero, TalismanOfForesight.CharAwareness.class,
+		5 + 5 * ((Hero)attacker).pointsInTalent(Talent.TRACKING_ARROW))
+				.charID = defender.id();
+
+			ScoutMark mark = defender.buff(ScoutMark.class);
+			if (mark != null){
+				for (int i = 1; i <= mark.level; i++){
+					damage = Math.max(damage, Random.NormalIntRange(fDamage, (int)(max() * (1 + 0.12f*i)) ) );
+				}
+			}
+			Buff.affect(defender, ScoutMark.class).hit();
+		}
+
 		if (attacker.buff(NaturesPower.naturesPowerTracker.class) != null && !sniperSpecial){
 
 			Actor.add(new Actor() {
@@ -136,7 +169,7 @@ public class SpiritBow extends Weapon {
 					}
 
 					if (((Hero)attacker).hasTalent(Talent.REGROWTH)) {
-						int toHeal = Math.min(attacker.HT - attacker.HP, damage * ((Hero)attacker).pointsInTalent(Talent.REGROWTH)/8);
+						int toHeal = Math.min(attacker.HT - attacker.HP, fDamage * ((Hero)attacker).pointsInTalent(Talent.REGROWTH)/8);
 						attacker.HP += toHeal;
 						if (attacker.sprite != null && toHeal > 0) {
 							attacker.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(toHeal), FloatingText.HEALING);
@@ -158,7 +191,7 @@ public class SpiritBow extends Weapon {
 			&& !defender.flying) {
 			Buff.affect(defender, Roots.class, 1 + 2*Dungeon.hero.pointsInTalent(Talent.IVY_BIND));
 			Sample.INSTANCE.play(Assets.Sounds.PLANT);
-			Buff.affect(attacker, IvybindCooldown.class, 50);
+			Buff.affect(attacker, IvybindCooldown.class, 40);
 		}
 
 		if ((Dungeon.level.map[attacker.pos] == Terrain.FURROWED_GRASS
@@ -536,7 +569,7 @@ public class SpiritBow extends Weapon {
 	public static class IvybindCooldown extends FlavourBuff {
 		public int icon() { return BuffIndicator.TIME; }
 		public void tintIcon(Image icon) { icon.hardlight(0f, 0.5f, 0.25f); }
-		public float iconFadePercent() { return GameMath.gate(0, visualcooldown() / 50, 1); }
+		public float iconFadePercent() { return GameMath.gate(0, visualcooldown() / 40, 1); }
 	}
 
 	public static class ResonanceFetchCooldown extends FlavourBuff {
@@ -548,5 +581,63 @@ public class SpiritBow extends Weapon {
 	@Override
 	public float weight(){
 		return STRReq() / 20f;
+	}
+
+	public static class ScoutMark extends Buff {
+
+		public int level = 0;
+		public float time = 3;
+
+		public int icon() {
+			return BuffIndicator.INVERT_MARK;
+		}
+
+		private float maxTime(){
+			return 3 + 2*Dungeon.hero.pointsInTalent(Talent.STRONG_MARK_SC);
+		}
+
+		public void hit(){
+			int point = Dungeon.hero.pointsInTalent(Talent.STRONG_MARK_SC);
+			level ++;
+			if (level > 3 + point ) level = 3 + point;
+			time = maxTime();
+		}
+
+		@Override
+		public boolean act() {
+			time-=TICK;
+			spend(TICK);
+			if (time <= 0) {
+				time = maxTime();
+				level--;
+				if (level <= 0) detach();
+			}
+			return true;
+		}
+
+		@Override
+		public String desc() {
+			return Messages.get(this, "desc", level, time);
+		}
+
+		public void tintIcon(Image icon) { icon.hardlight(0f, 0f, 0.8f + 0.05f*level); }
+		public float iconFadePercent() { return GameMath.gate(0, visualcooldown() / 5, 1); }
+
+		private static final String LEVEL = "level";
+		private static final String TIME  = "marktime";
+
+		@Override
+		public void storeInBundle(Bundle bundle){
+			super.storeInBundle(bundle);
+			bundle.put(LEVEL, level);
+			bundle.put(TIME, time);
+		}
+
+		@Override
+		public void restoreFromBundle(Bundle bundle){
+			super.restoreFromBundle(bundle);
+			level = bundle.getInt(LEVEL);
+			time = bundle.getFloat(TIME);
+		}
 	}
 }
