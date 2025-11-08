@@ -40,8 +40,8 @@ import com.watabou.utils.RectF;
 
 public class SupporterScene extends PixelScene {
 
-	private static final int BTN_HEIGHT = 22;
-	private static final int GAP = 2;
+	private static final int BTN_HEIGHT = 20;
+	private static final int GAP = 1;
 
 	@Override
 	public void create() {
@@ -78,7 +78,7 @@ public class SupporterScene extends PixelScene {
 		msg.setSize(elementWidth, 0);
 		add(msg);
 
-		StyledButton link = new StyledButton(Chrome.Type.GREY_BUTTON_TR, Messages.get(this, "supporter_link")){
+		StyledButton patreonLink = new StyledButton(Chrome.Type.GREY_BUTTON_TR, Messages.get(this, "supporter_link")){
 			@Override
 			protected void onClick() {
 				super.onClick();
@@ -90,12 +90,25 @@ public class SupporterScene extends PixelScene {
 				ShatteredPixelDungeon.platform.openURI(link);
 			}
 		};
-		link.icon(Icons.get(Icons.GOLD));
-		link.textColor(Window.TITLE_COLOR);
-		link.setSize(elementWidth, BTN_HEIGHT);
-		add(link);
+		patreonLink.icon(Icons.get(Icons.GOLD));
+		patreonLink.textColor(Window.TITLE_COLOR);
+		patreonLink.setSize(elementWidth, BTN_HEIGHT);
+		add(patreonLink);
 
-		float elementHeight = msg.height() + BTN_HEIGHT + GAP;
+		StyledButton qqLink = new StyledButton(Chrome.Type.GREY_BUTTON_TR, Messages.get(this, "qq_link")){
+			@Override
+			protected void onClick() {
+				super.onClick();
+				String link = "https://qm.qq.com/q/6F4JNkWx1u";
+				ShatteredPixelDungeon.platform.openURI(link);
+			}
+		};
+		qqLink.icon(Icons.get(Icons.QQ));
+		qqLink.textColor(Window.TITLE_COLOR);
+		qqLink.setSize(elementWidth, BTN_HEIGHT);
+		add(qqLink);
+
+		float elementHeight = msg.height() + 2*BTN_HEIGHT + GAP;
 
 		float top = insets.top + 16 + (h - 16 - elementHeight)/2f;
 		float left = insets.left + (w-elementWidth)/2f;
@@ -103,8 +116,10 @@ public class SupporterScene extends PixelScene {
 		msg.setPos(left, top);
 		align(msg);
 
-		link.setPos(left, msg.bottom()+GAP);
-		align(link);
+		patreonLink.setPos(left, msg.bottom()+GAP);
+		align(patreonLink);
+		qqLink.setPos(left, patreonLink.bottom()+GAP);
+		align(qqLink);
 
 	}
 
@@ -129,14 +144,10 @@ public class SupporterScene extends PixelScene {
 			if (Messages.lang() != Languages.ENGLISH) {
 				message += "\n" + Messages.get(SupporterScene.class, "patreon_english");
 			}
-			message += "\n\n- Evan";
+			message += "\n\n-迅";
 
 			text = PixelScene.renderTextBlock(message, 6);
 			add(text);
-
-			icon = Icons.get(Icons.SHPX);
-			add(icon);
-
 		}
 
 		@Override

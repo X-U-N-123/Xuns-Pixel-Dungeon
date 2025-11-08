@@ -256,9 +256,9 @@ public class ShopRoom extends SpecialRoom {
 			itemsToSpawn.add( new Torch() );
 			itemsToSpawn.add( new Torch() );
 			itemsToSpawn.add( new Torch() );
-			if (Random.Float() * 0.6f < MemberCard.betterItemChance()){
-				itemsToSpawn.add( new Torch() );
-			}
+			if (Random.Float() < MemberCard.betterItemChance() * 3f)     itemsToSpawn.add( new Torch() );
+			if (Random.Float() < MemberCard.betterItemChance() * 3f - 1) itemsToSpawn.add( new Torch() );
+
 			break;
 		}
 		w.enchant(null);

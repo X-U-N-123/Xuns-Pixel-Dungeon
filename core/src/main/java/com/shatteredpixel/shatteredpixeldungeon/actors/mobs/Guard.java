@@ -60,6 +60,8 @@ public class Guard extends Mob {
 		properties.add(Property.UNDEAD);
 		
 		HUNTING = new Hunting();
+
+		useParry = true;
 	}
 
 	@Override

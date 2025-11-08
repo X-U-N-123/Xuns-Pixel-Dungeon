@@ -35,6 +35,8 @@ public class HermitCrab extends Crab {
 
 		//3x more likely to drop meat, and drops a guaranteed armor
 		lootChance = 0.5f;
+
+		useParry = true;
 	}
 
 	@Override

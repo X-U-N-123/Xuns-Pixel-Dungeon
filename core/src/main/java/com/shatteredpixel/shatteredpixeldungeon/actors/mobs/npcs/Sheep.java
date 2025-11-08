@@ -39,6 +39,8 @@ public class Sheep extends NPC {
 
 	{
 		spriteClass = SheepSprite.class;
+
+		useParry = true;
 	}
 
 	private float lifespan;

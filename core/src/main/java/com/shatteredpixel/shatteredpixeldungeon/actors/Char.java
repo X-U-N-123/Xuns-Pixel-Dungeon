@@ -208,6 +208,8 @@ public abstract class Char extends Actor {
 	public boolean flying		= false;
 	public int invisible		= 0;
 
+	public boolean useParry = false;
+
 	//these are relative to the hero
 	public enum Alignment{
 		ENEMY,
@@ -560,15 +562,10 @@ public abstract class Char extends Actor {
 				return true;
 			}
 
-			float peacefulMulti = 1f;
-			if (enemy.buff(Peaceful.PeacefulTracker.class) != null){
-				peacefulMulti /= enemy.buff(Peaceful.PeacefulTracker.class).chance;
-			}
-
 			enemy.damage( effectiveDamage, this );
 
-			if (buff(FireImbue.class) != null)  buff(FireImbue.class).proc(enemy, peacefulMulti);
-			if (buff(FrostImbue.class) != null) buff(FrostImbue.class).proc(enemy, peacefulMulti);
+			if (buff(FireImbue.class) != null)  buff(FireImbue.class).proc(enemy);
+			if (buff(FrostImbue.class) != null) buff(FrostImbue.class).proc(enemy);
 
 			if (hero.hasTalent(Talent.CHARGE_RECYCLING) && prep != null && this instanceof Hero &&
 			enemy.HP <= effectiveDamage && enemy.buff(Brute.BruteRage.class) == null) {
@@ -649,8 +646,9 @@ public abstract class Char extends Actor {
 
 			enemy.sprite.showStatus( CharSprite.NEUTRAL, enemy.defenseVerb() );
 			if (visibleFight) {
-				//TODO enemy.defenseSound? currently miss plays for monks/crab even when they parry
-				Sample.INSTANCE.play(Assets.Sounds.MISS);
+				//Screw Evan for not doing such a easy thing!
+				if (enemy.useParry) Sample.INSTANCE.play(Assets.Sounds.HIT_PARRY);
+				else                Sample.INSTANCE.play(Assets.Sounds.MISS);
 			}
 
 			if (enemy instanceof Hero){
@@ -659,7 +657,7 @@ public abstract class Char extends Actor {
 				}
 
 				Phantom p = hero.buff(Phantom.class);
-				if (hero.subClass == HeroSubClass.PHANTOM && p != null && p.getCD() <= 0){
+				if (hero.hasTalent(Talent.FLEXIBLE_FOOTWORK) && p != null && p.getCD() <= 0){
 					p.summon();
 					p.reduceCD(5f*hero.pointsInTalent(Talent.FLEXIBLE_FOOTWORK));
 				}
@@ -752,7 +750,8 @@ public abstract class Char extends Actor {
 	}
 	
 	public String defenseVerb() {
-		return Messages.get(this, "def_verb");
+		if (useParry) return Messages.get(this, "parry_verb");
+		else          return Messages.get(this, "def_verb");
 	}
 	
 	public int drRoll() {
@@ -927,29 +926,26 @@ public abstract class Char extends Actor {
 			}
 		}
 
-		float peacefulMulti = 1f;
-		if (buff(Peaceful.PeacefulTracker.class) != null){
-			peacefulMulti = buff(Peaceful.PeacefulTracker.class).chance;
-			Buff.detach(this, Peaceful.PeacefulTracker.class);
-		}
-
 		Terror t = buff(Terror.class);
 		if (t != null){
-			t.recover(peacefulMulti);
+			t.recover();
 		}
 		Dread d = buff(Dread.class);
 		if (d != null){
-			d.recover(peacefulMulti);
+			d.recover();
 		}
 		Charm c = buff(Charm.class);
 		if (c != null){
-			c.recover(src, peacefulMulti);
+			c.recover(src);
 		}
-		if (this.buff(Frost.class) != null && Random.Float() < peacefulMulti){
+		if (this.buff(Frost.class) != null){
 			Buff.detach( this, Frost.class );
 		}
-		if (this.buff(MagicalSleep.class) != null && Random.Float() < peacefulMulti){
+		if (this.buff(MagicalSleep.class) != null && buff(Peaceful.PeacefulTracker.class) == null){
 			Buff.detach(this, MagicalSleep.class);
+		}
+		if (buff(Peaceful.PeacefulTracker.class) != null) {
+			Buff.detach(this, Peaceful.PeacefulTracker.class);
 		}
 		if (this.buff(Doom.class) != null && !isImmune(Doom.class)){
 			damage *= 1.67f;
@@ -1005,7 +1001,7 @@ public abstract class Char extends Actor {
 		}
 		
 		if (buff( Paralysis.class ) != null) {
-			buff( Paralysis.class ).processDamage(Math.round(dmg * peacefulMulti));
+			buff( Paralysis.class ).processDamage(dmg);
 		}
 
 		if (!(src instanceof Hunger)) {
@@ -1063,14 +1059,12 @@ public abstract class Char extends Actor {
 		int shielded = dmg;
 
 		if (buff(devShield.devShieldBuff.class) == null) {
-			dmg /= peacefulMulti;
 			dmg = ShieldBuff.processDamage(this, dmg, src);
-			dmg *= peacefulMulti;
-			shielded -= dmg;
 			if (this instanceof MirrorImage && ((MirrorImage) this).hitsToDisp < hero.pointsInTalent(Talent.EIDOLON) && dmg > 0)
 				((MirrorImage) this).hitsToDisp++;
 			else HP -= dmg;
 		}
+		shielded -= dmg;
 
 		if (HP > 0 && buff(Grim.GrimTracker.class) != null){
 
@@ -1236,6 +1230,7 @@ public abstract class Char extends Actor {
 		(Dungeon.level.map[Dungeon.hero.pos] == Terrain.HIGH_GRASS || Dungeon.level.map[Dungeon.hero.pos] == Terrain.FURROWED_GRASS)){
 
 			Waterskin flask = (Dungeon.hero.belongings.getItem( Waterskin.class ));
+			Sample.INSTANCE.play(Assets.Sounds.DEWDROP);
 
 			if (flask != null && !flask.isFull() && Dungeon.isChallenged(Challenges.NO_HERBALISM)){
 
@@ -1511,8 +1506,10 @@ public abstract class Char extends Actor {
 			}
 		}
 		float maskproc = 1f;
-		if (hero.belongings.artifact instanceof ElementalMask)
-			maskproc = ((ElementalMask)hero.belongings.artifact).resist(effect);
+		ElementalMask mask = null;
+		if (hero.belongings.artifact() instanceof ElementalMask) mask = (ElementalMask) hero.belongings.artifact();
+		if (hero.belongings.misc() instanceof ElementalMask)     mask = (ElementalMask) hero.belongings.misc();
+		if (mask != null && this == hero) maskproc = mask.resist(effect);
 		return result * RingOfElements.resist(this, effect) * maskproc;
 	}
 	

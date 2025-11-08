@@ -42,6 +42,8 @@ public class DM201 extends DM200 {
 		properties.add(Property.IMMOVABLE);
 
 		HUNTING = new Hunting();
+
+		useParry = true;
 	}
 
 	@Override

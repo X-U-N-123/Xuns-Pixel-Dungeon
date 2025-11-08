@@ -128,6 +128,7 @@ public class Windblade extends MeleeWeapon {
         }
     }
 
+    @Override
     public String upgradeAbilityStat(int level){
         return augment.damageFactor(min(level)-2) + "-" + augment.damageFactor(max(level)-2);
     }

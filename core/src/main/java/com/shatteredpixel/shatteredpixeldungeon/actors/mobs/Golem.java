@@ -56,6 +56,8 @@ public class Golem extends Mob {
 
 		WANDERING = new Wandering();
 		HUNTING = new Hunting();
+
+		useParry = true;
 	}
 
 	@Override

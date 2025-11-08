@@ -24,42 +24,44 @@ package com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicalSleep;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
+import com.watabou.utils.Random;
 
 public class Peaceful extends Weapon.Enchantment {
-
-    private static ItemSprite.Glowing PINK = new ItemSprite.Glowing( 0xFF99FF );
 
     @Override
     public int proc(Weapon weapon, Char attacker, Char defender, int damage ) {
 
-        if (defender.isImmune(Peaceful.class)) {
-            return damage;
+        if (!defender.isImmune(Peaceful.class)) {
+
+            if (Random.Float() < procChanceMultiplier(attacker) / (procChanceMultiplier(attacker)+2)
+                && defender instanceof Mob){
+                if (((Mob)defender).state == ((Mob)defender).SLEEPING) {
+                    Buff.affect(defender, MagicalSleep.class);
+                }
+                if (((Mob)defender).state == ((Mob)defender).WANDERING) {
+                    ((Mob) defender).state = ((Mob) defender).SLEEPING;
+                }
+                if (((Mob)defender).state == ((Mob)defender).HUNTING){
+                    ((Mob) defender).clearEnemy();
+                }
+                Buff.affect(defender, PeacefulTracker.class);
+            }
         }
-
-        int level = Math.max( 0, weapon.buffedLvl() );
-
-        float maxChance = (2f / (level + 3f));
-        maxChance = (float)Math.pow(maxChance, procChanceMultiplier(attacker));
-
-        Buff.affect(defender, PeacefulTracker.class).chance = maxChance;
 
         return damage;
     }
 
     @Override
     public ItemSprite.Glowing glowing() {
-        return PINK;
+        return new ItemSprite.Glowing( 0xFF99FF );
     }
 
     public static class PeacefulTracker extends Buff {
-
-        {
-            actPriority = Actor.VFX_PRIO;
-        }
-
-        public float chance;
+        {actPriority = Actor.VFX_PRIO;}
     }
 
 }

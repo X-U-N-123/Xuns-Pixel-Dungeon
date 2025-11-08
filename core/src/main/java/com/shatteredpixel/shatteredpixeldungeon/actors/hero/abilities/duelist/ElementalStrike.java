@@ -248,8 +248,8 @@ public class ElementalStrike extends ArmorAbility {
 		}
 
 		if (hero.hasTalent(Talent.DIRECTED_POWER)){
-			float enchBoost = 0.30f * targetsHit * hero.pointsInTalent(Talent.DIRECTED_POWER);
-			Buff.affect(hero, DirectedPowerTracker.class, 0f).enchBoost = enchBoost;
+            Buff.affect(hero, DirectedPowerTracker.class, 0f).enchBoost =
+				0.30f * targetsHit * hero.pointsInTalent(Talent.DIRECTED_POWER);
 		}
 
 		float powerMulti = 1f + 0.30f*Dungeon.hero.pointsInTalent(Talent.STRIKING_FORCE);
@@ -503,11 +503,12 @@ public class ElementalStrike extends ArmorAbility {
 				for (Buff b : ch.buffs()){
 					ch.sprite.emitter().start(Speck.factory(Speck.DOWN), 0.15f, 4);
 
-					if (b.type != Buff.buffType.NEGATIVE || b.peacefulEleExtended){
+					if (b.type != Buff.buffType.NEGATIVE || b.mnemoOrPeaceEleExtended){
 						continue;
 					}
 
 					//this might need a nerf of aggression vs bosses. (perhaps nerf the extension?)
+					//no need to nerf aggression more!
 					if (b instanceof FlavourBuff)       Buff.affect(ch, (Class<?extends FlavourBuff>)b.getClass(), 5f*powerMulti);
 					else if (b instanceof Bleeding)     ((Bleeding) b).extend( 5f*powerMulti );
 					else if (b instanceof Burning)      ((Burning) b).extend( 5f*powerMulti );
@@ -515,9 +516,9 @@ public class ElementalStrike extends ArmorAbility {
 					else if (b instanceof Dread)        ((Dread) b).extend( 5f*powerMulti );
 					else if (b instanceof Ooze)         ((Ooze) b).extend( 5f*powerMulti );
 					else if (b instanceof Poison)       ((Poison) b).extend( 5f*powerMulti );
-					else if (b instanceof Viscosity.DeferedDamage)  ((Viscosity.DeferedDamage) b).extend( 5f*powerMulti );
+					else if (b instanceof Viscosity.DeferedDamage) ((Viscosity.DeferedDamage) b).extend( 5f*powerMulti );
 
-					b.peacefulEleExtended = true;
+					b.mnemoOrPeaceEleExtended = true;
 				}
 			}
 

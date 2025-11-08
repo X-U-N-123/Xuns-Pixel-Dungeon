@@ -46,6 +46,8 @@ public class Statue extends Mob {
 		state = PASSIVE;
 		
 		properties.add(Property.INORGANIC);
+
+		useParry = true;
 	}
 	
 	protected Weapon weapon;

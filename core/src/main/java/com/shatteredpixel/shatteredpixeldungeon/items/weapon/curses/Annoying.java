@@ -99,11 +99,7 @@ public class Annoying extends Weapon.Enchantment {
 					return damage;
 				}
 				if (weapon instanceof Jingubang){
-					GLog.n(Messages.get(this, "jigubang"));
-					return damage;
-				}
-				if (weapon instanceof Windblade){
-					GLog.n(Messages.get(this, "wind"));
+					GLog.n(Messages.get(this, "jingubang"));
 					return damage;
 				}
 				if (weapon instanceof Crabclaw){
@@ -112,6 +108,10 @@ public class Annoying extends Weapon.Enchantment {
 				}
 				if (weapon instanceof Fork){
 					GLog.n(Messages.get(this, "dinner"));
+					return damage;
+				}
+				if (weapon instanceof Windblade){
+					GLog.n(Messages.get(this, "wind"));
 					return damage;
 				}
 				if (weapon instanceof Fetter){

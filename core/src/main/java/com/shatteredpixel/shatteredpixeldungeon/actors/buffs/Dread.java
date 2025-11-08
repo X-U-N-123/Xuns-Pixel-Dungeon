@@ -124,8 +124,8 @@ public class Dread extends Buff {
 		return Messages.get(this, "desc", left);
 	}
 
-	public void recover(float percent) {
-		left -= Math.round(5 * percent);
+	public void recover() {
+		left -= 5;
 		if (left <= 0){
 			detach();
 		}

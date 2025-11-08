@@ -161,10 +161,12 @@ public enum HeroClass {
 			scrollOfDebug.collect();
 			devShield devshield = new devShield();
 			devshield.collect();
+
 			RingOfEnergy ring = new RingOfEnergy();
 			ring.identify();
 			ring.level(50);
-			Dungeon.hero.belongings.ring = ring;
+			hero.belongings.ring = ring;
+			ring.activate(hero);
 
 			new ScrollHolder().collect();
 			Dungeon.LimitedDrops.SCROLL_HOLDER.drop();

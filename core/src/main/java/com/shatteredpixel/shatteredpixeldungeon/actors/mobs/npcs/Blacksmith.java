@@ -58,6 +58,8 @@ public class Blacksmith extends NPC {
 		spriteClass = BlacksmithSprite.class;
 
 		properties.add(Property.IMMOVABLE);
+
+		useParry = true;
 	}
 
 	@Override

@@ -55,6 +55,8 @@ public class GreatCrab extends Crab {
 		lootChance = 1f;
 
 		properties.add(Property.MINIBOSS);
+
+		useParry = true;
 	}
 
 	private int moving = 0;

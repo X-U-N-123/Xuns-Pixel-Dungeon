@@ -61,12 +61,12 @@ public class Terror extends FlavourBuff {
 
 	public boolean ignoreNextHit = false;
 
-	public void recover(float percentage) {
+	public void recover() {
 		if (ignoreNextHit){
 			ignoreNextHit = false;
 			return;
 		}
-		spend(-5f*percentage);
+		spend(-5f);
 		if (cooldown() <= 0){
 			detach();
 		}

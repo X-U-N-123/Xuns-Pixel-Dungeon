@@ -41,7 +41,13 @@ public class PinCushion extends Buff {
 	private ArrayList<MissileWeapon> items = new ArrayList<>();
 
 	public void stick(MissileWeapon projectile){
+		int spikeQuantity = 0;
+		if (projectile instanceof Scorpiospike) spikeQuantity ++;
+
 		for (Item item : items){
+			if (item instanceof Scorpiospike) spikeQuantity += item.quantity();
+			if (spikeQuantity >= 5 && target instanceof Scorpio) Badges.validateRefutation();
+
 			if (item.isSimilar(projectile)){
 				item.merge(projectile);
 				if (TippedDart.lostDarts > 0){
@@ -54,14 +60,6 @@ public class PinCushion extends Buff {
 			}
 		}
 		items.add(projectile);
-
-		int spikeQuantity = 0;
-		for (MissileWeapon wep : items){
-			if (wep instanceof Scorpiospike){
-				spikeQuantity ++;
-			}
-		}
-		if (spikeQuantity >= 5 && target instanceof Scorpio) Badges.validateRefutation();
 	}
 
 	public Item grabOne(){

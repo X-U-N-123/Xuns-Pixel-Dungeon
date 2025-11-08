@@ -32,8 +32,8 @@ public class MemberCard extends Trinket {
 
     @Override
     protected int upgradeEnergyCost() {
-        //6 -> 8(14) -> 12(26) -> 16(42)
-        return 8+4*level();
+        //6 -> 10(16) -> 15(31) -> 20(51)
+        return 10+5*level();
     }
 
     @Override
@@ -54,7 +54,7 @@ public class MemberCard extends Trinket {
         if (level == -1){
             return 1f;
         } else {
-            return 0.95f - 0.05f*level;
+            return 0.9f - 0.1f*level;
         }
     }
 

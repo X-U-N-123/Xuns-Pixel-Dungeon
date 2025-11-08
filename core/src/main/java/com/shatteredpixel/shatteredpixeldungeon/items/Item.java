@@ -134,13 +134,6 @@ public class Item implements Bundlable {
 			Sample.INSTANCE.play( Assets.Sounds.ITEM );
 			hero.spendAndNext( TIME_TO_PICK_UP );
 
-			float difference = hero.STR() - hero.weight();
-			if (!Dungeon.isChallenged(Challenges.HEAVY_BURDEN)) difference = 99;
-			if (difference < -0.001){
-				GLog.n( Messages.get(this, "heavy"));
-			} else if (difference < 1.001) {
-				GLog.w( Messages.get(this, "heavy_warn"));
-			}
 			return true;
 			
 		} else {
@@ -149,14 +142,9 @@ public class Item implements Bundlable {
 	}
 	
 	public void doDrop( Hero hero ) {
-		boolean overweight = hero.STR() - hero.weight() < -0.001;
 		hero.spendAndNext(TIME_TO_DROP);
 		int pos = hero.pos;
 		Dungeon.level.drop(detachAll(hero.belongings.backpack), pos).sprite.drop(pos);
-		boolean isBurdenEased = hero.STR() - hero.weight() > -0.001;
-		if (overweight && isBurdenEased && Dungeon.isChallenged(Challenges.HEAVY_BURDEN)){
-			GLog.p( Messages.get(this, "light"));
-		}
 	}
 
 	//resets an item's properties, to ensure consistency between runs
@@ -236,6 +224,14 @@ public class Item implements Bundlable {
 		for (Item item:items) {
 			if (item instanceof Bag && ((Bag)item).canHold( this )) {
 				if (collect( (Bag)item )){
+					float difference = hero.STR() - hero.weight();
+					if (!Dungeon.isChallenged(Challenges.HEAVY_BURDEN)) difference = 99;
+					if (difference < -0.001){
+						GLog.n( Messages.get(this, "heavy"));
+					} else if (difference < 1.001) {
+						GLog.w( Messages.get(this, "heavy_warn"));
+					}
+
 					return true;
 				}
 			}
@@ -249,7 +245,16 @@ public class Item implements Bundlable {
 			for (Item item:items) {
 				if (isSimilar( item )) {
 					item.merge( this );
-					item.updateQuickslot();
+
+					float difference = hero.STR() - hero.weight();
+					if (!Dungeon.isChallenged(Challenges.HEAVY_BURDEN)) difference = 99;
+					if (difference < -0.001){
+						GLog.n( Messages.get(this, "heavy"));
+					} else if (difference < 1.001) {
+						GLog.w( Messages.get(this, "heavy_warn"));
+					}
+
+					updateQuickslot();
 					if (hero != null && hero.isAlive()) {
 						Badges.validateItemLevelAquired( this );
 						Talent.onItemCollected(hero, item);
@@ -290,6 +295,15 @@ public class Item implements Bundlable {
 		}
 
 		items.add( this );
+
+		float difference = 99;
+		if (hero != null && Dungeon.isChallenged(Challenges.HEAVY_BURDEN)) difference = hero.STR() - hero.weight();
+		if (difference < -0.001){
+			GLog.n( Messages.get(this, "heavy"));
+		} else if (difference < 1.001) {
+			GLog.w( Messages.get(this, "heavy_warn"));
+		}
+
 		Dungeon.quickslot.replacePlaceholder(this);
 		Collections.sort( items, itemComparator );
 		updateQuickslot();
@@ -350,11 +364,15 @@ public class Item implements Bundlable {
 			return detachAll( container );
 			
 		} else {
-			
-			
+
+			boolean overweight = hero.STR() - hero.weight() < -0.001;
 			Item detached = split(1);
 			updateQuickslot();
 			if (detached != null) detached.onDetach( );
+			boolean isBurdenEased = hero.STR() - hero.weight() > -0.001;
+			if (overweight && isBurdenEased && Dungeon.isChallenged(Challenges.HEAVY_BURDEN)){
+				GLog.p( Messages.get(this, "light"));
+			}
 			return detached;
 			
 		}
@@ -365,10 +383,16 @@ public class Item implements Bundlable {
 
 		for (Item item : container.items) {
 			if (item == this) {
+				boolean overweight = hero.STR() - hero.weight() < -0.001;
+
 				container.items.remove(this);
 				item.onDetach();
 				container.grabItems(); //try to put more items into the bag as it now has free space
 				updateQuickslot();
+				boolean isBurdenEased = hero.STR() - hero.weight() > -0.001;
+				if (overweight && isBurdenEased && Dungeon.isChallenged(Challenges.HEAVY_BURDEN)){
+					GLog.p( Messages.get(this, "light"));
+				}
 				return this;
 			} else if (item instanceof Bag) {
 				Bag bag = (Bag)item;

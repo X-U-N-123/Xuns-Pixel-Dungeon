@@ -59,6 +59,8 @@ public class CrystalGuardian extends Mob{
 
 		properties.add(Property.INORGANIC);
 		properties.add(Property.MINIBOSS);
+
+		useParry = true;
 	}
 
 	private boolean recovering = false;

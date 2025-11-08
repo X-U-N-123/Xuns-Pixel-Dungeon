@@ -30,8 +30,8 @@ public class Crabclaw extends MeleeWeapon {
 
     {
         image = ItemSpriteSheet.Crabclaw;
-        hitSound = Assets.Sounds.HIT;
-        hitSoundPitch = 1.2f;
+        hitSound = Assets.Sounds.HIT_STAB;
+        hitSoundPitch = 1.1f;
 
         tier = 2;
         DLY = 0.5f; //2x speed

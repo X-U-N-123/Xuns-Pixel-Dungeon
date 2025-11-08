@@ -47,6 +47,8 @@ public class GnollGuard extends Mob {
 		lootChance = 0.1f;
 
 		WANDERING = new Wandering();
+
+		useParry = true;
 	}
 
 	private int sapperID = -1;

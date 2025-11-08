@@ -53,6 +53,8 @@ public class Skeleton extends Mob {
 
 		properties.add(Property.UNDEAD);
 		properties.add(Property.INORGANIC);
+
+		useParry = true;
 	}
 	
 	@Override

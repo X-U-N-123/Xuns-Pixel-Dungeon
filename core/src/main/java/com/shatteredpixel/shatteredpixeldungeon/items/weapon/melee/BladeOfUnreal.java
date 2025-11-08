@@ -100,11 +100,6 @@ public class BladeOfUnreal extends MeleeWeapon {
     }
 
     @Override
-    public String abilityInfo() {
-        return "";
-    }
-
-    @Override
     public int damageRoll(Char owner) {
         if (owner instanceof Hero && !isReal) {
             Hero hero = (Hero)owner;

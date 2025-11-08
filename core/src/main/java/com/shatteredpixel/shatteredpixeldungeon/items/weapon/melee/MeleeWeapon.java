@@ -360,8 +360,9 @@ public class MeleeWeapon extends Weapon {
 			}
 		}
 
-		//the mage's staff has no ability as it can only be gained by the mage
-		if (Dungeon.hero != null && Dungeon.hero.heroClass == HeroClass.DUELIST && !(this instanceof MagesStaff)){
+		//the mage's staff and blade of unreal has no ability as it they only be gained by the mage or ninja
+		if (Dungeon.hero != null && Dungeon.hero.heroClass == HeroClass.DUELIST
+			&& !(this instanceof MagesStaff || this instanceof BladeOfUnreal)){
 			info += "\n\n" + abilityInfo();
 		}
 		

@@ -129,7 +129,7 @@ public class MnemonicPrayer extends TargetedClericSpell {
 			ch.sprite.emitter().start(Speck.factory(Speck.UP), 0.15f, 4);
 
 			for (Buff b : ch.buffs()){
-				if (b.type != Buff.buffType.POSITIVE || b.mnemonicExtended || b.icon() == BuffIndicator.NONE){
+				if (b.type != Buff.buffType.POSITIVE || b.mnemoOrPeaceEleExtended || b.icon() == BuffIndicator.NONE){
 					continue;
 				}
 
@@ -157,7 +157,7 @@ public class MnemonicPrayer extends TargetedClericSpell {
 				else if (b instanceof Kinetic.ConservedDamage)  ((Kinetic.ConservedDamage) b).delay(extension);
 				else if (b instanceof Sungrass.Health)          ((Sungrass.Health) b).boost((int) extension);
 
-				b.mnemonicExtended = true;
+				b.mnemoOrPeaceEleExtended = true;
 
 			}
 
@@ -172,7 +172,7 @@ public class MnemonicPrayer extends TargetedClericSpell {
 					continue;
 				}
 
-				if (b.type != Buff.buffType.NEGATIVE || b.mnemonicExtended){
+				if (b.type != Buff.buffType.NEGATIVE || b.mnemoOrPeaceEleExtended){
 					continue;
 				}
 
@@ -186,7 +186,7 @@ public class MnemonicPrayer extends TargetedClericSpell {
 				else if (b instanceof Poison)       ((Poison) b).extend( extension );
 				else if (b instanceof Viscosity.DeferedDamage)  ((Viscosity.DeferedDamage) b).extend( extension );
 
-				b.mnemonicExtended = true;
+				b.mnemoOrPeaceEleExtended = true;
 
 			}
 

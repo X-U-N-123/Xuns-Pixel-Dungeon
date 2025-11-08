@@ -53,6 +53,8 @@ public class DM200 extends Mob {
 		properties.add(Property.LARGE);
 
 		HUNTING = new Hunting();
+
+		useParry = true;
 	}
 
 	@Override

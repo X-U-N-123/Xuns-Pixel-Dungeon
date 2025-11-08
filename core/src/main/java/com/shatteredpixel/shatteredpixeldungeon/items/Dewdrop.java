@@ -24,11 +24,9 @@ package com.shatteredpixel.shatteredpixeldungeon.items;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Healing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.VialOfBlood;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
@@ -58,13 +56,13 @@ public class Dewdrop extends Item {
 		
 		if (flask != null && !flask.isFull()){
 
-			flask.collectDew( this.quantity );
+			flask.collectDew( quantity );
 			GameScene.pickUp( this, pos );
 
 		} else {
 
 			int terr = Dungeon.level.map[pos];
-			if (!consumeDew(1, hero, terr == Terrain.ENTRANCE || terr == Terrain.ENTRANCE_SP
+			if (!consumeDew(quantity, hero, terr == Terrain.ENTRANCE || terr == Terrain.ENTRANCE_SP
 					|| terr == Terrain.EXIT || terr == Terrain.UNLOCKED_EXIT)){
 				return false;
 			} else {
@@ -129,23 +127,6 @@ public class Dewdrop extends Item {
 	@Override
 	public boolean isIdentified() {
 		return true;
-	}
-
-	//max of one dew in a stack
-
-	@Override
-	public Item merge( Item other ){
-		if (isSimilar( other )){
-			quantity = 1;
-			other.quantity = 0;
-		}
-		return this;
-	}
-
-	@Override
-	public Item quantity(int value) {
-		quantity = Math.min( value, 1);
-		return this;
 	}
 
 }

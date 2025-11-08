@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
+import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -33,6 +34,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.MasterThievesArmband;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.KiteShield;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -238,6 +240,8 @@ public class WndTradeItem extends WndInfoItem {
 
 		new Gold( item.value() ).doPickUp( hero );
 
+		if (item instanceof KiteShield) Badges.validateBlasphemy();
+
 		if (shop != null){
 			shop.buybackItems.add(item);
 			while (shop.buybackItems.size() > Shopkeeper.MAX_BUYBACK_HISTORY){
@@ -264,6 +268,8 @@ public class WndTradeItem extends WndInfoItem {
 			hero.spend(-hero.cooldown());
 
 			new Gold( item.value() ).doPickUp( hero );
+
+			if (item instanceof KiteShield) Badges.validateBlasphemy();
 
 			if (shop != null){
 				shop.buybackItems.add(item);

@@ -101,6 +101,7 @@ public class Badges {
 		RESEARCHER_1                ( 22, BadgeType.JOURNAL ),
 		GAMES_PLAYED_1              ( 23, BadgeType.GLOBAL ),
 		HIGH_SCORE_1                ( 24 ),
+		BLASPHEMY                   ( 26 ),
 
 		//silver
 		NO_MONSTERS_SLAIN           ( 32 ),
@@ -1065,6 +1066,14 @@ public class Badges {
 		}
 		if (allUnlocked){
 			badge = Badge.VICTORY_ALL_CLASSES;
+			displayBadge( badge );
+		}
+	}
+
+	public static void validateBlasphemy() {
+		if (!local.contains( Badge.BLASPHEMY)) {
+			Badge badge = Badge.BLASPHEMY;
+			local.add( badge );
 			displayBadge( badge );
 		}
 	}

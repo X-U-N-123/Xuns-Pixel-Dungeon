@@ -82,11 +82,9 @@ public class FireImbue extends Buff {
 		return true;
 	}
 
-	public void proc(Char enemy, float str){
-		float time = Burning.DURATION;
-		if (str >= 2f) time *= str - 1f;
-		if (Random.Float(2 / str) <= 1f)
-			Buff.affect( enemy, Burning.class ).reignite(enemy, time);
+	public void proc(Char enemy){
+		if (Random.Int(2) == 0)
+			Buff.affect( enemy, Burning.class ).reignite( enemy );
 
 		enemy.sprite.emitter().burst( FlameParticle.FACTORY, 2 );
 	}
