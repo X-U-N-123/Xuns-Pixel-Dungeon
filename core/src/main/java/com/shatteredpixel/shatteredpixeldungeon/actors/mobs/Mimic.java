@@ -34,7 +34,9 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.MagicalGem;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.MimicTooth;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
@@ -343,6 +345,12 @@ public class Mimic extends Mob {
 					break;
 				case 3:
 					reward = Generator.randomWeapon(!useDecks);
+					if (Random.Float() < MagicalGem.wandReplaceChance()){
+						Wand w = (Wand)Generator.random(Generator.Category.WAND);
+						w.level(reward.level());
+						w.cursed = reward.cursed;
+						reward = w;
+					}
 					break;
 				case 4:
 					reward = useDecks ? Generator.random(Generator.Category.RING) : Generator.randomUsingDefaults(Generator.Category.RING);

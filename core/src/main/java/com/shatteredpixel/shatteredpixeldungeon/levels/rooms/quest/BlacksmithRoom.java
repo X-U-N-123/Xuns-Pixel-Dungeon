@@ -25,6 +25,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Blacksmith;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.MagicalGem;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
@@ -66,10 +67,12 @@ public class BlacksmithRoom extends StandardRoom {
 			do {
 				pos = level.pointToCell(random());
 			} while (level.map[pos] != Terrain.EMPTY_SP);
+			Generator.Category cat = Generator.Category.WEAPON;
+			if (Random.Float() < MagicalGem.wandReplaceChance()) cat = Generator.Category.WAND;
 			level.drop(
 				Generator.random( Random.oneOf(
 					Generator.Category.ARMOR,
-					Generator.Category.WEAPON,
+					cat,
 					Generator.Category.MISSILE
 				) ), pos );
 		}

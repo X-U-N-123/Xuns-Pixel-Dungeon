@@ -274,7 +274,7 @@ public class Badges {
 	
 	private static final HashSet<String> removedBadges = new HashSet<>();
 	static{
-		//no removed badges currently
+		removedBadges.add("xuanwu");
 	}
 
 	private static final HashMap<String, String> renamedBadges = new HashMap<>();
@@ -1447,12 +1447,16 @@ public class Badges {
 			return result;
 
 		} else if (badge == Badge.BOSS_SLAIN_3_ALL_SUBCLASSES){
-
+			int i = 3;
 			for (HeroSubClass cls : HeroSubClass.values()){
 				if (cls == HeroSubClass.NONE) continue;
-				result += "\n";
-				if (isUnlocked(thirdBossSubclassBadges.get(cls)))   result += "_" + Messages.titleCase(cls.title()) + "_";
-				else                                                result += Messages.titleCase(cls.title()) ;
+				if (i == 3){//currently every hero has 3 subclasses
+					result += "\n";
+					i = 0;
+				} else result += " ";
+				i ++;
+				if (isUnlocked(thirdBossSubclassBadges.get(cls))) result += "_" + Messages.titleCase(cls.title()) + "_";
+				else                                              result += Messages.titleCase(cls.title()) ;
 			}
 
 			return result;

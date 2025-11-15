@@ -27,6 +27,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ToxicGas;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.MagicalGem;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DM200Sprite;
@@ -83,7 +85,15 @@ public class DM200 extends Mob {
 		Dungeon.LimitedDrops.DM200_EQUIP.count++;
 		//uses probability tables for dwarf city
 		if (loot == Generator.Category.WEAPON){
-			return Generator.randomWeapon(4, true);
+			Item loot = Generator.randomWeapon(4, true);
+
+			if (Random.Float() < MagicalGem.wandReplaceChance()){
+				Wand w = (Wand)Generator.random(Generator.Category.WAND);
+				w.level(loot.level());
+				w.cursed = loot.cursed;
+				loot = w;
+			}
+			return loot;
 		} else {
 			return Generator.randomArmor(4);
 		}

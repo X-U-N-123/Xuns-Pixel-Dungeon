@@ -665,6 +665,7 @@ public class ItemSpriteSheet {
 	public static final int WORN_LOCK       = TRINKETS+16;
 	public static final int STONE_INTE      = TRINKETS+17;
 	public static final int MEMBER_CARD     = TRINKETS+18;
+	public static final int MAGICAL_GEM     = TRINKETS+19;
 	static{
 		assignItemRect(RAT_SKULL,       16, 11);
 		assignItemRect(PARCHMENT_SCRAP, 10, 14);
@@ -685,6 +686,7 @@ public class ItemSpriteSheet {
 		assignItemRect(WORN_LOCK,       10, 14);
 		assignItemRect(STONE_INTE,      14, 12);
 		assignItemRect(MEMBER_CARD,     16, 12);
+		assignItemRect(MAGICAL_GEM,     11, 9 );
 	}
 
 	private static final int SCROLLS        = xy(1, 13);  //16 slots

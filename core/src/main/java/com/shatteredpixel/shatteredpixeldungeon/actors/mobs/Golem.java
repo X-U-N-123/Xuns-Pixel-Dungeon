@@ -30,6 +30,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Imp;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.MagicalGem;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.GolemSprite;
 import com.watabou.utils.BArray;
@@ -92,7 +94,15 @@ public class Golem extends Mob {
 		Dungeon.LimitedDrops.GOLEM_EQUIP.count++;
 		//uses probability tables for demon halls
 		if (loot == Generator.Category.WEAPON){
-			return Generator.randomWeapon(5, true);
+			Item loot = Generator.randomWeapon(5, true);
+
+			if (Random.Float() < MagicalGem.wandReplaceChance()){
+				Wand w = (Wand)Generator.random(Generator.Category.WAND);
+				w.level(loot.level());
+				w.cursed = loot.cursed;
+				loot = w;
+			}
+			return loot;
 		} else {
 			return Generator.randomArmor(5);
 		}

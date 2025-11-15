@@ -28,6 +28,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfInvisibility;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.MagicalGem;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
@@ -115,6 +117,11 @@ public class PoolRoom extends SpecialRoom {
 			prize = Generator.randomWeapon((Dungeon.depth / 5) + 1);
 			if (((Weapon)prize).hasCurseEnchant()){
 				((Weapon) prize).enchant(null);
+			}
+			if (Random.Float() < MagicalGem.wandReplaceChance()){
+				Wand w = (Wand)Generator.random(Generator.Category.WAND);
+				w.level(prize.level());
+				prize = w;
 			}
 		} else {
 			prize = Generator.randomArmor((Dungeon.depth / 5) + 1);

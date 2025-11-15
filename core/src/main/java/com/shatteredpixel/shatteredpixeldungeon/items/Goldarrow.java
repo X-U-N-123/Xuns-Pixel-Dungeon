@@ -36,15 +36,18 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Blacksmith;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Ghost;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Imp;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Wandmaker;
+import com.shatteredpixel.shatteredpixeldungeon.effects.TargetedCell;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfFeatherFall;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.Chasm;
+import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.watabou.noosa.Game;
 
 import java.util.ArrayList;
@@ -56,6 +59,7 @@ public class Goldarrow extends Item {
     String AC_AWARE = "aware";
     String AC_GOTO = "goto";
     String AC_RESET = "reset";
+    String AC_TARGET = "target";
 
     public static int questDepth;
 
@@ -75,6 +79,7 @@ public class Goldarrow extends Item {
         actions.add(AC_AWARE);
         actions.add(AC_GOTO);
         actions.add(AC_RESET);
+        actions.add(AC_TARGET);
         return actions;
     }
 
@@ -120,6 +125,7 @@ public class Goldarrow extends Item {
             Buff.prolong(curUser, Foresight.class, 100);
             Dungeon.observe();
             Dungeon.hero.checkVisibleMobs();
+            BuffIndicator.refreshHero();
             defaultAction = AC_AWARE;
         }
         if (action.equals(AC_GOTO)){
@@ -128,13 +134,28 @@ public class Goldarrow extends Item {
                     return Messages.get(Goldarrow.class, "where");
                 }
                 @Override public void onSelect(Integer cell) {
-                    if (cell == null)return;
+                    if (cell == null) return;
                     ScrollOfTeleportation.teleportToLocation(curUser, cell);
 
                     hero.next();
                 }
             });
             defaultAction = AC_GOTO;
+        }
+        if (action.equals(AC_TARGET)){
+            GameScene.selectCell(new CellSelector.Listener() {
+                @Override public String prompt() {
+                    return Messages.get(Goldarrow.class, "target");
+                }
+                @Override public void onSelect(Integer cell) {
+                    if (cell == null) return;
+                    Ballistica trajectory = new Ballistica(curUser.pos, cell, Ballistica.WONT_STOP);
+                    for (int i : trajectory.path){
+                        curUser.sprite.parent.addToFront(new TargetedCell(i, 0xFFFFFF));
+                    }
+                }
+            });
+            defaultAction = AC_TARGET;
         }
         if (action.contains(AC_RESET)){
             switch (Dungeon.depth){

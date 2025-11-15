@@ -26,7 +26,10 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.IronKey;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.MagicalGem;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.TrinketCatalyst;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
@@ -87,7 +90,14 @@ public class ArmoryRoom extends SpecialRoom {
 			case 0:
 				return new Bomb().random();
 			case 1:
-				return Generator.randomWeapon();
+				MeleeWeapon wep = Generator.randomWeapon();
+				if (Random.Float() < MagicalGem.wandReplaceChance()){
+					Wand w = (Wand)Generator.random(Generator.Category.WAND);
+					w.level(wep.level());
+					w.cursed = wep.cursed;
+					return w;
+				}
+				return wep;
 			case 2:
 				return Generator.randomArmor();
 			case 3: default:

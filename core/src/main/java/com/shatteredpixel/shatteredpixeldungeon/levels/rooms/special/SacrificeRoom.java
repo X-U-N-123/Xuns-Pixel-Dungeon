@@ -28,6 +28,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.SacrificialFire;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.MagicalGem;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
@@ -101,9 +103,16 @@ public class SacrificeRoom extends SpecialRoom {
 				prize.enchant(curse);
 			}
 		}
-		prize.cursed = prize.cursedKnown = true;
 
-		return prize;
+		Item reward = prize;
+		if (Random.Float() < MagicalGem.wandReplaceChance()){
+			Wand w = (Wand)Generator.random(Generator.Category.WAND);
+			w.level(prize.level());
+			reward = w;//replace it with a wand if hero has magical gem
+		}
+		reward.cursed = reward.cursedKnown = true;
+
+		return reward;
 	}
 
 }

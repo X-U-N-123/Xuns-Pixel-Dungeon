@@ -79,6 +79,11 @@ public class HeatBrew extends Brew {
 		}
 
 		for (int i : PathFinder.NEIGHBOURS8){
+			if ((Terrain.flags[Dungeon.level.map[cell + i]] & Terrain.FLAMABLE) != 0){
+				Level.set(cell + i, Terrain.EMBERS);
+				GameScene.updateMap(cell + i);
+			}
+
 			Char ch = Actor.findChar(cell + i);
 			if (ch != null){
 
@@ -101,6 +106,11 @@ public class HeatBrew extends Brew {
 					Buff.prolong(ch, Blindness.class, 4f);
 				}
 			}
+		}
+
+		if ((Terrain.flags[Dungeon.level.map[cell]] & Terrain.FLAMABLE) != 0){
+			Level.set(cell, Terrain.EMBERS);
+			GameScene.updateMap(cell);
 		}
 
 		Char ch = Actor.findChar(cell);

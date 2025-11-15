@@ -55,12 +55,6 @@ public class Pier extends Weapon.Enchantment {
             actPriority = Actor.VFX_PRIO;
         }
 
-        @Override
-        public boolean act() {
-            detach();
-            return true;
-        }
-
         public float strength;
 
         private static final String STRENGTH = "str";
