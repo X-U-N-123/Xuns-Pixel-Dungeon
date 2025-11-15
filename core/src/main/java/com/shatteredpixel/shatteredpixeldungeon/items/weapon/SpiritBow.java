@@ -586,7 +586,7 @@ public class SpiritBow extends Weapon {
 	public static class ScoutMark extends Buff {
 
 		public int level = 0;
-		public float time = 3;
+		public float markTime = 3;
 
 		public int icon() {
 			return BuffIndicator.INVERT_MARK;
@@ -600,15 +600,15 @@ public class SpiritBow extends Weapon {
 			int point = Dungeon.hero.pointsInTalent(Talent.STRONG_MARK_SC);
 			level ++;
 			if (level > 3 + point ) level = 3 + point;
-			time = maxTime();
+			markTime = maxTime();
 		}
 
 		@Override
 		public boolean act() {
-			time-=TICK;
+			markTime -=TICK;
 			spend(TICK);
-			if (time <= 0) {
-				time = maxTime();
+			if (markTime <= 0) {
+				markTime = maxTime();
 				level--;
 				if (level <= 0) detach();
 			}
@@ -617,7 +617,7 @@ public class SpiritBow extends Weapon {
 
 		@Override
 		public String desc() {
-			return Messages.get(this, "desc", level, time);
+			return Messages.get(this, "desc", level, markTime);
 		}
 
 		public void tintIcon(Image icon) { icon.hardlight(0f, 0f, 0.8f + 0.05f*level); }
@@ -630,14 +630,14 @@ public class SpiritBow extends Weapon {
 		public void storeInBundle(Bundle bundle){
 			super.storeInBundle(bundle);
 			bundle.put(LEVEL, level);
-			bundle.put(TIME, time);
+			bundle.put(TIME, markTime);
 		}
 
 		@Override
 		public void restoreFromBundle(Bundle bundle){
 			super.restoreFromBundle(bundle);
 			level = bundle.getInt(LEVEL);
-			time = bundle.getFloat(TIME);
+			markTime = bundle.getFloat(TIME);
 		}
 	}
 }

@@ -58,8 +58,8 @@ public class PhantomPiranha extends Piranha {
 		}
 		super.damage(dmg, src);
 
-		if (isAlive() && !(src instanceof Corruption)) {
-			if (dmgSource != null && buff(MagicImmune.class) == null) {
+		if (isAlive() && !(src instanceof Corruption) && buff(MagicImmune.class) == null) {
+			if (dmgSource != null) {
 				if (!Dungeon.level.adjacent(pos, dmgSource.pos)) {
 					ArrayList<Integer> candidates = new ArrayList<>();
 					for (int i : PathFinder.NEIGHBOURS8) {
@@ -67,7 +67,7 @@ public class PhantomPiranha extends Piranha {
 							candidates.add(dmgSource.pos + i);
 						}
 					}
-					if (!candidates.isEmpty() && buff(MagicImmune.class) == null) {
+					if (!candidates.isEmpty()) {
 						ScrollOfTeleportation.appear(this, Random.element(candidates));
 						aggro(dmgSource);
 					} else {
@@ -94,7 +94,7 @@ public class PhantomPiranha extends Piranha {
 
 	private boolean teleportAway(){
 
-		if (flying || buff(MagicImmune.class) == null){
+		if (flying || buff(MagicImmune.class) != null){
 			return false;
 		}
 

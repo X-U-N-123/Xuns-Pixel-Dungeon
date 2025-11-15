@@ -529,20 +529,20 @@ public enum Talent {
 		}
 		public int icon() { return BuffIndicator.SKILLED_DUAL; }
 		private int Stack = 0;
-		private int time = 0;
+		private int Time = 0;
 		Weapon Wep = null;
 
 		public void Hit(Weapon wep){
 			if (Wep != wep) {
 				Wep = wep;
 				Stack = Math.min(Stack+Dungeon.hero.pointsInTalent(SKILLED_DUAL), 10*Dungeon.hero.pointsInTalent(SKILLED_DUAL));
-				time = 10;
+				Time = 10;
 			}
 		}
 
 		@Override
 		public String iconTextDisplay() {
-			return Integer.toString(time);
+			return Integer.toString(Time);
 		}
 
 		public float attackBoost(){
@@ -551,9 +551,9 @@ public enum Talent {
 
 		@Override
 		public boolean act() {
-			time-=TICK;
+			Time -=TICK;
 			spend(TICK);
-			if (time <= 0) {
+			if (Time <= 0) {
 				detach();
 			}
 			return true;
@@ -566,20 +566,20 @@ public enum Talent {
 		public void storeInBundle(Bundle bundle) {
 			super.storeInBundle(bundle);
 			bundle.put(STACK, Stack);
-			bundle.put(TIME, time);
+			bundle.put(TIME, Time);
 			bundle.put(WEP, Wep);
 		}
 		@Override
 		public void restoreFromBundle(Bundle bundle) {
 			super.restoreFromBundle(bundle);
 			Stack = bundle.getInt(STACK);
-			time = bundle.getInt(TIME);
+			Time = bundle.getInt(TIME);
 			Wep = (Weapon) bundle.get(WEP);
 		}
 
 		@Override
 		public String desc() {
-			return Messages.get(this, "desc", time, Stack, Wep.name());
+			return Messages.get(this, "desc", Time, Stack, Wep.name());
 		}
 	}
 

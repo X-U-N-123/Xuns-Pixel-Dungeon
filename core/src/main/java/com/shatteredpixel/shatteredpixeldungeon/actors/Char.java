@@ -424,7 +424,7 @@ public abstract class Char extends Actor {
 			if (this instanceof Hero){
 				Hero h = (Hero)this;
 				if (h.belongings.attackingWeapon() instanceof MissileWeapon
-						&& h.subClass == HeroSubClass.SNIPER
+						&& (h.subClass == HeroSubClass.SNIPER || h.subClass == HeroSubClass.SCOUT)
 						&& !Dungeon.level.adjacent(h.pos, enemy.pos)){
 					dr = 0;
 				}
@@ -1106,7 +1106,7 @@ public abstract class Char extends Actor {
 
 			//special case for sniper when using ranged attacks
 			if (src == Dungeon.hero
-					&& Dungeon.hero.subClass == HeroSubClass.SNIPER
+					&& (Dungeon.hero.subClass == HeroSubClass.SNIPER || Dungeon.hero.subClass == HeroSubClass.SCOUT)
 					&& !Dungeon.level.adjacent(Dungeon.hero.pos, pos)
 					&& Dungeon.hero.belongings.attackingWeapon() instanceof MissileWeapon){
 				icon = FloatingText.PHYS_DMG_NO_BLOCK;

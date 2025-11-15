@@ -53,13 +53,13 @@ public class ProtectiveBookpage extends ClericSpell {
 
     @Override
     public String desc() {
-        int time = 10;
-        if (Dungeon.hero.pointsInTalent(Talent.ENHANCED_BOOKPAGE) >= 3) time += 5;
+        int pageTime = 10;
+        if (Dungeon.hero.pointsInTalent(Talent.ENHANCED_BOOKPAGE) >= 3) pageTime += 5;
         int dmg = Dungeon.hero.HT / 12;
         if (Dungeon.hero.pointsInTalent(Talent.ENHANCED_BOOKPAGE) >= 2) dmg = Dungeon.hero.HT / 10;
         int shieldAmt = Dungeon.hero.HT / 50;
         if (Dungeon.hero.pointsInTalent(Talent.ENHANCED_BOOKPAGE) >= 1) shieldAmt ++;
-        return Messages.get(this, "desc", time, dmg, shieldAmt) +"\n\n"+ Messages.get(this, "charge_cost", (int)chargeUse(Dungeon.hero));
+        return Messages.get(this, "desc", pageTime, dmg, shieldAmt) +"\n\n"+ Messages.get(this, "charge_cost", (int)chargeUse(Dungeon.hero));
     }
 
     @Override
@@ -88,7 +88,7 @@ public class ProtectiveBookpage extends ClericSpell {
         }
 
         public int pages = 0;
-        public int time = 10;
+        public int pageTime = 10;
         private int bookpagePos = 0;
 
         @Override
@@ -98,7 +98,7 @@ public class ProtectiveBookpage extends ClericSpell {
 
         @Override
         public String iconTextDisplay() {
-            return Integer.toString(time);
+            return Integer.toString(pageTime);
         }
 
         @Override
@@ -109,14 +109,15 @@ public class ProtectiveBookpage extends ClericSpell {
 
         @Override
         public String desc() {
-            return Messages.get(this, "desc", pages, dispTurns(time));
+            return Messages.get(this, "desc", pages, dispTurns(pageTime));
         }
 
         public void addPages(){
             pages += 2;
             if (pages > 8) pages = 8;
-            time = 10;
-            if (((Hero)target).pointsInTalent(Talent.ENHANCED_BOOKPAGE) >= 3) time += 5;
+            pageTime = 10;
+            if (((Hero)target).pointsInTalent(Talent.ENHANCED_BOOKPAGE) >= 3) pageTime += 5;
+            BuffIndicator.refreshHero();
         }
 
         @Override
@@ -163,9 +164,9 @@ public class ProtectiveBookpage extends ClericSpell {
             }
 
             bookpagePos = (bookpagePos+1)%8;
-            time --;
-            if (time <= 0) detach();
-            spend(TICK);
+            pageTime --;
+            if (pageTime <= 0) detach();
+            spend(1f);
             return true;
         }
 
@@ -177,7 +178,7 @@ public class ProtectiveBookpage extends ClericSpell {
         public void storeInBundle( Bundle bundle ) {
             super.storeInBundle( bundle );
             bundle.put( PAGES, pages );
-            bundle.put( TIME,  time );
+            bundle.put( TIME, pageTime);
             bundle.put( POS,   bookpagePos );
         }
 
@@ -185,7 +186,8 @@ public class ProtectiveBookpage extends ClericSpell {
         public void restoreFromBundle( Bundle bundle ) {
             super.restoreFromBundle( bundle );
             pages = bundle.getInt(PAGES);
-            time  = bundle.getInt(TIME);
+            pageTime = bundle.getInt(TIME);
+            timeToNow();
             bookpagePos = bundle.getInt(POS);
         }
     }
