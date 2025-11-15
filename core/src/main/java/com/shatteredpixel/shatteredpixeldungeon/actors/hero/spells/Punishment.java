@@ -21,79 +21,64 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells;
 
+import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
+import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HolyTome;
-import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
+import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAggression;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
-import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.HeroIcon;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.watabou.noosa.audio.Sample;
 
-public class JusticeStrike extends TargetedClericSpell{
+public class Punishment extends TargetedClericSpell {
 
-    public static JusticeStrike INSTANCE = new JusticeStrike();
+    public static Punishment INSTANCE = new Punishment();
 
     @Override
     public int icon() {
-        return HeroIcon.JUSTICE_STRIKE;
-    }
-
-    @Override
-    public int targetingFlags() {
-        return Ballistica.STOP_TARGET; //no auto-aim
-    }
-
-    @Override
-    public String desc() {
-        int point = 1 + Dungeon.hero.pointsInTalent(Talent.JUSTICE_STRIKE);
-        return Messages.get(this, "desc",0.06f*point, 0.25f*point) +"\n\n"+ Messages.get(this, "charge_cost", (int)chargeUse(Dungeon.hero));
-    }
-
-    @Override
-    public float chargeUse(Hero hero) {
-        return 2f;
+        return HeroIcon.PUNISHMENT;
     }
 
     @Override
     public boolean canCast(Hero hero) {
-        return super.canCast(hero) && hero.hasTalent(Talent.JUSTICE_STRIKE);
+        return super.canCast(hero) && hero.hasTalent(Talent.PUNISHMENT);
     }
 
     @Override
-    protected void onTargetSelected(HolyTome tome, Hero hero, Integer target) {
+    public int targetingFlags() {
+        return -1; //no auto-aim
+    }
+
+    @Override
+    public String desc() {
+        return Messages.get(this, "desc", 2+Dungeon.hero.pointsInTalent(Talent.PUNISHMENT)) +"\n\n"+ Messages.get(this, "charge_cost", (int)chargeUse(Dungeon.hero));
+    }
+
+    @Override
+    protected void onTargetSelected(HolyTome tome, Hero hero, Integer target){
         if (target == null) {
             return;
         }
 
-        Char enemy = Actor.findChar(target);
-        if (enemy == null || enemy == hero || enemy.alignment == Char.Alignment.ALLY
-                || enemy.buff(JusticeStrikeBuff.class) != null){
+        Char ch = Actor.findChar(target);
+        if (ch == null || !Dungeon.level.heroFOV[target]){
             GLog.w(Messages.get(this, "no_target"));
             return;
         }
 
-        JusticeStrikeBuff buff = Buff.affect(enemy, JusticeStrikeBuff.class);
-        if (!Dungeon.level.heroFOV[target]) {
-            GLog.w(Messages.get(this, "invalid_enemy"));
-            buff.detach();
-            return;
-        }
+        Buff.affect(ch, StoneOfAggression.Aggression.class, 1 + hero.pointsInTalent(Talent.PUNISHMENT));//1 turn less as this is instant
+        CellEmitter.center(target).start( Speck.factory( Speck.SCREAM ), 0.3f, 3 );
+        Sample.INSTANCE.play( Assets.Sounds.CHALLENGE );
 
         onSpellCast(tome, hero);
-        hero.sprite.attack(enemy.pos);
-
-    }
-
-    public static class JusticeStrikeBuff extends Buff {
-        @Override
-        public int icon(){
-            return BuffIndicator.JUSTICE_STRIKE;
-        }
+        hero.sprite.attack(target);
     }
 
 }

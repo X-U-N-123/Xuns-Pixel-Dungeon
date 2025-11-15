@@ -207,9 +207,11 @@ public enum Talent {
 	//Cleric T3
 	CLEANSE(169, 3), LIGHT_READING(170, 3), SHARED_CHARGE(189, 3),
 	//Priest T3
-	HOLY_LANCE(171, 3), HALLOWED_GROUND(172, 3), MNEMONIC_PRAYER(173, 3), EXPLOSION(190, 3),ENHANCED_RADIANCE(191, 3),
+	HOLY_LANCE(171, 3), HALLOWED_GROUND(172, 3), MNEMONIC_PRAYER(173, 3), EXPLOSION(190, 3), ENHANCED_RADIANCE(191, 3),
 	//Paladin T3
-	LAY_ON_HANDS(174, 3), AURA_OF_PROTECTION(175, 3), WALL_OF_LIGHT(176, 3),JUSTICE_STRIKE(234, 3), ENHANCED_SMITE(235, 3),
+	LAY_ON_HANDS(174, 3), AURA_OF_PROTECTION(175, 3), WALL_OF_LIGHT(176, 3), JUSTICE_STRIKE(234, 3), ENHANCED_SMITE(235, 3),
+	//Preacher T3
+	PUNISHMENT(279, 3), HOLY_DRAPE(280, 3), HOLY_ANTIMAGIC(281, 3), HOLY_IMAGE(282, 3), ENHANCED_BOOKPAGE(283, 3),
 	//Ascended Form T4
 	DIVINE_INTERVENTION(177, 4), JUDGEMENT(178, 4), FLASH(179, 4), HOLY_REGENERATION(251, 4),
 	//Trinity T4
@@ -220,7 +222,7 @@ public enum Talent {
 	//universal T4
 	HEROIC_ENERGY(26, 4), //See icon() and title() for special logic for this one
 	//Ratmogrify T4
-	RATSISTANCE(215, 4), RATLOMACY(216, 4), RATFORCEMENTS(217, 4), ENRATGEMENT(214, 4);
+	RATSISTANCE(220, 4), RATLOMACY(221, 4), RATFORCEMENTS(222, 4), ENRATGEMENT(219, 4);
 
 	public static class ImprovisedProjectileCooldown extends FlavourBuff{
 		public int icon() { return BuffIndicator.TIME; }
@@ -648,7 +650,7 @@ public enum Talent {
 	public int icon(){
 		if (this == HEROIC_ENERGY){
 			if (Ratmogrify.useRatroicEnergy){
-				return 218;
+				return 223;
 			}
 			HeroClass cls = Dungeon.hero != null ? Dungeon.hero.heroClass : GamesInProgress.selectedClass;
 			switch (cls){
@@ -897,7 +899,7 @@ public enum Talent {
 			if (buff.left() < 1 + 2*(hero.pointsInTalent(MYSTICAL_MEAL))){
 				//2/3 turns of artifact recharging
 				ArtifactRecharge recharge = Buff.affect(hero, ArtifactRecharge.class)
-				.set(1f + hero.pointsInTalent(MYSTICAL_MEAL));
+				.set(1f + 2*hero.pointsInTalent(MYSTICAL_MEAL));
 				recharge.ignoreHornOfPlenty = foodSource instanceof HornOfPlenty;
 				recharge.ignoreHolyTome = false;
 			}
@@ -1440,6 +1442,9 @@ public enum Talent {
 				break;
 			case PALADIN:
 				Collections.addAll(tierTalents, LAY_ON_HANDS, AURA_OF_PROTECTION, WALL_OF_LIGHT, JUSTICE_STRIKE, ENHANCED_SMITE);
+				break;
+			case PREACHER:
+				Collections.addAll(tierTalents, PUNISHMENT, HOLY_DRAPE, HOLY_ANTIMAGIC, HOLY_IMAGE, ENHANCED_BOOKPAGE);
 				break;
 		}
 		for (Talent talent : tierTalents){

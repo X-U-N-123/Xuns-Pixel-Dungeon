@@ -55,6 +55,7 @@ public class HeroIcon extends Image {
 	public static final int PHANTOM     = 18;
 	public static final int PRIEST      = 20;
 	public static final int PALADIN     = 21;
+	public static final int PREACHER    = 22;
 
 	//abilities
 	public static final int HEROIC_LEAP     = 48;
@@ -111,6 +112,11 @@ public class HeroIcon extends Image {
 	public static final int HOLY_CHAMPION   = 111;
 	public static final int HOLY_REGENERATION = 112;
 	public static final int MIMIC_FORM      = 113;
+	public static final int PUNISHMENT      = 115;
+	public static final int HOLY_DRAPE      = 116;
+	public static final int BOOKPAGE        = 117;
+	public static final int ANTIMAGIC       = 118;
+	public static final int HOLY_IMAGE      = 119;
 
 	//all cleric spells have a separate icon with no background for the action indicator
 	public static final int SPELL_ACTION_OFFSET      = 48;

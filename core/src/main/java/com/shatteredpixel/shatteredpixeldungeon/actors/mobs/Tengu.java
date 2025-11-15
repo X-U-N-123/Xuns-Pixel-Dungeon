@@ -199,7 +199,6 @@ public class Tengu extends Mob {
 					return true;
 				}
 			});
-			return;
 		}
 	}
 	

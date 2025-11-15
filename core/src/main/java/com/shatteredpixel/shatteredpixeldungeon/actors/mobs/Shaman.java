@@ -29,6 +29,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hex;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vulnerable;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Weakness;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
@@ -72,7 +73,7 @@ public abstract class Shaman extends Mob {
 	@Override
 	protected boolean canAttack( Char enemy ) {
 		return super.canAttack(enemy)
-				|| new Ballistica( pos, enemy.pos, Ballistica.MAGIC_BOLT).collisionPos == enemy.pos;
+			|| (new Ballistica( pos, enemy.pos, Ballistica.MAGIC_BOLT).collisionPos == enemy.pos && buff(MagicImmune.class) == null);
 	}
 
 	@Override

@@ -34,10 +34,12 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.mage.Eleme
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.mage.WarpBeacon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.Explosion;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.GuidingLight;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.HolyDrape;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.HolyLance;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.HolyWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.Judgement;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.JusticeStrike;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.ProtectiveBookpage;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.SharedCharge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.Smite;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.Sunray;
@@ -109,6 +111,8 @@ public class AntiMagic extends Armor.Glyph {
 		RESISTS.add( JusticeStrike.class);
 		RESISTS.add( JusticeStrike.JusticeStrikeBuff.class);
 		RESISTS.add( SharedCharge.class);
+		RESISTS.add( ProtectiveBookpage.Bookpage.class);
+		RESISTS.add( HolyDrape.class);
 
 		RESISTS.add( ElementalBlast.class );
 		RESISTS.add( CursedWand.class );

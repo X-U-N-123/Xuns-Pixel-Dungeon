@@ -236,7 +236,7 @@ public class ElementalMask extends Artifact {//will replace Ring of Elements
                         fpotion = Reflection.newInstance(ExoticPotion.regToExo.get(fpotion.getClass()));
                         charge--;
                         if (fpotion instanceof PotionOfDragonsBreath || fpotion instanceof PotionOfDivineInspiration){
-                            ((PotionOfDragonsBreath)fpotion).drink(Dungeon.hero);
+                            fpotion.drink(Dungeon.hero);
                             updateQuickslot();
                             return;
                         }

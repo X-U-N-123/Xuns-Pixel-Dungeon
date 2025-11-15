@@ -26,6 +26,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.TenguDartTrap;
@@ -99,7 +100,6 @@ public class Antimatter extends MissileWeapon{
                     Level.set(i, Terrain.EMPTY);
                     GameScene.updateMap(i);
                 }
-
             }
         }
 
@@ -111,7 +111,9 @@ public class Antimatter extends MissileWeapon{
                 GLog.n(Messages.get(this, "ondeath"));
             }
         }
+
         PixelScene.shake( 5, 1.5f );
+        WandOfBlastWave.BlastWave.blast(cell);
         for (int j = 0; j < 3; j++){
             Sample.INSTANCE.playDelayed(Assets.Sounds.BLAST, j*0.1f);
         }

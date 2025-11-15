@@ -55,6 +55,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ExoticScrol
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Alchemize;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.BeaconOfReturning;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.CurseInfusion;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.MagicBan;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.MagicalInfusion;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.MagicalTran;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.PhaseShift;
@@ -209,6 +210,7 @@ public abstract class Recipe {
 		new BeaconOfReturning.Recipe(),
 		new PhaseShift.Recipe(),
 		new Watchtower.Recipe(),
+		new MagicBan.Recipe(),
 		new Recycle.Recipe(),
 		new TelekineticGrab.Recipe(),
 		new SummonElemental.Recipe(),

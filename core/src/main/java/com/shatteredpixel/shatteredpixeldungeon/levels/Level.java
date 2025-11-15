@@ -52,6 +52,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.cleric.PowerOfMany;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.huntress.SpiritHawk;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.DivineSense;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.GuidingLight;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.Stasis;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GnollGeomancer;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mimic;
@@ -1446,13 +1447,19 @@ public abstract class Level implements Bundlable {
 				}
 			}
 
+			if (Dungeon.hero.subClass == HeroSubClass.PREACHER) {
+				for (Mob m : mobs.toArray(new Mob[0])){
+					if (m.buff(GuidingLight.Illuminated.class) != null)
+						for (int i : PathFinder.NEIGHBOURS9) heroMindFov[m.pos+i] = true;
+				}
+			}
+
 			for (TalismanOfForesight.CharAwareness a : c.buffs(TalismanOfForesight.CharAwareness.class)){
 				Char ch = (Char) Actor.findById(a.charID);
 				if (ch == null || !ch.isAlive()) {
 					continue;
 				}
-				int p = ch.pos;
-				for (int i : PathFinder.NEIGHBOURS9) heroMindFov[p+i] = true;
+				for (int i : PathFinder.NEIGHBOURS9) heroMindFov[ch.pos+i] = true;
 			}
 
 			for (TalismanOfForesight.HeapAwareness h : c.buffs(TalismanOfForesight.HeapAwareness.class)){

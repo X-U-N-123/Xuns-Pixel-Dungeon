@@ -128,7 +128,7 @@ public class Golem extends Mob {
 		enemyTeleCooldown--;
 		if (teleporting){
 			((GolemSprite)sprite).teleParticles(false);
-			if (Actor.findChar(target) == null && Dungeon.level.openSpace[target]) {
+			if (Actor.findChar(target) == null && Dungeon.level.openSpace[target] && buff(MagicImmune.class) == null) {
 				ScrollOfTeleportation.appear(this, target);
 				selfTeleCooldown = 30;
 			} else {
@@ -175,7 +175,7 @@ public class Golem extends Mob {
 	}
 
 	private boolean canTele(int target){
-		if (enemyTeleCooldown > 0) return false;
+		if (enemyTeleCooldown > 0 || buff(MagicImmune.class) != null) return false;
 		PathFinder.buildDistanceMap(target, BArray.not(Dungeon.level.solid, null), Dungeon.level.distance(pos, target)+1);
 		//zaps can go around blocking terrain, but not through it
 		if (PathFinder.distance[pos] == Integer.MAX_VALUE){
@@ -194,7 +194,7 @@ public class Golem extends Mob {
 			if (target != -1 && getCloser( target )) {
 				spend( 1 / speed() );
 				return moveSprite( oldPos, pos );
-			} else if (!Dungeon.bossLevel() && target != -1 && target != pos && selfTeleCooldown <= 0) {
+			} else if (!Dungeon.bossLevel() && target != -1 && target != pos && selfTeleCooldown <= 0 && buff(MagicImmune.class) == null) {
 				((GolemSprite)sprite).teleParticles(true);
 				teleporting = true;
 				spend( 2*TICK );

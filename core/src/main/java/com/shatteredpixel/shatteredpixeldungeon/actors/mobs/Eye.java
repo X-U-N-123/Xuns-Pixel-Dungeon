@@ -28,6 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Light;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.PurpleParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Dewdrop;
@@ -129,7 +130,7 @@ public class Eye extends Mob {
 		beam = new Ballistica(pos, beamTarget, Ballistica.STOP_SOLID);
 		if (beamCooldown > 0 || (!beamCharged && !beam.subPath(1, beam.dist).contains(enemy.pos))) {
 			return super.doAttack(enemy);
-		} else if (!beamCharged){
+		} else if (!beamCharged && buff(MagicImmune.class) == null){
 			((EyeSprite)sprite).charge( enemy.pos );
 			spend( attackDelay()*2f );
 			beamCharged = true;
@@ -166,7 +167,14 @@ public class Eye extends Mob {
 	public static class DeathGaze{}
 
 	public void deathGaze(){
-		if (!beamCharged || beamCooldown > 0 || beam == null)
+		if (buff(MagicImmune.class) != null) {
+			beamCharged = false;
+			beamCooldown = Random.IntRange(4, 6);
+			beam = null;
+			beamTarget = -1;
+		}
+
+		if (!beamCharged || beamCooldown > 0 || beam == null || buff(MagicImmune.class) != null)
 			return;
 
 		beamCharged = false;

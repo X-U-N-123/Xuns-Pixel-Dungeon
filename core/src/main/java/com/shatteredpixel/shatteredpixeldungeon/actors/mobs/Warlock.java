@@ -29,6 +29,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Degrade;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
@@ -79,7 +80,7 @@ public class Warlock extends Mob implements Callback {
 	@Override
 	protected boolean canAttack( Char enemy ) {
 		return super.canAttack(enemy)
-				|| new Ballistica( pos, enemy.pos, Ballistica.MAGIC_BOLT).collisionPos == enemy.pos;
+				|| (new Ballistica( pos, enemy.pos, Ballistica.MAGIC_BOLT).collisionPos == enemy.pos && buff(MagicImmune.class) == null);
 	}
 	
 	protected boolean doAttack( Char enemy ) {
@@ -111,7 +112,7 @@ public class Warlock extends Mob implements Callback {
 		Char enemy = this.enemy;
 		if (hit( this, enemy, true )) {
 			//TODO would be nice for this to work on ghost/statues too
-			if (enemy == Dungeon.hero && Random.Int( 2 ) == 0) {
+			if (enemy == Dungeon.hero && Random.Int( 2 ) == 0 && buff(MagicImmune.class) == null) {
 				Buff.prolong( enemy, Degrade.class, Degrade.DURATION );
 				Sample.INSTANCE.play( Assets.Sounds.DEGRADE );
 			}
@@ -126,7 +127,7 @@ public class Warlock extends Mob implements Callback {
 				dmg *= 0.5f;
 			}
 
-			enemy.damage( dmg, new DarkBolt() );
+			if (buff(MagicImmune.class) == null) enemy.damage( dmg, new DarkBolt() );
 			
 			if (enemy == Dungeon.hero && !enemy.isAlive()) {
 				Badges.validateDeathFromEnemyMagic();

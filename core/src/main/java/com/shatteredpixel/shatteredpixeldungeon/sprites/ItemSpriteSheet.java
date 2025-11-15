@@ -312,7 +312,6 @@ public class ItemSpriteSheet {
 	public static final int BATTLE_AXE         = WEP_TIER4+1;
 	public static final int Halberd            = WEP_TIER4+2;
 	public static final int Crystalsword       = WEP_TIER4+3;
-	public static final int Kiteshield         = WEP_TIER4+4;
 	public static final int Twobroadaxe        = WEP_TIER4+5;
 	public static final int Wolftailgrassspear = WEP_TIER4+6;
 	public static final int Hoe                = WEP_TIER4+7;
@@ -333,7 +332,6 @@ public class ItemSpriteSheet {
 		assignItemRect(CROSSBOW,          15, 15);
 		assignItemRect(KATANA,            15, 16);
 		assignItemRect(Halberd,           16, 16);
-		assignItemRect(Kiteshield,        13, 16);
 		assignItemRect(Twobroadaxe,       16, 16);
 		assignItemRect(Wolftailgrassspear,16, 16);
 		assignItemRect(Hoe,               13, 15);
@@ -477,14 +475,17 @@ public class ItemSpriteSheet {
 	}
 
 	public static final int CHANGEABLE_WEP = xy(1, 9);//16 slots
-	public static final int SHOVEL              = CHANGEABLE_WEP +0;
-	public static final int STONE_SHOVEL        = CHANGEABLE_WEP +1;
-	public static final int WATER_SHOVEL        = CHANGEABLE_WEP +2;
-	public static final int PLANT_SHOVEL        = CHANGEABLE_WEP +3;
-	public static final int CHASM_SHOVEL        = CHANGEABLE_WEP +4;
+	public static final int SHOVEL               = CHANGEABLE_WEP+0;
+	public static final int STONE_SHOVEL         = CHANGEABLE_WEP+1;
+	public static final int WATER_SHOVEL         = CHANGEABLE_WEP+2;
+	public static final int PLANT_SHOVEL         = CHANGEABLE_WEP+3;
+	public static final int CHASM_SHOVEL         = CHANGEABLE_WEP+4;
 
-	public static final int BLADE_OF_REAL       = CHANGEABLE_WEP +5;
-	public static final int BLADE_OF_UNREAL     = CHANGEABLE_WEP +6;
+	public static final int BLADE_OF_REAL        = CHANGEABLE_WEP+5;
+	public static final int BLADE_OF_UNREAL      = CHANGEABLE_WEP+6;
+
+	public static final int KITESHIELD_START     = CHANGEABLE_WEP+7;
+		public static final int coatOfArmsKind = 8;//currently 8 kinds of coat of arms is usable
 	static {
 		assignItemRect(SHOVEL,          16, 16);
 		assignItemRect(STONE_SHOVEL,    16, 16);
@@ -494,6 +495,9 @@ public class ItemSpriteSheet {
 
 		assignItemRect(BLADE_OF_REAL,   15, 16);
 		assignItemRect(BLADE_OF_UNREAL, 15, 16);
+
+		for (int i = KITESHIELD_START; i < KITESHIELD_START + coatOfArmsKind; i++)
+			assignItemRect(i, 13, 16);
 	}
 
 	public static final int DARTS           = xy(17, 4);  //16 slots
@@ -838,6 +842,7 @@ public class ItemSpriteSheet {
 	public static final int SUMMON_WRAITH   = SPELLS+4;
     public static final int WATCHTOWER      = SPELLS+5;
     public static final int ROCKFALL        = SPELLS+6;
+	public static final int MAGICBAN        = SPELLS+7;
 
 	public static final int CURSE_INFUSE    = SPELLS+11;
 	public static final int MAGIC_INFUSE    = SPELLS+12;
@@ -859,6 +864,7 @@ public class ItemSpriteSheet {
 		assignItemRect(SUMMON_WRAITH,   12, 11);
 		assignItemRect(WATCHTOWER,      12, 11);
 		assignItemRect(ROCKFALL,        12, 11);
+		assignItemRect(MAGICBAN,        12, 11);
 
 		assignItemRect(CURSE_INFUSE,    10, 15);
 		assignItemRect(MAGIC_INFUSE,    10, 15);

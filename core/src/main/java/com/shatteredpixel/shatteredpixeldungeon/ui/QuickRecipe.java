@@ -65,6 +65,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ExoticScrol
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Alchemize;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.BeaconOfReturning;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.CurseInfusion;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.MagicBan;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.MagicalInfusion;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.MagicalTran;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.PhaseShift;
@@ -407,6 +408,7 @@ public class QuickRecipe extends Component {
 				result.add(new QuickRecipe(new SummonWraith.Recipe()));
 				result.add(new QuickRecipe(new Watchtower.Recipe()));
 				result.add(new QuickRecipe(new RockFall.Recipe()));
+				result.add(new QuickRecipe(new MagicBan.Recipe()));
 				if (!PixelScene.landscape()) result.add(null);
 				result.add(null);
 				result.add(new QuickRecipe(new Alchemize.Recipe(), new ArrayList<>(Arrays.asList(new Plant.Seed.PlaceHolder(), new Runestone.PlaceHolder())), new Alchemize().quantity(8)));

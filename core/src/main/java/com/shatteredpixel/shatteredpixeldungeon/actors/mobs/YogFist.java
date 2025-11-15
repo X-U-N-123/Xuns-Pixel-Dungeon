@@ -39,6 +39,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Frost;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Light;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Ooze;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Roots;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Sleep;
@@ -102,7 +103,7 @@ public abstract class YogFist extends Mob {
 
 	@Override
 	protected boolean canAttack(Char enemy) {
-		if (rangedCooldown <= 0){
+		if (rangedCooldown <= 0 && buff(MagicImmune.class) == null){
 			return new Ballistica( pos, enemy.pos, Ballistica.MAGIC_BOLT).collisionPos == enemy.pos;
 		} else {
 			return super.canAttack(enemy);

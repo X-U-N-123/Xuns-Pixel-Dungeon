@@ -30,7 +30,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Daze;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.mage.WildMagic;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
@@ -85,7 +84,8 @@ public class WandOfAvalanche extends DamageWand {
 	@Override
 	public void onZap(Ballistica bolt) {
 		ArrayList<Char> affectedChars = new ArrayList<>();
-		for( int cell : placesRockFall){
+		for ( int cell : placesRockFall){
+			CellEmitter.get( cell ).burst( Speck.factory( Speck.ROCK ), 3 );
 
 			//knock doors open, press grass down
 			if (Dungeon.level.map[cell] == Terrain.DOOR){
@@ -101,10 +101,11 @@ public class WandOfAvalanche extends DamageWand {
 			}
 		}
 
+		Sample.INSTANCE.play( Assets.Sounds.ROCKS );
+		PixelScene.shake( 2 + chargesPerCast(), 0.2f + 0.1f*chargesPerCast() );
+
 		for ( Char ch : affectedChars ){
 			int dmg = wandProc(ch, chargesPerCast(), damageRoll());
-			if (ch instanceof Hero) dmg /= chargesPerCast();
-			//for unknown reason, this wand deals much more damage when target is the Hero
 
 			ch.damage(dmg, this);
 			if (ch.isAlive()) {
@@ -145,24 +146,19 @@ public class WandOfAvalanche extends DamageWand {
 	@Override
 	public void fx(Ballistica bolt, Callback callback) {
 		//need to perform rock fall logic here so we can determine where the rocks should fall.
-		MagicMissile.boltFromChar( curUser.sprite.parent,
-		MagicMissile.EARTH,
-		curUser.sprite,
-		curUser.pos,
-		callback );
-
-		PixelScene.shake( 2 + chargesPerCast(), 0.2f + 0.1f*chargesPerCast() );
-
 		placesRockFall.clear();
 		PathFinder.buildDistanceMap( bolt.collisionPos, BArray.not( Dungeon.level.solid, null ), 3 );
 		for (int i = 0; i < PathFinder.distance.length; i++) {
 			if (PathFinder.distance[i] <= chargesPerCast()){
-				CellEmitter.get( i ).burst( Speck.factory( Speck.ROCK ), 3 );
 				placesRockFall.add(i);
 			}
 		}
-		//final zap at half distance, for timing of the actual wand effect
-		Sample.INSTANCE.play( Assets.Sounds.ROCKS );
+
+		MagicMissile.boltFromChar( curUser.sprite.parent,
+		MagicMissile.EARTH,
+		curUser.sprite,
+		bolt.collisionPos,
+		callback );
 	}
 
 	@Override

@@ -25,6 +25,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Corruption;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.ClericSpell;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.PhantomMeat;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
@@ -52,13 +53,13 @@ public class PhantomPiranha extends Piranha {
 		if (src instanceof Char) dmgSource = (Char)src;
 		if (src instanceof Wand || src instanceof ClericSpell) dmgSource = Dungeon.hero;
 
-		if (dmgSource == null || !Dungeon.level.adjacent(pos, dmgSource.pos)){
+		if ((dmgSource == null || !Dungeon.level.adjacent(pos, dmgSource.pos)) && buff(MagicImmune.class) == null){
 			dmg = Math.round(dmg/2f); //halve damage taken if we are going to teleport
 		}
 		super.damage(dmg, src);
 
 		if (isAlive() && !(src instanceof Corruption)) {
-			if (dmgSource != null) {
+			if (dmgSource != null && buff(MagicImmune.class) == null) {
 				if (!Dungeon.level.adjacent(pos, dmgSource.pos)) {
 					ArrayList<Integer> candidates = new ArrayList<>();
 					for (int i : PathFinder.NEIGHBOURS8) {
@@ -66,7 +67,7 @@ public class PhantomPiranha extends Piranha {
 							candidates.add(dmgSource.pos + i);
 						}
 					}
-					if (!candidates.isEmpty()) {
+					if (!candidates.isEmpty() && buff(MagicImmune.class) == null) {
 						ScrollOfTeleportation.appear(this, Random.element(candidates));
 						aggro(dmgSource);
 					} else {
@@ -93,7 +94,7 @@ public class PhantomPiranha extends Piranha {
 
 	private boolean teleportAway(){
 
-		if (flying){
+		if (flying || buff(MagicImmune.class) == null){
 			return false;
 		}
 

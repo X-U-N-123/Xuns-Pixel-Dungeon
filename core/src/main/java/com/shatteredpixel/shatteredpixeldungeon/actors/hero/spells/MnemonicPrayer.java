@@ -169,6 +169,7 @@ public class MnemonicPrayer extends TargetedClericSpell {
 			for (Buff b : ch.buffs()){
 				if (b instanceof GuidingLight.WasIlluminatedTracker){
 					Buff.affect(ch, GuidingLight.Illuminated.class);
+					b.detach();
 					continue;
 				}
 

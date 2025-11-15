@@ -26,11 +26,22 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.Bundle;
+
+import java.util.ArrayList;
 
 public class KiteShield extends MeleeWeapon {
 
+    private int coatOfArms = 0;
+    /*
+    0 for Xun's PD,   1 for Magic Ling PD,  2 for Shattered PD, 3 for Vanilla PD
+    4 for Darkest PD, 5 for Experienced PD, 6 for ARranged PD,  7 for Scorched PD
+    */
+    public static final String AC_SWITCH = "SWITCH";
+
     {
-        image = ItemSpriteSheet.Kiteshield;
+        image = ItemSpriteSheet.KITESHIELD_START;
         hitSound = Assets.Sounds.HIT;
         hitSoundPitch = 1f;
 
@@ -41,6 +52,13 @@ public class KiteShield extends MeleeWeapon {
     public int max(int lvl) {
         return  Math.round(3f*(tier+1)) +   //15 base, down from 25
                 lvl*(tier-1);               //+3 per level, down from +5
+    }
+
+    @Override
+    public ArrayList<String> actions(Hero hero) {
+        ArrayList<String> actions = super.actions( hero );
+        actions.add(AC_SWITCH);
+        return actions;
     }
 
     @Override
@@ -57,11 +75,29 @@ public class KiteShield extends MeleeWeapon {
         return 5 + 2*lvl;
     }
 
+    @Override
+    public String desc() {
+        return Messages.get(this, "desc_" + coatOfArms);
+    }
+
     public String statsInfo(){
         if (isIdentified()){
             return Messages.get(this, "stats_desc", 5+2*buffedLvl());
         } else {
             return Messages.get(this, "typical_stats_desc", 5);
+        }
+    }
+
+    @Override
+    public void execute(Hero hero, String action) {
+        super.execute(hero, action);
+
+        if (action.equals(AC_SWITCH)){
+            coatOfArms++;
+            if (coatOfArms >= ItemSpriteSheet.coatOfArmsKind) coatOfArms = 0;
+            Sample.INSTANCE.play(Assets.Sounds.MELD, 0.5f);
+            image = ItemSpriteSheet.KITESHIELD_START + coatOfArms;
+            updateQuickslot();
         }
     }
 
@@ -84,4 +120,19 @@ public class KiteShield extends MeleeWeapon {
         return Integer.toString(4 + level);
     }
 
+    private static final String COAT_OF_ARMS = "coa";
+
+    @Override
+    public void storeInBundle( Bundle bundle ){
+        super.storeInBundle( bundle );
+        bundle.put(COAT_OF_ARMS, coatOfArms);
+    }
+
+    @Override
+    public void restoreFromBundle( Bundle bundle ) {
+        super.restoreFromBundle( bundle );
+        coatOfArms = bundle.getInt(COAT_OF_ARMS);
+        image = ItemSpriteSheet.KITESHIELD_START + coatOfArms;
+        updateQuickslot();
+    }
 }

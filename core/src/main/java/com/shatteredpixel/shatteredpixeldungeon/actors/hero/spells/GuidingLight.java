@@ -25,16 +25,22 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Adrenaline;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Slow;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
+import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HolyTome;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TalismanOfForesight;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ActionIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
@@ -83,12 +89,33 @@ public class GuidingLight extends TargetedClericSpell {
 
 				Char ch = Actor.findChar( aim.collisionPos );
 				if (ch != null) {
-					ch.damage(Random.NormalIntRange(2, 8), GuidingLight.this);
+					int value = Random.NormalIntRange(2, 8);
+					if (ch.alignment == Char.Alignment.ALLY && hero.subClass == HeroSubClass.PREACHER) {
+						int toHeal = Math.min(ch.HT - ch.HP, value);
+						ch.HP += toHeal;
+						if (toHeal > 0) ch.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(toHeal), FloatingText.HEALING);
+						if (value > toHeal){
+							Buff.affect(ch, Barrier.class).incShield(value - toHeal);
+							ch.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(value - toHeal), FloatingText.SHIELDING);
+						}
+					} else ch.damage(value, GuidingLight.this);
+
 					Sample.INSTANCE.play(Assets.Sounds.HIT_MAGIC, 1, Random.Float(0.87f, 1.15f));
 					ch.sprite.burst(0xFFFFFF44, 3);
 					if (ch.isAlive()){
-						Buff.affect(ch, Illuminated.class);
-						Buff.affect(ch, WasIlluminatedTracker.class);
+						if (ch.alignment != Char.Alignment.ALLY || hero.subClass != HeroSubClass.PREACHER) {
+							Buff.affect(ch, Illuminated.class);
+							Buff.affect(ch, WasIlluminatedTracker.class);
+						}
+						if (hero.subClass == HeroSubClass.PREACHER){
+							if (ch.alignment == Char.Alignment.ENEMY) Buff.affect(ch, Slow.class, 6f);
+							if (ch.alignment == Char.Alignment.ALLY) {
+								Buff.affect(ch, Adrenaline.class, 6f);
+								Buff.append(Dungeon.hero, TalismanOfForesight.CharAwareness.class, Integer.MAX_VALUE).charID = ch.id();
+							}
+							Dungeon.observe();
+							GameScene.updateFog();
+						}
 					}
 				} else {
 					Dungeon.level.pressCell(aim.collisionPos);
@@ -98,7 +125,8 @@ public class GuidingLight extends TargetedClericSpell {
 				hero.next();
 
 				onSpellCast(tome, hero);
-				if (hero.subClass == HeroSubClass.PRIEST && hero.buff(GuidingLightPriestCooldown.class) == null) {
+				if ((hero.subClass == HeroSubClass.PRIEST || hero.subClass == HeroSubClass.PREACHER)
+				&& hero.buff(GuidingLightPriestCooldown.class) == null) {
 					Buff.prolong(hero, GuidingLightPriestCooldown.class, 100f);
 					ActionIndicator.refresh();
 				}
@@ -109,7 +137,7 @@ public class GuidingLight extends TargetedClericSpell {
 
 	@Override
 	public float chargeUse(Hero hero) {
-		if (hero.subClass == HeroSubClass.PRIEST
+		if ((hero.subClass == HeroSubClass.PRIEST || hero.subClass == HeroSubClass.PREACHER)
 			&& hero.buff(GuidingLightPriestCooldown.class) == null){
 			return 0;
 		} else {
@@ -121,6 +149,9 @@ public class GuidingLight extends TargetedClericSpell {
 		String desc = Messages.get(this, "desc");
 		if (Dungeon.hero.subClass == HeroSubClass.PRIEST){
 			desc += "\n\n" + Messages.get(this, "desc_priest");
+		}
+		if (Dungeon.hero.subClass == HeroSubClass.PREACHER){
+			desc += "\n\n" + Messages.get(this, "desc_preacher");
 		}
 		return desc + "\n\n" + Messages.get(this, "charge_cost", (int)chargeUse(Dungeon.hero));
 	}

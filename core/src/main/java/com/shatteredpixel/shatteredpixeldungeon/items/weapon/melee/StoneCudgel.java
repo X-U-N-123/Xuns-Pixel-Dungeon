@@ -75,7 +75,7 @@ public class StoneCudgel extends MeleeWeapon {
             }
         }
 
-        if (Math.pow(0.8, Guardamount) >= Random.Float()) {
+        if (Math.pow(0.7, Guardamount) >= Random.Float()) {
             ArrayList<Integer> spawnPoints = new ArrayList<>();
             for (int i : PathFinder.NEIGHBOURS8) {
                 int pos = attacker.pos + i;

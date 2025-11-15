@@ -143,6 +143,9 @@ public abstract class ClericSpell {
 
 			} else if (cleric.subClass == HeroSubClass.PALADIN){
 				spells.add(Smite.INSTANCE);
+
+			} else if (cleric.subClass == HeroSubClass.PREACHER){
+				spells.add(ProtectiveBookpage.INSTANCE);
 			}
 
 			if (cleric.hasTalent(Talent.CLEANSE)){
@@ -177,6 +180,19 @@ public abstract class ClericSpell {
 			}
 			if (cleric.hasTalent(Talent.JUSTICE_STRIKE)){
 				spells.add(JusticeStrike.INSTANCE);
+			}
+
+			if (cleric.hasTalent(Talent.PUNISHMENT)){
+				spells.add(Punishment.INSTANCE);
+			}
+			if (cleric.hasTalent(Talent.HOLY_DRAPE)){
+				spells.add(HolyDrape.INSTANCE);
+			}
+			if (cleric.hasTalent(Talent.HOLY_ANTIMAGIC)){
+				spells.add(HolyAntimagic.INSTANCE);
+			}
+			if (cleric.hasTalent(Talent.HOLY_IMAGE)){
+				spells.add(HolyImage.INSTANCE);
 			}
 
 		} else if (tier == 4){
@@ -240,6 +256,7 @@ public abstract class ClericSpell {
 		spells.add(SharedCharge.INSTANCE);
 		spells.add(Radiance.INSTANCE);
 		spells.add(Smite.INSTANCE);
+		spells.add(ProtectiveBookpage.INSTANCE);
 		spells.add(LayOnHands.INSTANCE);
 		spells.add(AuraOfProtection.INSTANCE);
 		spells.add(WallOfLight.INSTANCE);
@@ -248,6 +265,10 @@ public abstract class ClericSpell {
 		spells.add(HallowedGround.INSTANCE);
 		spells.add(MnemonicPrayer.INSTANCE);
 		spells.add(Explosion.INSTANCE);
+		spells.add(Punishment.INSTANCE);
+		spells.add(HolyDrape.INSTANCE);
+		spells.add(HolyAntimagic.INSTANCE);
+		spells.add(HolyImage.INSTANCE);
 		spells.add(DivineIntervention.INSTANCE);
 		spells.add(Judgement.INSTANCE);
 		spells.add(Flash.INSTANCE);

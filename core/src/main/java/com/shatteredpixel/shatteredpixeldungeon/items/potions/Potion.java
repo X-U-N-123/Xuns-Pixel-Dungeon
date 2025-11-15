@@ -309,7 +309,7 @@ public class Potion extends Item {
 		}
 	}
 	
-	protected void drink( Hero hero ) {
+	public void drink( Hero hero ) {
 		
 		detach( hero.belongings.backpack );
 		
