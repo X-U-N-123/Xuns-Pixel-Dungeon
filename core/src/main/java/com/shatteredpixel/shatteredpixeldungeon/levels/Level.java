@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
@@ -283,13 +284,30 @@ public abstract class Level implements Bundlable {
 						feeling = Feeling.SECRETS;
 						break;
 					default:
-						//if-else statements are fine here as only one chance can be above 0 at a time
+						//if-else statements are fine here as only one chance can be above 0 at a time...
 						if (Random.Float() < MossyClump.overrideNormalLevelChance()){
 							feeling = MossyClump.getNextFeeling();
 						} else if (Random.Float() < TrapMechanism.overrideNormalLevelChance()) {
 							feeling = TrapMechanism.getNextFeeling();
 						} else if (Random.Float() < WornLock.overrideNormalLevelChance()) {
 							feeling = WornLock.getNextFeeling();
+						//and we need priority here
+						} else if (Random.Float() <= Dungeon.hero.pointsInTalent(Talent.VARIED_ENVIRONMENT) *0.3f ){
+							switch (Dungeon.hero.subClass){
+								case HYDROLOGIST:
+									feeling = Feeling.WATER;
+									break;
+								default:
+									ArrayList<Feeling> feelings = new ArrayList<>();
+									feelings.add(Feeling.GRASS);
+									feelings.add(Feeling.WATER);
+									feelings.add(Feeling.TRAPS);
+									feelings.add(Feeling.CHASM);
+									feelings.add(Feeling.LARGE);
+									feelings.add(Feeling.SECRETS);
+									feeling = feelings.get(Random.Int(feelings.size()));
+									break;
+							}
 						} else {
 							feeling = Feeling.NONE;
 						}
@@ -1138,12 +1156,18 @@ public abstract class Level implements Bundlable {
 			//we call act here instead of detach in case the debuffs haven't managed to deal dmg once yet
 			if (map[ch.pos] == Terrain.WATER){
 				if (ch.buff(Burning.class) != null){
+					if (ch instanceof Hero) Badges.validateAdventurerUnlock();
 					ch.buff(Burning.class).act();
 				}
 				if (ch.buff(Ooze.class) != null){
+					if (ch instanceof Hero) Badges.validateAdventurerUnlock();
 					ch.buff(Ooze.class).act();
 				}
 			}
+
+			if (map[ch.pos] == Terrain.EMBERS && ch instanceof Hero
+				&& ((Hero) ch).hasTalent(Talent.REKINDLED_EMBER) && ch.buff(Burning.class) != null)
+				Buff.detach(ch, Burning.class);
 
 			if ( (map[ch.pos] == Terrain.GRASS || map[ch.pos] == Terrain.EMBERS)
 					&& ch == Dungeon.hero && Dungeon.hero.hasTalent(Talent.REJUVENATING_STEPS)
@@ -1330,6 +1354,7 @@ public abstract class Level implements Bundlable {
 				if (Dungeon.hero.hasTalent(Talent.FARSIGHT)) viewDist += 1 + Dungeon.hero.pointsInTalent(Talent.FARSIGHT);
 				viewDist += Talent.MonkViewBoost();
 				viewDist *= EyeOfNewt.visionRangeMultiplier();
+				if (Dungeon.hero.heroClass == HeroClass.ADVENTURER) viewDist ++;
 			}
 			if (viewDist <= 1) viewDist = 1;
 			
@@ -1409,6 +1434,10 @@ public abstract class Level implements Bundlable {
 				int mindVisRange = 0;
 				if (((Hero) c).hasTalent(Talent.HEIGHTENED_SENSES)){
 					mindVisRange = 1+((Hero) c).pointsInTalent(Talent.HEIGHTENED_SENSES);
+				}
+				if (((Hero)c).hasTalent(Talent.WINDING_PORCH)
+					&& (map[c.pos] == Terrain.DOOR || map[c.pos] == Terrain.OPEN_DOOR)){
+					mindVisRange = 2 + 2*((Hero) c).pointsInTalent(Talent.WINDING_PORCH);
 				}
 				if (c.buff(DivineSense.DivineSenseTracker.class) != null){
 					if (((Hero) c).heroClass == HeroClass.CLERIC){

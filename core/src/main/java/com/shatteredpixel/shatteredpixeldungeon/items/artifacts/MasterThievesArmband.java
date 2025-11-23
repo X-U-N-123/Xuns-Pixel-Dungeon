@@ -150,10 +150,7 @@ public class MasterThievesArmband extends Artifact {
 
 							float lootChance = ((Mob) ch).lootChance() * lootMultiplier;
 
-							StoneofIntelligence stone = Dungeon.hero.belongings.getItem(StoneofIntelligence.class);
-							int inc = 0;
-							if (stone != null) inc += stone.LootandExpinc();
-							if (Dungeon.hero.lvl > ((Mob) ch).maxLvl + 2 + inc) {
+							if (Dungeon.hero.lvl > ((Mob) ch).maxLvl + 2 + StoneofIntelligence.LootandExpinc()) {
 								lootChance = 0;
 							} else if (ch.buff(StolenTracker.class) != null){
 								lootChance = 0;

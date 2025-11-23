@@ -157,6 +157,7 @@ public class ItemSpriteSheet {
     public static final int INTACT_SEAL         = MISC_CONSUMABLE +24;
 	public static final int SHIELD              = MISC_CONSUMABLE +25;
 	public static final int POT                 = MISC_CONSUMABLE +26;
+	public static final int SHOVEL_SCRAP        = MISC_CONSUMABLE +27;
 	static{
 		assignItemRect(ANKH,            10, 16);
 		assignItemRect(STYLUS,          12, 13);
@@ -185,6 +186,7 @@ public class ItemSpriteSheet {
 		assignItemRect(BOW_FRAGMENT,    12,  9);
 		assignItemRect(BROKEN_HILT,      9,  9);
 		assignItemRect(TORN_PAGE,       11, 13);
+		assignItemRect(SHOVEL_SCRAP,    10, 11);
 
 		assignItemRect(TRINKET_CATA,    12, 11);
 
@@ -666,6 +668,7 @@ public class ItemSpriteSheet {
 	public static final int STONE_INTE      = TRINKETS+17;
 	public static final int MEMBER_CARD     = TRINKETS+18;
 	public static final int MAGICAL_GEM     = TRINKETS+19;
+	public static final int CURSED_COIN     = TRINKETS+20;
 	static{
 		assignItemRect(RAT_SKULL,       16, 11);
 		assignItemRect(PARCHMENT_SCRAP, 10, 14);
@@ -687,6 +690,7 @@ public class ItemSpriteSheet {
 		assignItemRect(STONE_INTE,      14, 12);
 		assignItemRect(MEMBER_CARD,     16, 12);
 		assignItemRect(MAGICAL_GEM,     11, 9 );
+		assignItemRect(CURSED_COIN,     14, 14);
 	}
 
 	private static final int SCROLLS        = xy(1, 13);  //16 slots

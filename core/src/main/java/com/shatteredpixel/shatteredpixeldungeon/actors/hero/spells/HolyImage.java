@@ -51,7 +51,7 @@ public class HolyImage extends ClericSpell {
 
     @Override
     public float chargeUse(Hero hero) {
-        return 3;
+        return 4;
     }
 
     @Override

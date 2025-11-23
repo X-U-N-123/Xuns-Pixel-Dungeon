@@ -33,9 +33,10 @@ public class Clay extends MissileWeapon {
         image = ItemSpriteSheet.CLAY;
         hitSound = Assets.Sounds.HIT;
         hitSoundPitch = 1f;
+        sticky = false;
 
         tier = 1;
-        baseUses = 5;
+        baseUses = 1;
     }
 
     @Override

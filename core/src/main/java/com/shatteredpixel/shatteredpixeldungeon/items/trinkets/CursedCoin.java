@@ -24,10 +24,10 @@ package com.shatteredpixel.shatteredpixeldungeon.items.trinkets;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
-public class StoneofIntelligence extends Trinket {
+public class CursedCoin extends Trinket {
 
     {
-        image = ItemSpriteSheet.STONE_INTE;
+        image = ItemSpriteSheet.CURSED_COIN;
     }
 
     @Override
@@ -39,17 +39,38 @@ public class StoneofIntelligence extends Trinket {
     @Override
     public String statsDesc() {
         if (isIdentified()){
-            return Messages.get(this, "stats_desc", 1+level());
+            return Messages.get(this, "stats_desc",
+            dropGoldAmount(buffedLvl()),
+            Messages.decimalFormat("#.##", 100*summonWraithChance(buffedLvl())));
         } else {
-            return Messages.get(this, "typical_stats_desc", 1);
+            return Messages.get(this, "typical_stats_desc",
+            dropGoldAmount(0),
+            Messages.decimalFormat("#.##", 100*summonWraithChance(0)));
         }
     }
 
-    public static int LootandExpinc(){
-        if (trinketLevel(StoneofIntelligence.class) == -1){
+    public static float dropGoldAmount(){
+        return dropGoldAmount(trinketLevel(CursedCoin.class));
+    }
+
+    public static float dropGoldAmount(int level){
+        if (level <= -1){
             return 0;
         } else {
-            return 1 + trinketLevel(StoneofIntelligence.class);
+            return 0.5f*(level+1);
         }
     }
+
+    public static float summonWraithChance(){
+        return summonWraithChance(trinketLevel(CursedCoin.class));
+    }
+
+    public static float summonWraithChance(int level){
+        if (level <= -1){
+            return 0;
+        } else {
+            return 0.2f*(level+1);
+        }
+    }
+
 }

@@ -59,10 +59,8 @@ public class SpectralNecromancer extends Necromancer {
 
 	@Override
 	public void rollToDropLoot() {
-		StoneofIntelligence stone = Dungeon.hero.belongings.getItem(StoneofIntelligence.class);
-		int inc = 0;
-		if (stone != null) inc += stone.LootandExpinc();
-		if (Dungeon.hero.lvl > maxLvl + 2 + inc) return;
+
+		if (Dungeon.hero.lvl > maxLvl + 2 + StoneofIntelligence.LootandExpinc()) return;
 
 		super.rollToDropLoot();
 

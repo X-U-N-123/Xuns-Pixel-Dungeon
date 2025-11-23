@@ -30,6 +30,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ChaliceOfBlood;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfEnergy;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ChaoticCenser;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.SaltCube;
+import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.watabou.utils.Bundle;
 
 public class Regeneration extends Buff {
@@ -90,6 +91,12 @@ public class Regeneration extends Buff {
 				}
 				if (Dungeon.hero.hasTalent(Talent.EMERGENCY_CHARGE) && Dungeon.hero.heroClass != HeroClass.ROGUE){
 					delay /= 1+Dungeon.hero.pointsInTalent(Talent.EMERGENCY_CHARGE)*0.2f* (target.HT - target.HP)/ target.HT;
+				}
+				if (Dungeon.hero.heroClass == HeroClass.ADVENTURER ||
+				(Dungeon.level.map[target.pos] == Terrain.GRASS
+				|| Dungeon.level.map[target.pos] == Terrain.HIGH_GRASS
+				|| Dungeon.level.map[target.pos] == Terrain.FURROWED_GRASS)){
+					delay /= 1.25f;
 				}
 
 				partialRegen += 1f / delay;

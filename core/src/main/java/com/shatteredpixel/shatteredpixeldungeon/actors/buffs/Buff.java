@@ -147,7 +147,7 @@ public class Buff extends Actor {
 	@Override
 	public void storeInBundle(Bundle bundle) {
 		super.storeInBundle(bundle);
-		if (mnemoOrPeaceEleExtended) bundle.put(MNEMONIC_EXTENDED, mnemoOrPeaceEleExtended);
+		bundle.put(MNEMONIC_EXTENDED, mnemoOrPeaceEleExtended);
 	}
 
 	@Override

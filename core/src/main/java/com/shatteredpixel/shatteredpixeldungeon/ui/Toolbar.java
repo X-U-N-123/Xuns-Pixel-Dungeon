@@ -255,13 +255,14 @@ public class Toolbar extends Component {
 					Dungeon.hero.waitOrPickup = true;
 					if ((Dungeon.level.heaps.get(Dungeon.hero.pos) != null || Dungeon.hero.canSelfTrample())
 						&& Dungeon.hero.handle(Dungeon.hero.pos)){
-						//trigger patient strike here, even if the hero didn't specifically wait
+						//trigger patient strike, hold fast and safe survey here, even if the hero didn't specifically wait
 						if (Dungeon.hero.subClass == HeroSubClass.GUARD){
 							Buff.affect(Dungeon.hero, HoldFast.class).pos = Dungeon.hero.pos;
 						}
 						if (Dungeon.hero.hasTalent(Talent.PATIENT_STRIKE)){
 							Buff.affect(Dungeon.hero, Talent.PatientStrikeTracker.class).pos = Dungeon.hero.pos;
 						}
+						Talent.waitForShield(Dungeon.hero);
 						Dungeon.hero.next();
 					} else {
 						examining = false;

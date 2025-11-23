@@ -19,37 +19,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package com.shatteredpixel.shatteredpixeldungeon.items.trinkets;
+package com.shatteredpixel.shatteredpixeldungeon.items.armor;
 
-import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
-public class StoneofIntelligence extends Trinket {
+public class AdventurerArmor extends ClassArmor {
 
     {
-        image = ItemSpriteSheet.STONE_INTE;
+        image = ItemSpriteSheet.ARMOR_CLOTH;
     }
 
-    @Override
-    protected int upgradeEnergyCost() {
-        //6 -> 8(14) -> 10(24) -> 12(36)
-        return 6+2*level();
-    }
-
-    @Override
-    public String statsDesc() {
-        if (isIdentified()){
-            return Messages.get(this, "stats_desc", 1+level());
-        } else {
-            return Messages.get(this, "typical_stats_desc", 1);
-        }
-    }
-
-    public static int LootandExpinc(){
-        if (trinketLevel(StoneofIntelligence.class) == -1){
-            return 0;
-        } else {
-            return 1 + trinketLevel(StoneofIntelligence.class);
-        }
-    }
 }

@@ -77,6 +77,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfWealth;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ExoticScroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAggression;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.CursedCoin;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ExoticCrystals;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ShardOfOblivion;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.StoneofIntelligence;
@@ -863,10 +864,7 @@ public abstract class Mob extends Char {
 
 				AscensionChallenge.processEnemyKill(this);
 
-				StoneofIntelligence stone = Dungeon.hero.belongings.getItem(StoneofIntelligence.class);
-				int inc = 0;
-				if (stone != null) inc += stone.LootandExpinc();
-				int exp = Dungeon.hero.lvl <= maxLvl + inc ? EXP : 0;
+				int exp = Dungeon.hero.lvl <= maxLvl + StoneofIntelligence.LootandExpinc() ? EXP : 0;
 
 				//during ascent, under-levelled enemies grant 10 xp each until level 30
 				// after this enemy kills which reduce the amulet curse still grant 10 effective xp
@@ -940,6 +938,14 @@ public abstract class Mob extends Char {
 				}
 			}
 		}
+
+		if (!(this instanceof Wraith) && this.alignment == Alignment.ENEMY && Random.Float() < CursedCoin.summonWraithChance()){
+			Wraith.spawnAt(pos, Wraith.class);
+			if (Dungeon.level.heroFOV[pos]) {
+				CellEmitter.get(pos).burst(ShadowParticle.CURSE, 6);
+				Sample.INSTANCE.play(Assets.Sounds.CURSED);
+			}
+		}
 	}
 
 	public float lootChance(){
@@ -963,11 +969,8 @@ public abstract class Mob extends Char {
 	}
 	
 	public void rollToDropLoot(){
-		StoneofIntelligence stone = Dungeon.hero.belongings.getItem(StoneofIntelligence.class);
-		int inc = 0;
-		if (stone != null) inc += stone.LootandExpinc();
 
-		if (Dungeon.hero.lvl > maxLvl + 2 + inc) return;
+		if (Dungeon.hero.lvl > maxLvl + 2 + StoneofIntelligence.LootandExpinc()) return;
 
 		MasterThievesArmband.StolenTracker stolen = buff(MasterThievesArmband.StolenTracker.class);
 		if (stolen == null || !stolen.itemWasStolen()) {
@@ -1106,9 +1109,7 @@ public abstract class Mob extends Char {
 			if (this.alignment == Alignment.ENEMY)  alignment += Messages.get(this, "enemy");
 			if (this.alignment == Alignment.NEUTRAL)alignment += Messages.get(this, "neutral");
 			alignment += "\n\n";
-			StoneofIntelligence stone = Dungeon.hero.belongings.getItem(StoneofIntelligence.class);
-			int inc = 0;
-			if (stone != null) inc += stone.LootandExpinc();
+			int inc = StoneofIntelligence.LootandExpinc();
 			int armor = Math.round(drRoll() * AscensionChallenge.statModifier(enemy));
 			if (this.buff(BrokenArmor.class) != null){
 				armor = 0;

@@ -30,10 +30,10 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
-import com.shatteredpixel.shatteredpixeldungeon.effects.Beam;
+import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HolyTome;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
-import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.HeroIcon;
 import com.watabou.noosa.audio.Sample;
@@ -53,23 +53,16 @@ public class ProtectiveBookpage extends ClericSpell {
 
     @Override
     public String desc() {
-        int pageTime = 10;
-        if (Dungeon.hero.pointsInTalent(Talent.ENHANCED_BOOKPAGE) >= 3) pageTime += 5;
-        int dmg = Dungeon.hero.HT / 12;
-        if (Dungeon.hero.pointsInTalent(Talent.ENHANCED_BOOKPAGE) >= 2) dmg = Dungeon.hero.HT / 10;
-        int shieldAmt = Dungeon.hero.HT / 50;
-        if (Dungeon.hero.pointsInTalent(Talent.ENHANCED_BOOKPAGE) >= 1) shieldAmt ++;
+        int pageTime = Dungeon.hero.pointsInTalent(Talent.ENHANCED_BOOKPAGE) >= 3 ? 10 : 8;
+        int dmg = Dungeon.hero.lvl / 3;
+        if (Dungeon.hero.pointsInTalent(Talent.ENHANCED_BOOKPAGE) >= 2) dmg = Dungeon.hero.lvl / 2;
+        int shieldAmt = Dungeon.hero.pointsInTalent(Talent.ENHANCED_BOOKPAGE) >= 1 ? 2 : 1;
         return Messages.get(this, "desc", pageTime, dmg, shieldAmt) +"\n\n"+ Messages.get(this, "charge_cost", (int)chargeUse(Dungeon.hero));
     }
 
     @Override
     public boolean canCast(Hero hero) {
         return super.canCast(hero) && hero.subClass == HeroSubClass.PREACHER;
-    }
-
-    @Override
-    public float chargeUse(Hero hero) {
-        return 2;
     }
 
     @Override
@@ -88,7 +81,7 @@ public class ProtectiveBookpage extends ClericSpell {
         }
 
         public int pages = 0;
-        public int pageTime = 10;
+        public int pageTime = 8;
         private int bookpagePos = 0;
 
         @Override
@@ -113,10 +106,10 @@ public class ProtectiveBookpage extends ClericSpell {
         }
 
         public void addPages(){
-            pages += 2;
+            pages ++;
             if (pages > 8) pages = 8;
-            pageTime = 10;
-            if (((Hero)target).pointsInTalent(Talent.ENHANCED_BOOKPAGE) >= 3) pageTime += 5;
+            pageTime = 8;
+            if (((Hero)target).pointsInTalent(Talent.ENHANCED_BOOKPAGE) >= 3) pageTime += 2;
             BuffIndicator.refreshHero();
         }
 
@@ -125,39 +118,27 @@ public class ProtectiveBookpage extends ClericSpell {
             //determine where the bookpage should attack
             ArrayList<Integer> pageCells = new ArrayList<>();
 
-            pageCells.add(target.pos + PathFinder.CIRCLE8[bookpagePos]);
-            switch (pages){
-                case 8:
-                    pageCells.add(target.pos + PathFinder.CIRCLE8[(bookpagePos+3)%8]);
-                    pageCells.add(target.pos + PathFinder.CIRCLE8[(bookpagePos+7)%8]);
-                case 6:
-                    pageCells.add(target.pos + PathFinder.CIRCLE8[(bookpagePos+1)%8]);
-                    pageCells.add(target.pos + PathFinder.CIRCLE8[(bookpagePos+5)%8]);
-                case 4:
-                    pageCells.add(target.pos + PathFinder.CIRCLE8[(bookpagePos+2)%8]);
-                    pageCells.add(target.pos + PathFinder.CIRCLE8[(bookpagePos+6)%8]);
-                case 2: default:
-                    pageCells.add(target.pos + PathFinder.CIRCLE8[(bookpagePos+4)%8]);
+            int j = 0;
+            while (j < pages){
+                pageCells.add(target.pos + PathFinder.CIRCLE8[Math.round(8f*j/pages + bookpagePos)%8]);
+                j ++;
             }
 
             for (int cell : pageCells){
-                target.sprite.parent.add(
-                    new Beam.SunRay(DungeonTilemap.raisedTileCenterToWorld(target.pos),
-                        DungeonTilemap.raisedTileCenterToWorld(cell)));
+                CellEmitter.center( cell ).burst( Speck.factory( Speck.PAGES ), 1 );
 
                 Char ch = Actor.findChar(cell);
                 if (ch != null){
                     if (ch.alignment == Char.Alignment.ENEMY) {
                         ch.sprite.flash();
-                        //only hero can get this buff, so no need to worry about it deals too less dmg
-                        //the hero has 75 HT in lvl 12, has 120 HT in lvl 21
-                        int dmg = target.HT/12;
-                        if (((Hero)target).pointsInTalent(Talent.ENHANCED_BOOKPAGE) >= 2) dmg = target.HT/10;
+                        //it deals 4/7/10 dmg in lvl 12/21/30
+                        int dmg = ((Hero)target).lvl / 3;
+                        if (((Hero)target).pointsInTalent(Talent.ENHANCED_BOOKPAGE) >= 2) dmg = ((Hero)target).lvl / 2;
                         ch.damage(dmg, this);
                     }
                 } else {
                     //protect the preacher
-                    Buff.affect(target, Barrier.class).incShield(target.HT/50);
+                    Buff.affect(target, Barrier.class).incShield(1);
                     if (((Hero)target).pointsInTalent(Talent.ENHANCED_BOOKPAGE) >= 1)
                         Buff.affect(target, Barrier.class).incShield(1);
                 }
@@ -170,15 +151,15 @@ public class ProtectiveBookpage extends ClericSpell {
             return true;
         }
 
-        private static final String PAGES = "pages";
-        private static final String TIME  = "time";
-        private static final String POS   = "pos";
+        private static final String PAGES    = "pages";
+        private static final String PAGETIME = "pagetime";
+        private static final String POS      = "pos";
 
         @Override
         public void storeInBundle( Bundle bundle ) {
             super.storeInBundle( bundle );
             bundle.put( PAGES, pages );
-            bundle.put( TIME, pageTime);
+            bundle.put(PAGETIME, pageTime);
             bundle.put( POS,   bookpagePos );
         }
 
@@ -186,8 +167,7 @@ public class ProtectiveBookpage extends ClericSpell {
         public void restoreFromBundle( Bundle bundle ) {
             super.restoreFromBundle( bundle );
             pages = bundle.getInt(PAGES);
-            pageTime = bundle.getInt(TIME);
-            timeToNow();
+            pageTime = bundle.getInt(PAGETIME);
             bookpagePos = bundle.getInt(POS);
         }
     }

@@ -22,7 +22,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
-import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
@@ -72,11 +71,7 @@ public abstract class AllyBuff extends Buff {
 
 			AscensionChallenge.processEnemyKill(enemy);
 
-			StoneofIntelligence stone = Dungeon.hero.belongings.getItem(StoneofIntelligence.class);
-			int inc = 0;
-			if (stone != null) inc += stone.LootandExpinc();
-
-			int exp = hero.lvl <= enemy.maxLvl ? enemy.EXP + inc : 0;
+			int exp = hero.lvl <= enemy.maxLvl ? enemy.EXP + StoneofIntelligence.LootandExpinc() : 0;
 			if (exp > 0) {
 				hero.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(exp), FloatingText.EXPERIENCE);
 			}

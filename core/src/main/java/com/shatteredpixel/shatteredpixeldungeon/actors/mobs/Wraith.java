@@ -26,6 +26,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ChallengeParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
+import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.CursedCoin;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.RatSkull;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.WraithSprite;
@@ -171,6 +173,14 @@ public class Wraith extends Mob {
 		} else {
 			return null;
 		}
+	}
+
+	@Override
+	public void rollToDropLoot() {
+		if (CursedCoin.dropGoldAmount() > 0)
+			Dungeon.level.drop( new Gold().quantity((int)(Dungeon.hero.lvl * CursedCoin.dropGoldAmount())), pos).sprite.drop( pos );
+
+		super.rollToDropLoot();
 	}
 
 }

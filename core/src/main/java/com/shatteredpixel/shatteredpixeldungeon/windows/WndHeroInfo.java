@@ -76,6 +76,9 @@ public class WndHeroInfo extends WndTabbed {
 			case CLERIC:
 				tabIcon = new ItemSprite(ItemSpriteSheet.ARTIFACT_TOME, null);
 				break;
+			case ADVENTURER:
+				tabIcon = new ItemSprite(ItemSpriteSheet.SHOVEL, null);
+				break;
 		}
 
 		int finalHeight = MIN_HEIGHT;
@@ -205,6 +208,12 @@ public class WndHeroInfo extends WndTabbed {
 					icons = new Image[]{ new ItemSprite(ItemSpriteSheet.ARTIFACT_TOME),
 							Icons.TALENT.get(),
 							new ItemSprite(ItemSpriteSheet.CUDGEL),
+							new ItemSprite(ItemSpriteSheet.SCROLL_ISAZ)};
+					break;
+				case ADVENTURER:
+					icons = new Image[]{ new ItemSprite(ItemSpriteSheet.SHOVEL),
+							Icons.TERRAIN.get(),
+							new ItemSprite(ItemSpriteSheet.CLAY),
 							new ItemSprite(ItemSpriteSheet.SCROLL_ISAZ)};
 					break;
 			}

@@ -218,7 +218,8 @@ public abstract class Plant implements Bundlable {
 				|| Dungeon.hero.hasTalent(Talent.MYSTICAL_MEAL)
 				|| Dungeon.hero.hasTalent(Talent.INVIGORATING_MEAL)
 				|| Dungeon.hero.hasTalent(Talent.FOCUSED_MEAL)
-				|| Dungeon.hero.hasTalent(Talent.ENLIGHTENING_MEAL)))
+				|| Dungeon.hero.hasTalent(Talent.ENLIGHTENING_MEAL)
+				|| Dungeon.hero.hasTalent(Talent.FARSIGHT_MEAL)))
 					hero.spend(Actor.TICK);
 
 				Statistics.foodEaten++;

@@ -88,6 +88,7 @@ public enum Icons {
 	CATALOG,
 	ALCHEMY,
 	GRASS,
+	TERRAIN,
 
 	STAIRS,
 	STAIRS_CHASM,
@@ -295,6 +296,9 @@ public enum Icons {
 			case GRASS:
 				icon.frame( icon.texture.uvRectBySize( 112, 48, 16, 16 ) );
 				break;
+			case TERRAIN:
+				icon.frame( icon.texture.uvRectBySize( 128, 48, 16, 16 ) );
+				break;
 
 			case STAIRS:
 				icon.frame( icon.texture.uvRectBySize( 0, 64, 15, 16 ) );
@@ -473,6 +477,8 @@ public enum Icons {
 				return new ItemSprite(ItemSpriteSheet.RAPIER);
 			case CLERIC:
 				return new ItemSprite(ItemSpriteSheet.ARTIFACT_TOME);
+			case ADVENTURER:
+				return new ItemSprite(ItemSpriteSheet.SHOVEL);
 			default:
 				return null;
 		}
