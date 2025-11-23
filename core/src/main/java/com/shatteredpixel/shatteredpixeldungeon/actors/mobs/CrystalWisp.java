@@ -44,7 +44,7 @@ public class CrystalWisp extends Mob{
 		defenseSkill = 16;
 
 		EXP = 7;
-		maxLvl = -2;
+		maxLvl = -6;
 
 		flying = true;
 

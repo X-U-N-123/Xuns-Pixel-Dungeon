@@ -26,7 +26,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Charm;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Degrade;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hex;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicalSleep;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Switch;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vulnerable;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Weakness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.duelist.ElementalStrike;
@@ -40,7 +39,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.HolyWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.Judgement;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.JusticeStrike;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.ProtectiveBookpage;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.SharedCharge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.Smite;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.Sunray;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.CrystalWisp;
@@ -89,7 +87,6 @@ public class AntiMagic extends Armor.Glyph {
 		RESISTS.add( Vulnerable.class );
 		RESISTS.add( Hex.class );
 		RESISTS.add( Degrade.class );
-		RESISTS.add( Switch.class );
 		
 		RESISTS.add( DisintegrationTrap.class );
 		RESISTS.add( GrimTrap.class );
@@ -110,7 +107,6 @@ public class AntiMagic extends Armor.Glyph {
 		RESISTS.add( Explosion.class);
 		RESISTS.add( JusticeStrike.class);
 		RESISTS.add( JusticeStrike.JusticeStrikeBuff.class);
-		RESISTS.add( SharedCharge.class);
 		RESISTS.add( ProtectiveBookpage.Bookpage.class);
 		RESISTS.add( HolyDrape.class);
 

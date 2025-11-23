@@ -41,7 +41,7 @@ public class GnollGuard extends Mob {
 		defenseSkill = 15;
 
 		EXP = 7;
-		maxLvl = -2;
+		maxLvl = -6;
 
 		loot = Spear.class;
 		lootChance = 0.1f;

@@ -1437,7 +1437,7 @@ public abstract class Level implements Bundlable {
 				}
 				if (((Hero)c).hasTalent(Talent.WINDING_PORCH)
 					&& (map[c.pos] == Terrain.DOOR || map[c.pos] == Terrain.OPEN_DOOR)){
-					mindVisRange = 2 + 2*((Hero) c).pointsInTalent(Talent.WINDING_PORCH);
+					mindVisRange = 1 + 2*((Hero) c).pointsInTalent(Talent.WINDING_PORCH);
 				}
 				if (c.buff(DivineSense.DivineSenseTracker.class) != null){
 					if (((Hero) c).heroClass == HeroClass.CLERIC){

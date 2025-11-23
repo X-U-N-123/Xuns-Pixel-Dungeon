@@ -38,7 +38,7 @@ public class FungalSentry extends Mob {
 		defenseSkill = 12;
 
 		EXP = 10;
-		maxLvl = -2;
+		maxLvl = -6;
 
 		state = WANDERING = new Waiting();
 

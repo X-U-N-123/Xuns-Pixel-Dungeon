@@ -73,7 +73,7 @@ public abstract class YogFist extends Mob {
 
 		//for doomed resistance
 		EXP = 25;
-		maxLvl = -2;
+		maxLvl = -6;
 
 		state = HUNTING;
 

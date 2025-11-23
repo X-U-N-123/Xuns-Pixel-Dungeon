@@ -653,7 +653,7 @@ public abstract class Char extends Actor {
 
 			if (enemy instanceof Hero){
 				if (hero.hasTalent(Talent.AGILE_COUNTATK)){
-					Buff.affect(hero, Talent.AgileCountATKTracker.class, 2f);
+					Buff.prolong(hero, Talent.AgileCountATKTracker.class, 3f);
 				}
 
 				Phantom p = hero.buff(Phantom.class);

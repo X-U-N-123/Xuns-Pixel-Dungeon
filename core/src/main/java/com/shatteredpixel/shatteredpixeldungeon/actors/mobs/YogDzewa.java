@@ -644,7 +644,7 @@ public class YogDzewa extends Mob {
 			viewDistance = Light.DISTANCE;
 
 			EXP = 5;
-			maxLvl = -2;
+			maxLvl = -6;
 
 			properties.add(Property.DEMONIC);
 			properties.add(Property.BOSS_MINION);
@@ -670,19 +670,19 @@ public class YogDzewa extends Mob {
 	//used so death to yog's ripper demons have their own rankings description
 	public static class YogRipper extends RipperDemon {
 		{
-			maxLvl = -2;
+			maxLvl = -6;
 			properties.add(Property.BOSS_MINION);
 		}
 	}
 	public static class YogEye extends Eye {
 		{
-			maxLvl = -2;
+			maxLvl = -6;
 			properties.add(Property.BOSS_MINION);
 		}
 	}
 	public static class YogScorpio extends Scorpio {
 		{
-			maxLvl = -2;
+			maxLvl = -6;
 			properties.add(Property.BOSS_MINION);
 		}
 	}

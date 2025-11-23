@@ -205,7 +205,7 @@ public class StoneCudgel extends MeleeWeapon {
         @Override
         public void restoreFromBundle( Bundle bundle ){
             super.restoreFromBundle(bundle);
-            alignment = bundle.getEnum(ALIGNMENT, Char.Alignment.class);
+            alignment = bundle.getEnum(ALIGNMENT, Alignment.class);
         }
     }
 

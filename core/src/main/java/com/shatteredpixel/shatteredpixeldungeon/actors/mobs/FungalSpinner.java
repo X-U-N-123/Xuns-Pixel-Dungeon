@@ -39,7 +39,7 @@ public class FungalSpinner extends Spinner {
 		defenseSkill = 16;
 
 		EXP = 7;
-		maxLvl = -2;
+		maxLvl = -6;
 	}
 
 	@Override

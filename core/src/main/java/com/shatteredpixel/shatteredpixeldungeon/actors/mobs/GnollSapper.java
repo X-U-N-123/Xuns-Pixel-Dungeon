@@ -45,7 +45,7 @@ public class GnollSapper extends Mob {
 		defenseSkill = 15;
 
 		EXP = 10;
-		maxLvl = -2;
+		maxLvl = -6;
 
 		properties.add(Property.MINIBOSS);
 
