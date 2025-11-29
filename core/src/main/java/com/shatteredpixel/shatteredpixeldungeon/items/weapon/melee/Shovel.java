@@ -23,24 +23,35 @@ package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Fire;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.WaterOfAwareness;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.WaterOfHealth;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.WellWater;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Barricade;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Splash;
+import com.shatteredpixel.shatteredpixeldungeon.journal.Bestiary;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.audio.Sample;
-import com.watabou.utils.PathFinder;
+import com.watabou.utils.PointF;
 
 import java.util.ArrayList;
 
@@ -48,6 +59,8 @@ public class Shovel extends MeleeWeapon {
 
     public static final String AC_BUILD = "build";
     public static final String AC_WATER = "water";
+    public static final String AC_PLANT = "plant";
+    public static final String AC_WELL  = "well";
 
     {
         image = ItemSpriteSheet.SHOVEL;
@@ -68,7 +81,12 @@ public class Shovel extends MeleeWeapon {
     public ArrayList<String> actions(Hero hero ) {
         ArrayList<String> actions = super.actions( hero );
         actions.add(AC_BUILD);
-        if (hero.subClass == HeroSubClass.HYDROLOGIST) actions.add(AC_WATER);
+        if (Statistics.waterAwareDug + Statistics.waterHealDug < hero.pointsInTalent(Talent.DIG_THE_WELL))
+            actions.add(AC_WELL);
+        if (hero.subClass == HeroSubClass.GEOMANCER) {
+            actions.add(AC_WATER);
+            actions.add(AC_PLANT);
+        }
         return actions;
     }
 
@@ -83,29 +101,9 @@ public class Shovel extends MeleeWeapon {
 
         super.execute(hero, action);
 
-        if (action.equals(AC_BUILD) || action.equals(AC_WATER)){
+        if (action.equals(AC_BUILD) || action.equals(AC_WATER) || action.equals(AC_PLANT) || action.equals(AC_WELL)){
             defaultAction = action;
             GameScene.selectCell(changeTerrain);
-        }
-    }
-
-    @Override
-    protected void duelistAbility(Hero hero, Integer target) {
-        beforeAbilityUsed(hero, null);
-        //1 turn less as using the ability is instant
-        Buff.prolong(hero, Scimitar.SwordDance.class, 4+buffedLvl());
-        hero.sprite.operate(hero.pos);
-        defaultAction = AC_ABILITY;
-        hero.next();
-        afterAbilityUsed(hero);
-    }
-
-    @Override
-    public String abilityInfo() {
-        if (levelKnown){
-            return Messages.get(this, "ability_desc", 5+buffedLvl());
-        } else {
-            return Messages.get(this, "typical_ability_desc", 5);
         }
     }
 
@@ -114,22 +112,31 @@ public class Shovel extends MeleeWeapon {
         return Integer.toString(5+level);
     }
 
-    public static class AdventurerCooldown extends FlavourBuff {
+    public static class ExplorerCooldown extends FlavourBuff {
         public int icon() { return BuffIndicator.TIME; }
         public void tintIcon(Image icon) { icon.hardlight(0.5f, 0.5f, 0.5f); }
+
+        public static void affectCD(float turn, Hero hero){
+            Buff.affect(hero, ExplorerCooldown.class, turn * (1 - hero.pointsInTalent(Talent.CONVENIENT_SHOVEL) / 8f));
+        }
     }
 
     public CellSelector.Listener changeTerrain = new CellSelector.Listener() {
         @Override public String prompt() {
             switch (defaultAction){
                 case AC_WATER:
-                    return Messages.get(this, "dig");
+                    return Messages.get(this, "water");
+                case AC_PLANT:
+                    return Messages.get(this, "plant");
+                case AC_WELL:
+                    return Messages.get(this, "well");
                 case AC_BUILD: default:
                     return Messages.get(this, "barricade");
             }
         }
 
-        @Override public void onSelect(Integer cell) {
+        @Override
+        public void onSelect(Integer cell) {
             if (cell == null) return;
             if (!Dungeon.level.adjacent(cell, Dungeon.hero.pos) || !Dungeon.level.heroFOV[cell]) {
                 GLog.w(Messages.get(this, "reach"));
@@ -138,80 +145,88 @@ public class Shovel extends MeleeWeapon {
 
             switch (defaultAction){
                 case AC_WATER:
-                    for (int i : PathFinder.NEIGHBOURS9){
-                        if (canCreateWater(cell + i)){
-                            
-                            Level.set( cell, Terrain.WATER );
 
-                            Sample.INSTANCE.play(Assets.Sounds.GAS, 1f, 0.75f);
-                            Buff.affect(curUser, AdventurerCooldown.class, 8f);
-                            Dungeon.hero.spendAndNext(Actor.TICK);
-                            GameScene.updateMap(cell);
-                            Dungeon.observe();
-                            curUser.sprite.zap(cell);
-                            
-                        } else if (Dungeon.level.map[cell + i] == Terrain.WATER) {
-                            
-                            Level.set( cell, Terrain.EMPTY );
+                    if (curUser.buff(ExplorerCooldown.class) == null
+                    && Dungeon.level.setCellToWater(true, cell)){
+                        Fire fire = (Fire) Dungeon.level.blobs.get(Fire.class);
+                        if (fire != null) fire.clear(cell);
 
-                            CellEmitter.get(cell).burst( Speck.factory( Speck.STEAM ), 5 );
-                            Dungeon.hero.spendAndNext(Actor.TICK);
-                            GameScene.updateMap(cell);
-                            Dungeon.observe();
-                            curUser.sprite.zap(cell);
-                        } else if (curUser.buff(AdventurerCooldown.class) != null){
-                            GLog.w(Messages.get(this, "cd"));
-                        } else {
-                            GLog.w(Messages.get(this, "hard"));
-                        }
+                        //put water if there has no water
+                        Sample.INSTANCE.play(Assets.Sounds.WATER, 2f);
+                        Splash.at( DungeonTilemap.tileCenterToWorld( cell ), -PointF.PI/2, PointF.PI/2, 0x5bc1e3, 10, 0.01f);
+                        ExplorerCooldown.affectCD(8, curUser);
+                        Dungeon.hero.spendAndNext(Actor.TICK);
+                        GameScene.updateMap(cell);
+                        Dungeon.observe();
+                        curUser.sprite.zap(cell);
+                        return;
+
+                    } else if (Dungeon.level.map[cell] == Terrain.WATER) {
+                        //remove water if there is
+                        Level.set( cell, Terrain.EMPTY );
+
+                        CellEmitter.get(cell).burst( Speck.factory( Speck.STEAM ), 5 );
+                        Dungeon.hero.spendAndNext(Actor.TICK);
+                        GameScene.updateMap(cell);
+                        Dungeon.observe();
+                        curUser.sprite.zap(cell);
+                        return;
                     }
+                    break;
+                case AC_WELL:
+                    if (curUser.buff(ExplorerCooldown.class) == null
+                    && Dungeon.level.map[cell] == Terrain.EMPTY_WELL){
+                        if (Statistics.waterHealDug < 1 && curUser.pointsInTalent(Talent.DIG_THE_WELL) >= 2){
+                            WellWater.seed(cell, 1, WaterOfHealth.class,    Dungeon.level);
+                            Statistics.waterHealDug ++;//dig water of health first
+                        } else {
+                            WellWater.seed(cell, 1, WaterOfAwareness.class, Dungeon.level);
+                            Statistics.waterAwareDug ++;
+                        }
+                        ExplorerCooldown.affectCD(100, curUser);
+                        Level.set(cell, Terrain.WELL);
+                        Splash.at( DungeonTilemap.tileCenterToWorld( cell ), -PointF.PI/2, PointF.PI/2, 0x5bc1e3, 10, 0.01f);
 
+                        Sample.INSTANCE.play(Assets.Sounds.GAS, 1f, 0.8f);
+                        Dungeon.hero.spendAndNext(Actor.TICK);
+                        GameScene.updateMap(cell);
+                        Dungeon.observe();
+                        curUser.sprite.zap(cell);
+                        return;
+                    }
+                    break;
                 case AC_BUILD: default:
+
+                    if (curUser.buff(ExplorerCooldown.class) == null
+                    && Dungeon.level.passable[cell] && Actor.findChar(cell) == null){
+                        //build a barricade that can block the enemy
+                        Barricade barricade = new Barricade();
+
+                        barricade.HT = 2 * Dungeon.hero.lvl + 5;
+                        barricade.HP = barricade.HT;
+                        barricade.alignment = Char.Alignment.ALLY;
+                        barricade.pos = cell;
+                        GameScene.add(barricade);
+                        Dungeon.level.occupyCell(barricade);
+                        if (curUser.pointsInTalent(Talent.AGGRESSIVE_BARRICADE) >= 2) barricade.aggression = 6;
+
+                        Sample.INSTANCE.play( Assets.Sounds.BUILD );
+                        ExplorerCooldown.affectCD(50, curUser);
+                        Dungeon.hero.spendAndNext(Actor.TICK);
+                        GameScene.updateMap(cell);
+                        Dungeon.observe();
+                        curUser.sprite.zap(cell);
+                        Bestiary.setSeen(Barricade.class);
+                        return;
+                    }
+                    break;
             }
 
-            if (Dungeon.level.map[cell] == Terrain.BARRICADE){
-                Level.set( cell, Terrain.EMPTY );
-                Sample.INSTANCE.play( Assets.Sounds.BUILD );
-                GameScene.updateMap(cell);
-                Dungeon.observe();
-                curUser.sprite.zap(cell);
-                Dungeon.hero.spendAndNext(Actor.TICK);
-                return;
-            }
-
-            if (curUser.buff(AdventurerCooldown.class) == null
-            &&(Dungeon.level.map[cell] == Terrain.EMPTY || Dungeon.level.map[cell] == Terrain.EMPTY_DECO || Dungeon.level.map[cell] == Terrain.EMPTY_SP
-            || Dungeon.level.map[cell] == Terrain.EMBERS || Dungeon.level.map[cell] == Terrain.WATER
-            || Dungeon.level.map[cell] == Terrain.FURROWED_GRASS || Dungeon.level.map[cell] == Terrain.GRASS || Dungeon.level.map[cell] == Terrain.HIGH_GRASS
-            || Dungeon.level.map[cell] == Terrain.INACTIVE_TRAP)){
-                Level.set( cell, Terrain.BARRICADE );
-
-                Sample.INSTANCE.play( Assets.Sounds.BUILD );
-                Buff.affect(curUser, AdventurerCooldown.class, 15f);
-                Dungeon.hero.spendAndNext(Actor.TICK);
-                GameScene.updateMap(cell);
-                Dungeon.observe();
-                curUser.sprite.zap(cell);
-            } else if (curUser.buff(AdventurerCooldown.class) != null){
+            if (curUser.buff(ExplorerCooldown.class) != null){
                 GLog.w(Messages.get(this, "cd"));
             } else {
                 GLog.w(Messages.get(this, "hard"));
             }
         }
     };
-    
-    private boolean canCreateWater(int pos){
-        return curUser.buff(AdventurerCooldown.class) == null &&
-            (Dungeon.level.map[pos] == Terrain.EMPTY
-            || Dungeon.level.map[pos] == Terrain.EMPTY_DECO
-            || Dungeon.level.map[pos] == Terrain.EMPTY_SP
-            || Dungeon.level.map[pos] == Terrain.EMBERS
-            || Dungeon.level.map[pos] == Terrain.GRASS
-            || Dungeon.level.map[pos] == Terrain.FURROWED_GRASS
-            || Dungeon.level.map[pos] == Terrain.HIGH_GRASS
-            || Dungeon.level.map[pos] == Terrain.INACTIVE_TRAP
-            || Dungeon.level.map[pos] == Terrain.TRAP
-            || Dungeon.level.map[pos] == Terrain.SECRET_TRAP);
-    }
-
 }

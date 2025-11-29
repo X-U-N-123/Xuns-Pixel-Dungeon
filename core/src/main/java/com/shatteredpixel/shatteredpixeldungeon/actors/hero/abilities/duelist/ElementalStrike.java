@@ -50,8 +50,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Roots;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.ArmorAbility;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Barricade;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.StonePier;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
@@ -67,11 +67,11 @@ import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAggression;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Annoying;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.BarricadeCurse;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Dazzling;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Displacing;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Explosive;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Friendly;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Pier;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Polarized;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Sacrificial;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Wayward;
@@ -90,6 +90,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Shocki
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Unstable;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Vampiric;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
+import com.shatteredpixel.shatteredpixeldungeon.journal.Bestiary;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
@@ -138,7 +139,7 @@ public class ElementalStrike extends ArmorAbility {
 		effectTypes.put(Wayward.class,      MagicMissile.SHADOW_CONE);
 		effectTypes.put(Polarized.class,    MagicMissile.SHADOW_CONE);
 		effectTypes.put(Friendly.class,     MagicMissile.SHADOW_CONE);
-		effectTypes.put(Pier.class,         MagicMissile.SHADOW_CONE);
+		effectTypes.put(BarricadeCurse.class,         MagicMissile.SHADOW_CONE);
 
 		effectTypes.put(null,            MagicMissile.MAGIC_MISS_CONE);
 	}
@@ -594,7 +595,7 @@ public class ElementalStrike extends ArmorAbility {
 			}
 
 		//*** Pier ***
-		} else if (ench instanceof Pier && primaryTarget != null){
+		} else if (ench instanceof BarricadeCurse && primaryTarget != null){
 			ArrayList<Integer> spawnPoints = new ArrayList<>();
 			for (int i : PathFinder.NEIGHBOURS8) {
 				int pos = primaryTarget.pos + i;
@@ -604,14 +605,19 @@ public class ElementalStrike extends ArmorAbility {
 			}
 
 			if (!spawnPoints.isEmpty()){
-				StonePier pier = new StonePier();
-				pier.HT = hero.HT;
-				pier.HP = hero.HT;
-				pier.pos = Random.element(spawnPoints);
-				GameScene.add(pier);
-				ScrollOfTeleportation.appear(pier, pier.pos);
-				Dungeon.level.occupyCell(pier);
-				Buff.affect(pier, StoneOfAggression.Aggression.class, 5f * powerMulti);
+				Barricade barricade = new Barricade();
+				barricade.alignment = Char.Alignment.ALLY;
+				barricade.aggression = 6f;
+				barricade.HT = hero.HT;
+				barricade.HP = hero.HT;
+				barricade.pos = Random.element(spawnPoints);
+
+				GameScene.add(barricade);
+				ScrollOfTeleportation.appear(barricade, barricade.pos);
+				Dungeon.level.occupyCell(barricade);
+				Buff.affect(barricade, StoneOfAggression.Aggression.class, 5f * powerMulti);
+
+				Bestiary.setSeen(Barricade.class);
 			}
 		}
 

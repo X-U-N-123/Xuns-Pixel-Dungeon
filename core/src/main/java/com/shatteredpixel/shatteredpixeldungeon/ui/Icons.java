@@ -477,7 +477,7 @@ public enum Icons {
 				return new ItemSprite(ItemSpriteSheet.RAPIER);
 			case CLERIC:
 				return new ItemSprite(ItemSpriteSheet.ARTIFACT_TOME);
-			case ADVENTURER:
+			case EXPLORER:
 				return new ItemSprite(ItemSpriteSheet.SHOVEL);
 			default:
 				return null;

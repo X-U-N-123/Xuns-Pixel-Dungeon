@@ -1,4 +1,4 @@
-package com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.adventurer;
+package com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.explorer;
 
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;

@@ -56,7 +56,7 @@ public class HeroIcon extends Image {
 	public static final int PRIEST      = 20;
 	public static final int PALADIN     = 21;
 	public static final int PREACHER    = 22;
-	public static final int HYDROLOGIST = 24;
+	public static final int GEOMANCER   = 24;
 
 	//abilities
 	public static final int HEROIC_LEAP     = 48;

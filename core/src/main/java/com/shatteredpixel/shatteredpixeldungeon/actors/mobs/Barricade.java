@@ -32,17 +32,21 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Slow;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vulnerable;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Weakness;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.StonePierSprite;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.BarricadeSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
+import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 
-public class StonePier extends Mob {
+public class Barricade extends Mob {
 
     {
-        spriteClass = StonePierSprite.class;
+        spriteClass = BarricadeSprite.class;
 
         EXP = 0;
+        maxLvl = -6;
         state = PASSIVE;
 
         properties.add(Property.INORGANIC);
@@ -52,19 +56,17 @@ public class StonePier extends Mob {
         useParry = true;
     }
 
-    @Override
-    public int damageRoll() {
-        return 0;
-    }
+    public float aggression = 0f;
 
+    //cannot move or attack, only blocks the road
     @Override
     protected boolean getCloser(int target) {
-        return false;
+        return true;
     }
 
     @Override
     protected boolean getFurther(int target) {
-        return false;
+        return true;
     }
 
     @Override
@@ -74,7 +76,7 @@ public class StonePier extends Mob {
 
     @Override
     public void damage( int dmg, Object src ) {
-        if (src instanceof Char){
+        if (src instanceof Char && aggression > 0 && dmg > 0){
             ArrayList<Class<? extends FlavourBuff>> debuff = new ArrayList<>();
             if (((Char)src).buff(Weakness.class) == null)   debuff.add(Weakness.class);
             if (((Char)src).buff(Vertigo.class) == null)    debuff.add(Vertigo.class);
@@ -84,9 +86,54 @@ public class StonePier extends Mob {
             if (((Char)src).buff(BrokenArmor.class) == null)debuff.add(BrokenArmor.class);
             if (((Char)src).buff(Blindness.class) == null)  debuff.add(Blindness.class);
             if (debuff.isEmpty())                           debuff.add(Paralysis.class);
-            Buff.affect((Char)src, debuff.get(Random.Int(debuff.size())), 8f);
+            Buff.affect((Char)src, debuff.get(Random.Int(debuff.size())), aggression);
         }
+        sprite.linkVisuals(this);//check sprite
         super.damage( dmg, src );
+        sprite.linkVisuals(this);//check sprite
+    }
+
+    @Override
+    public CharSprite sprite() { // changes the icon in the mob info window
+        BarricadeSprite sprite = (BarricadeSprite) super.sprite();
+
+        if (HP < HT /3f)        sprite.broken();
+        else if (HP < HT *2/3f) sprite.cracked();
+        else                    sprite.idle();
+
+        return sprite;
+    }
+
+    @Override
+    public String description() {
+        String desc;
+        switch (alignment){
+            case ALLY:
+                desc = Messages.get(this, "desc_ally");
+                break;
+            case ENEMY: default:
+                desc = Messages.get(this, "desc_enemy");
+                break;
+        }
+        if (aggression > 0) desc += Messages.get(this, "aggressive");
+        return desc;
+    }
+
+    private static final String ALIGNMENT = "alignment";
+    private static final String AGGRESSION= "aggression";
+    //the alignment of this may change, so need to store and restore it
+    @Override
+    public void storeInBundle( Bundle bundle ) {
+        super.storeInBundle(bundle);
+        bundle.put(AGGRESSION, aggression);
+        bundle.put(ALIGNMENT, alignment);
+    }
+
+    @Override
+    public void restoreFromBundle( Bundle bundle ) {
+        super.restoreFromBundle(bundle);
+        aggression = bundle.getFloat(AGGRESSION);
+        alignment = bundle.getEnum(ALIGNMENT, Alignment.class);
     }
 
 }

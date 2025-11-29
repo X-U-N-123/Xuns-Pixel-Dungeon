@@ -27,13 +27,13 @@ import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.QuickSlot;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.ArmorAbility;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.adventurer.RockFall;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.cleric.AscendedForm;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.cleric.PowerOfMany;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.cleric.Trinity;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.duelist.Challenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.duelist.ElementalStrike;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.duelist.Feint;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.explorer.RockFall;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.huntress.NaturesPower;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.huntress.SpectralBlades;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.huntress.SpiritHawk;
@@ -108,7 +108,7 @@ public enum HeroClass {
 	HUNTRESS( HeroSubClass.SNIPER, HeroSubClass.WARDEN, HeroSubClass.SCOUT),
 	DUELIST( HeroSubClass.CHAMPION, HeroSubClass.MONK, HeroSubClass.PHANTOM),
 	CLERIC( HeroSubClass.PRIEST, HeroSubClass.PALADIN, HeroSubClass.PREACHER),
-	ADVENTURER( HeroSubClass.HYDROLOGIST);
+	EXPLORER( HeroSubClass.GEOMANCER);
 
 	private HeroSubClass[] subClasses;
 
@@ -159,8 +159,8 @@ public enum HeroClass {
 				initCleric( hero );
 				break;
 
-			case ADVENTURER:
-				initAdventurer( hero );
+			case EXPLORER:
+				initExplorer( hero );
 				break;
 		}
 
@@ -225,8 +225,8 @@ public enum HeroClass {
 				return Badges.Badge.MASTERY_DUELIST;
 			case CLERIC:
 				return Badges.Badge.MASTERY_CLERIC;
-			case ADVENTURER:
-				return Badges.Badge.MASTERY_ADVENTURER;
+			case EXPLORER:
+				return Badges.Badge.MASTERY_EXPLORER;
 		}
 		return null;
 	}
@@ -319,7 +319,7 @@ public enum HeroClass {
 		new ScrollOfRemoveCurse().identify();
 	}
 
-	private static void initAdventurer( Hero hero ) {
+	private static void initExplorer(Hero hero ) {
 
 		(hero.belongings.weapon = new Shovel()).identify();
 		hero.belongings.weapon.activate(hero);
@@ -364,7 +364,7 @@ public enum HeroClass {
 				return new ArmorAbility[]{new Challenge(), new ElementalStrike(), new Feint()};
 			case CLERIC:
 				return new ArmorAbility[]{new AscendedForm(), new Trinity(), new PowerOfMany()};
-			case ADVENTURER:
+			case EXPLORER:
 				return new ArmorAbility[]{new RockFall()};
 		}
 	}
@@ -383,7 +383,7 @@ public enum HeroClass {
 				return Assets.Sprites.DUELIST;
 			case CLERIC:
 				return Assets.Sprites.CLERIC;
-			case ADVENTURER:
+			case EXPLORER:
 				return Assets.Sprites.MITA;
 		}
 	}
@@ -406,8 +406,8 @@ public enum HeroClass {
 				return Assets.Splashes.DUELIST;
 			case CLERIC:
 				return Assets.Splashes.CLERIC;
-			case ADVENTURER:
-				return Assets.Splashes.ADVENTURER;
+			case EXPLORER:
+				return Assets.Splashes.EXPLORER;
 		}
 	}
 	
@@ -428,8 +428,8 @@ public enum HeroClass {
 				return Badges.isUnlocked(Badges.Badge.UNLOCK_DUELIST);
 			case CLERIC:
 				return Badges.isUnlocked(Badges.Badge.UNLOCK_CLERIC);
-			case ADVENTURER:
-				return Badges.isUnlocked(Badges.Badge.UNLOCK_ADVENTURER);
+			case EXPLORER:
+				return Badges.isUnlocked(Badges.Badge.UNLOCK_EXPLORER);
 		}
 	}
 	

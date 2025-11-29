@@ -97,6 +97,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.GuidingLight;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.JusticeStrike;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.LifeLinkSpell;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.ShieldOfLight;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Barricade;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Brute;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.CrystalSpire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DwarfKing;
@@ -104,7 +105,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Elemental;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GnollGeomancer;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Necromancer;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.StonePier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Tengu;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.MirrorImage;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.PrismaticImage;
@@ -148,7 +148,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfFrost;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfLightning;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfLivingEarth;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Pier;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.BarricadeCurse;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Blazing;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Grim;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Kinetic;
@@ -161,6 +161,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sickle;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.ShockingDart;
+import com.shatteredpixel.shatteredpixeldungeon.journal.Bestiary;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.Chasm;
@@ -1247,17 +1248,19 @@ public abstract class Char extends Actor {
 			Buff.affect(hero, EnergyRecyclingCooldown.class, 3f);
 		}
 
-		if (src instanceof Char && ((Char) src).buff(Pier.StonePierTracker.class) != null && !(this instanceof StonePier)){
-			Pier.StonePierTracker tracker = ((Char) src).buff(Pier.StonePierTracker.class);
+		if (src instanceof Char && ((Char) src).buff(BarricadeCurse.BarricadeTracker.class) != null && !(this instanceof Barricade)){
+			BarricadeCurse.BarricadeTracker tracker = ((Char) src).buff(BarricadeCurse.BarricadeTracker.class);
 			tracker.detach();
-			StonePier pier = new StonePier();
+			Barricade barricade = new Barricade();
 
-			pier.HT = (int)(hero.lvl * 2 * tracker.strength);
-			pier.HP = (int)(hero.lvl * 2 * tracker.strength);
-			pier.pos = pos;
-			GameScene.add(pier);
-			ScrollOfTeleportation.appear(pier, pier.pos);
-			Dungeon.level.occupyCell(pier);
+			barricade.HT = (int)((hero.lvl * 2 + 5) * tracker.strength);
+			barricade.HP = (int)((hero.lvl * 2 + 5) * tracker.strength);
+			barricade.pos = pos;
+			GameScene.add(barricade);
+			ScrollOfTeleportation.appear(barricade, barricade.pos);
+			Dungeon.level.occupyCell(barricade);
+
+			Bestiary.setSeen(Barricade.class);
 		}
 	}
 

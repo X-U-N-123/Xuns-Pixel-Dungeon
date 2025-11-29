@@ -73,7 +73,7 @@ public class Badges {
 		MASTERY_HUNTRESS,
 		MASTERY_DUELIST,
 		MASTERY_CLERIC,
-		MASTERY_ADVENTURER,
+		MASTERY_EXPLORER,
 		FOUND_RATMOGRIFY,
 
 		//bronze
@@ -82,7 +82,7 @@ public class Badges {
 		UNLOCK_HUNTRESS             ( 3 ),
 		UNLOCK_DUELIST              ( 4 ),
 		UNLOCK_CLERIC               ( 5 ),
-		UNLOCK_ADVENTURER           ( 27 ),
+		UNLOCK_EXPLORER             ( 27 ),
 		MONSTERS_SLAIN_1            ( 6 ),
 		MONSTERS_SLAIN_2            ( 7 ),
 		GOLD_COLLECTED_1            ( 8 ),
@@ -136,7 +136,7 @@ public class Badges {
 		BOSS_SLAIN_1_HUNTRESS,
 		BOSS_SLAIN_1_DUELIST,
 		BOSS_SLAIN_1_CLERIC,
-		BOSS_SLAIN_1_ADVENTURER,
+		BOSS_SLAIN_1_EXPLORER,
 		BOSS_SLAIN_1_ALL_CLASSES    ( 54, BadgeType.GLOBAL ),
 		RESEARCHER_2                ( 55, BadgeType.JOURNAL ),
 		GAMES_PLAYED_2              ( 56, BadgeType.GLOBAL ),
@@ -195,7 +195,7 @@ public class Badges {
 		VICTORY_HUNTRESS,
 		VICTORY_DUELIST,
 		VICTORY_CLERIC,
-		VICTORY_ADVENTURER,
+		VICTORY_EXPLORER,
 		VICTORY_ALL_CLASSES         ( 102, BadgeType.GLOBAL ),
 		DEATH_FROM_ALL              ( 103, BadgeType.GLOBAL ),
 		BOSS_SLAIN_3_GLADIATOR,
@@ -216,7 +216,7 @@ public class Badges {
 		BOSS_SLAIN_3_PRIEST,
 		BOSS_SLAIN_3_PALADIN,
 		BOSS_SLAIN_3_PREACHER,
-		BOSS_SLAIN_3_HYDROLOGIST,
+		BOSS_SLAIN_3_GEOMANCER,
 		BOSS_SLAIN_3_ALL_SUBCLASSES ( 104, BadgeType.GLOBAL ),
 		BOSS_CHALLENGE_3            ( 105 ),
 		BOSS_CHALLENGE_4            ( 106 ),
@@ -841,7 +841,7 @@ public class Badges {
 		firstBossClassBadges.put(HeroClass.HUNTRESS, Badge.BOSS_SLAIN_1_HUNTRESS);
 		firstBossClassBadges.put(HeroClass.DUELIST, Badge.BOSS_SLAIN_1_DUELIST);
 		firstBossClassBadges.put(HeroClass.CLERIC, Badge.BOSS_SLAIN_1_CLERIC);
-		firstBossClassBadges.put(HeroClass.ADVENTURER, Badge.BOSS_SLAIN_1_ADVENTURER);
+		firstBossClassBadges.put(HeroClass.EXPLORER, Badge.BOSS_SLAIN_1_EXPLORER);
 	}
 
 	private static LinkedHashMap<HeroClass, Badge> victoryClassBadges = new LinkedHashMap<>();
@@ -852,7 +852,7 @@ public class Badges {
 		victoryClassBadges.put(HeroClass.HUNTRESS, Badge.VICTORY_HUNTRESS);
 		victoryClassBadges.put(HeroClass.DUELIST, Badge.VICTORY_DUELIST);
 		victoryClassBadges.put(HeroClass.CLERIC, Badge.VICTORY_CLERIC);
-		victoryClassBadges.put(HeroClass.ADVENTURER, Badge.VICTORY_ADVENTURER);
+		victoryClassBadges.put(HeroClass.EXPLORER, Badge.VICTORY_EXPLORER);
 	}
 
 	private static LinkedHashMap<HeroSubClass, Badge> thirdBossSubclassBadges = new LinkedHashMap<>();
@@ -875,7 +875,7 @@ public class Badges {
 		thirdBossSubclassBadges.put(HeroSubClass.PRIEST, Badge.BOSS_SLAIN_3_PRIEST);
 		thirdBossSubclassBadges.put(HeroSubClass.PALADIN, Badge.BOSS_SLAIN_3_PALADIN);
 		thirdBossSubclassBadges.put(HeroSubClass.PREACHER, Badge.BOSS_SLAIN_3_PREACHER);
-		thirdBossSubclassBadges.put(HeroSubClass.HYDROLOGIST, Badge.BOSS_SLAIN_3_HYDROLOGIST);
+		thirdBossSubclassBadges.put(HeroSubClass.GEOMANCER, Badge.BOSS_SLAIN_3_GEOMANCER);
 	}
 	
 	public static void validateBossSlain() {
@@ -998,8 +998,8 @@ public class Badges {
 			case CLERIC:
 				badge = Badge.MASTERY_CLERIC;
 				break;
-			case ADVENTURER:
-				badge = Badge.MASTERY_ADVENTURER;
+			case EXPLORER:
+				badge = Badge.MASTERY_EXPLORER;
 				break;
 		}
 		
@@ -1051,9 +1051,9 @@ public class Badges {
 		}
 	}
 
-	public static void validateAdventurerUnlock(){
-		if (!isUnlocked(Badge.UNLOCK_ADVENTURER)){
-			displayBadge( Badge.UNLOCK_ADVENTURER );
+	public static void validateExplorerUnlock(){
+		if (!isUnlocked(Badge.UNLOCK_EXPLORER)){
+			displayBadge( Badge.UNLOCK_EXPLORER);
 		}
 	}
 	
@@ -1445,8 +1445,13 @@ public class Badges {
 		String result = "\n";
 
 		if (badge == Badge.BOSS_SLAIN_1_ALL_CLASSES){
+			int i = 2;
 			for (HeroClass cls : HeroClass.values()){
-				result += "\n";
+				if (i == 2){//give enough space for horizontal display
+					result += "\n";
+					i = 0;
+				} else result += "	";
+				i ++;
 				if (isUnlocked(firstBossClassBadges.get(cls)))  result += "_" + Messages.titleCase(cls.title()) + "_";
 				else                                            result += Messages.titleCase(cls.title());
 			}
@@ -1454,9 +1459,13 @@ public class Badges {
 			return result;
 
 		} else if (badge == Badge.VICTORY_ALL_CLASSES) {
-
+			int i = 2;
 			for (HeroClass cls : HeroClass.values()){
-				result += "\n";
+				if (i == 2){//give enough space for horizontal display
+					result += "\n";
+					i = 0;
+				} else result += "	";
+				i ++;
 				if (isUnlocked(victoryClassBadges.get(cls)))    result += "_" + Messages.titleCase(cls.title()) + "_";
 				else                                            result += Messages.titleCase(cls.title());
 			}
@@ -1467,10 +1476,10 @@ public class Badges {
 			int i = 3;
 			for (HeroSubClass cls : HeroSubClass.values()){
 				if (cls == HeroSubClass.NONE) continue;
-				if (i == 3){//currently every hero has 3 subclasses
+				if (i == 3){//every hero has 3 subclasses
 					result += "\n";
 					i = 0;
-				} else result += " ";
+				} else result += "	";
 				i ++;
 				if (isUnlocked(thirdBossSubclassBadges.get(cls))) result += "_" + Messages.titleCase(cls.title()) + "_";
 				else                                              result += Messages.titleCase(cls.title()) ;

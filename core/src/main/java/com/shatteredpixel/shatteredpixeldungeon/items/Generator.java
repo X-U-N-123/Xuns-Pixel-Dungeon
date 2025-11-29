@@ -22,11 +22,11 @@
 package com.shatteredpixel.shatteredpixeldungeon.items;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.items.armor.AdventurerArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClericArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.DuelistArmor;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.ExplorerArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.HuntressArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.LamellarArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.LeatherArmor;
@@ -616,7 +616,7 @@ public class Generator {
 					HuntressArmor.class,
 					DuelistArmor.class,
 					ClericArmor.class,
-					AdventurerArmor.class
+					ExplorerArmor.class
 			};
 			ARMOR.probs = new float[]{ 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0};
 			

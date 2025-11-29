@@ -55,6 +55,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.Ratmogrify
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.duelist.Challenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.DivineSense;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.RecallInscription;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Barricade;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CheckedCell;
@@ -231,12 +232,12 @@ public enum Talent {
 	//Power of Many T4
 	BEAMING_RAY(183, 4), LIFE_LINK(184, 4), STASIS(185, 4), HOLY_CHAMPION(253, 4),
 
-	//Adventurer T1
+	//Explorer T1
 	KEEN_MEAL(288), SECRET_FORESIGHT(289), TESTED_AWARENESS(290), HOME_ADVANTAGE(291), SAFE_SURVEY(292),
-	//Adventurer T2
-	FARSIGHT_MEAL(293), INSCRIBED_CLAIRVOYANCE(294), WINDING_PORCH(296), REKINDLED_EMBER(297),
-	//Adventurer T3
-	VARIED_ENVIRONMENT(299, 3),
+	//Explorer T2
+	FARSIGHT_MEAL(293), INSCRIBED_CLAIRVOYANCE(294), WINDING_PORCH(296), REKINDLED_EMBER(297), AGGRESSIVE_BARRICADE(298),
+	//Explorer T3
+	VARIED_ENVIRONMENT(299, 3), DIG_THE_WELL(300, 3), CONVENIENT_SHOVEL(301, 3),
 
 	//universal T4
 	HEROIC_ENERGY(26, 4), //See icon() and title() for special logic for this one
@@ -730,7 +731,7 @@ public enum Talent {
 					return 154;
 				case CLERIC:
 					return 186;
-				case ADVENTURER:
+				case EXPLORER:
 					return 334;
 			}
 		} else {
@@ -784,8 +785,8 @@ public enum Talent {
 			recharge.ignoreHolyTome = false;
 		}
 		if (hero.hasTalent(TESTED_SWIFTNESS)){
-			//2/3 turns of haste
-			Buff.affect(hero, Haste.class, 1f + hero.pointsInTalent(TESTED_SWIFTNESS));
+			//effectively 2/3 turns of haste
+			Buff.affect(hero, Haste.class, 1.67f + hero.pointsInTalent(TESTED_SWIFTNESS));
 		}
 		if (hero.hasTalent(TESTED_CHARGE)){
 			if (hero.heroClass == (HeroClass.DUELIST)){
@@ -934,6 +935,14 @@ public enum Talent {
 
 		if (Dungeon.level.map[hero.pos] == Terrain.EMBERS && talent == REKINDLED_EMBER && hero.buff(Burning.class) != null)
 			Buff.detach(hero, Burning.class);
+
+		if (talent == AGGRESSIVE_BARRICADE && hero.pointsInTalent(AGGRESSIVE_BARRICADE) == 2){
+			for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
+				if (mob instanceof Barricade && mob.alignment == Char.Alignment.ALLY){
+					((Barricade) mob).aggression = 6f;
+				}
+			}
+		}
 	}
 
 	public static class CachedRationsDropped extends CounterBuff{{revivePersists = true;}}
@@ -982,8 +991,8 @@ public enum Talent {
 		}
 
 		if (hero.hasTalent(INVIGORATING_MEAL)){
-			//effectively 1/2 turns of haste
-			Buff.prolong( hero, Haste.class, 0.67f+hero.pointsInTalent(INVIGORATING_MEAL));
+			//effectively 2/3 turns of haste
+			Buff.prolong( hero, Haste.class, 1.67f+hero.pointsInTalent(INVIGORATING_MEAL));
 		}
 
 		if (hero.hasTalent(STRENGTHENING_MEAL)){
@@ -1132,8 +1141,8 @@ public enum Talent {
 
 	public static void onPotionUsed( Hero hero, int cell, float factor ){
 		if (hero.hasTalent(LIQUID_WILLPOWER)){
-			// 6.5/10% of max HP
-			int shieldToGive = Math.round( factor * hero.HT * (0.030f + 0.035f*hero.pointsInTalent(LIQUID_WILLPOWER)));
+			// 10/15% of max HP
+			int shieldToGive = Math.round( factor * hero.HT * (0.05f + 0.05f*hero.pointsInTalent(LIQUID_WILLPOWER)));
 			hero.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(shieldToGive), FloatingText.SHIELDING);
 			Buff.affect(hero, Barrier.class).setShield(shieldToGive);
         }
@@ -1147,8 +1156,8 @@ public enum Talent {
 			for (int grassCell : grassCells){
 				Char ch = Actor.findChar(grassCell);
 				if (ch != null && ch.alignment == Char.Alignment.ENEMY){
-					//1/2 turns of roots
-					Buff.affect(ch, Roots.class, factor * hero.pointsInTalent(LIQUID_NATURE));
+					//2/3 turns of roots
+					Buff.affect(ch, Roots.class, factor * (1 + hero.pointsInTalent(LIQUID_NATURE)));
 				}
 				if (Dungeon.level.map[grassCell] == Terrain.EMPTY ||
 						Dungeon.level.map[grassCell] == Terrain.EMBERS ||
@@ -1158,8 +1167,8 @@ public enum Talent {
 				}
 				CellEmitter.get(grassCell).burst(LeafParticle.LEVEL_SPECIFIC, 4);
 			}
-			// 4/6 cells total
-			int totalGrassCells = (int) (factor * (2 + 2 * hero.pointsInTalent(LIQUID_NATURE)));
+			// 5/8 cells total
+			int totalGrassCells = (int) (factor * (2 + 3 * hero.pointsInTalent(LIQUID_NATURE)));
 			while (grassCells.size() > totalGrassCells){
 				grassCells.remove(0);
 			}
@@ -1188,8 +1197,8 @@ public enum Talent {
 			Buff.affect(hero, ScrollEmpower.class).reset((int) (factor * (1 + hero.pointsInTalent(INSCRIBED_POWER))));
 		}
 		if (hero.hasTalent(INSCRIBED_STEALTH)){
-			// 3/5 turns of stealth
-			Buff.affect(hero, Invisibility.class, factor * (1 + 2*hero.pointsInTalent(INSCRIBED_STEALTH)));
+			// 4/6 turns of stealth
+			Buff.affect(hero, Invisibility.class, factor * (2 + 2*hero.pointsInTalent(INSCRIBED_STEALTH)));
 			Sample.INSTANCE.play( Assets.Sounds.MELD );
 		}
 		if (hero.hasTalent(RECALL_INSCRIPTION) && Scroll.class.isAssignableFrom(cls) && cls != ScrollOfUpgrade.class){
@@ -1426,7 +1435,7 @@ public enum Talent {
 		}
 
 		if (Dungeon.level.map[hero.pos] == Terrain.EMBERS && hero.pointsInTalent(REKINDLED_EMBER) >= 2){
-			Buff.affect( enemy, Burning.class ).reignite( enemy );
+			Buff.affect( enemy, Burning.class ).reignite( enemy, 5);
 			enemy.sprite.emitter().burst( FlameParticle.FACTORY, 2 );}
 
 		return dmg;
@@ -1502,7 +1511,7 @@ public enum Talent {
 			case CLERIC:
 				Collections.addAll(tierTalents, SATIATED_SPELLS, HOLY_INTUITION, TESTED_HOLINESS, SEARING_LIGHT, SHIELD_OF_LIGHT);
 				break;
-			case ADVENTURER:
+			case EXPLORER:
 				Collections.addAll(tierTalents, KEEN_MEAL, SECRET_FORESIGHT, TESTED_AWARENESS, HOME_ADVANTAGE, SAFE_SURVEY);
 				break;
 }
@@ -1534,8 +1543,8 @@ public enum Talent {
 			case CLERIC:
 				Collections.addAll(tierTalents, ENLIGHTENING_MEAL, RECALL_INSCRIPTION, SUNRAY, DIVINE_SENSE, BLESS, ASCETICISM);
 				break;
-			case ADVENTURER:
-				Collections.addAll(tierTalents, FARSIGHT_MEAL, INSCRIBED_CLAIRVOYANCE, WINDING_PORCH, REKINDLED_EMBER);
+			case EXPLORER:
+				Collections.addAll(tierTalents, FARSIGHT_MEAL, INSCRIBED_CLAIRVOYANCE, WINDING_PORCH, REKINDLED_EMBER, AGGRESSIVE_BARRICADE);
 				break;
 		}
 		for (Talent talent : tierTalents){
@@ -1566,8 +1575,8 @@ public enum Talent {
 			case CLERIC:
 				Collections.addAll(tierTalents, CLEANSE, LIGHT_READING, SHARED_CHARGE);
 				break;
-			case ADVENTURER:
-				Collections.addAll(tierTalents, VARIED_ENVIRONMENT);
+			case EXPLORER:
+				Collections.addAll(tierTalents, VARIED_ENVIRONMENT, DIG_THE_WELL, CONVENIENT_SHOVEL);
 				break;
 		}
 		for (Talent talent : tierTalents){
@@ -1651,7 +1660,7 @@ public enum Talent {
 			case PREACHER:
 				Collections.addAll(tierTalents, PUNISHMENT, HOLY_DRAPE, HOLY_ANTIMAGIC, HOLY_IMAGE, ENHANCED_BOOKPAGE);
 				break;
-			case HYDROLOGIST:
+			case GEOMANCER:
 				Collections.addAll(tierTalents);
 				break;
 		}

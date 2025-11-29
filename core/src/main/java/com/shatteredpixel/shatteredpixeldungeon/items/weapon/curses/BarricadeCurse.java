@@ -29,13 +29,13 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.watabou.utils.Bundle;
 
-public class Pier extends Weapon.Enchantment {
+public class BarricadeCurse extends Weapon.Enchantment {
 
     private static ItemSprite.Glowing BLACK = new ItemSprite.Glowing( 0x000000 );
 
     @Override
     public int proc(Weapon weapon, Char attacker, Char defender, int damage ) {
-        Buff.affect(attacker, StonePierTracker.class, 0f).strength = procChanceMultiplier(attacker);
+        Buff.affect(attacker, BarricadeTracker.class, 0f).strength = procChanceMultiplier(attacker);
         return damage;
     }
 
@@ -49,7 +49,7 @@ public class Pier extends Weapon.Enchantment {
         return BLACK;
     }
 
-    public static class StonePierTracker extends FlavourBuff {
+    public static class BarricadeTracker extends FlavourBuff {
 
         {
             actPriority = Actor.VFX_PRIO;

@@ -331,6 +331,17 @@ public abstract class Mob extends Char {
 			}
 		}
 
+		//moreover, if the hero has talent and there's a barricade(target) in our FOV
+		if (enemy != null && enemy.alignment == Alignment.ALLY && !(enemy instanceof Barricade)
+		&& hero.hasTalent(Talent.AGGRESSIVE_BARRICADE)){
+			for (Mob m : Dungeon.level.mobs.toArray(new Mob[0])) {
+				if (m instanceof Barricade && m.alignment == Alignment.ALLY && fieldOfView[m.pos]){
+					newEnemy = true;
+					break;
+				}
+			}
+		}
+
 		if ( newEnemy ) {
 
 			HashSet<Char> enemies = new HashSet<>();
@@ -430,6 +441,16 @@ public abstract class Mob extends Char {
 				if (closest == Dungeon.hero){
 					for (Char ch : enemies){
 						if (ch instanceof Feint.AfterImage){
+							closest = ch;
+							break;
+						}
+					}
+				}
+				if (closest.alignment == Alignment.ALLY && !(closest instanceof Barricade)
+				&& hero.hasTalent(Talent.AGGRESSIVE_BARRICADE)){
+					//if we were going to target allies, but a barricade is in FOV, target that instead
+					for (Char ch : enemies){
+						if (ch instanceof Barricade && ch.alignment == Alignment.ALLY && fieldOfView[ch.pos]){
 							closest = ch;
 							break;
 						}
@@ -1215,7 +1236,7 @@ public abstract class Mob extends Char {
 					if (mob.paralysed <= 0
 							&& Dungeon.level.distance(pos, mob.pos) <= 8
 							&& mob.state != mob.HUNTING
-							&& !(mob instanceof StonePier)) {
+							&& !(mob instanceof Barricade)) {
 						mob.beckon(target);
 					}
 				}
@@ -1254,7 +1275,7 @@ public abstract class Mob extends Char {
 					if (mob.paralysed <= 0
 							&& Dungeon.level.distance(pos, mob.pos) <= 8
 							&& mob.state != mob.HUNTING
-							&& !(mob instanceof StonePier)) {
+							&& !(mob instanceof Barricade)) {
 						mob.beckon( target );
 					}
 				}

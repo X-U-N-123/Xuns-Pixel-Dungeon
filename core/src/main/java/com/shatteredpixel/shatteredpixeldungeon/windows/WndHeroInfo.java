@@ -76,7 +76,7 @@ public class WndHeroInfo extends WndTabbed {
 			case CLERIC:
 				tabIcon = new ItemSprite(ItemSpriteSheet.ARTIFACT_TOME, null);
 				break;
-			case ADVENTURER:
+			case EXPLORER:
 				tabIcon = new ItemSprite(ItemSpriteSheet.SHOVEL, null);
 				break;
 		}
@@ -210,7 +210,7 @@ public class WndHeroInfo extends WndTabbed {
 							new ItemSprite(ItemSpriteSheet.CUDGEL),
 							new ItemSprite(ItemSpriteSheet.SCROLL_ISAZ)};
 					break;
-				case ADVENTURER:
+				case EXPLORER:
 					icons = new Image[]{ new ItemSprite(ItemSpriteSheet.SHOVEL),
 							Icons.TERRAIN.get(),
 							new ItemSprite(ItemSpriteSheet.CLAY),

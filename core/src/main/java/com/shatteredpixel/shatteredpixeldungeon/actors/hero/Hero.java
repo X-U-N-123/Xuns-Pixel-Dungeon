@@ -583,7 +583,7 @@ public class Hero extends Char {
 
 		if ((Dungeon.level.map[pos] == Terrain.EMPTY
 		|| Dungeon.level.map[pos] == Terrain.EMPTY_DECO)
-		&& heroClass == HeroClass.ADVENTURER){
+		&& heroClass == HeroClass.EXPLORER){
 			accuracy *= 1.1f;
 		}
 
@@ -642,7 +642,7 @@ public class Hero extends Char {
 
 		if ((Dungeon.level.map[pos] == Terrain.EMPTY
 		|| Dungeon.level.map[pos] == Terrain.EMPTY_DECO)
-		&& heroClass == HeroClass.ADVENTURER){
+		&& heroClass == HeroClass.EXPLORER){
 			evasion *= 1.1f;
 		}
 
@@ -759,7 +759,7 @@ public class Hero extends Char {
 			dmg = Math.round(dmg * 1.025f + (.025f*pointsInTalent(Talent.WEAPON_RECHARGING)));
 		}
 
-		if (Dungeon.level.map[pos] == Terrain.EMPTY_SP && heroClass == HeroClass.ADVENTURER){
+		if (Dungeon.level.map[pos] == Terrain.EMPTY_SP && heroClass == HeroClass.EXPLORER){
 			dmg = Math.round(dmg * 1.1f);
 		}
 
@@ -827,7 +827,7 @@ public class Hero extends Char {
 			speed *= courierFactor;
 		}
 
-		if (heroClass == HeroClass.ADVENTURER && Dungeon.level.map[pos] == Terrain.WATER){
+		if (heroClass == HeroClass.EXPLORER && Dungeon.level.map[pos] == Terrain.WATER){
 			speed *= 1.1f;
 		}
 

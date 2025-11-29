@@ -92,7 +92,7 @@ public class Regeneration extends Buff {
 				if (Dungeon.hero.hasTalent(Talent.EMERGENCY_CHARGE) && Dungeon.hero.heroClass != HeroClass.ROGUE){
 					delay /= 1+Dungeon.hero.pointsInTalent(Talent.EMERGENCY_CHARGE)*0.2f* (target.HT - target.HP)/ target.HT;
 				}
-				if (Dungeon.hero.heroClass == HeroClass.ADVENTURER ||
+				if (Dungeon.hero.heroClass == HeroClass.EXPLORER ||
 				(Dungeon.level.map[target.pos] == Terrain.GRASS
 				|| Dungeon.level.map[target.pos] == Terrain.HIGH_GRASS
 				|| Dungeon.level.map[target.pos] == Terrain.FURROWED_GRASS)){

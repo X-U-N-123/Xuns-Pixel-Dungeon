@@ -118,8 +118,8 @@ abstract public class ClassArmor extends Armor {
 			case CLERIC:
 				classArmor = new ClericArmor();
 				break;
-			case ADVENTURER:
-				classArmor = new AdventurerArmor();
+			case EXPLORER:
+				classArmor = new ExplorerArmor();
 				break;
 		}
 		

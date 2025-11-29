@@ -40,6 +40,8 @@ public class Statistics {
 	public static int ankhsUsed;
 	public static int extractUsed;
 	public static int enlighteningDrunk;
+	public static int waterAwareDug;
+	public static int waterHealDug;
 	//tracks every item type 'seen' this run (i.e. would be added to catalogs)
 	public static HashSet<Class> itemTypesDiscovered = new HashSet<>();
 
@@ -89,6 +91,8 @@ public class Statistics {
 		ankhsUsed		= 0;
 		extractUsed     = 0;
 		enlighteningDrunk = 0;
+		waterAwareDug = 0;
+		waterHealDug = 0;
 		itemTypesDiscovered.clear();
 
 		progressScore   = 0;
@@ -133,6 +137,8 @@ public class Statistics {
 	private static final String ANKHS		= "ankhsUsed";
 	private static final String EXTRACT		= "extractUsed";
 	private static final String ENLIGHTENING= "enlighteningUsed";
+	private static final String AWAREDUG    = "waterAwareDug";
+	private static final String HEALDUG     = "waterHealDug";
 
 	private static final String PROG_SCORE	    = "prog_score";
 	private static final String ITEM_VAL	    = "item_val";
@@ -177,6 +183,8 @@ public class Statistics {
 		bundle.put( ANKHS,		ankhsUsed );
 		bundle.put( EXTRACT,    extractUsed );
 		bundle.put( ENLIGHTENING, enlighteningDrunk);
+		bundle.put( AWAREDUG, waterAwareDug);
+		bundle.put( HEALDUG, waterHealDug);
 		bundle.put( ITEM_TYPES_DISCOVERED, itemTypesDiscovered.toArray(new Class<?>[0]) );
 
 		bundle.put( PROG_SCORE,  progressScore );
@@ -225,6 +233,8 @@ public class Statistics {
 		ankhsUsed		= bundle.getInt( ANKHS );
 		extractUsed		= bundle.getInt( EXTRACT );
 		enlighteningDrunk= bundle.getInt( ENLIGHTENING );
+		waterAwareDug   = bundle.getInt( AWAREDUG );
+		waterHealDug    = bundle.getInt( HEALDUG );
 
 		if (bundle.contains( ITEM_TYPES_DISCOVERED )) {
 			itemTypesDiscovered = new HashSet<>(Arrays.asList(bundle.getClassArray(ITEM_TYPES_DISCOVERED)));

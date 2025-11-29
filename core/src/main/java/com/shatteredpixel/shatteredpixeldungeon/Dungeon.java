@@ -896,7 +896,7 @@ public class Dungeon {
 
 		dist += Talent.MonkViewBoost();
 
-		if (Dungeon.hero.heroClass == HeroClass.ADVENTURER) dist ++;
+		if (Dungeon.hero.heroClass == HeroClass.EXPLORER) dist ++;
 
 		if (Dungeon.hero.buff(MagicalSight.class) != null){
 			dist = Math.max( dist, MagicalSight.DISTANCE );

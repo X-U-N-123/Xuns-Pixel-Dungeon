@@ -292,22 +292,15 @@ public abstract class Level implements Bundlable {
 						} else if (Random.Float() < WornLock.overrideNormalLevelChance()) {
 							feeling = WornLock.getNextFeeling();
 						//and we need priority here
-						} else if (Random.Float() <= Dungeon.hero.pointsInTalent(Talent.VARIED_ENVIRONMENT) *0.3f ){
-							switch (Dungeon.hero.subClass){
-								case HYDROLOGIST:
-									feeling = Feeling.WATER;
-									break;
-								default:
-									ArrayList<Feeling> feelings = new ArrayList<>();
-									feelings.add(Feeling.GRASS);
-									feelings.add(Feeling.WATER);
-									feelings.add(Feeling.TRAPS);
-									feelings.add(Feeling.CHASM);
-									feelings.add(Feeling.LARGE);
-									feelings.add(Feeling.SECRETS);
-									feeling = feelings.get(Random.Int(feelings.size()));
-									break;
-							}
+						} else if (Random.Float() <= Dungeon.hero.pointsInTalent(Talent.VARIED_ENVIRONMENT) /3f){
+							ArrayList<Feeling> usableFeelings = new ArrayList<>();
+								usableFeelings.add(Feeling.GRASS);
+								usableFeelings.add(Feeling.WATER);
+								usableFeelings.add(Feeling.TRAPS);
+								usableFeelings.add(Feeling.CHASM);
+								usableFeelings.add(Feeling.LARGE);
+								usableFeelings.add(Feeling.SECRETS);
+							feeling = usableFeelings.get(Random.Int(usableFeelings.size()));
 						} else {
 							feeling = Feeling.NONE;
 						}
@@ -1156,11 +1149,11 @@ public abstract class Level implements Bundlable {
 			//we call act here instead of detach in case the debuffs haven't managed to deal dmg once yet
 			if (map[ch.pos] == Terrain.WATER){
 				if (ch.buff(Burning.class) != null){
-					if (ch instanceof Hero) Badges.validateAdventurerUnlock();
+					if (ch instanceof Hero) Badges.validateExplorerUnlock();
 					ch.buff(Burning.class).act();
 				}
 				if (ch.buff(Ooze.class) != null){
-					if (ch instanceof Hero) Badges.validateAdventurerUnlock();
+					if (ch instanceof Hero) Badges.validateExplorerUnlock();
 					ch.buff(Ooze.class).act();
 				}
 			}
@@ -1354,7 +1347,7 @@ public abstract class Level implements Bundlable {
 				if (Dungeon.hero.hasTalent(Talent.FARSIGHT)) viewDist += 1 + Dungeon.hero.pointsInTalent(Talent.FARSIGHT);
 				viewDist += Talent.MonkViewBoost();
 				viewDist *= EyeOfNewt.visionRangeMultiplier();
-				if (Dungeon.hero.heroClass == HeroClass.ADVENTURER) viewDist ++;
+				if (Dungeon.hero.heroClass == HeroClass.EXPLORER) viewDist ++;
 			}
 			if (viewDist <= 1) viewDist = 1;
 			
