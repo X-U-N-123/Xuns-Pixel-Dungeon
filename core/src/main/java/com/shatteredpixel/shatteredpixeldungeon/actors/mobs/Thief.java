@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
@@ -145,9 +146,12 @@ public class Thief extends Mob {
 
 	protected boolean steal( Hero hero ) {
 
-		Item toSteal = hero.belongings.randomUnequipped();
+		Item toSteal;
+		do {
+			toSteal = hero.belongings.randomUnequipped();
+		} while ((toSteal != null && (toSteal.level() < 1 || Dungeon.isChallenged(Challenges.CRAZY_LOOT))));
 
-		if (toSteal != null && !toSteal.unique && toSteal.level() < 1 ) {
+		if (toSteal != null && !toSteal.unique) {
 
 			GLog.w( Messages.get(Thief.class, "stole", toSteal.name()) );
 			if (!toSteal.stackable) {

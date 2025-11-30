@@ -694,8 +694,12 @@ public class Armor extends EquipableItem {
 	protected static int STRReq(int tier, int lvl){
 		lvl = Math.max(0, lvl);
 
+		if (Dungeon.isChallenged(Challenges.EXERCISES)){
+			//in challenge, strength req decreases at +1,+4,+9,+16,etc.
+			return (8 + tier * 2) - (int)Math.sqrt(lvl);
+		}
 		//strength req decreases at +1,+3,+6,+10,etc.
-		return (8 + Math.round(tier * 2)) - (int)(Math.sqrt(8 * lvl + 1) - 1)/2;
+		return (8 + tier * 2) - (int)(Math.sqrt(8 * lvl + 1) - 1)/2;
 	}
 	
 	@Override

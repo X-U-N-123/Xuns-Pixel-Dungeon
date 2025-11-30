@@ -50,6 +50,7 @@ public class ElixirOfMight extends Elixir {
 		identify();
 		
 		hero.STR++;
+		PotionOfStrength.exreciseDebuff(hero);
 		hero.sprite.showStatusWithIcon(CharSprite.POSITIVE, "1", FloatingText.STRENGTH);
 		
 		Buff.affect(hero, HTBoost.class).reset(5);

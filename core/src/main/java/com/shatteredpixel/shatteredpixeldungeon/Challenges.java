@@ -38,8 +38,10 @@ public class Challenges {
 	public static final int STRONGER_BOSSES 	= 256;
 	public static final int X_U_NS_POWER        = 512;
 	public static final int HEAVY_BURDEN        = 1024;
+	public static final int CRAZY_LOOT          = 2048;
+	public static final int EXERCISES           = 4096;
 
-	public static final int MAX_VALUE           = 2047;
+	public static final int MAX_VALUE           = 8191;
 
 	public static final String[] NAME_IDS = {
 			"champion_enemies",
@@ -52,11 +54,14 @@ public class Challenges {
 			"darkness",
 			"no_scrolls",
 			"heavy_burden",
-			"x_u_ns_power"
+			"crazy_loot",
+			"exercises",
+			"x_u_ns_power"	//currently 12 challenges in total
 	};
 
 	public static final int[] MASKS = {
-			CHAMPION_ENEMIES, STRONGER_BOSSES, NO_FOOD, NO_ARMOR, NO_HEALING, NO_HERBALISM, SWARM_INTELLIGENCE, DARKNESS, NO_SCROLLS, HEAVY_BURDEN, X_U_NS_POWER
+			CHAMPION_ENEMIES, STRONGER_BOSSES, NO_FOOD, NO_ARMOR, NO_HEALING, NO_HERBALISM,
+			SWARM_INTELLIGENCE, DARKNESS, NO_SCROLLS, HEAVY_BURDEN, CRAZY_LOOT, EXERCISES, X_U_NS_POWER
 	};
 
 	public static int activeChallenges(){

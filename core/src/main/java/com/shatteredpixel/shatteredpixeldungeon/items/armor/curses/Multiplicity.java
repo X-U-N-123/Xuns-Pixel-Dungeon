@@ -102,6 +102,7 @@ public class Multiplicity extends Armor.Glyph {
 							m.remove(DwarfKing.KingDamager.class);
 							//don't duplicate downed ghouls
 							m.remove(Ghoul.GhoulLifeLink.class);
+							m.plunderedItem = null;
 							
 							//If a thief has stolen an item, that item is not duplicated.
 							if (m instanceof Thief) {

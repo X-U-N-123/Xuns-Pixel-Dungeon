@@ -69,6 +69,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.Surprise;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Wound;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
+import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.MasterThievesArmband;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
@@ -99,6 +100,7 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.BArray;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
@@ -140,6 +142,8 @@ public abstract class Mob extends Char {
 
 	protected static final float TIME_TO_WAKE_UP = 1f;
 
+	public Item plunderedItem = null;//only used for challenge
+
 	protected boolean firstAdded = true;
 	protected void onAdd(){
 		if (firstAdded) {
@@ -157,6 +161,8 @@ public abstract class Mob extends Char {
 	private static final String MAX_LVL	= "max_lvl";
 
 	private static final String ENEMY_ID	= "enemy_id";
+
+	private static final String PLUNDERED = "plunderedItems";
 	
 	@Override
 	public void storeInBundle( Bundle bundle ) {
@@ -180,6 +186,9 @@ public abstract class Mob extends Char {
 
 		if (enemy != null) {
 			bundle.put(ENEMY_ID, enemy.id() );
+		}
+		if (plunderedItem != null){
+			bundle.put(PLUNDERED, plunderedItem);
 		}
 	}
 	
@@ -209,6 +218,10 @@ public abstract class Mob extends Char {
 
 		if (bundle.contains(ENEMY_ID)) {
 			enemyID = bundle.getInt(ENEMY_ID);
+		}
+
+		if (bundle.contains(PLUNDERED)) {
+			plunderedItem = (Item) bundle.get(PLUNDERED);
 		}
 
 		//no need to actually save this, must be false
@@ -986,6 +999,8 @@ public abstract class Mob extends Char {
 
 		dropBonus += ShardOfOblivion.lootChanceMultiplier()-1f;
 
+		if (Dungeon.isChallenged(Challenges.CRAZY_LOOT) && plunderedItem != null) dropBonus /= 3f;
+
 		return lootChance * dropBonus;
 	}
 	
@@ -1034,6 +1049,10 @@ public abstract class Mob extends Char {
 			Talent.onFoodEaten(Dungeon.hero, 0, null);
 		}
 
+		//crazy loot logic
+		if (plunderedItem != null) {
+			Dungeon.level.drop(plunderedItem, pos).sprite.drop();
+		}
 	}
 	
 	protected Object loot = null;
@@ -1102,6 +1121,7 @@ public abstract class Mob extends Char {
 		String property = "";
 		String State = "";
 		String alignment = "";
+		String plunder = "";
 		if (Dungeon.hero != null && Dungeon.isChallenged(Challenges.X_U_NS_POWER)){
 			property = Messages.get(this, "property");
 			if (this.properties().contains(Char.Property.BOSS))       property += Messages.get(this, "boss");
@@ -1137,8 +1157,11 @@ public abstract class Mob extends Char {
 			}
 			desc_dev = Messages.get(this, "dev_info", HP, HT, attackSkill(this), defenseSkill(this), EXP, maxLvl + inc, damageRoll(), attackDelay(), armor, speed());
 		}
+		if (Dungeon.isChallenged(Challenges.CRAZY_LOOT) && plunderedItem != null){
+			plunder += "\n\n" + Messages.get(this, "plunder");
+		}
 
-		return desc_dev + property + State + alignment + desc;
+		return desc_dev + property + State + alignment + desc + plunder;
 	}
 	
 	public void notice() {
@@ -1286,7 +1309,31 @@ public abstract class Mob extends Char {
 		
 		protected boolean continueWandering(){
 			enemySeen = false;
-			
+
+			Heap itemOnFloor = Dungeon.level.heaps.get( pos );
+			if (itemOnFloor != null && plunderedItem == null && Dungeon.isChallenged(Challenges.CRAZY_LOOT)
+			&& state == WANDERING && alignment == Alignment.ENEMY){
+				plunderedItem = itemOnFloor.pickUp();
+				spend( TICK );
+				target = randomDestination();
+				return true;
+			}//pickup item on the floor if challenge is activated
+
+			if (Dungeon.isChallenged(Challenges.CRAZY_LOOT) && plunderedItem == null && alignment == Alignment.ENEMY){
+				boolean[] passable = BArray.or(Dungeon.level.passable, Dungeon.level.avoid, null);
+
+				for (int i = 0; i < Dungeon.level.length(); i++){
+
+					PathFinder.buildDistanceMap(i, passable);
+					int[] reachable = PathFinder.distance.clone();
+
+					if (fieldOfView[i] && Dungeon.level.heaps.get(i) != null && reachable[i] < Integer.MAX_VALUE){
+						target = i;
+						break;
+					}
+				}
+			}//if challenge is activated and the item is reachable, go there
+
 			int oldPos = pos;
 			if (target != -1 && getCloser( target )) {
 				spend( 1 / speed() );

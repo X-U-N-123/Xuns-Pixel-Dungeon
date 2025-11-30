@@ -129,6 +129,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ElementalMask;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.items.devShield;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfStrength;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.HeatBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfCleansing;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Pickaxe;
@@ -266,7 +267,7 @@ public abstract class Char extends Actor {
 		} else if (c instanceof Hero
 				&& alignment == Alignment.ALLY
 				&& !hasProp(this, Property.IMMOVABLE)
-				&& Dungeon.level.distance(pos, c.pos) <= 2*Dungeon.hero.pointsInTalent(Talent.ALLY_WARP)){
+				&& Dungeon.level.distance(pos, c.pos) <= 2*hero.pointsInTalent(Talent.ALLY_WARP)){
 			return true;
 		} else {
 			return false;
@@ -299,7 +300,7 @@ public abstract class Char extends Actor {
 		}
 
 		//warp instantly with allies in this case
-		if (c == Dungeon.hero && Dungeon.hero.hasTalent(Talent.ALLY_WARP)){
+		if (c == hero && hero.hasTalent(Talent.ALLY_WARP)){
 			PathFinder.buildDistanceMap(c.pos, BArray.or(Dungeon.level.passable, Dungeon.level.avoid, null));
 			if (PathFinder.distance[pos] == Integer.MAX_VALUE){
 				return true;
@@ -329,17 +330,17 @@ public abstract class Char extends Actor {
 		
 		c.spend( 1 / c.speed() );
 
-		if (c == Dungeon.hero){
-			if (Dungeon.hero.subClass == HeroSubClass.FREERUNNER){
-				Buff.affect(Dungeon.hero, Momentum.class).gainStack();
+		if (c == hero){
+			if (hero.subClass == HeroSubClass.FREERUNNER){
+				Buff.affect(hero, Momentum.class).gainStack();
 			}
-			if (Dungeon.hero.hasTalent(Talent.MARCH_FORWARD) && !Swiftness.enemynear(c)){
+			if (hero.hasTalent(Talent.MARCH_FORWARD) && !Swiftness.enemynear(c)){
 				Buff.affect(c, Talent.MarchForwardTracker.class).Move();
 			}
 
-			Dungeon.hero.justMoved = true;
+			hero.justMoved = true;
 
-			Dungeon.hero.busy();
+			hero.busy();
 		}
 		
 		return true;
@@ -449,13 +450,13 @@ public abstract class Char extends Actor {
 					if (((Hero)this).hasTalent(Talent.TERRORIST_ATTACK)) {
 						for (Mob mob : Dungeon.level.mobs.toArray( new Mob[0] )) {
  							if (Dungeon.level.distance(pos, mob.pos) <= 5 && mob.alignment != Alignment.ALLY) {
-								Buff.affect( mob, Terror.class, 1+2*Dungeon.hero.pointsInTalent(Talent.TERRORIST_ATTACK)).object = Dungeon.hero.id();
+								Buff.affect( mob, Terror.class, 1+2*hero.pointsInTalent(Talent.TERRORIST_ATTACK)).object = hero.id();
 							}
 						}
 					}
 
 					if (((Hero)this).hasTalent(Talent.HASHASHINS)){
-						Buff.affect(this, Talent.HashashinsTracker.class, Math.max(0, Dungeon.hero.attackDelay()-1f));
+						Buff.affect(this, Talent.HashashinsTracker.class, Math.max(0, hero.attackDelay()-1f));
 					}
 				}
 			} else {
@@ -469,11 +470,11 @@ public abstract class Char extends Actor {
 
 			if (enemy.buff(GuidingLight.Illuminated.class) != null){
 				enemy.buff(GuidingLight.Illuminated.class).detach();
-				if (this == Dungeon.hero && Dungeon.hero.hasTalent(Talent.SEARING_LIGHT)){
-					dmg += 1 + 2*Dungeon.hero.pointsInTalent(Talent.SEARING_LIGHT);
+				if (this == hero && hero.hasTalent(Talent.SEARING_LIGHT)){
+					dmg += 1 + 2*hero.pointsInTalent(Talent.SEARING_LIGHT);
 				}
-				if (this != Dungeon.hero && Dungeon.hero.subClass == HeroSubClass.PRIEST){
-					enemy.damage(Dungeon.hero.lvl, GuidingLight.INSTANCE);
+				if (this != hero && hero.subClass == HeroSubClass.PRIEST){
+					enemy.damage(hero.lvl, GuidingLight.INSTANCE);
 				}
 			}
 
@@ -487,7 +488,7 @@ public abstract class Char extends Actor {
 			if (buff( PowerOfMany.PowerBuff.class) != null){
 				if (buff( BeamingRay.BeamingRayBoost.class) != null
 					&& buff( BeamingRay.BeamingRayBoost.class).object == enemy.id()){
-					dmg *= 1.3f + 0.05f*Dungeon.hero.pointsInTalent(Talent.BEAMING_RAY);
+					dmg *= 1.3f + 0.05f*hero.pointsInTalent(Talent.BEAMING_RAY);
 				} else {
 					dmg *= 1.25f;
 				}
@@ -509,14 +510,27 @@ public abstract class Char extends Actor {
 				dmg = endure.adjustDamageTaken(dmg);
 			}
 
+			if (Dungeon.isChallenged(Challenges.EXERCISES))//exercise increase strength logic
+				if ((enemy == hero && hero.belongings.armor() != null && hero.belongings.armor().STRReq() > hero.STR())
+				|| (this == hero && hero.belongings.attackingWeapon() != null && ((Weapon)hero.belongings.attackingWeapon()).STRReq() > hero.STR())){
+					hero.partialSTR += 0.01f;
+					while (hero.partialSTR >= 1){
+						hero.partialSTR --;
+						hero.STR ++;
+
+						hero.sprite.showStatusWithIcon(CharSprite.POSITIVE, "1", FloatingText.STRENGTH);
+						GLog.p( Messages.get(PotionOfStrength.class, "msg", hero.STR()) );
+					}
+				}
+
 			if (enemy.buff(ScrollOfChallenge.ChallengeArena.class) != null){
 				dmg *= 0.67f;
 			}
 
-			if (Dungeon.hero.alignment == enemy.alignment
-					&& Dungeon.hero.buff(AuraOfProtection.AuraBuff.class) != null
-					&& (Dungeon.level.distance(enemy.pos, Dungeon.hero.pos) <= 2 || enemy.buff(LifeLinkSpell.LifeLinkSpellBuff.class) != null)){
-				dmg *= 0.925f - 0.075f*Dungeon.hero.pointsInTalent(Talent.AURA_OF_PROTECTION);
+			if (hero.alignment == enemy.alignment
+					&& hero.buff(AuraOfProtection.AuraBuff.class) != null
+					&& (Dungeon.level.distance(enemy.pos, hero.pos) <= 2 || enemy.buff(LifeLinkSpell.LifeLinkSpellBuff.class) != null)){
+				dmg *= 0.925f - 0.075f*hero.pointsInTalent(Talent.AURA_OF_PROTECTION);
 			}
 
 			if (enemy.buff(MonkEnergy.MonkAbility.Meditate.MeditateResistance.class) != null){
@@ -624,9 +638,9 @@ public abstract class Char extends Actor {
 			}
 
 			if (!enemy.isAlive() && visibleFight) {
-				if (enemy == Dungeon.hero) {
+				if (enemy == hero) {
 					
-					if (this == Dungeon.hero) {
+					if (this == hero) {
 						return true;
 					}
 
@@ -637,7 +651,7 @@ public abstract class Char extends Actor {
 					Dungeon.fail( this );
 					GLog.n( Messages.capitalize(Messages.get(Char.class, "kill", name())) );
 					
-				} else if (this == Dungeon.hero) {
+				} else if (this == hero) {
 					GLog.i( Messages.capitalize(Messages.get(Char.class, "defeat", enemy.name())) );
 				}
 			}
@@ -713,11 +727,11 @@ public abstract class Char extends Actor {
 			acuRoll *= 1.2f;
 		}
 		acuRoll *= AscensionChallenge.statModifier(attacker);
-		if (Dungeon.hero.heroClass != HeroClass.CLERIC
-				&& Dungeon.hero.hasTalent(Talent.BLESS)
+		if (hero.heroClass != HeroClass.CLERIC
+				&& hero.hasTalent(Talent.BLESS)
 				&& attacker.alignment == Alignment.ALLY){
 			// + 4%/6%
-			acuRoll *= 1.02f + 0.02f*Dungeon.hero.pointsInTalent(Talent.BLESS);
+			acuRoll *= 1.02f + 0.02f*hero.pointsInTalent(Talent.BLESS);
 		}
 		acuRoll *= accMulti;
 
@@ -732,11 +746,11 @@ public abstract class Char extends Actor {
 			acuRoll *= 1.2f;
 		}
 		defRoll *= AscensionChallenge.statModifier(defender);
-		if (Dungeon.hero.heroClass != HeroClass.CLERIC
-				&& Dungeon.hero.hasTalent(Talent.BLESS)
+		if (hero.heroClass != HeroClass.CLERIC
+				&& hero.hasTalent(Talent.BLESS)
 				&& defender.alignment == Alignment.ALLY){
 			// + 4%/6%
-			defRoll *= 1.02f + 0.02f*Dungeon.hero.pointsInTalent(Talent.BLESS);
+			defRoll *= 1.02f + 0.02f*hero.pointsInTalent(Talent.BLESS);
 		}
 		defRoll *= FerretTuft.evasionMultiplier();
 		
@@ -787,25 +801,25 @@ public abstract class Char extends Actor {
 
 		ShieldOfLight.ShieldOfLightTracker shield = buff( ShieldOfLight.ShieldOfLightTracker.class);
 		if (shield != null && shield.object == enemy.id()){
-			int min = 1 + Dungeon.hero.pointsInTalent(Talent.SHIELD_OF_LIGHT);
+			int min = 1 + hero.pointsInTalent(Talent.SHIELD_OF_LIGHT);
 			damage -= Random.NormalIntRange(min, 2*min);
 			damage = Math.max(damage, 0);
-		} else if (this == Dungeon.hero
-				&& Dungeon.hero.heroClass != HeroClass.CLERIC
-				&& Dungeon.hero.hasTalent(Talent.SHIELD_OF_LIGHT)
+		} else if (this == hero
+				&& hero.heroClass != HeroClass.CLERIC
+				&& hero.hasTalent(Talent.SHIELD_OF_LIGHT)
 				&& TargetHealthIndicator.instance.target() == enemy){
 			//33/50%
-			if (Random.Int(6) < 1+Dungeon.hero.pointsInTalent(Talent.SHIELD_OF_LIGHT)){
+			if (Random.Int(6) < 1+hero.pointsInTalent(Talent.SHIELD_OF_LIGHT)){
 				damage -= 1;
 			}
 		}
 
 		// hero and pris images skip this as they already benefit from hero's armor glyph proc
 		if (!(this instanceof Hero || this instanceof PrismaticImage)) {
-			if (Dungeon.hero.alignment == alignment && Dungeon.hero.belongings.armor() != null
-					&& Dungeon.hero.buff(AuraOfProtection.AuraBuff.class) != null
-					&& (Dungeon.level.distance(pos, Dungeon.hero.pos) <= 2 || buff(LifeLinkSpell.LifeLinkSpellBuff.class) != null)) {
-				damage = Dungeon.hero.belongings.armor().proc( enemy, this, damage );
+			if (hero.alignment == alignment && hero.belongings.armor() != null
+					&& hero.buff(AuraOfProtection.AuraBuff.class) != null
+					&& (Dungeon.level.distance(pos, hero.pos) <= 2 || buff(LifeLinkSpell.LifeLinkSpellBuff.class) != null)) {
+				damage = hero.belongings.armor().proc( enemy, this, damage );
 			}
 		}
 
@@ -815,11 +829,11 @@ public abstract class Char extends Actor {
 	//Returns the level a glyph is at for a char, or -1 if they are not benefitting from that glyph
 	//This function is needed as (unlike enchantments) many glyphs trigger in a variety of cases
 	public int glyphLevel(Class<? extends Armor.Glyph> cls){
-		if (Dungeon.hero != null && Dungeon.level != null
-				&& this != Dungeon.hero && Dungeon.hero.alignment == alignment
-				&& Dungeon.hero.buff(AuraOfProtection.AuraBuff.class) != null
-				&& (Dungeon.level.distance(pos, Dungeon.hero.pos) <= 2 || buff(LifeLinkSpell.LifeLinkSpellBuff.class) != null)) {
-			return Dungeon.hero.glyphLevel(cls);
+		if (hero != null && Dungeon.level != null
+				&& this != hero && hero.alignment == alignment
+				&& hero.buff(AuraOfProtection.AuraBuff.class) != null
+				&& (Dungeon.level.distance(pos, hero.pos) <= 2 || buff(LifeLinkSpell.LifeLinkSpellBuff.class) != null)) {
+			return hero.glyphLevel(cls);
 		} else {
 			return -1;
 		}
@@ -898,7 +912,7 @@ public abstract class Char extends Actor {
 					ch.damage(dmg, link);
 					if (!ch.isAlive()) {
 						link.detach();
-						if (ch == Dungeon.hero){
+						if (ch == hero){
 							Badges.validateDeathFromFriendlyMagic();
 							Dungeon.fail(src);
 							GLog.n( Messages.get(LifeLink.class, "ondeath") );
@@ -913,16 +927,16 @@ public abstract class Char extends Actor {
 
 		//if dmg is from a character we already reduced it in Char.attack
 		if (!(src instanceof Char)) {
-			if (Dungeon.hero.alignment == alignment
-					&& Dungeon.hero.buff(AuraOfProtection.AuraBuff.class) != null
-					&& (Dungeon.level.distance(pos, Dungeon.hero.pos) <= 2 || buff(LifeLinkSpell.LifeLinkSpellBuff.class) != null)) {
-				damage *= 0.925f - 0.075f*Dungeon.hero.pointsInTalent(Talent.AURA_OF_PROTECTION);
+			if (hero.alignment == alignment
+					&& hero.buff(AuraOfProtection.AuraBuff.class) != null
+					&& (Dungeon.level.distance(pos, hero.pos) <= 2 || buff(LifeLinkSpell.LifeLinkSpellBuff.class) != null)) {
+				damage *= 0.925f - 0.075f*hero.pointsInTalent(Talent.AURA_OF_PROTECTION);
 			}
 		}
 
 		if (buff(PowerOfMany.PowerBuff.class) != null){
 			if (buff(LifeLinkSpell.LifeLinkSpellBuff.class) != null){
-				damage *= 0.70f - 0.05f*Dungeon.hero.pointsInTalent(Talent.LIFE_LINK);
+				damage *= 0.70f - 0.05f*hero.pointsInTalent(Talent.LIFE_LINK);
 			} else {
 				damage *= 0.75f;
 			}
@@ -953,10 +967,10 @@ public abstract class Char extends Actor {
 			damage *= 1.67f;
 		}
 		if (alignment != Alignment.ALLY && this.buff(DeathMark.DeathMarkTracker.class) != null){
-			damage *= 1.25f + 0.35f*Dungeon.hero.pointsInTalent(Talent.STRONG_MARK)/4f;
+			damage *= 1.25f + 0.35f*hero.pointsInTalent(Talent.STRONG_MARK)/4f;
 		}
 		if (this.buff(JusticeStrike.JusticeStrikeBuff.class) != null){
-			damage *= 1f + 0.06f * (Dungeon.hero.pointsInTalent(Talent.JUSTICE_STRIKE) + 1);
+			damage *= 1f + 0.06f * (hero.pointsInTalent(Talent.JUSTICE_STRIKE) + 1);
 		}
 
 		if (buff(Sickle.HarvestBleedTracker.class) != null){
@@ -993,8 +1007,8 @@ public abstract class Char extends Actor {
 		//TODO improve this when I have proper damage source logic
 		if (AntiMagic.RESISTS.contains(src.getClass())){
 			dmg -= AntiMagic.drRoll(this, glyphLevel(AntiMagic.class));
-			if (Dungeon.hero.hasTalent(Talent.ARCANE_ARMOR) && this instanceof Hero){
-				dmg -= Random.NormalIntRange(0, Math.round(0.05f*Dungeon.hero.pointsInTalent(Talent.ARCANE_ARMOR)*HT));
+			if (hero.hasTalent(Talent.ARCANE_ARMOR) && this instanceof Hero){
+				dmg -= Random.NormalIntRange(0, Math.round(0.05f*hero.pointsInTalent(Talent.ARCANE_ARMOR)*HT));
 			}
 			if (buff(ArcaneArmor.class) != null) {
 				dmg -= Random.NormalIntRange(0, buff(ArcaneArmor.class).level());
@@ -1018,7 +1032,7 @@ public abstract class Char extends Actor {
 
 			BrokenSeal.WarriorShield shield = buff(BrokenSeal.WarriorShield.class);
 			if (this instanceof Hero && ((Hero)this).hasTalent(Talent.FIGHTING_BACK)){
-				if (shield != null && Dungeon.hero.heroClass == HeroClass.WARRIOR){
+				if (shield != null && hero.heroClass == HeroClass.WARRIOR){
 					if (dmg >= shield.maxShield()
 					&& !shield.coolingDown()){
 						shield.enterCooldown(1f, 0);
@@ -1028,7 +1042,7 @@ public abstract class Char extends Actor {
 						sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(dmg), FloatingText.SHIELDING);
 						dmg = 0;
 					}
-				} else if (Dungeon.hero.heroClass != HeroClass.WARRIOR){
+				} else if (hero.heroClass != HeroClass.WARRIOR){
 					if (dmg >= HT/5f
 					&& (buff(FightingbackCooldown.class) == null)){
 						float percent = 1f - (dmg-HT/5f) / (hero.lvl*1.5f);
@@ -1107,16 +1121,16 @@ public abstract class Char extends Actor {
 			if (isReal)                                                 icon = FloatingText.REALITY;
 
 			//special case for sniper when using ranged attacks
-			if (src == Dungeon.hero
-					&& (Dungeon.hero.subClass == HeroSubClass.SNIPER || Dungeon.hero.subClass == HeroSubClass.SCOUT)
-					&& !Dungeon.level.adjacent(Dungeon.hero.pos, pos)
-					&& Dungeon.hero.belongings.attackingWeapon() instanceof MissileWeapon){
+			if (src == hero
+					&& (hero.subClass == HeroSubClass.SNIPER || hero.subClass == HeroSubClass.SCOUT)
+					&& !Dungeon.level.adjacent(hero.pos, pos)
+					&& hero.belongings.attackingWeapon() instanceof MissileWeapon){
 				icon = FloatingText.PHYS_DMG_NO_BLOCK;
 			}
 
 			//special case for monk using unarmed abilities
-			if (src == Dungeon.hero
-					&& Dungeon.hero.buff(MonkEnergy.MonkAbility.UnarmedAbilityTracker.class) != null){
+			if (src == hero
+					&& hero.buff(MonkEnergy.MonkAbility.UnarmedAbilityTracker.class) != null){
 				icon = FloatingText.PHYS_DMG_NO_BLOCK;
 			}
 
@@ -1206,7 +1220,7 @@ public abstract class Char extends Actor {
 			}
 		}
 
-		int point = Dungeon.hero.pointsInTalent(Talent.ORGANIC_FERTILIZER);
+		int point = hero.pointsInTalent(Talent.ORGANIC_FERTILIZER);
 		if (point > 0 && Dungeon.level.heroFOV[pos] && alignment != Alignment.ALLY){
 			if (Dungeon.level.map[pos] == Terrain.EMBERS || Dungeon.level.map[pos] == Terrain.EMPTY || Dungeon.level.map[pos] == Terrain.EMPTY_DECO || Dungeon.level.map[pos] == Terrain.WATER){
 				Level.set(pos, Terrain.GRASS);//+1
@@ -1219,19 +1233,19 @@ public abstract class Char extends Actor {
 				OrganicGrass(pos);//+3
 				sprite.emitter().burst(LeafParticle.GENERAL, 5);
 			}
-			if ((Dungeon.level.map[Dungeon.hero.pos] == Terrain.EMBERS || Dungeon.level.map[Dungeon.hero.pos] == Terrain.EMPTY || Dungeon.level.map[Dungeon.hero.pos] == Terrain.EMPTY_DECO
-			|| Dungeon.level.map[Dungeon.hero.pos] == Terrain.GRASS || Dungeon.level.map[Dungeon.hero.pos] == Terrain.FURROWED_GRASS || Dungeon.level.map[Dungeon.hero.pos] == Terrain.WATER) && point > 1){
-				OrganicGrass(Dungeon.hero.pos);//+2
-				Dungeon.hero.sprite.emitter().burst(LeafParticle.GENERAL, 5);
-				GameScene.updateMap(Dungeon.hero.pos);
+			if ((Dungeon.level.map[hero.pos] == Terrain.EMBERS || Dungeon.level.map[hero.pos] == Terrain.EMPTY || Dungeon.level.map[hero.pos] == Terrain.EMPTY_DECO
+			|| Dungeon.level.map[hero.pos] == Terrain.GRASS || Dungeon.level.map[hero.pos] == Terrain.FURROWED_GRASS || Dungeon.level.map[hero.pos] == Terrain.WATER) && point > 1){
+				OrganicGrass(hero.pos);//+2
+				hero.sprite.emitter().burst(LeafParticle.GENERAL, 5);
+				GameScene.updateMap(hero.pos);
 			}
 			GameScene.updateMap(pos);
 		}
 
-		if (Random.Float() <= Dungeon.hero.pointsInTalent(Talent.DEW_COLLECTING)/8f && Dungeon.level.heroFOV[pos] && alignment != Alignment.ALLY &&
-		(Dungeon.level.map[Dungeon.hero.pos] == Terrain.HIGH_GRASS || Dungeon.level.map[Dungeon.hero.pos] == Terrain.FURROWED_GRASS)){
+		if (Random.Float() <= hero.pointsInTalent(Talent.DEW_COLLECTING)/8f && Dungeon.level.heroFOV[pos] && alignment != Alignment.ALLY &&
+		(Dungeon.level.map[hero.pos] == Terrain.HIGH_GRASS || Dungeon.level.map[hero.pos] == Terrain.FURROWED_GRASS)){
 
-			Waterskin flask = (Dungeon.hero.belongings.getItem( Waterskin.class ));
+			Waterskin flask = (hero.belongings.getItem( Waterskin.class ));
 			Sample.INSTANCE.play(Assets.Sounds.DEWDROP);
 
 			if (flask != null && !flask.isFull() && Dungeon.isChallenged(Challenges.NO_HERBALISM)){
@@ -1239,7 +1253,7 @@ public abstract class Char extends Actor {
 				flask.collectDew( 1 );
 
 			} else {
-				Dungeon.level.drop(new Dewdrop(), Dungeon.hero.pos).sprite.drop();
+				Dungeon.level.drop(new Dewdrop(), hero.pos).sprite.drop();
 			}
 		}
 
@@ -1266,12 +1280,12 @@ public abstract class Char extends Actor {
 	}
 
 	public void OrganicGrass(int pos) {
-		if ((Dungeon.hero.buff(Talent.RejuvenatingStepsFurrow.class) != null && Dungeon.hero.buff(Talent.RejuvenatingStepsFurrow.class).count() >= 200)
+		if ((hero.buff(Talent.RejuvenatingStepsFurrow.class) != null && hero.buff(Talent.RejuvenatingStepsFurrow.class).count() >= 200)
 		|| !Regeneration.regenOn()){
 			Level.set(pos, Terrain.FURROWED_GRASS);
 		} else {
 			Level.set(pos, Terrain.HIGH_GRASS);
-			Buff.count(hero, Talent.RejuvenatingStepsFurrow.class, 4 - Dungeon.hero.pointsInTalent(Talent.ORGANIC_FERTILIZER));
+			Buff.count(hero, Talent.RejuvenatingStepsFurrow.class, 4 - hero.pointsInTalent(Talent.ORGANIC_FERTILIZER));
 		}
 	}
 
@@ -1318,9 +1332,9 @@ public abstract class Char extends Actor {
 		if (buff( Speed.class ) != null) {
 			timeScale *= 2.0f;
 		}
-		MonkEnergy energy = Dungeon.hero.buff(MonkEnergy.class);
-		if (this == Dungeon.hero && Dungeon.hero.hasTalent(Talent.YIN_GAIT) && energy != null) {
-			timeScale *= 1f + 0.08f * Dungeon.hero.pointsInTalent(Talent.YIN_GAIT) * energy.Getenergy()/energy.energyCap();
+		MonkEnergy energy = hero.buff(MonkEnergy.class);
+		if (this == hero && hero.hasTalent(Talent.YIN_GAIT) && energy != null) {
+			timeScale *= 1f + 0.08f * hero.pointsInTalent(Talent.YIN_GAIT) * energy.Getenergy()/energy.energyCap();
 		}
 		
 		super.spend( time / timeScale );

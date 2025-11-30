@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.weapon;
 
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -358,7 +359,10 @@ abstract public class Weapon extends KindOfWeapon {
 
 	protected static int STRReq(int tier, int lvl){
 		lvl = Math.max(0, lvl);
-
+		if (Dungeon.isChallenged(Challenges.EXERCISES)){
+			//in challenge, strength req decreases at +1,+4,+9,+16,etc.
+			return (8 + tier * 2) - (int)Math.sqrt(lvl);
+		}
 		//strength req decreases at +1,+3,+6,+10,etc.
 		return (8 + tier * 2) - (int)(Math.sqrt(8 * lvl + 1) - 1)/2;
 	}

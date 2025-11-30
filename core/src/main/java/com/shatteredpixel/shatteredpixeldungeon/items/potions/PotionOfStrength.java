@@ -22,6 +22,12 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.potions;
 
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Daze;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vulnerable;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Weakness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -44,6 +50,7 @@ public class PotionOfStrength extends Potion {
 		identify();
 
 		hero.STR++;
+		if (Dungeon.isChallenged(Challenges.EXERCISES)) exreciseDebuff(hero);
 		hero.sprite.showStatusWithIcon(CharSprite.POSITIVE, "1", FloatingText.STRENGTH);
 
 		GLog.p( Messages.get(this, "msg", hero.STR()) );
@@ -60,5 +67,11 @@ public class PotionOfStrength extends Potion {
 	@Override
 	public int energyVal() {
 		return isKnown() ? 10 * quantity : super.energyVal();
+	}
+
+	public static void exreciseDebuff(Hero hero){
+		if (hero.buff(Weakness.class) == null)        Buff.prolong(hero, Weakness.class,   1e+9f);
+		else if (hero.buff(Vulnerable.class) == null) Buff.prolong(hero, Vulnerable.class, 1e+9f);
+		else                                          Buff.prolong(hero, Daze.class,       1e+9f);
 	}
 }

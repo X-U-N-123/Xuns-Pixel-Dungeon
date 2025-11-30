@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.quest;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -70,6 +71,7 @@ public class Pickaxe extends MeleeWeapon {
 
 	@Override
 	public int STRReq(int lvl) {
+		if (Dungeon.isChallenged(Challenges.EXERCISES)) return STRReq(tier, lvl) - 1;//challenge special logic
 		return super.STRReq(lvl) + 2; //tier 3 strength requirement with tier 2 damage stats
 	}
 

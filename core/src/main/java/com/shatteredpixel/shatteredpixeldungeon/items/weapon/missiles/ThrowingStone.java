@@ -22,6 +22,8 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
@@ -56,8 +58,13 @@ public class ThrowingStone extends MissileWeapon {
 
 				int exStr = hero.STR() - STRReq();
 				if (exStr > 0) {
-					if (((Hero) owner).pointsInTalent(Talent.FLYING_LOCUST_STONE) > 1) damage += exStr;
-					else damage += Hero.heroDamageIntRange(0, exStr);
+					int min = 0;
+					if (Dungeon.isChallenged(Challenges.EXERCISES)) min = exStr;
+					if (((Hero) owner).pointsInTalent(Talent.FLYING_LOCUST_STONE) > 1) {
+						if (min == 0) min = exStr;
+						else          exStr *= 2;
+					}
+					damage += Hero.heroDamageIntRange(min, exStr);
 				}
 				return damage;
 			}
