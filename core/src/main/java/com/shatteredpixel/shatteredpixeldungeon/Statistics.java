@@ -40,6 +40,8 @@ public class Statistics {
 	public static int ankhsUsed;
 	public static int extractUsed;
 	public static int enlighteningDrunk;
+	public static int elixirManaDrunk;
+	public static boolean corrosionUsed;
 	public static int waterAwareDug;
 	public static int waterHealDug;
 	//tracks every item type 'seen' this run (i.e. would be added to catalogs)
@@ -91,8 +93,10 @@ public class Statistics {
 		ankhsUsed		= 0;
 		extractUsed     = 0;
 		enlighteningDrunk = 0;
-		waterAwareDug = 0;
-		waterHealDug = 0;
+		corrosionUsed   = false;
+		waterAwareDug   = 0;
+		waterHealDug    = 0;
+		elixirManaDrunk = 0;
 		itemTypesDiscovered.clear();
 
 		progressScore   = 0;
@@ -133,10 +137,12 @@ public class Statistics {
 	private static final String FOOD		= "foodEaten";
 	private static final String ALCHEMY		= "potionsCooked";
 	private static final String PIRANHAS	= "priranhas";
-	private static final String HAZARD_ASSISTS	= "hazard_assists";
+	private static final String HAZARD_ASSISTS = "hazard_assists";
 	private static final String ANKHS		= "ankhsUsed";
 	private static final String EXTRACT		= "extractUsed";
 	private static final String ENLIGHTENING= "enlighteningUsed";
+	private static final String MANA        = "elixirManaUsed";
+	private static final String CORROSION   = "corrosionUsed";
 	private static final String AWAREDUG    = "waterAwareDug";
 	private static final String HEALDUG     = "waterHealDug";
 
@@ -183,6 +189,8 @@ public class Statistics {
 		bundle.put( ANKHS,		ankhsUsed );
 		bundle.put( EXTRACT,    extractUsed );
 		bundle.put( ENLIGHTENING, enlighteningDrunk);
+		bundle.put( MANA, elixirManaDrunk);
+		bundle.put( CORROSION, corrosionUsed);
 		bundle.put( AWAREDUG, waterAwareDug);
 		bundle.put( HEALDUG, waterHealDug);
 		bundle.put( ITEM_TYPES_DISCOVERED, itemTypesDiscovered.toArray(new Class<?>[0]) );
@@ -233,6 +241,8 @@ public class Statistics {
 		ankhsUsed		= bundle.getInt( ANKHS );
 		extractUsed		= bundle.getInt( EXTRACT );
 		enlighteningDrunk= bundle.getInt( ENLIGHTENING );
+		elixirManaDrunk = bundle.getInt( MANA );
+		corrosionUsed   = bundle.getBoolean( CORROSION );
 		waterAwareDug   = bundle.getInt( AWAREDUG );
 		waterHealDug    = bundle.getInt( HEALDUG );
 

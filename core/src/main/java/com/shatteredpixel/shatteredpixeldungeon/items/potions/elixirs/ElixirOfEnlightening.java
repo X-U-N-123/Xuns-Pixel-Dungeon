@@ -31,19 +31,22 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfDivineInspiration;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.StatusPane;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndHero;
 import com.watabou.noosa.audio.Sample;
-import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 
 public class ElixirOfEnlightening extends Elixir {
 
     {
         image = ItemSpriteSheet.ELIXIR_ENLIGHT;
+
+        talentFactor = 2f;
     }
 
     @Override
@@ -53,6 +56,7 @@ public class ElixirOfEnlightening extends Elixir {
             hero.earnExp( hero.maxExp(), getClass() );
             new Flare( 6, 32 ).color(0xFFFF00, true).show( curUser.sprite, 2f );
             Buff.affect(hero, Bless.class, 200f);
+            GLog.w(Messages.get(this, "no_more_points"));
         } else {
             Statistics.enlighteningDrunk ++;
 
@@ -87,45 +91,6 @@ public class ElixirOfEnlightening extends Elixir {
                     Talent.onPotionUsed(curUser, curUser.pos, talentFactor);
                 }
             }
-        }
-    }
-
-    public static class EnlighteningTracker extends Buff {
-
-        {
-            type = buffType.POSITIVE;
-            revivePersists = true;
-        }
-
-        private int boost = 0;
-
-        @Override
-        public boolean act() {
-            Statistics.enlighteningDrunk = boost;
-            detach();
-            return true;
-        }
-
-        public void Boost(){
-            boost += 1;
-        }
-
-        public int Boostamount(){
-            return boost;
-        }
-
-        private static final String BOOST = "boost";
-
-        @Override
-        public void storeInBundle(Bundle bundle) {
-            super.storeInBundle(bundle);
-            bundle.put(BOOST, boost);
-        }
-
-        @Override
-        public void restoreFromBundle(Bundle bundle) {
-            super.restoreFromBundle(bundle);
-            boost = bundle.getInt(BOOST);
         }
     }
 

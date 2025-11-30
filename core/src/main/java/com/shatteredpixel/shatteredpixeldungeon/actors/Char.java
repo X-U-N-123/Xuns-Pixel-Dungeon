@@ -595,7 +595,8 @@ public abstract class Char extends Actor {
 			}
 
 			Talent.CombinedLethalityAbilityTracker combinedLethality = buff(Talent.CombinedLethalityAbilityTracker.class);
-			if (combinedLethality != null && this instanceof Hero && ((Hero) this).belongings.attackingWeapon() instanceof MeleeWeapon && combinedLethality.weapon != ((Hero) this).belongings.attackingWeapon()){
+			if (combinedLethality != null && this instanceof Hero && ((Hero) this).belongings.attackingWeapon() instanceof MeleeWeapon
+				&& combinedLethality.weapon != ((Hero) this).belongings.attackingWeapon()){
 				if ( enemy.isAlive() && enemy.alignment != alignment && !Char.hasProp(enemy, Property.BOSS)
 						&& !Char.hasProp(enemy, Property.MINIBOSS) &&
 						(enemy.HP/(float)enemy.HT) <= 0.4f*((Hero)this).pointsInTalent(Talent.COMBINED_LETHALITY)/3f) {
@@ -1207,7 +1208,7 @@ public abstract class Char extends Actor {
 
 		int point = Dungeon.hero.pointsInTalent(Talent.ORGANIC_FERTILIZER);
 		if (point > 0 && Dungeon.level.heroFOV[pos] && alignment != Alignment.ALLY){
-			if (Dungeon.level.map[pos] == Terrain.EMBERS || Dungeon.level.map[pos] == Terrain.EMPTY || Dungeon.level.map[pos] == Terrain.EMPTY_DECO){
+			if (Dungeon.level.map[pos] == Terrain.EMBERS || Dungeon.level.map[pos] == Terrain.EMPTY || Dungeon.level.map[pos] == Terrain.EMPTY_DECO || Dungeon.level.map[pos] == Terrain.WATER){
 				Level.set(pos, Terrain.GRASS);//+1
 				if (point > 2) {
 					OrganicGrass(pos);//+3
@@ -1219,7 +1220,7 @@ public abstract class Char extends Actor {
 				sprite.emitter().burst(LeafParticle.GENERAL, 5);
 			}
 			if ((Dungeon.level.map[Dungeon.hero.pos] == Terrain.EMBERS || Dungeon.level.map[Dungeon.hero.pos] == Terrain.EMPTY || Dungeon.level.map[Dungeon.hero.pos] == Terrain.EMPTY_DECO
-			|| Dungeon.level.map[Dungeon.hero.pos] == Terrain.GRASS || Dungeon.level.map[Dungeon.hero.pos] == Terrain.FURROWED_GRASS) && point > 1){
+			|| Dungeon.level.map[Dungeon.hero.pos] == Terrain.GRASS || Dungeon.level.map[Dungeon.hero.pos] == Terrain.FURROWED_GRASS || Dungeon.level.map[Dungeon.hero.pos] == Terrain.WATER) && point > 1){
 				OrganicGrass(Dungeon.hero.pos);//+2
 				Dungeon.hero.sprite.emitter().burst(LeafParticle.GENERAL, 5);
 				GameScene.updateMap(Dungeon.hero.pos);
@@ -1319,7 +1320,7 @@ public abstract class Char extends Actor {
 		}
 		MonkEnergy energy = Dungeon.hero.buff(MonkEnergy.class);
 		if (this == Dungeon.hero && Dungeon.hero.hasTalent(Talent.YIN_GAIT) && energy != null) {
-			timeScale *= 1f + (0.2f/3) * Dungeon.hero.pointsInTalent(Talent.YIN_GAIT) * energy.Getenergy()/energy.energyCap();
+			timeScale *= 1f + 0.08f * Dungeon.hero.pointsInTalent(Talent.YIN_GAIT) * energy.Getenergy()/energy.energyCap();
 		}
 		
 		super.spend( time / timeScale );

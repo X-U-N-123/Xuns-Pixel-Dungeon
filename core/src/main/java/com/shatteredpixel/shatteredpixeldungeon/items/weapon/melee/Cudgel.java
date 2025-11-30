@@ -34,7 +34,7 @@ public class Cudgel extends MeleeWeapon {
 		hitSoundPitch = 1.2f;
 
 		tier = 1;
-		ACC = 1.40f; //40% boost to accuracy
+		ACC = 1.5f; //50% boost to accuracy
 
 		bones = false;
 	}

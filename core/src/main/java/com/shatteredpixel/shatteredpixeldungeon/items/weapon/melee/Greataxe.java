@@ -34,7 +34,7 @@ public class Greataxe extends MeleeWeapon {
 		hitSoundPitch = 1f;
 
 		tier = 6;
-		ACC = 1.16f;
+		ACC = 1.3f; //30% boost to accuracy
 	}
 
 	@Override

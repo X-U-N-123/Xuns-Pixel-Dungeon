@@ -567,7 +567,7 @@ public class ScrollOfDebug extends Scroll {
                                 cls != null && canInstantiate(cls) ? Reflection.newInstance(cls) :
                                 null;
                         if(!executeMethod(o, cls, input, 2)) {
-                            GLog.w(String.format("%s中找不到方法 '%s'", input[2], cls));
+                            GLog.w(String.format("方法 %s 在'%s'中不存在", input[2], cls));
                             return false;
                         }
                         return true;

@@ -153,7 +153,7 @@ public class Shovel extends MeleeWeapon {
 
                         //put water if there has no water
                         Sample.INSTANCE.play(Assets.Sounds.WATER, 2f);
-                        Splash.at( DungeonTilemap.tileCenterToWorld( cell ), -PointF.PI/2, PointF.PI/2, 0x5bc1e3, 10, 0.01f);
+                        Splash.at( DungeonTilemap.tileCenterToWorld( cell ), -PointF.PI/2, PointF.PI/2, 0x5bc1e3, 5, 0.01f);
                         ExplorerCooldown.affectCD(8, curUser);
                         Dungeon.hero.spendAndNext(Actor.TICK);
                         GameScene.updateMap(cell);
@@ -175,7 +175,8 @@ public class Shovel extends MeleeWeapon {
                     break;
                 case AC_WELL:
                     if (curUser.buff(ExplorerCooldown.class) == null
-                    && Dungeon.level.map[cell] == Terrain.EMPTY_WELL){
+                    && Dungeon.level.map[cell] == Terrain.EMPTY_WELL
+                    && Statistics.waterAwareDug + Statistics.waterHealDug < curUser.pointsInTalent(Talent.DIG_THE_WELL)){
                         if (Statistics.waterHealDug < 1 && curUser.pointsInTalent(Talent.DIG_THE_WELL) >= 2){
                             WellWater.seed(cell, 1, WaterOfHealth.class,    Dungeon.level);
                             Statistics.waterHealDug ++;//dig water of health first

@@ -24,6 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon.items.wands;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ArtifactRecharge;
@@ -920,19 +921,20 @@ public abstract class Wand extends Item {
 			missingCharges = Math.max(0, missingCharges);
 
 			float turnsToCharge = (float) (BASE_CHARGE_DELAY
-					+ (SCALING_CHARGE_ADDITION * Math.pow(scalingFactor, missingCharges)));
+					+ (SCALING_CHARGE_ADDITION * Math.pow(scalingFactor, missingCharges)))
+					/ (1 + Statistics.elixirManaDrunk * 0.1f);
 
 			if (Dungeon.hero.hasTalent(Talent.POWER_ACCUMULATION) && Dungeon.hero.heroClass != HeroClass.DUELIST){
 				turnsToCharge /= 1f + 0.12f*Dungeon.hero.pointsInTalent(Talent.POWER_ACCUMULATION) * missingCharges / maxCharges;
 			}
 
 			for (Wand wand :Dungeon.hero.belongings.getAllItems(Wand.class)){
-				if (wand.curCharges >= wand.maxCharges) turnsToCharge /= 1f + 0.05f * Dungeon.hero.pointsInTalent(Talent.RELAY_RECHARGING);
+				if (wand.curCharges >= wand.maxCharges) turnsToCharge /= 1f + 0.06f * Dungeon.hero.pointsInTalent(Talent.RELAY_RECHARGING);
 			}
 
 			MagesStaff staff = Dungeon.hero.belongings.getItem(MagesStaff.class);
 			if (staff != null && staff.wand() != null && staff.wand().curCharges >= staff.wand().maxCharges)
-				turnsToCharge /= 1f + 0.05f * Dungeon.hero.pointsInTalent(Talent.RELAY_RECHARGING);
+				turnsToCharge /= 1f + 0.06f * Dungeon.hero.pointsInTalent(Talent.RELAY_RECHARGING);
 
 			if (charger.target instanceof Hero && ((Hero)charger.target).hasTalent(Talent.ARCANE_STEP)
 					&& charger.target.buff(Momentum.class)!=null && charger.target.buff(Momentum.class).freerunning()){

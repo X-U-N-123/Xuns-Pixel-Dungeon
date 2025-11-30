@@ -830,6 +830,9 @@ public class ItemSpriteSheet {
 	public static final int ELIXIR_FEATHER  = ELIXIRS+7;
 	public static final int ELIXIR_ENLIGHT  = ELIXIRS+8;
 	public static final int ELIXIR_OVERDRAFT= ELIXIRS+9;
+	public static final int ELIXIR_MANA     = ELIXIRS+10;
+	public static final int ELIXIR_TEMPERING= ELIXIRS+11;
+	public static final int ELIXIR_AMNESIA  = ELIXIRS+12;
 	static{
 		for (int i = BREWS; i < BREWS+32; i++)
 			assignItemRect(i, 12, 14);
@@ -861,6 +864,7 @@ public class ItemSpriteSheet {
 	public static final int RETURN_BEACON   = SPELLS+23;
 	public static final int SUMMON_ELE      = SPELLS+24;
 	public static final int SCOUT           = SPELLS+25;
+	public static final int CORROSION       = SPELLS+26;
 
 	static{
 		assignItemRect(WILD_ENERGY,     12, 11);
@@ -883,6 +887,7 @@ public class ItemSpriteSheet {
 		assignItemRect(RETURN_BEACON,    8, 16);
 		assignItemRect(SUMMON_ELE,       8, 16);
 		assignItemRect(SCOUT,            8, 16);
+		assignItemRect(CORROSION,        8, 16);
 	}
 	
 	private static final int FOOD           = xy(1, 18);  //16 slots

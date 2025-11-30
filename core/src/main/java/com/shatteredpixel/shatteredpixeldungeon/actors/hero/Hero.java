@@ -125,7 +125,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.keys.SkeletonKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfExperience;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfEnlightening;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfMight;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfDivineInspiration;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.DarkGold;
@@ -244,6 +243,7 @@ public class Hero extends Char {
 	public float awareness;
 	
 	public int lvl = 1;
+	public int fakeLvl = 0;
 	public int exp = 0;
 	
 	public int HTBoost = 0;
@@ -268,7 +268,7 @@ public class Hero extends Char {
 	public void updateHT( boolean boostHP ){
 		int curHT = HT;
 		
-		HT = 20 + 5*(lvl-1) + HTBoost;
+		HT = 20 + 5*(lvl+fakeLvl-1) + HTBoost;
 		float multiplier = RingOfMight.HTMultiplier(this);
 		HT = Math.round(multiplier * HT);
 		
@@ -307,6 +307,7 @@ public class Hero extends Char {
 	private static final String DEFENSE		= "defenseSkill";
 	private static final String STRENGTH	= "STR";
 	private static final String LEVEL		= "lvl";
+	private static final String FAKELEVEL	= "fakeLvl";
 	private static final String EXPERIENCE	= "exp";
 	private static final String HTBOOST     = "htboost";
 	
@@ -326,6 +327,7 @@ public class Hero extends Char {
 		bundle.put( STRENGTH, STR );
 		
 		bundle.put( LEVEL, lvl );
+		bundle.put( FAKELEVEL, fakeLvl );
 		bundle.put( EXPERIENCE, exp );
 		
 		bundle.put( HTBOOST, HTBoost );
@@ -337,6 +339,7 @@ public class Hero extends Char {
 	public void restoreFromBundle( Bundle bundle ) {
 
 		lvl = bundle.getInt( LEVEL );
+		fakeLvl = bundle.getInt( FAKELEVEL );
 		exp = bundle.getInt( EXPERIENCE );
 
 		HTBoost = bundle.getInt(HTBOOST);
@@ -432,9 +435,7 @@ public class Hero extends Char {
 				&& buff(PotionOfDivineInspiration.DivineInspirationTracker.class).isBoosted(tier)) {
 			Bonus += 2;
 		}
-		if (buff(ElixirOfEnlightening.EnlighteningTracker.class) != null){
-			Bonus += buff(ElixirOfEnlightening.EnlighteningTracker.class).Boostamount();
-		}
+		if (Statistics.corrosionUsed && tier == 3) Bonus += 3;
 		return Bonus;
 	}
 	
@@ -597,6 +598,10 @@ public class Hero extends Char {
 			return (int)(attackSkill * accuracy);
 		}
 	}
+
+	public void incAttackSkill(int amount){
+		attackSkill += amount;
+	}
 	
 	@Override
 	public int defenseSkill( Char enemy ) {
@@ -655,6 +660,10 @@ public class Hero extends Char {
 		}
 
 		return Math.round(evasion);
+	}
+
+	public void incDefenseSkill(int amount){
+		defenseSkill += amount;
 	}
 
 	@Override
@@ -821,8 +830,8 @@ public class Hero extends Char {
 		if (hasTalent(Talent.SWIFT_COURIER)){
 			float courierFactor = 1f;
 			for (Mob m : Dungeon.level.mobs.toArray(new Mob[0])){
-				if (fieldOfView[m.pos])
-					courierFactor += 0.03f + 0.03f*pointsInTalent(Talent.SWIFT_COURIER);
+				if (fieldOfView[m.pos] && m.alignment == Alignment.ENEMY)
+					courierFactor += 0.08f * pointsInTalent(Talent.SWIFT_COURIER);
 			}
 			speed *= courierFactor;
 		}

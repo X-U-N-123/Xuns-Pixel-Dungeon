@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
@@ -84,7 +85,11 @@ public class Radiance extends ClericSpell {
 		int point = Dungeon.hero.pointsInTalent(Talent.ENHANCED_RADIANCE);
 
 		if (Dungeon.level.viewDistance < 6 || point > 0){
-			Buff.prolong(hero, Light.class, 100);
+			if (Dungeon.isChallenged(Challenges.DARKNESS)){
+				Buff.prolong( hero, Light.class, 20);
+			} else {
+				Buff.prolong( hero, Light.class, 100);
+			}
 		}
 
 		for (Mob mob : Dungeon.level.mobs.toArray( new Mob[0] )) {

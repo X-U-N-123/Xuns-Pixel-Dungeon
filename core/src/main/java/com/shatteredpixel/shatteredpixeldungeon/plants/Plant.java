@@ -39,6 +39,8 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.SpellSprite;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.LeafParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HornOfPlenty;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Berry;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfRegrowth;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Bestiary;
@@ -204,7 +206,17 @@ public abstract class Plant implements Bundlable {
 				detach( hero.belongings.backpack );
 				Catalog.countUse(getClass());
 
-				Buff.affect(hero, Hunger.class).satisfy(Hunger.HUNGRY/2f);
+				float foodVal = 120;
+				if (Dungeon.isChallenged(Challenges.NO_FOOD)){
+					foodVal /= 3f;
+				}
+				Artifact.ArtifactBuff buff = hero.buff( HornOfPlenty.hornRecharge.class );
+				if (buff != null && buff.isCursed()){
+					foodVal *= 0.67f;
+					GLog.n( Messages.get(Hunger.class, "cursedhorn") );
+				}
+
+				Buff.affect(hero, Hunger.class).satisfy(foodVal);
 				GLog.i( Messages.get(Berry.class, "eat_msg") );
 
 				hero.sprite.operate( hero.pos );

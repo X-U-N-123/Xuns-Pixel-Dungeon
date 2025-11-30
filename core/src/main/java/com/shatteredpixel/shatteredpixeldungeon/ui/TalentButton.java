@@ -24,14 +24,21 @@ package com.shatteredpixel.shatteredpixeldungeon.ui;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.cleric.Trinity;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
+import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Transmuting;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfMetamorphosis;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Corrosion;
+import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndHero;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndInfoTalent;
 import com.watabou.noosa.ColorBlock;
 import com.watabou.noosa.Image;
@@ -61,7 +68,8 @@ public class TalentButton extends Button {
 		UPGRADE,
 		METAMORPH_CHOOSE,
 		METAMORPH_REPLACE,
-		MIMICFORM_SELECT
+		MIMICFORM_SELECT,
+		CORROSION_FORGET
 	}
 
 	public TalentButton(int tier, Talent talent, int points, Mode mode){
@@ -232,6 +240,44 @@ public class TalentButton extends Button {
 					Dungeon.hero.sprite.operate(Dungeon.hero.pos);
 					Transmuting.show(Dungeon.hero, talent, talent);
 					Sample.INSTANCE.play(Assets.Sounds.TELEPORT);
+				}
+			});
+		} else if (mode == Mode.CORROSION_FORGET && Dungeon.hero != null && Dungeon.hero.isAlive()) {
+			toAdd = new WndInfoTalent(talent, pointsInTalent, new WndInfoTalent.TalentButtonCallback() {
+				@Override
+				public String prompt() {
+					return Messages.titleCase(Messages.get(Corrosion.class, "forget_talent"));
+				}
+
+				@Override
+				public void call() {
+					Corrosion.WndTalentForget.INSTANCE.hide();
+
+					for (Talent f : Dungeon.hero.talents.get(2).keySet()){
+						if (f == talent){
+							Dungeon.hero.talents.get(2).put(f, 0);
+							Dungeon.hero.talents.get(2).remove(f);
+							break;
+						}
+					}
+					Statistics.corrosionUsed = true;
+					Corrosion.WndTalentForget.corrosion.detach(Dungeon.hero.belongings.backpack);
+					Catalog.countUse(Corrosion.class);
+					Talent.onScrollUsed(Dungeon.hero, Dungeon.hero.pos, 2f, Corrosion.class);
+
+					Dungeon.hero.sprite.operate(Dungeon.hero.pos);
+					Sample.INSTANCE.play(Assets.Sounds.BURNING);
+					Sample.INSTANCE.playDelayed(Assets.Sounds.LEVELUP, 0.6f, 0.7f, 1.2f);
+					Sample.INSTANCE.playDelayed(Assets.Sounds.LEVELUP, 0.8f, 0.7f, 1.2f);
+					Sample.INSTANCE.playDelayed(Assets.Sounds.LEVELUP, 1f,   0.7f, 1.2f);
+
+					if (Dungeon.hero.talentPointsAvailable(2) > 0){
+						StatusPane.talentBlink = 10f;
+						WndHero.lastIdx = 1;
+					}
+					GameScene.showlevelUpStars();
+					new Flare( 6, 32 ).color(0xFFFF00, true).show( Dungeon.hero.sprite, 2f );
+					Dungeon.hero.sprite.showStatusWithIcon(CharSprite.NEUTRAL, "3", FloatingText.TALENT);
 				}
 			});
 		} else {
