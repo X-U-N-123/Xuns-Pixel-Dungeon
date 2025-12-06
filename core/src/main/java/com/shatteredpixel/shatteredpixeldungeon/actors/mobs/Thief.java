@@ -146,12 +146,9 @@ public class Thief extends Mob {
 
 	protected boolean steal( Hero hero ) {
 
-		Item toSteal;
-		do {
-			toSteal = hero.belongings.randomUnequipped();
-		} while ((toSteal != null && (toSteal.level() < 1 || Dungeon.isChallenged(Challenges.CRAZY_LOOT))));
+		Item toSteal = hero.belongings.randomUnequipped();
 
-		if (toSteal != null && !toSteal.unique) {
+		if (toSteal != null && !toSteal.unique && (toSteal.level() < 1 || Dungeon.isChallenged(Challenges.CRAZY_LOOT)) ) {
 
 			GLog.w( Messages.get(Thief.class, "stole", toSteal.name()) );
 			if (!toSteal.stackable) {

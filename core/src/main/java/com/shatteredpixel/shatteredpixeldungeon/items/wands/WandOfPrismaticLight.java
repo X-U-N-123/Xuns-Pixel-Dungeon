@@ -30,6 +30,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Light;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Beam;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
@@ -121,6 +122,8 @@ public class WandOfPrismaticLight extends DamageWand {
 				if ((Terrain.flags[terr] & Terrain.SECRET) != 0) {
 
 					Dungeon.level.discover( cell );
+
+					Talent.secretForesightID(curUser);
 
 					GameScene.discoverTile( cell, terr );
 					ScrollOfMagicMapping.discover(cell);

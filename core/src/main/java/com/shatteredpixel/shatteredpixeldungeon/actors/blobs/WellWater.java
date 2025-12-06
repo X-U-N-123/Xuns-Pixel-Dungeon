@@ -35,6 +35,8 @@ import com.watabou.utils.Random;
 
 public abstract class WellWater extends Blob {
 
+	public static int CUR_EMPTY = 10;
+
 	@Override
 	protected void evolve() {
 		int cell;
@@ -55,8 +57,8 @@ public abstract class WellWater extends Blob {
 		Heap heap;
 		
 		if (pos == Dungeon.hero.pos && affectHero( Dungeon.hero )) {
-			
-			clear(pos);
+
+			cur[pos] = CUR_EMPTY;
 			return true;
 			
 		} else if ((heap = Dungeon.level.heaps.get( pos )) != null) {
@@ -78,7 +80,7 @@ public abstract class WellWater extends Blob {
 				}
 				
 				heap.sprite.link();
-				clear(pos);
+				cur[pos] = CUR_EMPTY;
 				
 				return true;
 				
@@ -112,6 +114,7 @@ public abstract class WellWater extends Blob {
 			if (water != null &&
 				water.volume > 0 &&
 				water.cur[cell] > 0 &&
+				water.cur[cell] != CUR_EMPTY &&
 				water.affect( cell )) {
 				
 				Level.set( cell, Terrain.EMPTY_WELL );
@@ -123,7 +126,7 @@ public abstract class WellWater extends Blob {
 					} else {
 						boolean removing = true;
 						for (int i = 0; i < water.cur.length; i++){
-							if (water.cur[i] > 0 && Dungeon.level.visited[i]){
+							if (water.cur[i] > 0 && water.cur[i] != CUR_EMPTY && Dungeon.level.visited[i]){
 								removing = false;
 								break;
 							}

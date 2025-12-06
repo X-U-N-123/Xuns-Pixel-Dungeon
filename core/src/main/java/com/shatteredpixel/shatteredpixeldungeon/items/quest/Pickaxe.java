@@ -71,7 +71,7 @@ public class Pickaxe extends MeleeWeapon {
 
 	@Override
 	public int STRReq(int lvl) {
-		if (Dungeon.isChallenged(Challenges.EXERCISES)) return STRReq(tier, lvl) - 1;//challenge special logic
+		if (Dungeon.isChallenged(Challenges.EXERCISES)) return STRReq(tier, lvl);//challenge special logic
 		return super.STRReq(lvl) + 2; //tier 3 strength requirement with tier 2 damage stats
 	}
 

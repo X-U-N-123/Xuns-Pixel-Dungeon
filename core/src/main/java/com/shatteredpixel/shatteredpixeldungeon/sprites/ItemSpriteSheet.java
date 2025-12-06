@@ -439,7 +439,7 @@ public class ItemSpriteSheet {
 
 	public static final int Scorpiospike    = MISSILE_WEP+26;
 	public static final int Ironball        = MISSILE_WEP+27;
-	public static final int ANTIMATTER = MISSILE_WEP+28;
+	public static final int ANTIMATTER      = MISSILE_WEP+28;
 	public static final int HEAVYBOOMERANG  = MISSILE_WEP+29;
 	
 	static{
@@ -482,11 +482,12 @@ public class ItemSpriteSheet {
 	public static final int WATER_SHOVEL         = CHANGEABLE_WEP+2;
 	public static final int PLANT_SHOVEL         = CHANGEABLE_WEP+3;
 	public static final int CHASM_SHOVEL         = CHANGEABLE_WEP+4;
+	public static final int WOOD_SHOVEL          = CHANGEABLE_WEP+5;
 
-	public static final int BLADE_OF_REAL        = CHANGEABLE_WEP+5;
-	public static final int BLADE_OF_UNREAL      = CHANGEABLE_WEP+6;
+	public static final int BLADE_OF_REAL        = CHANGEABLE_WEP+6;
+	public static final int BLADE_OF_UNREAL      = CHANGEABLE_WEP+7;
 
-	public static final int KITESHIELD_START     = CHANGEABLE_WEP+7;
+	public static final int KITESHIELD_START     = CHANGEABLE_WEP+8;
 		public static final int coatOfArmsKind = 8;//currently 8 kinds of coat of arms is usable
 	static {
 		assignItemRect(SHOVEL,          16, 16);
@@ -494,6 +495,7 @@ public class ItemSpriteSheet {
 		assignItemRect(WATER_SHOVEL,    16, 16);
 		assignItemRect(PLANT_SHOVEL,    16, 16);
 		assignItemRect(CHASM_SHOVEL,    16, 16);
+		assignItemRect(WOOD_SHOVEL,     16, 16);
 
 		assignItemRect(BLADE_OF_REAL,   15, 16);
 		assignItemRect(BLADE_OF_UNREAL, 15, 16);
@@ -617,6 +619,7 @@ public class ItemSpriteSheet {
 	public static final int ARTIFACT_TOOLKIT2   = ARTIFACTS+24;
 	public static final int ARTIFACT_TOOLKIT1   = ARTIFACTS+25;
 	public static final int ARTIFACT_MASK       = ARTIFACTS+26;
+	public static final int ARTIFACT_KEY        = ARTIFACTS+27;
 	static{
 		assignItemRect(ARTIFACT_CLOAK,      9,  15);
 		assignItemRect(ARTIFACT_ARMBAND,    16, 13);
@@ -645,6 +648,7 @@ public class ItemSpriteSheet {
 		assignItemRect(ARTIFACT_TOOLKIT2,   15, 13);
 		assignItemRect(ARTIFACT_TOOLKIT1,   15, 13);
 		assignItemRect(ARTIFACT_MASK,       13, 13);
+		assignItemRect(ARTIFACT_KEY,        8,  16);
 	}
 
 	private static final int TRINKETS       = xy(1, 12);  //32 slots
@@ -669,6 +673,7 @@ public class ItemSpriteSheet {
 	public static final int MEMBER_CARD     = TRINKETS+18;
 	public static final int MAGICAL_GEM     = TRINKETS+19;
 	public static final int CURSED_COIN     = TRINKETS+20;
+	public static final int SPYGLASS        = TRINKETS+21;
 	static{
 		assignItemRect(RAT_SKULL,       16, 11);
 		assignItemRect(PARCHMENT_SCRAP, 10, 14);
@@ -691,6 +696,7 @@ public class ItemSpriteSheet {
 		assignItemRect(MEMBER_CARD,     16, 12);
 		assignItemRect(MAGICAL_GEM,     11, 9 );
 		assignItemRect(CURSED_COIN,     14, 14);
+		assignItemRect(SPYGLASS,        15, 15);
 	}
 
 	private static final int SCROLLS        = xy(1, 13);  //16 slots

@@ -26,6 +26,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Awareness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BlobEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Identification;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
@@ -43,6 +44,8 @@ public class WaterOfAwareness extends WellWater {
 
 	@Override
 	protected boolean affectHero( Hero hero ) {
+
+		if (cur[hero.pos] == CUR_EMPTY) return false;
 		
 		Sample.INSTANCE.play( Assets.Sounds.DRINK );
 		emitter.parent.add( new Identification( hero.sprite.center() ) );
@@ -55,6 +58,8 @@ public class WaterOfAwareness extends WellWater {
 			if ((Terrain.flags[terr] & Terrain.SECRET) != 0) {
 				
 				Dungeon.level.discover( i );
+
+				Talent.secretForesightID(hero);
 				
 				if (Dungeon.level.heroFOV[i]) {
 					GameScene.discoverTile( i, terr );
@@ -74,7 +79,7 @@ public class WaterOfAwareness extends WellWater {
 	
 	@Override
 	protected Item affectItem( Item item, int pos ) {
-		if (item.isIdentified()) {
+		if (item.isIdentified() || cur[pos] == CUR_EMPTY) {
 			return null;
 		} else {
 			ScrollOfIdentify.IDItem(item);

@@ -42,8 +42,7 @@ public class Statistics {
 	public static int enlighteningDrunk;
 	public static int elixirManaDrunk;
 	public static boolean corrosionUsed;
-	public static int waterAwareDug;
-	public static int waterHealDug;
+	public static int wellWaterDug;
 	//tracks every item type 'seen' this run (i.e. would be added to catalogs)
 	public static HashSet<Class> itemTypesDiscovered = new HashSet<>();
 
@@ -94,8 +93,7 @@ public class Statistics {
 		extractUsed     = 0;
 		enlighteningDrunk = 0;
 		corrosionUsed   = false;
-		waterAwareDug   = 0;
-		waterHealDug    = 0;
+		wellWaterDug    = 0;
 		elixirManaDrunk = 0;
 		itemTypesDiscovered.clear();
 
@@ -143,8 +141,7 @@ public class Statistics {
 	private static final String ENLIGHTENING= "enlighteningUsed";
 	private static final String MANA        = "elixirManaUsed";
 	private static final String CORROSION   = "corrosionUsed";
-	private static final String AWAREDUG    = "waterAwareDug";
-	private static final String HEALDUG     = "waterHealDug";
+	private static final String WELLDUG     = "wellWaterDug";
 
 	private static final String PROG_SCORE	    = "prog_score";
 	private static final String ITEM_VAL	    = "item_val";
@@ -191,8 +188,7 @@ public class Statistics {
 		bundle.put( ENLIGHTENING, enlighteningDrunk);
 		bundle.put( MANA, elixirManaDrunk);
 		bundle.put( CORROSION, corrosionUsed);
-		bundle.put( AWAREDUG, waterAwareDug);
-		bundle.put( HEALDUG, waterHealDug);
+		bundle.put( WELLDUG, wellWaterDug);
 		bundle.put( ITEM_TYPES_DISCOVERED, itemTypesDiscovered.toArray(new Class<?>[0]) );
 
 		bundle.put( PROG_SCORE,  progressScore );
@@ -243,8 +239,7 @@ public class Statistics {
 		enlighteningDrunk= bundle.getInt( ENLIGHTENING );
 		elixirManaDrunk = bundle.getInt( MANA );
 		corrosionUsed   = bundle.getBoolean( CORROSION );
-		waterAwareDug   = bundle.getInt( AWAREDUG );
-		waterHealDug    = bundle.getInt( HEALDUG );
+		wellWaterDug    = bundle.getInt(WELLDUG);
 
 		if (bundle.contains( ITEM_TYPES_DISCOVERED )) {
 			itemTypesDiscovered = new HashSet<>(Arrays.asList(bundle.getClassArray(ITEM_TYPES_DISCOVERED)));

@@ -235,9 +235,11 @@ public enum Talent {
 	//Explorer T1
 	KEEN_MEAL(288), SECRET_FORESIGHT(289), TESTED_AWARENESS(290), HOME_ADVANTAGE(291), SAFE_SURVEY(292),
 	//Explorer T2
-	FARSIGHT_MEAL(293), INSCRIBED_CLAIRVOYANCE(294), WINDING_PORCH(296), REKINDLED_EMBER(297), AGGRESSIVE_BARRICADE(298),
+	FARSIGHT_MEAL(293), LIQUID_CLAIRVOYANCE(294), WINDING_PORCH(296), REKINDLED_EMBER(297), AGGRESSIVE_BARRICADE(298),
 	//Explorer T3
 	VARIED_ENVIRONMENT(299, 3), DIG_THE_WELL(300, 3), CONVENIENT_SHOVEL(301, 3),
+	//Geomancer T3
+	TAPESTRY_OF_VINES(302, 3), SON_OF_SEA(303, 3), STRIKING_STONE(304, 3), LAYERED_ARCHITECTURE(305, 3), RISING_WIND(306, 3),
 
 	//universal T4
 	HEROIC_ENERGY(26, 4), //See icon() and title() for special logic for this one
@@ -617,7 +619,7 @@ public enum Talent {
 
 	public static void secretForesightID(Hero hero){
 		if (hero.hasTalent(SECRET_FORESIGHT)){
-			EquipableItem itemToID = null;
+			EquipableItem itemToID;
 
 			ArrayList<EquipableItem> equipmentsToID = new ArrayList<>();
 			if (hero.belongings.weapon != null && !hero.belongings.weapon.isIdentified())
@@ -631,19 +633,25 @@ public enum Talent {
 
 			if (!equipmentsToID.isEmpty()){
 				itemToID = equipmentsToID.remove(Random.Int(equipmentsToID.toArray().length));
+
+				if (itemToID != null){
+					itemToID.identify();
+					GLog.p(Messages.get(Hero.class, "talent_id", itemToID.name()));
+				}
+
 			} else if (hero.pointsInTalent(SECRET_FORESIGHT) >= 2) {
 				for (Item e : hero.belongings) {
-					if (e instanceof EquipableItem && !e.isIdentified())
+					if (e instanceof EquipableItem && !e.cursedKnown)
 						equipmentsToID.add((EquipableItem) e);
 				}
 				if (!equipmentsToID.isEmpty()){
 					itemToID = equipmentsToID.remove(Random.Int(equipmentsToID.toArray().length));
-				}
-			}
 
-			if (itemToID != null){
-				itemToID.identify();
-				GLog.p(Messages.get(Hero.class, "talent_id", itemToID.name()));
+					if (itemToID != null){
+						itemToID.cursedKnown = true;
+						GLog.p(Messages.get(Hero.class, "talent_id", itemToID.name()));
+					}
+				}
 			}
 		}
 	}
@@ -1189,33 +1197,10 @@ public enum Talent {
 				Buff.prolong(hero, LiquidAgilACCTracker.class, 5f).uses = Math.round(factor);
 			}
 		}
-	}
-
-	public static void onScrollUsed( Hero hero, int pos, float factor, Class<?extends Item> cls ){
-		if (hero.hasTalent(INSCRIBED_POWER)){
-			// 2/3 empowered wand zaps
-			Buff.affect(hero, ScrollEmpower.class).reset((int) (factor * (1 + hero.pointsInTalent(INSCRIBED_POWER))));
-		}
-		if (hero.hasTalent(INSCRIBED_STEALTH)){
-			// 4/6 turns of stealth
-			Buff.affect(hero, Invisibility.class, factor * (2 + 2*hero.pointsInTalent(INSCRIBED_STEALTH)));
-			Sample.INSTANCE.play( Assets.Sounds.MELD );
-		}
-		if (hero.hasTalent(RECALL_INSCRIPTION) && Scroll.class.isAssignableFrom(cls) && cls != ScrollOfUpgrade.class){
-			if (hero.heroClass == HeroClass.CLERIC){
-				Buff.prolong(hero, RecallInscription.UsedItemTracker.class, hero.pointsInTalent(RECALL_INSCRIPTION) == 2 ? 300 : 10).item = cls;
-			} else {
-				// 10/15%
-				if (Random.Int(20) < 1 + hero.pointsInTalent(RECALL_INSCRIPTION)){
-					Reflection.newInstance(cls).collect();
-					GLog.p("refunded!");
-				}
-			}
-		}
-		if (hero.hasTalent(INSCRIBED_CLAIRVOYANCE)){
+		if (hero.hasTalent(LIQUID_CLAIRVOYANCE)){
 			//copied from stone of clairvoyance ;)
 			Point c = Dungeon.level.cellToPoint(hero.pos);
-			int DIST = (int)(3 * hero.pointsInTalent(INSCRIBED_CLAIRVOYANCE) * factor);
+			int DIST = (int)(3 * hero.pointsInTalent(LIQUID_CLAIRVOYANCE) * factor);
 
 			int[] rounding = ShadowCaster.rounding[DIST];
 
@@ -1260,6 +1245,29 @@ public enum Talent {
 
 			Sample.INSTANCE.play( Assets.Sounds.TELEPORT );
 			GameScene.updateFog();
+		}
+	}
+
+	public static void onScrollUsed( Hero hero, int pos, float factor, Class<?extends Item> cls ){
+		if (hero.hasTalent(INSCRIBED_POWER)){
+			// 2/3 empowered wand zaps
+			Buff.affect(hero, ScrollEmpower.class).reset((int) (factor * (1 + hero.pointsInTalent(INSCRIBED_POWER))));
+		}
+		if (hero.hasTalent(INSCRIBED_STEALTH)){
+			// 4/6 turns of stealth
+			Buff.affect(hero, Invisibility.class, factor * (2 + 2*hero.pointsInTalent(INSCRIBED_STEALTH)));
+			Sample.INSTANCE.play( Assets.Sounds.MELD );
+		}
+		if (hero.hasTalent(RECALL_INSCRIPTION) && Scroll.class.isAssignableFrom(cls) && cls != ScrollOfUpgrade.class){
+			if (hero.heroClass == HeroClass.CLERIC){
+				Buff.prolong(hero, RecallInscription.UsedItemTracker.class, hero.pointsInTalent(RECALL_INSCRIPTION) == 2 ? 300 : 10).item = cls;
+			} else {
+				// 10/15%
+				if (Random.Int(20) < 1 + hero.pointsInTalent(RECALL_INSCRIPTION)){
+					Reflection.newInstance(cls).collect();
+					GLog.p("refunded!");
+				}
+			}
 		}
 	}
 
@@ -1544,7 +1552,7 @@ public enum Talent {
 				Collections.addAll(tierTalents, ENLIGHTENING_MEAL, RECALL_INSCRIPTION, SUNRAY, DIVINE_SENSE, BLESS, ASCETICISM);
 				break;
 			case EXPLORER:
-				Collections.addAll(tierTalents, FARSIGHT_MEAL, INSCRIBED_CLAIRVOYANCE, WINDING_PORCH, REKINDLED_EMBER, AGGRESSIVE_BARRICADE);
+				Collections.addAll(tierTalents, FARSIGHT_MEAL, LIQUID_CLAIRVOYANCE, WINDING_PORCH, REKINDLED_EMBER, AGGRESSIVE_BARRICADE);
 				break;
 		}
 		for (Talent talent : tierTalents){
@@ -1661,7 +1669,7 @@ public enum Talent {
 				Collections.addAll(tierTalents, PUNISHMENT, HOLY_DRAPE, HOLY_ANTIMAGIC, HOLY_IMAGE, ENHANCED_BOOKPAGE);
 				break;
 			case GEOMANCER:
-				Collections.addAll(tierTalents);
+				Collections.addAll(tierTalents, TAPESTRY_OF_VINES, SON_OF_SEA, STRIKING_STONE, LAYERED_ARCHITECTURE, RISING_WIND);
 				break;
 		}
 		for (Talent talent : tierTalents){

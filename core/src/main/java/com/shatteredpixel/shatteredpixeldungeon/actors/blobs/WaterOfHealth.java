@@ -50,7 +50,7 @@ public class WaterOfHealth extends WellWater {
 	@Override
 	protected boolean affectHero( Hero hero ) {
 		
-		if (!hero.isAlive()) return false;
+		if (!hero.isAlive() || cur[hero.pos] == 10) return false;
 		
 		Sample.INSTANCE.play( Assets.Sounds.DRINK );
 
@@ -79,6 +79,8 @@ public class WaterOfHealth extends WellWater {
 	
 	@Override
 	protected Item affectItem( Item item, int pos ) {
+		if (cur[pos] == 10) return null;
+
 		if (item instanceof Waterskin && !((Waterskin)item).isFull()) {
 			((Waterskin)item).fill();
 			CellEmitter.get( pos ).start( Speck.factory( Speck.HEALING ), 0.4f, 4 );

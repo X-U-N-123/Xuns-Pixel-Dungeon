@@ -27,8 +27,6 @@ import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Fire;
-import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.WaterOfAwareness;
-import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.WaterOfHealth;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.WellWater;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
@@ -42,6 +40,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.Splash;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Bestiary;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.MagicWellRoom;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -51,6 +50,8 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.ColorMath;
+import com.watabou.utils.PathFinder;
 import com.watabou.utils.PointF;
 
 import java.util.ArrayList;
@@ -81,7 +82,7 @@ public class Shovel extends MeleeWeapon {
     public ArrayList<String> actions(Hero hero ) {
         ArrayList<String> actions = super.actions( hero );
         actions.add(AC_BUILD);
-        if (Statistics.waterAwareDug + Statistics.waterHealDug < hero.pointsInTalent(Talent.DIG_THE_WELL))
+        if (Statistics.wellWaterDug < hero.pointsInTalent(Talent.DIG_THE_WELL))
             actions.add(AC_WELL);
         if (hero.subClass == HeroSubClass.GEOMANCER) {
             actions.add(AC_WATER);
@@ -154,7 +155,7 @@ public class Shovel extends MeleeWeapon {
                         //put water if there has no water
                         Sample.INSTANCE.play(Assets.Sounds.WATER, 2f);
                         Splash.at( DungeonTilemap.tileCenterToWorld( cell ), -PointF.PI/2, PointF.PI/2, 0x5bc1e3, 5, 0.01f);
-                        ExplorerCooldown.affectCD(8, curUser);
+                        ExplorerCooldown.affectCD(10, curUser);
                         Dungeon.hero.spendAndNext(Actor.TICK);
                         GameScene.updateMap(cell);
                         Dungeon.observe();
@@ -173,16 +174,64 @@ public class Shovel extends MeleeWeapon {
                         return;
                     }
                     break;
+                case AC_PLANT:
+
+                    if (curUser.buff(ExplorerCooldown.class) == null){
+                        boolean grown = false;
+
+                        for (int i : PathFinder.NEIGHBOURS9) {
+                            if (Dungeon.level.map[cell + i] == Terrain.EMPTY || Dungeon.level.map[cell + i] == Terrain.EMPTY_DECO
+                            || Dungeon.level.map[cell + i] == Terrain.EMBERS || Dungeon.level.map[cell + i] == Terrain.GRASS){
+
+                                Level.set(cell + i, Terrain.GRASS);
+                                grown = true;
+                                if (curUser.pointsInTalent(Talent.TAPESTRY_OF_VINES) >= 3){
+                                    Level.set(cell + i, Terrain.FURROWED_GRASS);
+                                }
+
+                                Splash.at( DungeonTilemap.tileCenterToWorld(cell + i), -PointF.PI/2, PointF.PI/2,
+                                    ColorMath.random( 0x004400, 0x88CC44 ), 10, 0.02f);
+                            }
+                        }//plant grass if grass can grow there
+
+                        if (grown){
+                            Sample.INSTANCE.play(Assets.Sounds.PLANT);
+                            ExplorerCooldown.affectCD(20, curUser);
+                            Dungeon.hero.spendAndNext(Actor.TICK);
+                            GameScene.updateMap(cell);
+                            Dungeon.observe();
+                            curUser.sprite.zap(cell);
+                            return;
+                        }
+
+                    } else if (Dungeon.level.map[cell] == Terrain.HIGH_GRASS || Dungeon.level.map[cell] == Terrain.FURROWED_GRASS) {
+                        //cut grass down if there is
+                        Level.set( cell, Terrain.GRASS );
+
+                        Splash.at( DungeonTilemap.tileCenterToWorld( cell ), -PointF.PI/2, PointF.PI/2,
+                                ColorMath.random( 0x004400, 0x88CC44 ), 10, 0.02f);
+
+                        Sample.INSTANCE.play(Assets.Sounds.HIT_SLASH);
+                        Dungeon.hero.spendAndNext(Actor.TICK);
+                        GameScene.updateMap(cell);
+                        Dungeon.observe();
+                        curUser.sprite.zap(cell);
+                        return;
+                    }
+
+                    break;
                 case AC_WELL:
                     if (curUser.buff(ExplorerCooldown.class) == null
                     && Dungeon.level.map[cell] == Terrain.EMPTY_WELL
-                    && Statistics.waterAwareDug + Statistics.waterHealDug < curUser.pointsInTalent(Talent.DIG_THE_WELL)){
-                        if (Statistics.waterHealDug < 1 && curUser.pointsInTalent(Talent.DIG_THE_WELL) >= 2){
-                            WellWater.seed(cell, 1, WaterOfHealth.class,    Dungeon.level);
-                            Statistics.waterHealDug ++;//dig water of health first
-                        } else {
-                            WellWater.seed(cell, 1, WaterOfAwareness.class, Dungeon.level);
-                            Statistics.waterAwareDug ++;
+                    && Statistics.wellWaterDug < curUser.pointsInTalent(Talent.DIG_THE_WELL)){
+                        for (Class<?> waterClass : MagicWellRoom.WATERS ) {
+                            WellWater water = (WellWater)Dungeon.level.blobs.get( waterClass );
+                            if (water != null && water.cur[cell] == WellWater.CUR_EMPTY) {
+
+                                water.cur[cell] = 1;
+                                Statistics.wellWaterDug ++;
+                                break;
+                            }
                         }
                         ExplorerCooldown.affectCD(100, curUser);
                         Level.set(cell, Terrain.WELL);

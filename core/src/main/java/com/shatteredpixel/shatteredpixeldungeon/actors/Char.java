@@ -1224,17 +1224,17 @@ public abstract class Char extends Actor {
 		if (point > 0 && Dungeon.level.heroFOV[pos] && alignment != Alignment.ALLY){
 			if (Dungeon.level.map[pos] == Terrain.EMBERS || Dungeon.level.map[pos] == Terrain.EMPTY || Dungeon.level.map[pos] == Terrain.EMPTY_DECO || Dungeon.level.map[pos] == Terrain.WATER){
 				Level.set(pos, Terrain.GRASS);//+1
-				if (point > 2) {
+				if (point >= 3) {
 					OrganicGrass(pos);//+3
 					sprite.emitter().burst(LeafParticle.GENERAL, 5);
 				}
 			}
-			if ((Dungeon.level.map[pos] == Terrain.GRASS || Dungeon.level.map[pos] == Terrain.FURROWED_GRASS) && point > 2){
+			if ((Dungeon.level.map[pos] == Terrain.GRASS || Dungeon.level.map[pos] == Terrain.FURROWED_GRASS) && point >= 3){
 				OrganicGrass(pos);//+3
 				sprite.emitter().burst(LeafParticle.GENERAL, 5);
 			}
 			if ((Dungeon.level.map[hero.pos] == Terrain.EMBERS || Dungeon.level.map[hero.pos] == Terrain.EMPTY || Dungeon.level.map[hero.pos] == Terrain.EMPTY_DECO
-			|| Dungeon.level.map[hero.pos] == Terrain.GRASS || Dungeon.level.map[hero.pos] == Terrain.FURROWED_GRASS || Dungeon.level.map[hero.pos] == Terrain.WATER) && point > 1){
+			|| Dungeon.level.map[hero.pos] == Terrain.GRASS || Dungeon.level.map[hero.pos] == Terrain.FURROWED_GRASS || Dungeon.level.map[hero.pos] == Terrain.WATER) && point >= 2){
 				OrganicGrass(hero.pos);//+2
 				hero.sprite.emitter().burst(LeafParticle.GENERAL, 5);
 				GameScene.updateMap(hero.pos);
