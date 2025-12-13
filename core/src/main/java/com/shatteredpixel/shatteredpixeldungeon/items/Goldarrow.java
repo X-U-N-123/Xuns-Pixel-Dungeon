@@ -153,6 +153,7 @@ public class Goldarrow extends Item {
                     for (int i : trajectory.path){
                         curUser.sprite.parent.addToFront(new TargetedCell(i, 0xFFFFFF));
                     }
+                    curUser.sprite.parent.addToFront(new TargetedCell(cell, 0x00FF00));
                 }
             });
             defaultAction = AC_TARGET;

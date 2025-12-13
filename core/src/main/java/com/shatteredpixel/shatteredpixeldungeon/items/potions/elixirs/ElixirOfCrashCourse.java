@@ -48,13 +48,13 @@ public class ElixirOfCrashCourse extends Elixir {
     @Override
     public ArrayList<String> actions( Hero hero ) {
         ArrayList<String> actions = super.actions( hero );
-        if (hero.exp < hero.maxExp() * 0.6f) actions.remove( AC_DRINK );
+        if (hero.exp < hero.maxExp() * 0.8f) actions.remove( AC_DRINK );
         return actions;
     }
 
     @Override
     public void apply(Hero hero) {
-        hero.exp -= hero.maxExp() * 0.6f;
+        hero.exp -= hero.maxExp() * 0.8f;
         Buff.affect(hero, Weakness.class, 80f);
         Sample.INSTANCE.playDelayed(Assets.Sounds.MISS, 0.8f);
         GLog.h(Messages.get(this, "stronger"));

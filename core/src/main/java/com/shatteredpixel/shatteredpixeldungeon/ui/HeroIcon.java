@@ -78,7 +78,7 @@ public class HeroIcon extends Image {
 	public static final int TRINITY         = 64;
 	public static final int POWER_OF_MANY   = 65;
 	public static final int RATMOGRIFY      = 66;
-	public static final int ROCKFALL        = 67;
+	public static final int OPTIMAL_CAMOU   = 67;
 
 	//cleric spells
 	public static final int GUIDING_LIGHT   = 80;
@@ -133,6 +133,7 @@ public class HeroIcon extends Image {
 	public static final int MONK_ABILITIES  = 182;
 	public static final int NINJA_TELEPORT  = 183;
 	public static final int MIRROR_IMAGE    = 184;
+	public static final int SHOVEL          = 185;
 
 	public HeroIcon(HeroSubClass subCls){
 		super( Assets.Interfaces.HERO_ICONS );

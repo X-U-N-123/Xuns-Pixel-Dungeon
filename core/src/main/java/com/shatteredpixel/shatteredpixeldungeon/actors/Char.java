@@ -58,6 +58,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Frost;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FrostImbue;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Fury;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.GeomancerBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hex;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
@@ -138,7 +139,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRetributio
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfPsionicBlast;
-import com.shatteredpixel.shatteredpixeldungeon.items.spells.RockFall;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAggression;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.FerretTuft;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
@@ -834,6 +834,9 @@ public abstract class Char extends Actor {
 				&& hero.buff(AuraOfProtection.AuraBuff.class) != null
 				&& (Dungeon.level.distance(pos, hero.pos) <= 2 || buff(LifeLinkSpell.LifeLinkSpellBuff.class) != null)) {
 			return hero.glyphLevel(cls);
+		} else if (this instanceof Barricade && alignment == Alignment.ALLY
+		&& hero != null && hero.heroClass == HeroClass.EXPLORER && hero.hasTalent(Talent.ARCANE_BARRICADE)) {
+			return hero.pointsInTalent(Talent.ARCANE_BARRICADE) - 1;
 		} else {
 			return -1;
 		}
@@ -971,6 +974,9 @@ public abstract class Char extends Actor {
 		}
 		if (this.buff(JusticeStrike.JusticeStrikeBuff.class) != null){
 			damage *= 1f + 0.06f * (hero.pointsInTalent(Talent.JUSTICE_STRIKE) + 1);
+		}
+		if (alignment == Alignment.ALLY && this != hero && hero.heroClass != HeroClass.EXPLORER){
+			damage *= 1 - 0.1f * hero.pointsInTalent(Talent.AGGRESSIVE_ROADBLOCK);
 		}
 
 		if (buff(Sickle.HarvestBleedTracker.class) != null){
@@ -1179,8 +1185,8 @@ public abstract class Char extends Actor {
 		NO_ARMOR_PHYSICAL_SOURCES.add(Heap.class); //damage from wraiths attempting to spawn from heaps
 		NO_ARMOR_PHYSICAL_SOURCES.add(Necromancer.SummoningBlockDamage.class);
 		NO_ARMOR_PHYSICAL_SOURCES.add(DriedRose.GhostHero.NoRoseDamage.class);
-		NO_ARMOR_PHYSICAL_SOURCES.add(RockFall.class);
 		NO_ARMOR_PHYSICAL_SOURCES.add(WandOfAvalanche.class);
+		NO_ARMOR_PHYSICAL_SOURCES.add(GeomancerBuff.class); //geomancer recharge damage
 	}
 	
 	public void destroy() {
@@ -1271,6 +1277,7 @@ public abstract class Char extends Actor {
 			barricade.HT = (int)((hero.lvl * 2 + 5) * tracker.strength);
 			barricade.HP = (int)((hero.lvl * 2 + 5) * tracker.strength);
 			barricade.pos = pos;
+			barricade.aggression = 6f;
 			GameScene.add(barricade);
 			ScrollOfTeleportation.appear(barricade, barricade.pos);
 			Dungeon.level.occupyCell(barricade);
@@ -1331,10 +1338,6 @@ public abstract class Char extends Actor {
 		}
 		if (buff( Speed.class ) != null) {
 			timeScale *= 2.0f;
-		}
-		MonkEnergy energy = hero.buff(MonkEnergy.class);
-		if (this == hero && hero.hasTalent(Talent.YIN_GAIT) && energy != null) {
-			timeScale *= 1f + 0.08f * hero.pointsInTalent(Talent.YIN_GAIT) * energy.Getenergy()/energy.energyCap();
 		}
 		
 		super.spend( time / timeScale );

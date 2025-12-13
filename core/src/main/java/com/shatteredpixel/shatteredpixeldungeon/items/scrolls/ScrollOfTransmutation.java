@@ -227,11 +227,11 @@ public class ScrollOfTransmutation extends InventoryScroll {
 		Weapon n;
 		Generator.Category c;
 		if (w instanceof MeleeWeapon) {
-			c = Generator.wepTiers[((MeleeWeapon)w).tier - 1];
+			c = Generator.wepTiers[w.tier - 1];
 		} else {
-			c = Generator.misTiers[((MissileWeapon)w).tier - 1];
+			c = Generator.misTiers[w.tier - 1];
 		}
-		
+
 		do {
 			n = (Weapon)Generator.randomUsingDefaults(c);
 		} while (Challenges.isItemBlocked(n) || n.getClass() == w.getClass());
@@ -257,7 +257,7 @@ public class ScrollOfTransmutation extends InventoryScroll {
 		return n;
 		
 	}
-	
+
 	public static Ring changeRing( Ring r ) {
 		Ring n;
 		do {

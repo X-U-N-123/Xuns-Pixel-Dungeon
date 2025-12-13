@@ -235,11 +235,13 @@ public enum Talent {
 	//Explorer T1
 	KEEN_MEAL(288), SECRET_FORESIGHT(289), TESTED_AWARENESS(290), HOME_ADVANTAGE(291), SAFE_SURVEY(292),
 	//Explorer T2
-	FARSIGHT_MEAL(293), LIQUID_CLAIRVOYANCE(294), WINDING_PORCH(296), REKINDLED_EMBER(297), AGGRESSIVE_BARRICADE(298),
+	FARSIGHT_MEAL(293), LIQUID_CLAIRVOYANCE(294), ARCANE_BARRICADE(295), WINDING_PORCH(296), REKINDLED_EMBER(297), AGGRESSIVE_ROADBLOCK(298),
 	//Explorer T3
 	VARIED_ENVIRONMENT(299, 3), DIG_THE_WELL(300, 3), CONVENIENT_SHOVEL(301, 3),
 	//Geomancer T3
 	TAPESTRY_OF_VINES(302, 3), SON_OF_SEA(303, 3), STRIKING_STONE(304, 3), LAYERED_ARCHITECTURE(305, 3), RISING_WIND(306, 3),
+	//Rockfall T4
+	LASTING_DISGUISE(317, 4), STRAIN_CAPACITY(318, 4), PAINTED_BLADE(319, 4), QUICK_BUILD(320, 4),
 
 	//universal T4
 	HEROIC_ENERGY(26, 4), //See icon() and title() for special logic for this one
@@ -708,8 +710,8 @@ public enum Talent {
 	int icon;
 	int maxPoints;
 
-	// tiers 1/2/3/4 start at levels 2/7/13/21
-	public static int[] tierLevelThresholds = new int[]{0, 2, 7, 13, 22, 31};
+	// tiers 1/2/3/4 start at levels 2/7/13/20
+	public static int[] tierLevelThresholds = new int[]{0, 2, 7, 13, 21, 31};
 
 	Talent( int icon ){
 		this(icon, 2);
@@ -887,7 +889,7 @@ public enum Talent {
 			}
 		}
 
-		if (talent == HEIGHTENED_SENSES || talent == FARSIGHT || talent == DIVINE_SENSE || talent == YANG_SEEING || talent == WINDING_PORCH){
+		if (talent == HEIGHTENED_SENSES || talent == FARSIGHT || talent == DIVINE_SENSE || talent == YANG_SEEING || talent == WINDING_PORCH || talent == TAPESTRY_OF_VINES){
 			Dungeon.observe();
 			Dungeon.hero.checkVisibleMobs();
 		}
@@ -944,10 +946,10 @@ public enum Talent {
 		if (Dungeon.level.map[hero.pos] == Terrain.EMBERS && talent == REKINDLED_EMBER && hero.buff(Burning.class) != null)
 			Buff.detach(hero, Burning.class);
 
-		if (talent == AGGRESSIVE_BARRICADE && hero.pointsInTalent(AGGRESSIVE_BARRICADE) == 2){
+		if (talent == AGGRESSIVE_ROADBLOCK && hero.pointsInTalent(AGGRESSIVE_ROADBLOCK) == 2){
 			for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
 				if (mob instanceof Barricade && mob.alignment == Char.Alignment.ALLY){
-					((Barricade) mob).aggression = 6f;
+					((Barricade) mob).aggression = 5f;
 				}
 			}
 		}
@@ -1485,14 +1487,14 @@ public enum Talent {
 	public static final int MAX_TALENT_TIERS = 4;
 
 	public static void initClassTalents( Hero hero ){
-		initClassTalents( hero.heroClass, hero.talents, hero.metamorphedTalents );
+		initClassTalents( hero.heroClass, hero.talents, hero.metamorphedTalents, hero.corroLostTalent);
 	}
 
 	public static void initClassTalents( HeroClass cls, ArrayList<LinkedHashMap<Talent, Integer>> talents){
-		initClassTalents( cls, talents, new LinkedHashMap<>());
+		initClassTalents( cls, talents, new LinkedHashMap<>(), null);
 	}
 
-	public static void initClassTalents( HeroClass cls, ArrayList<LinkedHashMap<Talent, Integer>> talents, LinkedHashMap<Talent, Talent> replacements ){
+	public static void initClassTalents( HeroClass cls, ArrayList<LinkedHashMap<Talent, Integer>> talents, LinkedHashMap<Talent, Talent> replacements, Talent corroTalent){
 		while (talents.size() < MAX_TALENT_TIERS){
 			talents.add(new LinkedHashMap<>());
 		}
@@ -1522,7 +1524,7 @@ public enum Talent {
 			case EXPLORER:
 				Collections.addAll(tierTalents, KEEN_MEAL, SECRET_FORESIGHT, TESTED_AWARENESS, HOME_ADVANTAGE, SAFE_SURVEY);
 				break;
-}
+		}
 		for (Talent talent : tierTalents){
 			if (replacements.containsKey(talent)){
 				talent = replacements.get(talent);
@@ -1552,7 +1554,7 @@ public enum Talent {
 				Collections.addAll(tierTalents, ENLIGHTENING_MEAL, RECALL_INSCRIPTION, SUNRAY, DIVINE_SENSE, BLESS, ASCETICISM);
 				break;
 			case EXPLORER:
-				Collections.addAll(tierTalents, FARSIGHT_MEAL, LIQUID_CLAIRVOYANCE, WINDING_PORCH, REKINDLED_EMBER, AGGRESSIVE_BARRICADE);
+				Collections.addAll(tierTalents, FARSIGHT_MEAL, LIQUID_CLAIRVOYANCE, ARCANE_BARRICADE, WINDING_PORCH, REKINDLED_EMBER, AGGRESSIVE_ROADBLOCK);
 				break;
 		}
 		for (Talent talent : tierTalents){
@@ -1591,7 +1593,7 @@ public enum Talent {
 			if (replacements.containsKey(talent)){
 				talent = replacements.get(talent);
 			}
-			talents.get(2).put(talent, 0);
+			if (corroTalent != talent) talents.get(2).put(talent, 0);
 		}
 		tierTalents.clear();
 
@@ -1600,10 +1602,10 @@ public enum Talent {
 	}
 
 	public static void initSubclassTalents( Hero hero ){
-		initSubclassTalents( hero.subClass, hero.talents );
+		initSubclassTalents( hero.subClass, hero.talents, hero.corroLostTalent);
 	}
 
-	public static void initSubclassTalents( HeroSubClass cls, ArrayList<LinkedHashMap<Talent, Integer>> talents ){
+	public static void initSubclassTalents( HeroSubClass cls, ArrayList<LinkedHashMap<Talent, Integer>> talents, Talent corroTalent){
 		if (cls == HeroSubClass.NONE) return;
 
 		while (talents.size() < MAX_TALENT_TIERS){
@@ -1673,7 +1675,7 @@ public enum Talent {
 				break;
 		}
 		for (Talent talent : tierTalents){
-			talents.get(2).put(talent, 0);
+			if (corroTalent != talent) talents.get(2).put(talent, 0);
 		}
 		tierTalents.clear();
 
@@ -1696,6 +1698,7 @@ public enum Talent {
 	}
 
 	private static final String TALENT_TIER = "talents_tier_";
+	private static final String CORRO_TALENT = "corro_talent";
 
 	public static void storeTalentsInBundle( Bundle bundle, Hero hero ){
 		for (int i = 0; i < MAX_TALENT_TIERS; i++){
@@ -1718,6 +1721,8 @@ public enum Talent {
 			replacementsBundle.put(t.name(), hero.metamorphedTalents.get(t));
 		}
 		bundle.put("replacements", replacementsBundle);
+
+		if (hero.corroLostTalent != null) bundle.put(CORRO_TALENT, hero.corroLostTalent);
 	}
 
 	private static final HashSet<String> removedTalents = new HashSet<>();
@@ -1764,6 +1769,8 @@ public enum Talent {
 				}
 			}
 		}
+
+		if (bundle.contains(CORRO_TALENT)) hero.corroLostTalent = bundle.getEnum(CORRO_TALENT, Talent.class);
 
 		if (hero.heroClass != null)     initClassTalents(hero);
 		if (hero.subClass != null)      initSubclassTalents(hero);

@@ -107,12 +107,18 @@ abstract public class Weapon extends KindOfWeapon {
 			return Math.round(dmg * damageFactor);
 		}
 
+		public float damageFactor(float dmg){
+			return dmg * damageFactor;
+		}
+
 		public float delayFactor(float dly){
 			return dly * delayFactor;
 		}
 	}
 	
 	public Augment augment = Augment.NONE;
+
+	public int tier;
 	
 	private static final int USES_TO_ID = 20;
 	private float usesLeftToID = USES_TO_ID;

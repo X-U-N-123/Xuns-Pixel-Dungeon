@@ -44,8 +44,10 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Berserk;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bless;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.BrokenArmor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Charm;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Chill;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Combo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Drowsy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
@@ -224,6 +226,7 @@ public class Hero extends Char {
 	public ArmorAbility armorAbility = null;
 	public ArrayList<LinkedHashMap<Talent, Integer>> talents = new ArrayList<>();
 	public LinkedHashMap<Talent, Talent> metamorphedTalents = new LinkedHashMap<>();
+	public Talent corroLostTalent = null;
 	
 	private int attackSkill = 10;
 	private int defenseSkill = 5;
@@ -517,15 +520,21 @@ public class Hero extends Char {
 		}
 		belongings.thrownWeapon = null;
 
-		if (hit && subClass == HeroSubClass.GLADIATOR && wasEnemy){
-			Buff.affect( this, Combo.class ).hit( enemy );
-			if (Dungeon.hero.hasTalent(Talent.FAR_STANDOFF)){
+		if (hit && wasEnemy){
+			if (subClass == HeroSubClass.GLADIATOR){
 				Buff.affect( this, Combo.class ).hit( enemy );
+				if (Dungeon.hero.hasTalent(Talent.FAR_STANDOFF))
+					Buff.affect( this, Combo.class ).hit( enemy );
 			}
-		}
 
-		if (hit && heroClass == HeroClass.DUELIST && wasEnemy){
-			Buff.affect( this, Sai.ComboStrikeTracker.class).addHit();
+			if (heroClass == HeroClass.DUELIST)
+				Buff.affect( this, Sai.ComboStrikeTracker.class).addHit();
+
+			if (subClass == HeroSubClass.GEOMANCER && Dungeon.level.map[pos] == Terrain.EMPTY_SP)
+				Buff.prolong(enemy, BrokenArmor.class, 3f);
+
+			if (hasTalent(Talent.SON_OF_SEA) && Dungeon.level.map[pos] == Terrain.WATER)
+				Buff.prolong(enemy, Chill.class, 3f);
 		}
 
 		attackTarget = null;
@@ -588,10 +597,13 @@ public class Hero extends Char {
 			accuracy *= 1.50f;
 		}
 
-		if ((Dungeon.level.map[pos] == Terrain.EMPTY
-		|| Dungeon.level.map[pos] == Terrain.EMPTY_DECO)
-		&& heroClass == HeroClass.EXPLORER){
+		if ((Dungeon.level.map[pos] == Terrain.EMPTY || Dungeon.level.map[pos] == Terrain.EMPTY_DECO)
+		&& heroClass == HeroClass.EXPLORER)
 			accuracy *= 1.1f;
+
+		if (hasTalent(Talent.STRIKING_STONE)){
+			for (int i : PathFinder.NEIGHBOURS8)
+				if (!Dungeon.level.passable[pos + i]) accuracy += 0.04f;
 		}
 
 		if(attackDelay() >1 && hasTalent(Talent.OVERWHELMING)){
@@ -655,6 +667,11 @@ public class Hero extends Char {
 		|| Dungeon.level.map[pos] == Terrain.EMPTY_DECO)
 		&& heroClass == HeroClass.EXPLORER){
 			evasion *= 1.1f;
+		}
+
+		if (hasTalent(Talent.STRIKING_STONE)){
+			for (int i : PathFinder.NEIGHBOURS8)
+				if (!Dungeon.level.passable[pos + i]) evasion += 0.04f;
 		}
 
 		if (belongings.armor() != null) {
@@ -842,9 +859,8 @@ public class Hero extends Char {
 			speed *= courierFactor;
 		}
 
-		if (heroClass == HeroClass.EXPLORER && Dungeon.level.map[pos] == Terrain.WATER){
-			speed *= 1.1f;
-		}
+		if (heroClass == HeroClass.EXPLORER && Dungeon.level.map[pos] == Terrain.WATER && subClass != HeroSubClass.GEOMANCER)
+			speed *= 1.1f; //overriden by geomancer ability, see spend(float time)
 
 		speed = AscensionChallenge.modifyHeroSpeed(speed);
 		
@@ -907,6 +923,10 @@ public class Hero extends Char {
 			delay /= 1.5f;
 		}
 
+		if (heroClass != HeroClass.EXPLORER){
+			delay /= 1f + 0.05f * pointsInTalent(Talent.CONVENIENT_SHOVEL);
+		}//convenient shovel transmuting effect
+
 		if (!RingOfForce.fightingUnarmed(this)) {
 			
 			return delay * belongings.attackingWeapon().delayFactor( this );
@@ -937,6 +957,12 @@ public class Hero extends Char {
 
 	@Override
 	public void spend( float time ) {
+		MonkEnergy energy = buff(MonkEnergy.class);
+		if (hasTalent(Talent.YIN_GAIT) && energy != null)
+			time /= 1f + 0.08f * pointsInTalent(Talent.YIN_GAIT) * energy.Getenergy() / energy.energyCap();
+
+		if (subClass == HeroSubClass.GEOMANCER && Dungeon.level.map[pos] == Terrain.WATER) time /= 1.1f;
+
 		super.spend(time);
 	}
 
@@ -1777,6 +1803,10 @@ public class Hero extends Char {
 			else if (pointsInTalent(Talent.IRON_STOMACH) == 2)  damage = 0;
 		}
 
+		if (subClass == HeroSubClass.GEOMANCER
+		&& (Dungeon.level.map[pos] == Terrain.EMPTY || Dungeon.level.map[pos] == Terrain.EMPTY_DECO))
+			damage *= 0.9f;
+
 		dmg = Math.round(damage);
 
 		if (buff(Talent.HashashinsTracker.class) != null){
@@ -2490,15 +2520,21 @@ public class Hero extends Char {
 		}
 		spend( attackDelay() );
 
-		if (hit && subClass == HeroSubClass.GLADIATOR && wasEnemy){
-			Buff.affect( this, Combo.class ).hit(attackTarget);
-		}
-
-		if (hit && heroClass == HeroClass.DUELIST && wasEnemy){
-			Buff.affect( this, Sai.ComboStrikeTracker.class).addHit();
-			if (hasTalent(Talent.SKILLED_DUAL)) {
-				Buff.affect(this, Talent.SkilleddualTracker.class).Hit((Weapon) belongings.weapon());
+		if (hit && wasEnemy){
+			if (subClass == HeroSubClass.GLADIATOR){
+				Buff.affect( this, Combo.class ).hit( attackTarget );
+				if (Dungeon.hero.hasTalent(Talent.FAR_STANDOFF))
+					Buff.affect( this, Combo.class ).hit( attackTarget );
 			}
+
+			if (heroClass == HeroClass.DUELIST)
+				Buff.affect( this, Sai.ComboStrikeTracker.class).addHit();
+
+			if (subClass == HeroSubClass.GEOMANCER && Dungeon.level.map[pos] == Terrain.EMPTY_SP)
+				Buff.prolong(attackTarget, BrokenArmor.class, 3f);
+
+			if (hasTalent(Talent.SON_OF_SEA) && Dungeon.level.map[pos] == Terrain.WATER)
+				Buff.prolong(attackTarget, Chill.class, 3f);
 		}
 
 		curAction = null;

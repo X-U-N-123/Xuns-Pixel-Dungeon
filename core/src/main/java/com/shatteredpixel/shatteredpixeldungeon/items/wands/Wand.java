@@ -63,6 +63,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ShardOfOblivion;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.WondrousResin;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Projecting;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
+import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector;
@@ -177,7 +178,7 @@ public abstract class Wand extends Item {
 		if (super.collect( container )) {
 			if (container.owner != null) {
 				if (container instanceof MagicalHolster)
-					charge( container.owner, ((MagicalHolster) container).HOLSTER_SCALE_FACTOR );
+					charge( container.owner, MagicalHolster.HOLSTER_SCALE_FACTOR);
 				else
 					charge( container.owner );
 			}
@@ -939,6 +940,12 @@ public abstract class Wand extends Item {
 			if (charger.target instanceof Hero && ((Hero)charger.target).hasTalent(Talent.ARCANE_STEP)
 					&& charger.target.buff(Momentum.class)!=null && charger.target.buff(Momentum.class).freerunning()){
 				turnsToCharge /= 1f + 0.1f*((Hero)charger.target).pointsInTalent(Talent.ARCANE_STEP);
+			}
+
+			if (charger.target instanceof Hero && ((Hero)charger.target).subClass == HeroSubClass.GEOMANCER
+					&& (Dungeon.level.map[charger.target.pos] == Terrain.CHASM
+			|| (charger.target.flying && ((Hero)charger.target).pointsInTalent(Talent.RISING_WIND) >= 3)) ){
+				turnsToCharge /= 1.1f;
 			}
 
 			if (Regeneration.regenOn())

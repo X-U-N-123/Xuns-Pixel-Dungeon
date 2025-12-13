@@ -56,7 +56,11 @@ public class Windblade extends MeleeWeapon {
 
     @Override
     public int reachFactor(Char owner){
-        return super.reachFactor(owner) + level();
+        return reachFactor(owner, level());
+    }
+
+    public int reachFactor(Char owner, int lvl){
+        return super.reachFactor(owner) + lvl;
     }
 
     @Override

@@ -849,51 +849,54 @@ public class ItemSpriteSheet {
 		assignItemRect(BREW_TRACKING  ,9, 11);
 	}
 
-	private static final int SPELLS         = xy(1, 16);  //32 slots
+	private static final int SPELLS         = xy(1, 16);//32 slots
+	//10 slots for targeted spell
 	public static final int WILD_ENERGY     = SPELLS+0;
-	public static final int PHASE_SHIFT     = SPELLS+1;
+	public static final int SUMMON_WRAITH   = SPELLS+1;
 	public static final int TELE_GRAB       = SPELLS+2;
-	public static final int UNSTABLE_SPELL  = SPELLS+3;
-	public static final int SUMMON_WRAITH   = SPELLS+4;
-    public static final int WATCHTOWER      = SPELLS+5;
-    public static final int ROCKFALL        = SPELLS+6;
+
+
+	//4 unused slots
+
 	public static final int MAGICBAN        = SPELLS+7;
-
+	public static final int WATCHTOWER      = SPELLS+8;
+	public static final int PHASE_SHIFT     = SPELLS+9;
+	public static final int UNSTABLE_SPELL  = SPELLS+10;//1 slot for unstable
+	// 11 slots for inventory spell
 	public static final int CURSE_INFUSE    = SPELLS+11;
-	public static final int MAGIC_INFUSE    = SPELLS+12;
-	public static final int ALCHEMIZE       = SPELLS+13;
-	public static final int RECYCLE         = SPELLS+14;
+	public static final int RECYCLE         = SPELLS+12;
+	public static final int UPTIER          = SPELLS+13;
+	//1 unused slot
 	public static final int EXTRACT         = SPELLS+15;
-	public static final int MAGICAL_TRAN     = SPELLS+16;
+	public static final int MAGICAL_TRAN    = SPELLS+16;
+	public static final int MAGIC_INFUSE    = SPELLS+17;
+	public static final int ALCHEMIZE       = SPELLS+18;
 
+	//3 unused slots
+
+	//10 slots for others
 	public static final int RECLAIM_TRAP    = SPELLS+22;
-	public static final int RETURN_BEACON   = SPELLS+23;
-	public static final int SUMMON_ELE      = SPELLS+24;
-	public static final int SCOUT           = SPELLS+25;
+
+	//2 unused slots
+	public static final int CORRUPTION      = SPELLS+25;
 	public static final int CORROSION       = SPELLS+26;
+	public static final int SUMMON_ELE      = SPELLS+27;
+
+	//2 unused slots
+	public static final int SCOUT           = SPELLS+30;
+	public static final int RETURN_BEACON   = SPELLS+31;
 
 	static{
-		assignItemRect(WILD_ENERGY,     12, 11);
-		assignItemRect(PHASE_SHIFT,     12, 11);
-		assignItemRect(TELE_GRAB,       12, 11);
-		assignItemRect(UNSTABLE_SPELL,  12, 13);
-		assignItemRect(SUMMON_WRAITH,   12, 11);
-		assignItemRect(WATCHTOWER,      12, 11);
-		assignItemRect(ROCKFALL,        12, 11);
-		assignItemRect(MAGICBAN,        12, 11);
+		for (int i = SPELLS; i < SPELLS+10; i++)
+			assignItemRect(i, 12, 11);
 
-		assignItemRect(CURSE_INFUSE,    10, 15);
-		assignItemRect(MAGIC_INFUSE,    10, 15);
-		assignItemRect(ALCHEMIZE,       10, 15);
-		assignItemRect(RECYCLE,         10, 15);
-		assignItemRect(EXTRACT,         10, 15);
-		assignItemRect(MAGICAL_TRAN,    10, 15);
+		assignItemRect(UNSTABLE_SPELL, 12, 13);
 
-		assignItemRect(RECLAIM_TRAP,     8, 16);
-		assignItemRect(RETURN_BEACON,    8, 16);
-		assignItemRect(SUMMON_ELE,       8, 16);
-		assignItemRect(SCOUT,            8, 16);
-		assignItemRect(CORROSION,        8, 16);
+		for (int i = SPELLS+11; i < SPELLS+22; i++)
+			assignItemRect(i, 10, 15);
+
+		for (int i = SPELLS+22; i < SPELLS+32; i++)
+			assignItemRect(i, 8, 16);
 	}
 	
 	private static final int FOOD           = xy(1, 18);  //16 slots

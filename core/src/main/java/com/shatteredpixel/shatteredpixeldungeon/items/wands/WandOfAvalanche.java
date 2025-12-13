@@ -34,7 +34,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.mage.WildM
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
-import com.shatteredpixel.shatteredpixeldungeon.items.spells.RockFall;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
@@ -122,7 +121,7 @@ public class WandOfAvalanche extends DamageWand {
 			} else if (ch == curUser) {
 				Badges.validateDeathFromFriendlyMagic();
 				Dungeon.fail(this);
-				GLog.n(Messages.get(RockFall.class, "ondeath"));
+				GLog.n(Messages.get(this, "ondeath"));
 			}
 		}
 	}

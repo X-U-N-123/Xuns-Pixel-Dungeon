@@ -55,7 +55,7 @@ public abstract class WellWater extends Blob {
 	protected boolean affect( int pos ) {
 		
 		Heap heap;
-		
+
 		if (pos == Dungeon.hero.pos && affectHero( Dungeon.hero )) {
 
 			cur[pos] = CUR_EMPTY;
@@ -114,7 +114,6 @@ public abstract class WellWater extends Blob {
 			if (water != null &&
 				water.volume > 0 &&
 				water.cur[cell] > 0 &&
-				water.cur[cell] != CUR_EMPTY &&
 				water.affect( cell )) {
 				
 				Level.set( cell, Terrain.EMPTY_WELL );

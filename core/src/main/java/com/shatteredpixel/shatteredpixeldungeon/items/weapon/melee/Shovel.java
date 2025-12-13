@@ -23,24 +23,21 @@ package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Fire;
-import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.WellWater;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Levitation;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.explorer.OpticalCamou;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Barricade;
-import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
-import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Splash;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Bestiary;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
-import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.MagicWellRoom;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -50,7 +47,6 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.audio.Sample;
-import com.watabou.utils.ColorMath;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.PointF;
 
@@ -61,7 +57,7 @@ public class Shovel extends MeleeWeapon {
     public static final String AC_BUILD = "build";
     public static final String AC_WATER = "water";
     public static final String AC_PLANT = "plant";
-    public static final String AC_WELL  = "well";
+    public static final String AC_CHASM = "chasm";
 
     {
         image = ItemSpriteSheet.SHOVEL;
@@ -82,11 +78,10 @@ public class Shovel extends MeleeWeapon {
     public ArrayList<String> actions(Hero hero ) {
         ArrayList<String> actions = super.actions( hero );
         actions.add(AC_BUILD);
-        if (Statistics.wellWaterDug < hero.pointsInTalent(Talent.DIG_THE_WELL))
-            actions.add(AC_WELL);
         if (hero.subClass == HeroSubClass.GEOMANCER) {
             actions.add(AC_WATER);
             actions.add(AC_PLANT);
+            actions.add(AC_CHASM);
         }
         return actions;
     }
@@ -102,9 +97,18 @@ public class Shovel extends MeleeWeapon {
 
         super.execute(hero, action);
 
-        if (action.equals(AC_BUILD) || action.equals(AC_WATER) || action.equals(AC_PLANT) || action.equals(AC_WELL)){
+        if (action.equals(AC_BUILD)
+        || action.equals(AC_WATER) || action.equals(AC_PLANT) || action.equals(AC_CHASM)){//Geomancer ability
             defaultAction = action;
-            GameScene.selectCell(changeTerrain);
+            switch (defaultAction){
+                case AC_BUILD: image = ItemSpriteSheet.WOOD_SHOVEL;  break;
+                case AC_PLANT: image = ItemSpriteSheet.PLANT_SHOVEL; break;
+                case AC_WATER: image = ItemSpriteSheet.WATER_SHOVEL; break;
+                case AC_CHASM: image = ItemSpriteSheet.CHASM_SHOVEL; break;
+            }
+            updateQuickslot();
+            if (curUser.buff(ExplorerCooldown.class) == null) GameScene.selectCell(changeTerrain);
+            else GLog.w(Messages.get(this, "cd"));
         }
     }
 
@@ -118,60 +122,90 @@ public class Shovel extends MeleeWeapon {
         public void tintIcon(Image icon) { icon.hardlight(0.5f, 0.5f, 0.5f); }
 
         public static void affectCD(float turn, Hero hero){
-            Buff.affect(hero, ExplorerCooldown.class, turn * (1 - hero.pointsInTalent(Talent.CONVENIENT_SHOVEL) / 8f));
+            float percent = 1 - hero.pointsInTalent(Talent.CONVENIENT_SHOVEL) * 0.1f;
+            if (hero.buff(OpticalCamou.Camouflage.class) != null){
+                percent -= 0.12f * hero.pointsInTalent(Talent.QUICK_BUILD);
+            }
+            Buff.affect(hero, ExplorerCooldown.class, turn * percent);
         }
     }
 
     public CellSelector.Listener changeTerrain = new CellSelector.Listener() {
         @Override public String prompt() {
-            switch (defaultAction){
-                case AC_WATER:
-                    return Messages.get(this, "water");
-                case AC_PLANT:
-                    return Messages.get(this, "plant");
-                case AC_WELL:
-                    return Messages.get(this, "well");
-                case AC_BUILD: default:
-                    return Messages.get(this, "barricade");
-            }
+            return Messages.get(this, defaultAction);
         }
 
         @Override
         public void onSelect(Integer cell) {
             if (cell == null) return;
-            if (!Dungeon.level.adjacent(cell, Dungeon.hero.pos) || !Dungeon.level.heroFOV[cell]) {
+            if (Dungeon.level.distance(cell, curUser.pos) > 1 || !Dungeon.level.heroFOV[cell]) {
                 GLog.w(Messages.get(this, "reach"));
                 return;
             }
 
             switch (defaultAction){
-                case AC_WATER:
+                case AC_BUILD:
 
                     if (curUser.buff(ExplorerCooldown.class) == null
+                    && Dungeon.level.passable[cell] && Actor.findChar(cell) == null){
+                        //build a barricade that can block the enemy
+                        Barricade barricade = new Barricade();
+
+                        barricade.HT = 2 * curUser.lvl + 5;
+                        barricade.HP = barricade.HT;
+                        barricade.alignment = Char.Alignment.ALLY;
+                        barricade.pos = cell;
+                        GameScene.add(barricade);
+                        Dungeon.level.occupyCell(barricade);
+                        if (curUser.pointsInTalent(Talent.AGGRESSIVE_ROADBLOCK) >= 2) barricade.aggression = 5;
+
+                        Sample.INSTANCE.play( Assets.Sounds.BUILD );
+                        ExplorerCooldown.affectCD(50, curUser);
+                        curUser.spendAndNext(Actor.TICK);
+                        Dungeon.observe();
+                        curUser.sprite.zap(cell);
+                        Bestiary.setSeen(Barricade.class);
+                        return;
+                    }
+                    break;
+                case AC_WATER:
+                    Fire fire = (Fire) Dungeon.level.blobs.get(Fire.class);
+
+                    if (curUser.pointsInTalent(Talent.SON_OF_SEA) >= 3
+                    && curUser.buff(ExplorerCooldown.class) == null){
+                        boolean watered = false;
+                        for (int i : PathFinder.NEIGHBOURS9) {
+                            if (Dungeon.level.setCellToWater(true, curUser.pos + i)){
+                                if (fire != null) fire.clear(curUser.pos + i);
+                                GameScene.updateMap(curUser.pos + i);
+                                watered = true;
+                            }
+                        }//put water if there has no water
+
+                        if (watered){
+                            Sample.INSTANCE.play(Assets.Sounds.WATER, 2f);
+                            Splash.at( DungeonTilemap.tileCenterToWorld( curUser.pos ), -PointF.PI/2, PointF.PI/2, 0x5bc1e3, 5, 0.01f);
+                            ExplorerCooldown.affectCD(50, curUser);
+                            curUser.spendAndNext(Actor.TICK);
+                            Dungeon.observe();
+                            curUser.sprite.zap(cell);
+                            return;
+                        }
+
+                    } else if (curUser.buff(ExplorerCooldown.class) == null
                     && Dungeon.level.setCellToWater(true, cell)){
-                        Fire fire = (Fire) Dungeon.level.blobs.get(Fire.class);
                         if (fire != null) fire.clear(cell);
 
                         //put water if there has no water
                         Sample.INSTANCE.play(Assets.Sounds.WATER, 2f);
                         Splash.at( DungeonTilemap.tileCenterToWorld( cell ), -PointF.PI/2, PointF.PI/2, 0x5bc1e3, 5, 0.01f);
                         ExplorerCooldown.affectCD(10, curUser);
-                        Dungeon.hero.spendAndNext(Actor.TICK);
+                        curUser.spendAndNext(Actor.TICK);
                         GameScene.updateMap(cell);
                         Dungeon.observe();
                         curUser.sprite.zap(cell);
                         return;
 
-                    } else if (Dungeon.level.map[cell] == Terrain.WATER) {
-                        //remove water if there is
-                        Level.set( cell, Terrain.EMPTY );
-
-                        CellEmitter.get(cell).burst( Speck.factory( Speck.STEAM ), 5 );
-                        Dungeon.hero.spendAndNext(Actor.TICK);
-                        GameScene.updateMap(cell);
-                        Dungeon.observe();
-                        curUser.sprite.zap(cell);
-                        return;
                     }
                     break;
                 case AC_PLANT:
@@ -180,103 +214,103 @@ public class Shovel extends MeleeWeapon {
                         boolean grown = false;
 
                         for (int i : PathFinder.NEIGHBOURS9) {
-                            if (Dungeon.level.map[cell + i] == Terrain.EMPTY || Dungeon.level.map[cell + i] == Terrain.EMPTY_DECO
-                            || Dungeon.level.map[cell + i] == Terrain.EMBERS || Dungeon.level.map[cell + i] == Terrain.GRASS){
+                            if (Dungeon.level.map[curUser.pos + i] == Terrain.EMPTY || Dungeon.level.map[curUser.pos + i] == Terrain.EMPTY_DECO
+                            || Dungeon.level.map[curUser.pos + i] == Terrain.EMBERS || Dungeon.level.map[curUser.pos + i] == Terrain.GRASS){
 
-                                Level.set(cell + i, Terrain.GRASS);
+                                Level.set(curUser.pos + i, Terrain.GRASS);
                                 grown = true;
                                 if (curUser.pointsInTalent(Talent.TAPESTRY_OF_VINES) >= 3){
-                                    Level.set(cell + i, Terrain.FURROWED_GRASS);
+                                    Level.set(curUser.pos + i, Terrain.FURROWED_GRASS);
                                 }
-
-                                Splash.at( DungeonTilemap.tileCenterToWorld(cell + i), -PointF.PI/2, PointF.PI/2,
-                                    ColorMath.random( 0x004400, 0x88CC44 ), 10, 0.02f);
+                                GameScene.updateMap(curUser.pos + i);
                             }
                         }//plant grass if grass can grow there
 
                         if (grown){
                             Sample.INSTANCE.play(Assets.Sounds.PLANT);
-                            ExplorerCooldown.affectCD(20, curUser);
-                            Dungeon.hero.spendAndNext(Actor.TICK);
+                            if (curUser.hasTalent(Talent.TAPESTRY_OF_VINES)) ExplorerCooldown.affectCD(50, curUser);
+                            else                                             ExplorerCooldown.affectCD(15, curUser);
+                            curUser.spendAndNext(Actor.TICK);
+                            Dungeon.observe();
+                            curUser.sprite.zap(cell);
+                            return;
+                        }
+                    }
+                    break;
+                case AC_CHASM:
+                    if (curUser.buff(ExplorerCooldown.class) == null){
+                        if (Dungeon.level.map[cell] == Terrain.CHASM){
+                            Level.set(cell, Terrain.EMPTY_SP);
+
+                            Sample.INSTANCE.play( Assets.Sounds.BUILD );
+                            ExplorerCooldown.affectCD(60, curUser);
+                            curUser.spendAndNext(Actor.TICK);
+                            GameScene.updateMap(cell);
+                            Dungeon.observe();
+                            curUser.sprite.zap(cell);
+                            return;
+                            //prevent player from escaping boss fight by this
+                        } else if (Dungeon.level.passable[cell] && Actor.findChar(cell) == null && Dungeon.depth % 5 != 0) {
+                            Level.set(cell, Terrain.CHASM);
+
+                            Sample.INSTANCE.play( Assets.Sounds.ROCKS );
+                            GameScene.shake(2, 0.5f);
+                            ExplorerCooldown.affectCD(60, curUser);
+                            curUser.spendAndNext(Actor.TICK);
+                            GameScene.updateMap(cell);
+                            Dungeon.observe();
+                            curUser.sprite.zap(cell);
+                            return;
+
+                            //dig floor 
+                        } else if ((Actor.findChar(cell) != null || Dungeon.depth % 5 == 0)
+                            && curUser.hasTalent(Talent.RISING_WIND)) {
+                            Buff.affect(curUser, Levitation.class, 15f);
+                            Sample.INSTANCE.play(Assets.Sounds.MISS);
+
+                            ExplorerCooldown.affectCD(60, curUser);
+                            curUser.spendAndNext(Actor.TICK);
+                            curUser.sprite.zap(cell);
+                            return;
+                        }
+                    } else if (curUser.pointsInTalent(Talent.STRIKING_STONE) >= 3 && Dungeon.level.map[cell] == Terrain.BARRICADE) {
+                        Level.set(cell, Terrain.EMPTY);
+
+                        Sample.INSTANCE.play( Assets.Sounds.BUILD );
+                        ExplorerCooldown.affectCD(50, curUser);
+                        curUser.spendAndNext(Actor.TICK);
+                        GameScene.updateMap(cell);
+                        Dungeon.observe();
+                        curUser.sprite.zap(cell);
+                        return;
+                        //remove barricade
+                    } else if (curUser.pointsInTalent(Talent.LAYERED_ARCHITECTURE) >= 3) {
+                        if (Dungeon.level.map[cell] == Terrain.STATUE){
+                            Level.set(cell, Terrain.EMPTY);
+
+                            Sample.INSTANCE.play( Assets.Sounds.MINE );
+                            ExplorerCooldown.affectCD(75, curUser);
+                            curUser.spendAndNext(Actor.TICK);
                             GameScene.updateMap(cell);
                             Dungeon.observe();
                             curUser.sprite.zap(cell);
                             return;
                         }
+                        if (Dungeon.level.map[cell] == Terrain.STATUE_SP){
+                            Level.set(cell, Terrain.EMPTY_SP);
 
-                    } else if (Dungeon.level.map[cell] == Terrain.HIGH_GRASS || Dungeon.level.map[cell] == Terrain.FURROWED_GRASS) {
-                        //cut grass down if there is
-                        Level.set( cell, Terrain.GRASS );
-
-                        Splash.at( DungeonTilemap.tileCenterToWorld( cell ), -PointF.PI/2, PointF.PI/2,
-                                ColorMath.random( 0x004400, 0x88CC44 ), 10, 0.02f);
-
-                        Sample.INSTANCE.play(Assets.Sounds.HIT_SLASH);
-                        Dungeon.hero.spendAndNext(Actor.TICK);
-                        GameScene.updateMap(cell);
-                        Dungeon.observe();
-                        curUser.sprite.zap(cell);
-                        return;
-                    }
-
-                    break;
-                case AC_WELL:
-                    if (curUser.buff(ExplorerCooldown.class) == null
-                    && Dungeon.level.map[cell] == Terrain.EMPTY_WELL
-                    && Statistics.wellWaterDug < curUser.pointsInTalent(Talent.DIG_THE_WELL)){
-                        for (Class<?> waterClass : MagicWellRoom.WATERS ) {
-                            WellWater water = (WellWater)Dungeon.level.blobs.get( waterClass );
-                            if (water != null && water.cur[cell] == WellWater.CUR_EMPTY) {
-
-                                water.cur[cell] = 1;
-                                Statistics.wellWaterDug ++;
-                                break;
-                            }
+                            Sample.INSTANCE.play( Assets.Sounds.MINE );
+                            ExplorerCooldown.affectCD(75, curUser);
+                            curUser.spendAndNext(Actor.TICK);
+                            GameScene.updateMap(cell);
+                            Dungeon.observe();
+                            curUser.sprite.zap(cell);
+                            return;
                         }
-                        ExplorerCooldown.affectCD(100, curUser);
-                        Level.set(cell, Terrain.WELL);
-                        Splash.at( DungeonTilemap.tileCenterToWorld( cell ), -PointF.PI/2, PointF.PI/2, 0x5bc1e3, 10, 0.01f);
-
-                        Sample.INSTANCE.play(Assets.Sounds.GAS, 1f, 0.8f);
-                        Dungeon.hero.spendAndNext(Actor.TICK);
-                        GameScene.updateMap(cell);
-                        Dungeon.observe();
-                        curUser.sprite.zap(cell);
-                        return;
+                        //break the statues
                     }
-                    break;
-                case AC_BUILD: default:
-
-                    if (curUser.buff(ExplorerCooldown.class) == null
-                    && Dungeon.level.passable[cell] && Actor.findChar(cell) == null){
-                        //build a barricade that can block the enemy
-                        Barricade barricade = new Barricade();
-
-                        barricade.HT = 2 * Dungeon.hero.lvl + 5;
-                        barricade.HP = barricade.HT;
-                        barricade.alignment = Char.Alignment.ALLY;
-                        barricade.pos = cell;
-                        GameScene.add(barricade);
-                        Dungeon.level.occupyCell(barricade);
-                        if (curUser.pointsInTalent(Talent.AGGRESSIVE_BARRICADE) >= 2) barricade.aggression = 6;
-
-                        Sample.INSTANCE.play( Assets.Sounds.BUILD );
-                        ExplorerCooldown.affectCD(50, curUser);
-                        Dungeon.hero.spendAndNext(Actor.TICK);
-                        GameScene.updateMap(cell);
-                        Dungeon.observe();
-                        curUser.sprite.zap(cell);
-                        Bestiary.setSeen(Barricade.class);
-                        return;
-                    }
-                    break;
             }
-
-            if (curUser.buff(ExplorerCooldown.class) != null){
-                GLog.w(Messages.get(this, "cd"));
-            } else {
-                GLog.w(Messages.get(this, "hard"));
-            }
+            GLog.w(Messages.get(this, "hard"));
         }
     };
 }

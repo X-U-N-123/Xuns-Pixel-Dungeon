@@ -22,10 +22,14 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfSharpshooting;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.watabou.utils.Random;
 
 public class Tomahawk extends MissileWeapon {
 
@@ -49,10 +53,43 @@ public class Tomahawk extends MissileWeapon {
 		return  Math.round(3.75f * tier) +  //15 base, down from 20
 				(tier)*lvl;                 //scaling unchanged
 	}
+
+	public float minBleed(){
+		return minBleed(buffedLvl() + RingOfSharpshooting.levelDamageBonus(Dungeon.hero));
+	}
+
+	public float minBleed(int lvl){
+		return 3 + lvl/2f;
+	}
+
+	public float maxBleed(){
+		return maxBleed(buffedLvl() + RingOfSharpshooting.levelDamageBonus(Dungeon.hero));
+	}
+
+	public float maxBleed(int lvl){
+		return 6 + lvl;
+	}
 	
 	@Override
 	public int proc( Char attacker, Char defender, int damage ) {
-		Buff.affect( defender, Bleeding.class ).set( Math.round(damage*0.6f) );
+		//33% damage roll as bleed, but ignores armor and str bonus
+		//currently 2-5.3, plus 0.33-1 per level
+		//increasing to 40% results in: 2.4-6.4, plus 0.4-1.2 per level
+		//maybe standardize that to 3-6 plus 0.5-1 per level
+		Buff.affect( defender, Bleeding.class ).set( augment.damageFactor(Random.NormalFloat(minBleed(), maxBleed())) );
 		return super.proc( attacker, defender, damage );
 	}
+
+	public String statsInfo(){
+		if (isIdentified()){
+			return Messages.get(this, "stats_desc",
+					Math.round(augment.damageFactor(minBleed())),
+					Math.round(augment.damageFactor(maxBleed())));
+		} else {
+			return Messages.get(this, "typical_stats_desc",
+					Math.round(augment.damageFactor(minBleed(0))),
+					Math.round(augment.damageFactor(maxBleed(0))));
+		}
+	}
+
 }

@@ -346,7 +346,7 @@ public abstract class Mob extends Char {
 
 		//moreover, if the hero has talent and there's a barricade(target) in our FOV
 		if (enemy != null && enemy.alignment == Alignment.ALLY && !(enemy instanceof Barricade)
-		&& hero.hasTalent(Talent.AGGRESSIVE_BARRICADE)){
+		&& hero.hasTalent(Talent.AGGRESSIVE_ROADBLOCK)){
 			for (Mob m : Dungeon.level.mobs.toArray(new Mob[0])) {
 				if (m instanceof Barricade && m.alignment == Alignment.ALLY && fieldOfView[m.pos]){
 					newEnemy = true;
@@ -460,7 +460,7 @@ public abstract class Mob extends Char {
 					}
 				}
 				if (closest.alignment == Alignment.ALLY && !(closest instanceof Barricade)
-				&& hero.hasTalent(Talent.AGGRESSIVE_BARRICADE)){
+				&& hero.hasTalent(Talent.AGGRESSIVE_ROADBLOCK)){
 					//if we were going to target allies, but a barricade is in FOV, target that instead
 					for (Char ch : enemies){
 						if (ch instanceof Barricade && ch.alignment == Alignment.ALLY && fieldOfView[ch.pos]){
@@ -1006,6 +1006,11 @@ public abstract class Mob extends Char {
 	
 	public void rollToDropLoot(){
 
+		//crazy loot logic
+		if (plunderedItem != null) {
+			Dungeon.level.drop(plunderedItem, pos).sprite.drop();
+		}
+
 		if (Dungeon.hero.lvl > maxLvl + 2 + StoneofIntelligence.LootandExpinc()) return;
 
 		MasterThievesArmband.StolenTracker stolen = buff(MasterThievesArmband.StolenTracker.class);
@@ -1047,11 +1052,6 @@ public abstract class Mob extends Char {
 		if (buff(SoulMark.class) != null &&
 				Random.Int(10) < Dungeon.hero.pointsInTalent(Talent.SOUL_EATER)){
 			Talent.onFoodEaten(Dungeon.hero, 0, null);
-		}
-
-		//crazy loot logic
-		if (plunderedItem != null) {
-			Dungeon.level.drop(plunderedItem, pos).sprite.drop();
 		}
 	}
 	

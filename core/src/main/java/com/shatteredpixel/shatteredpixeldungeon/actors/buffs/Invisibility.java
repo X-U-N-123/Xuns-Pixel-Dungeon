@@ -26,12 +26,14 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.explorer.OpticalCamou;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RoundShield;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
+import com.watabou.utils.Random;
 
 public class Invisibility extends FlavourBuff {
 
@@ -99,6 +101,11 @@ public class Invisibility extends FlavourBuff {
 		CloakOfShadows.cloakStealth cloakBuff = ch.buff( CloakOfShadows.cloakStealth.class );
 		if (cloakBuff != null) {
 			cloakBuff.dispel();
+		}
+		OpticalCamou.Camouflage camouflage = ch.buff(OpticalCamou.Camouflage.class);
+		if (camouflage != null
+				&& (!(ch instanceof Hero) || Random.Float() >= 0.1f * ((Hero)ch ).pointsInTalent(Talent.PAINTED_BLADE))){
+			camouflage.detach();
 		}
 
 		//these aren't forms of invisibility, but do dispel at the same time as it.

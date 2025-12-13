@@ -821,6 +821,10 @@ public class Armor extends EquipableItem {
 		public static float genericProcChanceMultiplier( Char defender ){
 			float multi = RingOfArcana.enchantPowerMultiplier(defender);
 
+			if (defender == Dungeon.hero && Dungeon.hero.hasTalent(Talent.ARCANE_BARRICADE) && Dungeon.hero.heroClass != HeroClass.EXPLORER){
+				multi *= 1f + 0.1f * Dungeon.hero.pointsInTalent(Talent.ARCANE_BARRICADE);
+			}
+
 			if (Dungeon.hero.alignment == defender.alignment
 					&& Dungeon.hero.buff(AuraOfProtection.AuraBuff.class) != null
 					&& (Dungeon.level.distance(defender.pos, Dungeon.hero.pos) <= 2 || defender.buff(LifeLinkSpell.LifeLinkSpellBuff.class) != null)){

@@ -22,10 +22,14 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfSharpshooting;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.watabou.utils.Random;
 
 public class Headdart extends MissileWeapon {
 
@@ -49,10 +53,38 @@ public class Headdart extends MissileWeapon {
 		return  Math.round(3.75f * tier) +  //18 base, down from 25
 				(tier)*lvl;                 //scaling unchanged
 	}
-	
+
+	public float minBleed(){
+		return minBleed(buffedLvl() + RingOfSharpshooting.levelDamageBonus(Dungeon.hero));
+	}
+
+	public float minBleed(int lvl){
+		return 4 + lvl * 2/3f;
+	}
+
+	public float maxBleed(){
+		return maxBleed(buffedLvl() + RingOfSharpshooting.levelDamageBonus(Dungeon.hero));
+	}
+
+	public float maxBleed(int lvl){
+		return 8 + lvl * 4/3f;
+	}
+
 	@Override
 	public int proc( Char attacker, Char defender, int damage ) {
-		Buff.affect( defender, Bleeding.class ).set( Math.round(damage*0.55f) );
+		Buff.affect( defender, Bleeding.class ).set( augment.damageFactor(Random.NormalFloat(minBleed(), maxBleed())) );
 		return super.proc( attacker, defender, damage );
+	}
+
+	public String statsInfo(){
+		if (isIdentified()){
+			return Messages.get(Tomahawk.class, "stats_desc",
+			Math.round(augment.damageFactor(minBleed())),
+			Math.round(augment.damageFactor(maxBleed())));
+		} else {
+			return Messages.get(Tomahawk.class, "typical_stats_desc",
+			Math.round(augment.damageFactor(minBleed(0))),
+			Math.round(augment.damageFactor(maxBleed(0))));
+		}
 	}
 }

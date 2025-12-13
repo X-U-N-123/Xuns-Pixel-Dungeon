@@ -35,7 +35,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HolyTome;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.HolyBomb;
-import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfSirensSong;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.ui.HeroIcon;
@@ -107,7 +106,7 @@ public class Explosion extends TargetedClericSpell{
                     case 3:
                         Buff.affect(hero, Holyexplosionimmune.class, 0f);
                         for (Mob m : level.mobs.toArray(new Mob[0])){
-                            if (m.alignment == Char.Alignment.ALLY || m.buff(ScrollOfSirensSong.Enthralled.class) != null){
+                            if (m.alignment == Char.Alignment.ALLY){
                                 Buff.affect(m, Holyexplosionimmune.class, 0f);
                             }
                         }
