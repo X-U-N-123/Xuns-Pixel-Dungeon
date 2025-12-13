@@ -257,9 +257,11 @@ public class TalentButton extends Button {
 						if (f == talent){
 							Dungeon.hero.talents.get(2).put(f, 0);
 							Dungeon.hero.talents.get(2).remove(f);
+							Dungeon.hero.corroLostTalent = talent;
 							break;
 						}
 					}
+
 					Statistics.corrosionUsed = true;
 					Corrosion.WndTalentForget.corrosion.detach(Dungeon.hero.belongings.backpack);
 					Catalog.countUse(Corrosion.class);
@@ -267,9 +269,9 @@ public class TalentButton extends Button {
 
 					Dungeon.hero.sprite.operate(Dungeon.hero.pos);
 					Sample.INSTANCE.play(Assets.Sounds.BURNING);
+					Sample.INSTANCE.playDelayed(Assets.Sounds.LEVELUP, 0.4f, 0.7f, 1.2f);
 					Sample.INSTANCE.playDelayed(Assets.Sounds.LEVELUP, 0.6f, 0.7f, 1.2f);
 					Sample.INSTANCE.playDelayed(Assets.Sounds.LEVELUP, 0.8f, 0.7f, 1.2f);
-					Sample.INSTANCE.playDelayed(Assets.Sounds.LEVELUP, 1f,   0.7f, 1.2f);
 
 					if (Dungeon.hero.talentPointsAvailable(2) > 0){
 						StatusPane.talentBlink = 10f;

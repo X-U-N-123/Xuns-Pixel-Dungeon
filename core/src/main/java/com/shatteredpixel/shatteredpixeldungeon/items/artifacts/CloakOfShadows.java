@@ -23,7 +23,6 @@ package com.shatteredpixel.shatteredpixeldungeon.items.artifacts;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
@@ -325,8 +324,7 @@ public class CloakOfShadows extends Artifact {
 					PathFinder.buildDistanceMap(cell, BArray.or(Dungeon.level.passable, Dungeon.level.avoid, null));
 					float chargesToCost = PathFinder.distance[Dungeon.hero.pos] * perBlockChargeUse();
 
-					if (Actor.findChar(cell) != null
-					|| Dungeon.level.pit[cell] || !Dungeon.level.heroFOV[cell]
+					if (Dungeon.level.pit[cell] || !Dungeon.level.heroFOV[cell]
 					|| chargesToCost > charge + partialCharge) {
 						GLog.w(Messages.get(this, "reach"));
 						return;

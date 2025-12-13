@@ -70,7 +70,7 @@ public class Corrosion extends Spell {
     public String desc() {
         String desc = super.desc();
         if (Statistics.corrosionUsed)
-            desc += "\n\n" + Messages.get(this, "desc_die");
+            desc += "\n\n" + Messages.get(this, "desc_used");
         if (Dungeon.hero == null || Dungeon.hero.subClass == HeroSubClass.NONE || Dungeon.hero.lvl < 12)
             desc += "\n\n" + Messages.get(this, "desc_no_subclass");
         return desc;

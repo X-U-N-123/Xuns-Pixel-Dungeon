@@ -155,7 +155,7 @@ public class MagicalTran extends InventorySpell{
                 }
                 Transmuting.show(curUser, item, fItem);
                 curUser.sprite.emitter().start(Speck.factory(Speck.CHANGE), 0.2f, 10);
-                GLog.p( Messages.get(this, "morph"), fItem.name());
+                GLog.p( Messages.get(ScrollOfTransmutation.class, "morph"), fItem.name());
                 updateQuickslot();
             }
 
@@ -169,7 +169,7 @@ public class MagicalTran extends InventorySpell{
     public static Item changeItem( Item item ){
         if (item instanceof MagesStaff) {
             return ScrollOfTransmutation.changeStaff((MagesStaff) item);
-        } else if (item instanceof MeleeWeapon || item instanceof MissileWeapon) {
+        } else if (item instanceof Weapon) {
             return ScrollOfTransmutation.changeWeapon( (Weapon)item );
         } else if (item instanceof Ring) {
             return ScrollOfTransmutation.changeRing( (Ring)item );

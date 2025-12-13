@@ -22,11 +22,10 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.rings;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
 public class RingOfVision extends Ring {
@@ -70,13 +69,10 @@ public class RingOfVision extends Ring {
     }
 
     private void updateView(){
-        if (Dungeon.level == null) return;
-        for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
-            if (mob.alignment == Char.Alignment.ALLY){
-                Dungeon.level.updateFieldOfView(mob, mob.fieldOfView);
-            }
-        }
+        if (Dungeon.level == null || curUser == null) return;
+
         Dungeon.observe();
+        GameScene.updateFog();
         Dungeon.hero.checkVisibleMobs();
     }
 
@@ -107,6 +103,5 @@ public class RingOfVision extends Ring {
         return getBonus( Dungeon.hero, Vision.class );
     }
 
-    public class Vision extends RingBuff {
-    }
+    public class Vision extends RingBuff {}
 }

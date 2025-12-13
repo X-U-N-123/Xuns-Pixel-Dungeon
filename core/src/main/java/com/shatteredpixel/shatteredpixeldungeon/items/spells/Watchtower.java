@@ -46,7 +46,7 @@ public class Watchtower extends TargetedSpell {
 	
 	@Override
 	protected void affectTarget(Ballistica bolt, Hero hero) {
-		RevealedArea a = Buff.affect(hero, RevealedArea.class, 100f);
+		RevealedArea a = Buff.affect(hero, RevealedArea.class, 150f);
 		a.depth = Dungeon.depth;
 		a.branch = Dungeon.branch;
 		a.pos = bolt.collisionPos;

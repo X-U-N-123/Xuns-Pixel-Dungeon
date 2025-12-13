@@ -294,7 +294,7 @@ public class WildMagic extends ArmorAbility {
 			if (ch.buff(Paralysis.class) == null)   buffs.add(Paralysis.class);
 
 			if (buffs.isEmpty()) Buff.affect(ch, Doom.class);
-			else Buff.affect(ch, buffs.get(Random.Int(buffs.size())), 1 + 3f*Dungeon.hero.pointsInTalent(Talent.WILD_PUNISHMENT));
+			else Buff.affect(ch, buffs.get(Random.Int(buffs.size())), 1 + 2*Dungeon.hero.pointsInTalent(Talent.WILD_PUNISHMENT));
 		}
 	}
 }

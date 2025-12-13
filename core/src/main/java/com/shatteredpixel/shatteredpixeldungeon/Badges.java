@@ -1450,7 +1450,7 @@ public class Badges {
 				if (i == 2){//give enough space for horizontal display
 					result += "\n";
 					i = 0;
-				} else result += "	";
+				} else result += "  ";
 				i ++;
 				if (isUnlocked(firstBossClassBadges.get(cls)))  result += "_" + Messages.titleCase(cls.title()) + "_";
 				else                                            result += Messages.titleCase(cls.title());
@@ -1464,7 +1464,7 @@ public class Badges {
 				if (i == 2){//give enough space for horizontal display
 					result += "\n";
 					i = 0;
-				} else result += "	";
+				} else result += "  ";
 				i ++;
 				if (isUnlocked(victoryClassBadges.get(cls)))    result += "_" + Messages.titleCase(cls.title()) + "_";
 				else                                            result += Messages.titleCase(cls.title());
@@ -1479,7 +1479,7 @@ public class Badges {
 				if (i == 3){//every hero has 3 subclasses
 					result += "\n";
 					i = 0;
-				} else result += "	";
+				} else result += "  ";
 				i ++;
 				if (isUnlocked(thirdBossSubclassBadges.get(cls))) result += "_" + Messages.titleCase(cls.title()) + "_";
 				else                                              result += Messages.titleCase(cls.title()) ;
