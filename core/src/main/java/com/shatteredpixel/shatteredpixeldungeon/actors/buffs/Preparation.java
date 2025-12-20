@@ -98,6 +98,18 @@ public class Preparation extends Buff implements ActionIndicator.Action {
 		public int blinkDistance(){
 			return blinkRanges[ordinal()][Dungeon.hero.pointsInTalent(Talent.ASSASSINS_REACH)];
 		}
+
+		//determined by prep lvl
+		private static final int[] horrorDistance = new int[]{2, 3, 5, 8};
+		//determined by talent point
+		private static final int[] horrorTime = new int[]{0, 3, 5, 7};
+
+		public int horrorDistance(){
+			return horrorDistance[ordinal()];
+		}
+		public int horrorTime(){
+			return horrorTime[Dungeon.hero.pointsInTalent(Talent.TERRORIST_ATTACK)];
+		}
 		
 		public boolean canKO(Char defender){
 			if (defender.properties().contains(Char.Property.MINIBOSS)
@@ -162,6 +174,14 @@ public class Preparation extends Buff implements ActionIndicator.Action {
 	public boolean canKO( Char defender ){
 		return !defender.isInvulnerable(target.getClass()) && AttackLevel.getLvl(turnsInvis).canKO(defender);
 	}
+
+	public int horrorDistance(){
+		return AttackLevel.getLvl(turnsInvis).horrorDistance();
+	}
+
+	public int horrorTurn(){
+		return AttackLevel.getLvl(turnsInvis).horrorTime();
+	}
 	
 	@Override
 	public int icon() {
@@ -203,6 +223,10 @@ public class Preparation extends Buff implements ActionIndicator.Action {
 		
 		if (lvl.blinkDistance() > 0){
 			desc += "\n\n" + Messages.get(this, "desc_blink", lvl.blinkDistance());
+		}
+
+		if (lvl.horrorTime() > 0){
+			desc += "\n\n" + Messages.get(this, "desc_horror", lvl.horrorDistance(), lvl.horrorTime());
 		}
 		
 		desc += "\n\n" + Messages.get(this, "desc_invis_time", turnsInvis);

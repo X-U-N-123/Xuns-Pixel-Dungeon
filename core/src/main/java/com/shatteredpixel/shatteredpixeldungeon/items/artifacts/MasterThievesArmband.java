@@ -319,20 +319,23 @@ public class MasterThievesArmband extends Artifact {
 		}
 
 		public float stealChance(Item item){
-			int chargesUsed = chargesToUse(item);
-			float val = chargesUsed * (10 + level()/2f);
-			return Math.min(1f, val/item.value());
+			return stealChance(item, chargesToUse(item));
+		}
+
+		public float stealChance(Item item, int charges){
+			float chance = charges * (10 + level()/2f) / item.value();
+			if (curUser.hasTalent(Talent.ROGUES_INSTINCT)){
+				chance += 0.05f + 0.1f * curUser.pointsInTalent(Talent.ROGUES_INSTINCT);
+			}
+			return Math.min(1f, chance);
 		}
 
 		public int chargesToUse(Item item){
-			int value = item.value();
-			float valUsing = 0;
-			int chargesUsed = 0;
-			while (valUsing < value && chargesUsed < charge){
-				valUsing += 10 + level()/2f;
-				chargesUsed++;
+
+			for (int i = 0; i <= charge; i++){
+				if (stealChance(item, i) == 1f) return i;
 			}
-			return chargesUsed;
+			return charge;
 		}
 	}
 

@@ -448,15 +448,16 @@ public abstract class Char extends Actor {
 			if (prep != null){
 				dmg = prep.damageRoll(this);
 				if (this instanceof Hero) {
-					if (((Hero)this).hasTalent(Talent.TERRORIST_ATTACK)) {
+					if (hero.hasTalent(Talent.TERRORIST_ATTACK)) {
 						for (Mob mob : Dungeon.level.mobs.toArray( new Mob[0] )) {
- 							if (Dungeon.level.distance(pos, mob.pos) <= 5 && mob.alignment != Alignment.ALLY) {
-								Buff.affect( mob, Terror.class, 1+2*hero.pointsInTalent(Talent.TERRORIST_ATTACK)).object = hero.id();
+ 							if (Dungeon.level.distance(pos, mob.pos) <= prep.horrorDistance()
+									&& mob.alignment != Alignment.ALLY) {
+								Buff.affect( mob, Terror.class, prep.horrorTurn()).object = hero.id();
 							}
 						}
 					}
 
-					if (((Hero)this).hasTalent(Talent.HASHASHINS)){
+					if (hero.hasTalent(Talent.HASHASHINS)){
 						Buff.affect(this, Talent.HashashinsTracker.class, Math.max(0, hero.attackDelay()-1f));
 					}
 				}
