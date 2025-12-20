@@ -29,9 +29,9 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMirrorImag
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.ui.HeroIcon;
 
-public class HolyImage extends ClericSpell {
+public class HolyGhost extends ClericSpell {
 
-    public static final HolyImage INSTANCE = new HolyImage();
+    public static final HolyGhost INSTANCE = new HolyGhost();
 
     @Override
     public int icon() {
@@ -40,13 +40,13 @@ public class HolyImage extends ClericSpell {
 
     @Override
     public String desc() {
-        int quantity = 2 + Dungeon.hero.pointsInTalent(Talent.HOLY_IMAGE);
+        int quantity = 2 + Dungeon.hero.pointsInTalent(Talent.HOLY_GHOST);
         return Messages.get(this, "desc", quantity) +"\n\n"+ Messages.get(this, "charge_cost", (int)chargeUse(Dungeon.hero));
     }
 
     @Override
     public boolean canCast(Hero hero) {
-        return super.canCast(hero) && hero.hasTalent(Talent.HOLY_IMAGE);
+        return super.canCast(hero) && hero.hasTalent(Talent.HOLY_GHOST);
     }
 
     @Override
@@ -56,7 +56,7 @@ public class HolyImage extends ClericSpell {
 
     @Override
     public void onCast(HolyTome tome, Hero hero) {
-        ScrollOfMirrorImage.spawnImages(hero, 2 + Dungeon.hero.pointsInTalent(Talent.HOLY_IMAGE));
+        ScrollOfMirrorImage.spawnImages(hero, 2 + Dungeon.hero.pointsInTalent(Talent.HOLY_GHOST));
         onSpellCast(tome, hero);
     }
 

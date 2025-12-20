@@ -53,7 +53,7 @@ public class ProtectiveBookpage extends ClericSpell {
 
     @Override
     public String desc() {
-        int pageTime = Dungeon.hero.pointsInTalent(Talent.ENHANCED_BOOKPAGE) >= 3 ? 10 : 8;
+        int pageTime = Dungeon.hero.pointsInTalent(Talent.ENHANCED_BOOKPAGE) >= 3 ? 12 : 10;
         int dmg = Dungeon.hero.lvl / 3;
         if (Dungeon.hero.pointsInTalent(Talent.ENHANCED_BOOKPAGE) >= 2) dmg = Dungeon.hero.lvl / 2;
         int shieldAmt = Dungeon.hero.pointsInTalent(Talent.ENHANCED_BOOKPAGE) >= 1 ? 2 : 1;
@@ -81,7 +81,7 @@ public class ProtectiveBookpage extends ClericSpell {
         }
 
         public int pages = 0;
-        public int pageTime = 8;
+        public int pageTime = 10;
         private int bookpagePos = 0;
 
         @Override
@@ -108,7 +108,7 @@ public class ProtectiveBookpage extends ClericSpell {
         public void addPages(){
             pages ++;
             if (pages > 8) pages = 8;
-            pageTime = 8;
+            pageTime = 10;
             if (((Hero)target).pointsInTalent(Talent.ENHANCED_BOOKPAGE) >= 3) pageTime += 2;
             BuffIndicator.refreshHero();
         }

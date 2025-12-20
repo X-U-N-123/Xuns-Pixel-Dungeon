@@ -224,7 +224,7 @@ public enum Talent {
 	//Paladin T3
 	LAY_ON_HANDS(174, 3), AURA_OF_PROTECTION(175, 3), WALL_OF_LIGHT(176, 3), JUSTICE_STRIKE(234, 3), ENHANCED_SMITE(235, 3),
 	//Preacher T3
-	PUNISHMENT(279, 3), HOLY_DRAPE(280, 3), HOLY_ANTIMAGIC(281, 3), HOLY_IMAGE(282, 3), ENHANCED_BOOKPAGE(283, 3),
+	PUNISHMENT(279, 3), DRAPE_OF_REDEMPTION(280, 3), HOLY_TRAP(281, 3), HOLY_GHOST(282, 3), ENHANCED_BOOKPAGE(283, 3),
 	//Ascended Form T4
 	DIVINE_INTERVENTION(177, 4), JUDGEMENT(178, 4), FLASH(179, 4), HOLY_REGENERATION(251, 4),
 	//Trinity T4
@@ -1679,7 +1679,7 @@ public enum Talent {
 				Collections.addAll(tierTalents, LAY_ON_HANDS, AURA_OF_PROTECTION, WALL_OF_LIGHT, JUSTICE_STRIKE, ENHANCED_SMITE);
 				break;
 			case PREACHER:
-				Collections.addAll(tierTalents, PUNISHMENT, HOLY_DRAPE, HOLY_ANTIMAGIC, HOLY_IMAGE, ENHANCED_BOOKPAGE);
+				Collections.addAll(tierTalents, PUNISHMENT, DRAPE_OF_REDEMPTION, HOLY_TRAP, HOLY_GHOST, ENHANCED_BOOKPAGE);
 				break;
 			case GEOMANCER:
 				Collections.addAll(tierTalents, TAPESTRY_OF_VINES, SON_OF_SEA, STRIKING_STONE, LAYERED_ARCHITECTURE, RISING_WIND);
@@ -1744,8 +1744,12 @@ public enum Talent {
 
 	private static final HashMap<String, String> renamedTalents = new HashMap<>();
 	static{
+		//X_U_N v1.0.0
+		renamedTalents.put("HOLY_DRAPE",                "DRAPE_OF_REDEMPTION");
+		renamedTalents.put("HOLY_ANTIMAGIC",            "HOLY_TRAP");
+		renamedTalents.put("HOLY_IMAGE",                "HOLY_GHOST");
 		//X_U_N v0.3.2
-		renamedTalents.put("HOLY_PROTECTION",         "HOLY_REGENERATION");
+		renamedTalents.put("HOLY_PROTECTION",           "HOLY_REGENERATION");
 		//X_U_N v0.2.5
 		renamedTalents.put("TESTED_ADRENALINE",         "TESTED_SWIFTNESS");
 		//X_U_N v0.2.2

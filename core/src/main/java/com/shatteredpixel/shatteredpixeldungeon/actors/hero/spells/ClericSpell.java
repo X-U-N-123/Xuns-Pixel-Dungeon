@@ -185,14 +185,14 @@ public abstract class ClericSpell {
 			if (cleric.hasTalent(Talent.PUNISHMENT)){
 				spells.add(Punishment.INSTANCE);
 			}
-			if (cleric.hasTalent(Talent.HOLY_DRAPE)){
-				spells.add(HolyDrape.INSTANCE);
+			if (cleric.hasTalent(Talent.DRAPE_OF_REDEMPTION)){
+				spells.add(DrapeOfRedemption.INSTANCE);
 			}
-			if (cleric.hasTalent(Talent.HOLY_ANTIMAGIC)){
-				spells.add(HolyAntimagic.INSTANCE);
+			if (cleric.hasTalent(Talent.HOLY_TRAP)){
+				spells.add(HolyTrap.INSTANCE);
 			}
-			if (cleric.hasTalent(Talent.HOLY_IMAGE)){
-				spells.add(HolyImage.INSTANCE);
+			if (cleric.hasTalent(Talent.HOLY_GHOST)){
+				spells.add(HolyGhost.INSTANCE);
 			}
 
 		} else if (tier == 4){
@@ -266,9 +266,9 @@ public abstract class ClericSpell {
 		spells.add(MnemonicPrayer.INSTANCE);
 		spells.add(Explosion.INSTANCE);
 		spells.add(Punishment.INSTANCE);
-		spells.add(HolyDrape.INSTANCE);
-		spells.add(HolyAntimagic.INSTANCE);
-		spells.add(HolyImage.INSTANCE);
+		spells.add(DrapeOfRedemption.INSTANCE);
+		spells.add(HolyTrap.INSTANCE);
+		spells.add(HolyGhost.INSTANCE);
 		spells.add(DivineIntervention.INSTANCE);
 		spells.add(Judgement.INSTANCE);
 		spells.add(Flash.INSTANCE);

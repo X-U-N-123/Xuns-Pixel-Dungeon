@@ -56,6 +56,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.explorer.O
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.huntress.SpiritHawk;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.DivineSense;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.GuidingLight;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.HolyTrap;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.Stasis;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GnollGeomancer;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mimic;
@@ -1148,6 +1149,10 @@ public abstract class Level implements Bundlable {
 		if (!ch.isImmune(Web.class) && Blob.volumeAt(ch.pos, Web.class) > 0){
 			blobs.get(Web.class).clear(ch.pos);
 			Web.affectChar( ch );
+		}
+		if (!ch.isImmune(HolyTrap.HolyTrapBlob.class) && Blob.volumeAt(ch.pos, HolyTrap.HolyTrapBlob.class) > 0 && ch.alignment != Char.Alignment.ALLY){
+			blobs.get(HolyTrap.HolyTrapBlob.class).clear(ch.pos);
+			HolyTrap.HolyTrapBlob.affectChar( ch );
 		}
 
 		if (Blob.volumeAt(ch.pos, SacrificialFire.class) > 0 && ch.buff( SacrificialFire.Marked.class ) == null){

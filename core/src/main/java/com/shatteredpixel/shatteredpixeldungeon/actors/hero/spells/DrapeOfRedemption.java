@@ -41,9 +41,9 @@ import com.watabou.noosa.audio.Sample;
 
 import java.util.ArrayList;
 
-public class HolyDrape extends ClericSpell {
+public class DrapeOfRedemption extends ClericSpell {
 
-    public static final HolyDrape INSTANCE = new HolyDrape();
+    public static final DrapeOfRedemption INSTANCE = new DrapeOfRedemption();
 
     @Override
     public int icon() {
@@ -52,13 +52,13 @@ public class HolyDrape extends ClericSpell {
 
     @Override
     public String desc() {
-        int quantity = 24 + 12 * Dungeon.hero.pointsInTalent(Talent.HOLY_DRAPE);
+        int quantity = 24 + 12 * Dungeon.hero.pointsInTalent(Talent.DRAPE_OF_REDEMPTION);
         return Messages.get(this, "desc", quantity) +"\n\n"+ Messages.get(this, "charge_cost", (int)chargeUse(Dungeon.hero));
     }
 
     @Override
     public boolean canCast(Hero hero) {
-        return super.canCast(hero) && hero.hasTalent(Talent.HOLY_DRAPE);
+        return super.canCast(hero) && hero.hasTalent(Talent.DRAPE_OF_REDEMPTION);
     }
 
     @Override
@@ -68,7 +68,7 @@ public class HolyDrape extends ClericSpell {
 
     @Override
     public void onCast(HolyTome tome, Hero hero) {
-        int amount = 24 + 12 * Dungeon.hero.pointsInTalent(Talent.HOLY_DRAPE);
+        int amount = 24 + 12 * Dungeon.hero.pointsInTalent(Talent.DRAPE_OF_REDEMPTION);
         ArrayList<Char> affectedChars = new ArrayList<>();
 
         for (Char ch : Dungeon.level.mobs.toArray(new Mob[0])) {
@@ -104,7 +104,7 @@ public class HolyDrape extends ClericSpell {
                     Buff.affect(ch, Barrier.class).incShield(realAmount - toHeal);
                     ch.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(realAmount - toHeal), FloatingText.SHIELDING);
                 }
-            } else ch.damage(realAmount, HolyDrape.this); //damage enemies
+            } else ch.damage(realAmount, DrapeOfRedemption.this); //damage enemies
         }
 
         WandOfBlastWave.BlastWave.blast(hero.pos, 4);

@@ -23,6 +23,9 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.HolyTrap;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DwarfKing;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Splash;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Sacrificial;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
@@ -116,6 +119,10 @@ public class Bleeding extends Buff {
 					}
 					Dungeon.fail( this );
 					GLog.n( Messages.get(this, "ondeath") );
+				}
+
+				if (source == HolyTrap.HolyTrapBlob.class && target instanceof DwarfKing){
+					Statistics.qualifiedForBossChallengeBadge = false;
 				}
 
 				if (source == Sickle.HarvestBleedTracker.class && !target.isAlive()){

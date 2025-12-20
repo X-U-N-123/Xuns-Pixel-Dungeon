@@ -109,16 +109,17 @@ public class HeroIcon extends Image {
 	public static final int LIFE_LINK       = 105;
 	public static final int STASIS          = 106;
 	public static final int EXPLOSION       = 107;
+	public static final int HOLY_TRAP       = 108;
 	public static final int JUSTICE_STRIKE  = 109;
 	public static final int SHARED_CHARGE   = 110;
 	public static final int HOLY_CHAMPION   = 111;
 	public static final int HOLY_REGENERATION = 112;
 	public static final int MIMIC_FORM      = 113;
+	public static final int BLESSED_FOG     = 114;
 	public static final int PUNISHMENT      = 115;
 	public static final int HOLY_DRAPE      = 116;
 	public static final int BOOKPAGE        = 117;
-	public static final int ANTIMAGIC       = 118;
-	public static final int HOLY_IMAGE      = 119;
+	public static final int HOLY_IMAGE      = 118;
 
 	//all cleric spells have a separate icon with no background for the action indicator
 	public static final int SPELL_ACTION_OFFSET      = 48;
