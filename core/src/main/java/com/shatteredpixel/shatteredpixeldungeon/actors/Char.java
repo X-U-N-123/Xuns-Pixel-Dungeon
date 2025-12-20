@@ -835,8 +835,8 @@ public abstract class Char extends Actor {
 				&& (Dungeon.level.distance(pos, hero.pos) <= 2 || buff(LifeLinkSpell.LifeLinkSpellBuff.class) != null)) {
 			return hero.glyphLevel(cls);
 		} else if (this instanceof Barricade && alignment == Alignment.ALLY
-		&& hero != null && hero.heroClass == HeroClass.EXPLORER && hero.hasTalent(Talent.ARCANE_BARRICADE)) {
-			return hero.pointsInTalent(Talent.ARCANE_BARRICADE) - 1;
+				&& hero != null && hero.heroClass == HeroClass.EXPLORER && hero.hasTalent(Talent.ARCANE_BARRICADE)) {
+			return hero.glyphLevel(cls);
 		} else {
 			return -1;
 		}
@@ -1190,6 +1190,11 @@ public abstract class Char extends Actor {
 	}
 	
 	public void destroy() {
+
+		//crazy loot logic
+		if (this instanceof Mob && ((Mob)this).plunderedItem != null) {
+			Dungeon.level.drop(((Mob)this).plunderedItem, pos).sprite.drop();
+		}
 		HP = 0;
 		Actor.remove( this );
 

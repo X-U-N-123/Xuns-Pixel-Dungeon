@@ -100,7 +100,6 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
-import com.watabou.utils.BArray;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
@@ -999,17 +998,12 @@ public abstract class Mob extends Char {
 
 		dropBonus += ShardOfOblivion.lootChanceMultiplier()-1f;
 
-		if (Dungeon.isChallenged(Challenges.CRAZY_LOOT) && plunderedItem != null) dropBonus /= 3f;
+		if (Dungeon.isChallenged(Challenges.CRAZY_LOOT) && plunderedItem != null) dropBonus /= 2f;
 
 		return lootChance * dropBonus;
 	}
 	
 	public void rollToDropLoot(){
-
-		//crazy loot logic
-		if (plunderedItem != null) {
-			Dungeon.level.drop(plunderedItem, pos).sprite.drop();
-		}
 
 		if (Dungeon.hero.lvl > maxLvl + 2 + StoneofIntelligence.LootandExpinc()) return;
 
@@ -1311,27 +1305,28 @@ public abstract class Mob extends Char {
 			enemySeen = false;
 
 			Heap itemOnFloor = Dungeon.level.heaps.get( pos );
-			if (itemOnFloor != null && plunderedItem == null && Dungeon.isChallenged(Challenges.CRAZY_LOOT)
-			&& state == WANDERING && alignment == Alignment.ENEMY){
+			if (itemOnFloor != null && itemOnFloor.type == Heap.Type.HEAP && plunderedItem == null && Dungeon.isChallenged(Challenges.CRAZY_LOOT)
+			&& state != HUNTING && state != FLEEING && alignment == Alignment.ENEMY){
 				plunderedItem = itemOnFloor.pickUp();
 				spend( TICK );
 				target = randomDestination();
 				return true;
 			}//pickup item on the floor if challenge is activated
 
-			if (Dungeon.isChallenged(Challenges.CRAZY_LOOT) && plunderedItem == null && alignment == Alignment.ENEMY){
-				boolean[] passable = BArray.or(Dungeon.level.passable, Dungeon.level.avoid, null);
+			if (Dungeon.isChallenged(Challenges.CRAZY_LOOT) && plunderedItem == null && alignment == Alignment.ENEMY && state != HUNTING && state != FLEEING){
 
-				for (int i = 0; i < Dungeon.level.length(); i++){
+				PathFinder.buildDistanceMap(pos, Dungeon.level.passable);
+				int[] reachable = PathFinder.distance.clone();
 
-					PathFinder.buildDistanceMap(i, passable);
-					int[] reachable = PathFinder.distance.clone();
+				for (int j = 0 ; j < Dungeon.level.heaps.size; j++){
+					itemOnFloor = Dungeon.level.heaps.get(j);
 
-					if (fieldOfView[i] && Dungeon.level.heaps.get(i) != null && reachable[i] < Integer.MAX_VALUE){
-						target = i;
+					if (itemOnFloor != null && fieldOfView[itemOnFloor.pos] && itemOnFloor.type == Heap.Type.HEAP && reachable[itemOnFloor.pos] < Integer.MAX_VALUE){
+						target = itemOnFloor.pos;
 						break;
 					}
 				}
+
 			}//if challenge is activated and the item is reachable, go there
 
 			int oldPos = pos;

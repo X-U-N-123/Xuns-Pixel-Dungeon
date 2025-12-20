@@ -146,8 +146,8 @@ public class Shovel extends MeleeWeapon {
             switch (defaultAction){
                 case AC_BUILD:
 
-                    if (curUser.buff(ExplorerCooldown.class) == null
-                    && Dungeon.level.passable[cell] && Actor.findChar(cell) == null){
+                    Char ch = Actor.findChar(cell);
+                    if (Dungeon.level.passable[cell] && ch == null){
                         //build a barricade that can block the enemy
                         Barricade barricade = new Barricade();
 
@@ -166,13 +166,20 @@ public class Shovel extends MeleeWeapon {
                         curUser.sprite.zap(cell);
                         Bestiary.setSeen(Barricade.class);
                         return;
+
+                    } else if (ch instanceof Barricade && ch.alignment == Char.Alignment.ALLY) {
+                        ch.die(curUser);
+                        //break the barricade if there is
+                        Sample.INSTANCE.play( Assets.Sounds.BUILD );
+                        ExplorerCooldown.affectCD(10, curUser);
+                        curUser.spendAndNext(Actor.TICK);
+                        curUser.sprite.zap(cell);
                     }
                     break;
                 case AC_WATER:
                     Fire fire = (Fire) Dungeon.level.blobs.get(Fire.class);
 
-                    if (curUser.pointsInTalent(Talent.SON_OF_SEA) >= 3
-                    && curUser.buff(ExplorerCooldown.class) == null){
+                    if (curUser.pointsInTalent(Talent.SON_OF_SEA) >= 3){
                         boolean watered = false;
                         for (int i : PathFinder.NEIGHBOURS9) {
                             if (Dungeon.level.setCellToWater(true, curUser.pos + i)){
@@ -192,8 +199,7 @@ public class Shovel extends MeleeWeapon {
                             return;
                         }
 
-                    } else if (curUser.buff(ExplorerCooldown.class) == null
-                    && Dungeon.level.setCellToWater(true, cell)){
+                    } else if (Dungeon.level.setCellToWater(true, cell)){
                         if (fire != null) fire.clear(cell);
 
                         //put water if there has no water
@@ -209,71 +215,66 @@ public class Shovel extends MeleeWeapon {
                     }
                     break;
                 case AC_PLANT:
+                    boolean grown = false;
 
-                    if (curUser.buff(ExplorerCooldown.class) == null){
-                        boolean grown = false;
+                    for (int i : PathFinder.NEIGHBOURS9) {
+                        if (Dungeon.level.map[curUser.pos + i] == Terrain.EMPTY || Dungeon.level.map[curUser.pos + i] == Terrain.EMPTY_DECO
+                        || Dungeon.level.map[curUser.pos + i] == Terrain.EMBERS || Dungeon.level.map[curUser.pos + i] == Terrain.GRASS){
 
-                        for (int i : PathFinder.NEIGHBOURS9) {
-                            if (Dungeon.level.map[curUser.pos + i] == Terrain.EMPTY || Dungeon.level.map[curUser.pos + i] == Terrain.EMPTY_DECO
-                            || Dungeon.level.map[curUser.pos + i] == Terrain.EMBERS || Dungeon.level.map[curUser.pos + i] == Terrain.GRASS){
-
-                                Level.set(curUser.pos + i, Terrain.GRASS);
-                                grown = true;
-                                if (curUser.pointsInTalent(Talent.TAPESTRY_OF_VINES) >= 3){
-                                    Level.set(curUser.pos + i, Terrain.FURROWED_GRASS);
-                                }
-                                GameScene.updateMap(curUser.pos + i);
+                            Level.set(curUser.pos + i, Terrain.GRASS);
+                            grown = true;
+                            if (curUser.pointsInTalent(Talent.TAPESTRY_OF_VINES) >= 3){
+                                Level.set(curUser.pos + i, Terrain.FURROWED_GRASS);
                             }
-                        }//plant grass if grass can grow there
-
-                        if (grown){
-                            Sample.INSTANCE.play(Assets.Sounds.PLANT);
-                            if (curUser.hasTalent(Talent.TAPESTRY_OF_VINES)) ExplorerCooldown.affectCD(50, curUser);
-                            else                                             ExplorerCooldown.affectCD(15, curUser);
-                            curUser.spendAndNext(Actor.TICK);
-                            Dungeon.observe();
-                            curUser.sprite.zap(cell);
-                            return;
+                            GameScene.updateMap(curUser.pos + i);
                         }
+                    }//plant grass if grass can grow there
+
+                    if (grown){
+                        Sample.INSTANCE.play(Assets.Sounds.PLANT);
+                        if (curUser.hasTalent(Talent.TAPESTRY_OF_VINES)) ExplorerCooldown.affectCD(50, curUser);
+                        else                                             ExplorerCooldown.affectCD(15, curUser);
+                        curUser.spendAndNext(Actor.TICK);
+                        Dungeon.observe();
+                        curUser.sprite.zap(cell);
+                        return;
                     }
                     break;
                 case AC_CHASM:
-                    if (curUser.buff(ExplorerCooldown.class) == null){
-                        if (Dungeon.level.map[cell] == Terrain.CHASM){
-                            Level.set(cell, Terrain.EMPTY_SP);
+                    if (Dungeon.level.map[cell] == Terrain.CHASM){
+                        Level.set(cell, Terrain.EMPTY_SP);
 
-                            Sample.INSTANCE.play( Assets.Sounds.BUILD );
-                            ExplorerCooldown.affectCD(60, curUser);
-                            curUser.spendAndNext(Actor.TICK);
-                            GameScene.updateMap(cell);
-                            Dungeon.observe();
-                            curUser.sprite.zap(cell);
-                            return;
-                            //prevent player from escaping boss fight by this
-                        } else if (Dungeon.level.passable[cell] && Actor.findChar(cell) == null && Dungeon.depth % 5 != 0) {
-                            Level.set(cell, Terrain.CHASM);
+                        Sample.INSTANCE.play( Assets.Sounds.BUILD );
+                        ExplorerCooldown.affectCD(60, curUser);
+                        curUser.spendAndNext(Actor.TICK);
+                        GameScene.updateMap(cell);
+                        Dungeon.observe();
+                        curUser.sprite.zap(cell);
+                        return;
+                        //prevent player from escaping boss fight by this
+                    } else if (Dungeon.level.passable[cell] && Actor.findChar(cell) == null && Dungeon.depth % 5 != 0) {
+                        Level.set(cell, Terrain.CHASM);
 
-                            Sample.INSTANCE.play( Assets.Sounds.ROCKS );
-                            GameScene.shake(2, 0.5f);
-                            ExplorerCooldown.affectCD(60, curUser);
-                            curUser.spendAndNext(Actor.TICK);
-                            GameScene.updateMap(cell);
-                            Dungeon.observe();
-                            curUser.sprite.zap(cell);
-                            return;
+                        Sample.INSTANCE.play( Assets.Sounds.ROCKS );
+                        GameScene.shake(2, 0.5f);
+                        ExplorerCooldown.affectCD(60, curUser);
+                        curUser.spendAndNext(Actor.TICK);
+                        GameScene.updateMap(cell);
+                        Dungeon.observe();
+                        curUser.sprite.zap(cell);
+                        return;
 
-                            //dig floor 
-                        } else if ((Actor.findChar(cell) != null || Dungeon.depth % 5 == 0)
-                            && curUser.hasTalent(Talent.RISING_WIND)) {
-                            Buff.affect(curUser, Levitation.class, 15f);
-                            Sample.INSTANCE.play(Assets.Sounds.MISS);
+                        //dig floor
+                    } else if ((Actor.findChar(cell) != null || Dungeon.depth % 5 == 0) && curUser.hasTalent(Talent.RISING_WIND)) {
+                        Buff.affect(curUser, Levitation.class, 15f);
+                        Sample.INSTANCE.play(Assets.Sounds.MISS);
 
-                            ExplorerCooldown.affectCD(60, curUser);
-                            curUser.spendAndNext(Actor.TICK);
-                            curUser.sprite.zap(cell);
-                            return;
-                        }
-                    } else if (curUser.pointsInTalent(Talent.STRIKING_STONE) >= 3 && Dungeon.level.map[cell] == Terrain.BARRICADE) {
+                        ExplorerCooldown.affectCD(60, curUser);
+                        curUser.spendAndNext(Actor.TICK);
+                        curUser.sprite.zap(cell);
+                        return;
+                    }
+                    if (curUser.pointsInTalent(Talent.STRIKING_STONE) >= 3 && Dungeon.level.map[cell] == Terrain.BARRICADE) {
                         Level.set(cell, Terrain.EMPTY);
 
                         Sample.INSTANCE.play( Assets.Sounds.BUILD );

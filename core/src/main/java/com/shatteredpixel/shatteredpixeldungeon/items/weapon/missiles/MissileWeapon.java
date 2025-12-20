@@ -57,6 +57,7 @@ abstract public class MissileWeapon extends Weapon {
 	{
 		stackable = true;
 		levelKnown = true;
+		cursedKnown = true;
 		
 		bones = true;
 

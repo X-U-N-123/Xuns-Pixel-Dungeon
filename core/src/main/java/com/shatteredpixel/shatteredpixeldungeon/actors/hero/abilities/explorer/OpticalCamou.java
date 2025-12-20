@@ -29,7 +29,7 @@ public class OpticalCamou extends ArmorAbility {
     protected void activate(ClassArmor armor, Hero hero, Integer target){
 
         Camouflage camouflage = Buff.affect(hero, Camouflage.class);
-        camouflage.terrain = Dungeon.level.map[hero.pos];
+        camouflage.reset();
         hero.sprite.operate(hero.pos);
 
         Sample.INSTANCE.play(Assets.Sounds.MELD, 0.5f);
@@ -57,7 +57,6 @@ public class OpticalCamou extends ArmorAbility {
         @Override
         public boolean attachTo( Char target ) {
             if (super.attachTo( target )) {
-                camouTime = 21 + 5 * Dungeon.hero.pointsInTalent(Talent.LASTING_DISGUISE);//1 more turn as opening it consumes a turn
                 target.invisible++;
                 if (target instanceof Hero && ((Hero) target).hasTalent(Talent.PROTECTIVE_SHADOWS)){
                     Buff.affect(target, Talent.ProtectiveShadowsTracker.class);
@@ -125,6 +124,11 @@ public class OpticalCamou extends ArmorAbility {
                     detach();
                 }
             }
+        }
+
+        public void reset(){
+            camouTime = 21 + 5 * Dungeon.hero.pointsInTalent(Talent.LASTING_DISGUISE);//1 more turn as opening it consumes a turn
+            terrain = Dungeon.level.map[target.pos];
         }
 
         private static final String CAMOUTIME = "camouflage";

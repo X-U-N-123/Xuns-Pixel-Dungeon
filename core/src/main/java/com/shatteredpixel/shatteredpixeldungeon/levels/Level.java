@@ -79,6 +79,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TalismanOfForesi
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfStrength;
+import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfVision;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfEnchantment;
@@ -1370,6 +1371,8 @@ public abstract class Level implements Bundlable {
 				viewDist += Talent.MonkViewBoost();
 				viewDist *= EyeOfNewt.visionRangeMultiplier();
 				if (Dungeon.hero.heroClass == HeroClass.EXPLORER) viewDist ++;
+
+				viewDist += RingOfVision.visionBonus();
 			}
 			if (viewDist <= 1) viewDist = 1;
 			

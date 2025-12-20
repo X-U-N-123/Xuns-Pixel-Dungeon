@@ -87,6 +87,7 @@ public class BladeOfUnreal extends MeleeWeapon {
 
     @Override
     public int reachFactor(Char owner) {
+        if (!Dungeon.hero.hasTalent(Talent.BLADE_OF_UNREAL)) return 0;
         int reach = super.reachFactor(owner);
         if (!isReal) reach ++;
         return reach;
@@ -102,6 +103,7 @@ public class BladeOfUnreal extends MeleeWeapon {
 
     @Override
     public int damageRoll(Char owner) {
+        if (!Dungeon.hero.hasTalent(Talent.BLADE_OF_UNREAL)) return 0;
         if (owner instanceof Hero && !isReal) {
             Hero hero = (Hero)owner;
             Char enemy = hero.attackTarget();

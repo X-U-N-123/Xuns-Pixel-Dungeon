@@ -240,7 +240,7 @@ public enum Talent {
 	VARIED_ENVIRONMENT(299, 3), DIG_THE_WELL(300, 3), CONVENIENT_SHOVEL(301, 3),
 	//Geomancer T3
 	TAPESTRY_OF_VINES(302, 3), SON_OF_SEA(303, 3), STRIKING_STONE(304, 3), LAYERED_ARCHITECTURE(305, 3), RISING_WIND(306, 3),
-	//Rockfall T4
+	//Optical Camouflage T4
 	LASTING_DISGUISE(317, 4), STRAIN_CAPACITY(318, 4), PAINTED_BLADE(319, 4), QUICK_BUILD(320, 4),
 
 	//universal T4
@@ -620,7 +620,7 @@ public enum Talent {
 	}
 
 	public static void secretForesightID(Hero hero){
-		if (hero.hasTalent(SECRET_FORESIGHT)){
+		if (hero.hasTalent(SECRET_FORESIGHT) && hero.buff(SecretForesightCooldown.class) == null){
 			EquipableItem itemToID;
 
 			ArrayList<EquipableItem> equipmentsToID = new ArrayList<>();
@@ -639,6 +639,7 @@ public enum Talent {
 				if (itemToID != null){
 					itemToID.identify();
 					GLog.p(Messages.get(Hero.class, "talent_id", itemToID.name()));
+					Buff.affect(hero, SecretForesightCooldown.class, 499f);//1 turn less as this is instant
 				}
 
 			} else if (hero.pointsInTalent(SECRET_FORESIGHT) >= 2) {
@@ -652,10 +653,20 @@ public enum Talent {
 					if (itemToID != null){
 						itemToID.cursedKnown = true;
 						GLog.p(Messages.get(Hero.class, "talent_id", itemToID.name()));
+						Item.updateQuickslot();
+						Buff.affect(hero, SecretForesightCooldown.class, 499f);//1 turn less as this is instant
 					}
 				}
 			}
 		}
+	}
+	public static class SecretForesightCooldown extends FlavourBuff{
+		@Override
+		public int icon() {
+			return BuffIndicator.TIME;
+		}
+		public void tintIcon(Image icon) { icon.hardlight(0.6f, 0.6f, 0f); }
+		public float iconFadePercent() { return Math.max(0, visualcooldown() / 500f); }
 	}
 
 	public static class CombinedLethalityAbilityTracker extends FlavourBuff{
@@ -742,7 +753,7 @@ public enum Talent {
 				case CLERIC:
 					return 186;
 				case EXPLORER:
-					return 334;
+					return 329;
 			}
 		} else {
 			return icon;
@@ -831,7 +842,7 @@ public enum Talent {
 			}
 		}
 		if (hero.hasTalent(TESTED_AWARENESS)){
-			Buff.affect(hero, Foresight.class, 1 + 2*hero.pointsInTalent(TESTED_AWARENESS));
+			Buff.affect(hero, Foresight.class, 2 + 2*hero.pointsInTalent(TESTED_AWARENESS));
 		}
 	}
 
