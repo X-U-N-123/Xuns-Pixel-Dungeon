@@ -110,7 +110,7 @@ public class Zhouyi extends MeleeWeapon{
 
                 //can't swap into a space without room
                 if ((!enemy.properties().contains(Char.Property.LARGE) || Dungeon.level.openSpace[heropos])
-                && (Dungeon.level.passable[enemypos] || hero.flying)
+                && (Dungeon.level.passable[enemypos] || hero.isFlying())
                 && !enemy.properties().contains(Char.Property.STATIC) && !enemy.properties().contains(Char.Property.IMMOVABLE)
                 && !hero.rooted && !enemy.rooted){
                     enemy.pos = heropos;

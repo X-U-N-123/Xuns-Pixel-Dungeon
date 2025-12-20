@@ -94,7 +94,7 @@ public class PhantomPiranha extends Piranha {
 
 	private boolean teleportAway(){
 
-		if (flying || buff(MagicImmune.class) != null){
+		if (isFlying() || buff(MagicImmune.class) != null){
 			return false;
 		}
 

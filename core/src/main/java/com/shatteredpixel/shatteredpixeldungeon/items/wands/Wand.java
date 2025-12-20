@@ -944,7 +944,7 @@ public abstract class Wand extends Item {
 
 			if (charger.target instanceof Hero && ((Hero)charger.target).subClass == HeroSubClass.GEOMANCER
 					&& (Dungeon.level.map[charger.target.pos] == Terrain.CHASM
-			|| (charger.target.flying && ((Hero)charger.target).pointsInTalent(Talent.RISING_WIND) >= 3)) ){
+			|| (charger.target.isFlying() && ((Hero)charger.target).pointsInTalent(Talent.RISING_WIND) >= 3)) ){
 				turnsToCharge /= 1.1f;
 			}
 

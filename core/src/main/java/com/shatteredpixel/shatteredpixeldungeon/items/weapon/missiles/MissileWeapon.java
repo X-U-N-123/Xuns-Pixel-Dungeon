@@ -267,7 +267,7 @@ abstract public class MissileWeapon extends Weapon {
 				&& curUser.heroClass != HeroClass.HUNTRESS
 				&& Dungeon.hero.buff(SpiritBow.IvybindCooldown.class) == null
 				&& Dungeon.hero.hasTalent(Talent.IVY_BIND)
-				&& !defender.flying) {
+				&& !defender.isFlying()) {
 			Buff.affect(defender, Roots.class, 1 + 2*Dungeon.hero.pointsInTalent(Talent.IVY_BIND));
 			Sample.INSTANCE.play(Assets.Sounds.PLANT);
 			Buff.affect(attacker, SpiritBow.IvybindCooldown.class, 40);

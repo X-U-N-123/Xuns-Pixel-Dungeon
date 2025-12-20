@@ -188,7 +188,7 @@ public class StoneCudgel extends MeleeWeapon {
             destroy();
             if (cause != Chasm.class) {
                 sprite.die();
-                if (!flying && Dungeon.level != null && sprite instanceof MobSprite && Dungeon.level.map[pos] == Terrain.CHASM){
+                if (!isFlying() && Dungeon.level != null && sprite instanceof MobSprite && Dungeon.level.map[pos] == Terrain.CHASM){
                     ((MobSprite) sprite).fall();
                 }
             }//Char.java super method

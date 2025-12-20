@@ -82,7 +82,7 @@ public class RingOfEnergy extends Ring {
 
 		if (target instanceof Hero && ((Hero)target).subClass == HeroSubClass.GEOMANCER
 		&& (Dungeon.level.map[target.pos] == Terrain.CHASM
-		|| (target.flying && ((Hero)target).pointsInTalent(Talent.RISING_WIND) >= 3)) ) bonus *= 1.1f;
+		|| (target.isFlying() && ((Hero)target).pointsInTalent(Talent.RISING_WIND) >= 3)) ) bonus *= 1.1f;
 
 		return bonus;
 	}

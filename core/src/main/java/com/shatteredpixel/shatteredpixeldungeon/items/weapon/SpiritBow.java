@@ -189,7 +189,7 @@ public class SpiritBow extends Weapon {
 			|| Dungeon.level.map[defender.pos] ==Terrain.HIGH_GRASS)
 			&& attacker.buff(IvybindCooldown.class) == null
 			&& Dungeon.hero.hasTalent(Talent.IVY_BIND)
-			&& !defender.flying) {
+			&& !defender.isFlying()) {
 			Buff.affect(defender, Roots.class, 1 + 2*Dungeon.hero.pointsInTalent(Talent.IVY_BIND));
 			Sample.INSTANCE.play(Assets.Sounds.PLANT);
 			Buff.affect(attacker, IvybindCooldown.class, 40);

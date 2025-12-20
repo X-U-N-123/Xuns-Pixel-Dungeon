@@ -523,7 +523,7 @@ public abstract class Mob extends Char {
 
 	private boolean cellIsPathable( int cell ){
 		if (!Dungeon.level.passable[cell]){
-			if (flying || buff(Amok.class) != null){
+			if (isFlying() || buff(Amok.class) != null){
 				if (!Dungeon.level.avoid[cell]){
 					return false;
 				}
@@ -1211,7 +1211,7 @@ public abstract class Mob extends Char {
 							}
 						}
 						//flying characters are naturally stealthy
-						if (ch.flying && distance(ch) >= 2){
+						if (ch.isFlying() && distance(ch) >= 2){
 							chDist = Float.POSITIVE_INFINITY;
 						}
 						if (chDist < closestHostileDist){

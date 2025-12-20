@@ -63,6 +63,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hex;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invulnerability;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Levitation;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LifeLink;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LostInventory;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicalSleep;
@@ -279,7 +280,7 @@ public abstract class Char extends Actor {
 
 		//don't allow char to swap onto hazard unless they're flying
 		//you can swap onto a hazard though, as you're not the one instigating the swap
-		if (!Dungeon.level.passable[pos] && !c.flying){
+		if (!Dungeon.level.passable[pos] && !c.isFlying()){
 			return true;
 		}
 
@@ -1226,7 +1227,7 @@ public abstract class Char extends Actor {
 		destroy();
 		if (src != Chasm.class) {
 			sprite.die();
-			if (!flying && Dungeon.level != null && sprite instanceof MobSprite && Dungeon.level.map[pos] == Terrain.CHASM){
+			if (!isFlying() && Dungeon.level != null && sprite instanceof MobSprite && Dungeon.level.map[pos] == Terrain.CHASM){
 				((MobSprite) sprite).fall();
 			}
 		}
@@ -1569,6 +1570,10 @@ public abstract class Char extends Actor {
 	//Is used in AI decision-making
 	public boolean isInvulnerable( Class effect ){
 		return buff(Challenge.SpectatorFreeze.class) != null || buff(Invulnerability.class) != null;
+	}
+
+	public boolean isFlying(){
+		return flying || buff(Levitation.class) != null;
 	}
 
 	protected HashSet<Property> properties = new HashSet<>();
