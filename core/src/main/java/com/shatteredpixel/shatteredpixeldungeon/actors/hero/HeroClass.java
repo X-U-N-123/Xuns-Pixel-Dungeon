@@ -384,7 +384,7 @@ public enum HeroClass {
 			case CLERIC:
 				return Assets.Sprites.CLERIC;
 			case EXPLORER:
-				return Assets.Sprites.MITA;
+				return Assets.Sprites.EXPLORER;
 		}
 	}
 

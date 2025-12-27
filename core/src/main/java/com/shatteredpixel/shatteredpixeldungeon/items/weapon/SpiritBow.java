@@ -170,7 +170,7 @@ public class SpiritBow extends Weapon {
 					}
 
 					if (((Hero)attacker).hasTalent(Talent.REGROWTH)) {
-						int toHeal = Math.min(attacker.HT - attacker.HP, fDamage * ((Hero)attacker).pointsInTalent(Talent.REGROWTH)/8);
+						int toHeal = Math.min(attacker.HT - attacker.HP, 1+ ((Hero)attacker).pointsInTalent(Talent.REGROWTH));
 						attacker.HP += toHeal;
 						if (attacker.sprite != null && toHeal > 0) {
 							attacker.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(toHeal), FloatingText.HEALING);

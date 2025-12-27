@@ -38,7 +38,6 @@ public class Statistics {
 	public static int piranhasKilled;
 	public static int hazardAssistedKills;
 	public static int ankhsUsed;
-	public static int extractUsed;
 	public static int enlighteningDrunk;
 	public static int elixirManaDrunk;
 	public static boolean corrosionUsed;
@@ -90,7 +89,6 @@ public class Statistics {
 		piranhasKilled	= 0;
 		hazardAssistedKills = 0;
 		ankhsUsed		= 0;
-		extractUsed     = 0;
 		enlighteningDrunk = 0;
 		corrosionUsed   = false;
 		wellWaterDug    = 0;
@@ -137,8 +135,7 @@ public class Statistics {
 	private static final String PIRANHAS	= "priranhas";
 	private static final String HAZARD_ASSISTS = "hazard_assists";
 	private static final String ANKHS		= "ankhsUsed";
-	private static final String EXTRACT		= "extractUsed";
-	private static final String ENLIGHTENING= "enlighteningUsed";
+    private static final String ENLIGHTENING= "enlighteningUsed";
 	private static final String MANA        = "elixirManaUsed";
 	private static final String CORROSION   = "corrosionUsed";
 	private static final String WELLDUG     = "wellWaterDug";
@@ -184,7 +181,6 @@ public class Statistics {
 		bundle.put( PIRANHAS,	piranhasKilled );
 		bundle.put(HAZARD_ASSISTS, hazardAssistedKills);
 		bundle.put( ANKHS,		ankhsUsed );
-		bundle.put( EXTRACT,    extractUsed );
 		bundle.put( ENLIGHTENING, enlighteningDrunk);
 		bundle.put( MANA, elixirManaDrunk);
 		bundle.put( CORROSION, corrosionUsed);
@@ -235,7 +231,6 @@ public class Statistics {
 		piranhasKilled	= bundle.getInt( PIRANHAS );
 		hazardAssistedKills = bundle.getInt( HAZARD_ASSISTS );
 		ankhsUsed		= bundle.getInt( ANKHS );
-		extractUsed		= bundle.getInt( EXTRACT );
 		enlighteningDrunk= bundle.getInt( ENLIGHTENING );
 		elixirManaDrunk = bundle.getInt( MANA );
 		corrosionUsed   = bundle.getBoolean( CORROSION );

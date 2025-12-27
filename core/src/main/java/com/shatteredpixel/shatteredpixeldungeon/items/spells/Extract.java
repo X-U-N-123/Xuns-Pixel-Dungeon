@@ -21,10 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.spells;
 
-import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.Statistics;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Transmuting;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
@@ -38,11 +35,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.Trinket;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
-import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
-import com.watabou.noosa.audio.Sample;
-import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 
@@ -59,18 +53,6 @@ public class Extract extends InventorySpell {
 	protected boolean usableOnItem(Item item) {
 		return item.isUpgradable() && item.trueLevel() > 0 &&
 		!(item instanceof Artifact || item instanceof Trinket || item instanceof SpiritBow);
-	}
-
-	@Override
-	protected void onCast(Hero hero) {
-		if (Math.pow(1.2f, Statistics.extractUsed)-1f >= Random.Float()){
-			Statistics.extractUsed++;
-			GLog.n(Messages.get(this, "shattered"));
-			Sample.INSTANCE.play( Assets.Sounds.SHATTER);
-			detach(hero.belongings.backpack);
-			return;
-		}
-		GameScene.selectItem( itemSelector );
 	}
 
 	@Override
@@ -95,7 +77,6 @@ public class Extract extends InventorySpell {
 				((Ring) item).doUnequip(Dungeon.hero, false);
 			}
 		}
-		Statistics.extractUsed++;
 		result = new ScrollOfUpgrade().quantity(toget + 1);
 
 		GLog.p(Messages.get(this, "extracted", toget + 1));
@@ -108,7 +89,7 @@ public class Extract extends InventorySpell {
 
 	@Override
 	public String desc() {
-		return Messages.get(this, "desc", Statistics.extractUsed);
+		return Messages.get(this, "desc");
 	}
 	
 	@Override

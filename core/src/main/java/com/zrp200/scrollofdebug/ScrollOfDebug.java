@@ -78,9 +78,6 @@ import java.util.regex.Pattern;
 public class ScrollOfDebug extends Scroll {
     {
         image = ItemSpriteSheet.SCROLL_HOLDER;
-        cursedKnown = levelKnown = true;
-        unique = true;
-        bones = false;
     }
 
     static String lastCommand = ""; // used with '!!'
@@ -98,7 +95,7 @@ public class ScrollOfDebug extends Scroll {
         // generation commands.
         GIVE(Item.class,
                 "<item> [+<level>] [x<quantity>] [-f|--force] [<method> [<args..>] ]",
-                "创造生成的物品并将其放入你的背包。",
+                "创造指定的物品并将其放入你的背包。",
                 "Any method specified will be called prior to collection.",
                 "Specifying _level_ will set the level of the item to the indicated amount using Item#level. This is the method called when restoring items from a save file. If it's not giving you want you want, please try passing \"upgrade\" <level> as your method.",
                 "_--force_ (or _-f_ for short) will disable all on-pickup logic (specifically Item#doPickUp) that may be affecting how the item gets collected into your inventory."),
@@ -417,7 +414,7 @@ public class ScrollOfDebug extends Scroll {
                             macroExists ? null : // avoid checks if it already exists
                             Command.get(macro) != null ? "existing command" :
                             // should I print out the offending part???
-                            !macro.matches("[A-Za-z_][\\w$_]*") ? "must be valid java variable name (alphanumeric, first character must be a letter or underscore)"
+                            !macro.matches("[A-Za-z_][\\w$_]*") ? " 必须是合规 Java 变量名(alphanumeric, first character must be a letter or underscore)"
                                     : null;
                     if (failureReason != null) {
                         GLog.n("非法变量名： - " + failureReason);
@@ -598,7 +595,7 @@ public class ScrollOfDebug extends Scroll {
                             if(manualPlace) {
                                 GameScene.selectCell(new CellSelector.Listener() {
                                     @Override public String prompt() {
-                                        return "选择位置放置 " + mob.name();
+                                        return "选择位置放置" + mob.name();
                                     }
                                     @Override public void onSelect(Integer cell) {
                                         if(cell == null) return;
