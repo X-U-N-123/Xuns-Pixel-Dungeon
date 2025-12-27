@@ -134,6 +134,7 @@ public class Preparation extends Buff implements ActionIndicator.Action {
 			Collections.reverse(values);
 			for ( AttackLevel lvl : values ){
 				if (turnsInvis >= lvl.turnsReq){
+//					if (lvl == LVL_1 && ) return LVL_2;
 					return lvl;
 				}
 			}
@@ -181,6 +182,10 @@ public class Preparation extends Buff implements ActionIndicator.Action {
 
 	public int horrorTurn(){
 		return AttackLevel.getLvl(turnsInvis).horrorTime();
+	}
+
+	public void incTurnsInvis(int time){
+		turnsInvis += time;
 	}
 	
 	@Override

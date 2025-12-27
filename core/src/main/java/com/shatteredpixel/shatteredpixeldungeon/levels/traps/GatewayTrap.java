@@ -26,6 +26,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
@@ -54,6 +55,12 @@ public class GatewayTrap extends Trap {
 
 	@Override
 	public void activate() {
+		if (Dungeon.hero.pos == pos && !Dungeon.hero.isFlying()
+		&& Dungeon.hero.pointsInTalent(Talent.FRIENDLY_MECHANISM) >= 3 && Dungeon.hero.buff(FriendlyMechanismCooldown.class) == null){
+			disarm();
+			Buff.affect(Dungeon.hero, FriendlyMechanismCooldown.class, 150f);
+			return;
+		}
 
 		if (telePos == -1){
 			for (int i : PathFinder.NEIGHBOURS9){

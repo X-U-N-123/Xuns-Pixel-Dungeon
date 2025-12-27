@@ -240,6 +240,8 @@ public enum Talent {
 	VARIED_ENVIRONMENT(299, 3), DIG_THE_WELL(300, 3), CONVENIENT_SHOVEL(301, 3),
 	//Geomancer T3
 	TAPESTRY_OF_VINES(302, 3), SON_OF_SEA(303, 3), STRIKING_STONE(304, 3), LAYERED_ARCHITECTURE(305, 3), RISING_WIND(306, 3),
+	//Trapper T3
+	TRAP_MASTER(307, 3), FRIENDLY_MECHANISM(308, 3), LIQUID_COLLECTING(311, 3),
 	//Optical Camouflage T4
 	LASTING_DISGUISE(317, 4), STRAIN_CAPACITY(318, 4), PAINTED_BLADE(319, 4), QUICK_BUILD(320, 4),
 
@@ -1683,6 +1685,9 @@ public enum Talent {
 				break;
 			case GEOMANCER:
 				Collections.addAll(tierTalents, TAPESTRY_OF_VINES, SON_OF_SEA, STRIKING_STONE, LAYERED_ARCHITECTURE, RISING_WIND);
+				break;
+			case TRAPPER:
+				Collections.addAll(tierTalents, TRAP_MASTER, FRIENDLY_MECHANISM, LIQUID_COLLECTING);
 				break;
 		}
 		for (Talent talent : tierTalents){

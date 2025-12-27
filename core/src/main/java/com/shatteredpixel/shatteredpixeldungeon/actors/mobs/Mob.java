@@ -71,6 +71,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.LiquidMetal;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.MasterThievesArmband;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.ExoticPotion;
@@ -1004,6 +1005,13 @@ public abstract class Mob extends Char {
 	}
 	
 	public void rollToDropLoot(){
+
+		//liquid collecting logic
+		if (Dungeon.hero.hasTalent(Talent.LIQUID_COLLECTING) && Regeneration.regenOn() && buff(Trap.HazardAssistTracker.class) != null
+		&& (Dungeon.hero.buff(Talent.RejuvenatingStepsFurrow.class) == null || Dungeon.hero.buff(Talent.RejuvenatingStepsFurrow.class).count() < 200)){
+			Dungeon.level.drop(new LiquidMetal().quantity(Dungeon.hero.pointsInTalent(Talent.LIQUID_COLLECTING)), pos).sprite.drop();
+			Buff.count(hero, Talent.RejuvenatingStepsFurrow.class, 3);
+		}
 
 		if (Dungeon.hero.lvl > maxLvl + 2 + StoneofIntelligence.LootandExpinc()) return;
 

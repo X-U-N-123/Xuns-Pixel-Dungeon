@@ -27,6 +27,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Bestiary;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
+import com.watabou.noosa.Image;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundlable;
 import com.watabou.utils.Bundle;
@@ -147,5 +149,11 @@ public abstract class Trap implements Bundlable {
 	//this buff is used to keep track of hazards recently affecting a character
 	public static class HazardAssistTracker extends FlavourBuff{
 		public static final float DURATION = 50f;
+	}
+
+	public static class FriendlyMechanismCooldown extends FlavourBuff{
+		public int icon() { return BuffIndicator.TIME; }
+		public void tintIcon(Image icon) { icon.hardlight(0.25f, 0.25f, 0.25f); }
+		public float iconFadePercent() { return Math.max(0, visualcooldown() / 150); }
 	}
 }

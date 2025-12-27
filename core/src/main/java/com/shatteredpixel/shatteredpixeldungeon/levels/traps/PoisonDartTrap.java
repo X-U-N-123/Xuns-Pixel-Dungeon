@@ -31,6 +31,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Poison;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.PoisonDart;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
@@ -78,6 +79,10 @@ public class PoisonDartTrap extends Trap {
 					target = null;
 				}
 
+				if (target == Dungeon.hero && !Dungeon.hero.isFlying() && Dungeon.hero.pointsInTalent(Talent.FRIENDLY_MECHANISM) >= 2){
+					target = null;
+				}
+
 				//find the closest char that can be aimed at
 				//can't target beyond view distance, with a min of 6 (torch range)
 				//add 0.5 for better consistency with vision radius shape
@@ -87,8 +92,14 @@ public class PoisonDartTrap extends Trap {
 					for (Char ch : Actor.chars()){
 						if (!ch.isAlive()) continue;
 						float curDist = Dungeon.level.trueDistance(pos, ch.pos);
-						//invis targets are considered to be at max range
-						if (ch.invisible > 0) curDist = Math.max(curDist, range);
+						//invis targets and talented trapper are considered to be at max range
+
+						if (ch.invisible > 0
+						|| (ch == Dungeon.hero && Dungeon.hero.pointsInTalent(Talent.FRIENDLY_MECHANISM) >= 2
+						&& Dungeon.hero.buff(FriendlyMechanismCooldown.class) == null)) {
+							curDist = Math.max(curDist, range);
+							if (curDist >= range && ch == Dungeon.hero) Buff.affect(ch, FriendlyMechanismCooldown.class, 150f);
+						}
 						Ballistica bolt = new Ballistica(pos, ch.pos, Ballistica.PROJECTILE);
 						if (canTarget(ch) && bolt.collisionPos == ch.pos
 								&& ( curDist < closestDist || (curDist == closestDist && target instanceof Hero))){

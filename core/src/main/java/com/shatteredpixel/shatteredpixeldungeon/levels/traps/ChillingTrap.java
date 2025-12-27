@@ -26,7 +26,9 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Freezing;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.BlobImmunity;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Splash;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -45,6 +47,12 @@ public class ChillingTrap extends Trap{
 		if (Dungeon.level.heroFOV[ pos ]){
 			Splash.at( pos, 0xFFB2D6FF, 5);
 			Sample.INSTANCE.play( Assets.Sounds.SHATTER );
+		}
+		
+		if (Dungeon.hero.pos == pos && !Dungeon.hero.isFlying()
+			&& Dungeon.hero.hasTalent(Talent.FRIENDLY_MECHANISM) && Dungeon.hero.buff(FriendlyMechanismCooldown.class) == null){
+			Buff.affect(Dungeon.hero, BlobImmunity.class, 3f);
+			Buff.affect(Dungeon.hero, FriendlyMechanismCooldown.class, 150f);
 		}
 		
 		for( int i : PathFinder.NEIGHBOURS9) {

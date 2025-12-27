@@ -21,11 +21,13 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.levels.traps;
 
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Wound;
 
@@ -41,6 +43,12 @@ public class GrippingTrap extends Trap {
 
 	@Override
 	public void activate() {
+		if (Dungeon.hero.pos == pos && !Dungeon.hero.isFlying()
+		&& Dungeon.hero.pointsInTalent(Talent.FRIENDLY_MECHANISM) >= 3 && Dungeon.hero.buff(FriendlyMechanismCooldown.class) == null){
+			disarm();
+			Buff.affect(Dungeon.hero, FriendlyMechanismCooldown.class, 150f);
+			return;
+		}
 
 		Char c = Actor.findChar( pos );
 

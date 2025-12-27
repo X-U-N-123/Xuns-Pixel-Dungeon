@@ -22,10 +22,13 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels.traps;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ToxicGas;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.BlobImmunity;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.watabou.noosa.audio.Sample;
@@ -40,6 +43,12 @@ public class ToxicTrap extends Trap{
 
 	@Override
 	public void activate() {
+		
+		if (Dungeon.hero.pos == pos && !Dungeon.hero.isFlying()
+			&& Dungeon.hero.hasTalent(Talent.FRIENDLY_MECHANISM) && Dungeon.hero.buff(FriendlyMechanismCooldown.class) == null){
+			Buff.affect(Dungeon.hero, BlobImmunity.class, 3f);
+			Buff.affect(Dungeon.hero, FriendlyMechanismCooldown.class, 150f);
+		}
 
 		GameScene.add( Blob.seed( pos, 300 + 20 * scalingDepth(), ToxicGas.class ) );
 		Sample.INSTANCE.play(Assets.Sounds.GAS);

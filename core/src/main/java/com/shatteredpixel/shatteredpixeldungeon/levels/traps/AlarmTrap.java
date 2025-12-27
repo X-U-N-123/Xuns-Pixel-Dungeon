@@ -23,6 +23,8 @@ package com.shatteredpixel.shatteredpixeldungeon.levels.traps;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
@@ -39,6 +41,13 @@ public class AlarmTrap extends Trap {
 
 	@Override
 	public void activate() {
+
+		if (Dungeon.hero.pos == pos && !Dungeon.hero.isFlying()
+		&& Dungeon.hero.pointsInTalent(Talent.FRIENDLY_MECHANISM) >= 3 && Dungeon.hero.buff(FriendlyMechanismCooldown.class) == null){
+			disarm();
+			Buff.affect(Dungeon.hero, FriendlyMechanismCooldown.class, 150f);
+			return;
+		}
 
 		for (Mob mob : Dungeon.level.mobs) {
 				mob.beckon( pos );

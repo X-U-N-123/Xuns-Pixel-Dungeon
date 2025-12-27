@@ -108,7 +108,7 @@ public enum HeroClass {
 	HUNTRESS( HeroSubClass.SNIPER, HeroSubClass.WARDEN, HeroSubClass.SCOUT),
 	DUELIST( HeroSubClass.CHAMPION, HeroSubClass.MONK, HeroSubClass.PHANTOM),
 	CLERIC( HeroSubClass.PRIEST, HeroSubClass.PALADIN, HeroSubClass.PREACHER),
-	EXPLORER( HeroSubClass.GEOMANCER);
+	EXPLORER( HeroSubClass.GEOMANCER, HeroSubClass.TRAPPER);
 
 	private HeroSubClass[] subClasses;
 
