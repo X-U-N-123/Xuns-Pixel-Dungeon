@@ -1145,7 +1145,7 @@ public abstract class Mob extends Char {
 			if (this.alignment == Alignment.NEUTRAL)alignment += Messages.get(this, "neutral");
 			alignment += "\n\n";
 			int inc = StoneofIntelligence.LootandExpinc();
-			int armor = Math.round(drRoll() * AscensionChallenge.statModifier(enemy));
+			int armor = Math.round(drRoll() * AscensionChallenge.statModifier(this));
 			if (this.buff(BrokenArmor.class) != null){
 				armor = 0;
 			}

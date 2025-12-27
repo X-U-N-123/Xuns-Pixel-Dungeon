@@ -21,10 +21,14 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDAction;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -55,9 +59,10 @@ import java.util.Locale;
 public class WndHero extends WndTabbed {
 	
 	private static final int WIDTH		= 120;
-	private static final int HEIGHT		= 120;
+	private static final int HEIGHT		= 125;
 	
-	private StatsTab stats;
+	private StatusTab stats;
+	private StatisticsTab statistic;
 	private TalentsTab talents;
 	private BuffsTab buffs;
 
@@ -69,8 +74,11 @@ public class WndHero extends WndTabbed {
 		
 		resize( WIDTH, HEIGHT );
 		
-		stats = new StatsTab();
+		stats = new StatusTab();
 		add( stats );
+
+		statistic = new StatisticsTab();
+		add( statistic );
 
 		talents = new TalentsTab();
 		add(talents);
@@ -93,10 +101,22 @@ public class WndHero extends WndTabbed {
 				stats.visible = stats.active = selected;
 			}
 		} );
+		add( new IconTab( Icons.get(Icons.CATALOG) ) {
+			protected void select( boolean value ) {
+				super.select( value );
+				if (selected) {
+					lastIdx = 1;
+					if (!statistic.visible) {
+						statistic.initialize();
+					}
+				}
+				statistic.visible = statistic.active = selected;
+			}
+		} );
 		add( new IconTab( Icons.get(Icons.TALENT) ) {
 			protected void select( boolean value ) {
 				super.select( value );
-				if (selected) lastIdx = 1;
+				if (selected) lastIdx = 2;
 				if (selected) StatusPane.talentBlink = 0;
 				talents.visible = talents.active = selected;
 			}
@@ -104,7 +124,7 @@ public class WndHero extends WndTabbed {
 		add( new IconTab( Icons.get(Icons.BUFFS) ) {
 			protected void select( boolean value ) {
 				super.select( value );
-				if (selected) lastIdx = 2;
+				if (selected) lastIdx = 3;
 				buffs.visible = buffs.active = selected;
 			}
 		} );
@@ -135,13 +155,13 @@ public class WndHero extends WndTabbed {
 		buffs.layout();
 	}
 
-	private class StatsTab extends Group {
+	private class StatusTab extends Group {
 		
-		private static final int GAP = 5;
+		private static final int GAP = 7;
 		
 		private float pos;
 		
-		public StatsTab() {
+		public StatusTab() {
 			initialize();
 		}
 
@@ -190,17 +210,75 @@ public class WndHero extends WndTabbed {
 			if (strBonus > 0)           statSlot( Messages.get(this, "str"), hero.STR + " + " + strBonus );
 			else if (strBonus < 0)      statSlot( Messages.get(this, "str"), hero.STR + " - " + -strBonus );
 			else                        statSlot( Messages.get(this, "str"), hero.STR() );
-			statSlot( Messages.get(this, "acc"), hero.attackSkill(hero));
-			statSlot( Messages.get(this, "eva"), hero.defenseSkill(hero));
-			statSlot( Messages.get(this, "spd"), Messages.get(this, "perturn", hero.speed()));
+			if (Dungeon.isChallenged(Challenges.X_U_NS_POWER)) {
+				Char ch = new Char(){};
+
+				int accBonus = hero.attackSkill(ch) - hero.baseAttackSkill();
+				if (accBonus > 0)      statSlot( Messages.get(this, "acc"), hero.baseAttackSkill() + " + " + accBonus);
+				else if (accBonus < 0) statSlot( Messages.get(this, "acc"), hero.baseAttackSkill() + " + " + -accBonus);
+				else                   statSlot( Messages.get(this, "acc"), hero.attackSkill(ch));
+
+				int evaBonus = hero.defenseSkill(ch) - hero.baseDefenseSkill();
+				if (evaBonus > 0)      statSlot( Messages.get(this, "eva"), hero.baseDefenseSkill() + " + " + evaBonus);
+				else if (accBonus < 0) statSlot( Messages.get(this, "eva"), hero.baseDefenseSkill() + " + " + -evaBonus);
+				else                   statSlot( Messages.get(this, "eva"), hero.defenseSkill(ch));
+			}
+			statSlot( Messages.get(this, "movedly"), Messages.get(this, "turn", 1f/hero.speed() ));
+			statSlot( Messages.get(this, "atkdly"), Messages.get(this, "turn", hero.attackDelay() ));
 			if (hero.shielding() > 0)   statSlot( Messages.get(this, "health"), hero.HP + "+" + hero.shielding() + "/" + hero.HT );
 			else                        statSlot( Messages.get(this, "health"), (hero.HP) + "/" + hero.HT );
 			statSlot( Messages.get(this, "exp"), hero.exp + "/" + hero.maxExp() );
+		}
 
-			//pos += GAP/2;
+		private void statSlot( String label, String value ) {
+			
+			RenderedTextBlock txt = PixelScene.renderTextBlock( label, 8 );
+			txt.setPos(0, pos);
+			add( txt );
+			
+			txt = PixelScene.renderTextBlock( value, 8 );
+			txt.setPos(WIDTH * 0.5f, pos);
+			PixelScene.align(txt);
+			add( txt );
+			
+			pos += GAP + txt.height();
+		}
+
+		private void statSlot( String label, int value ) {
+			statSlot( label, Integer.toString( value ) );
+		}
+	}
+
+	private class StatisticsTab extends Group {
+
+		private static final int GAP = 5;
+
+		private float pos;
+
+		public StatisticsTab() {
+			initialize();
+		}
+
+		public void initialize(){
+
+			for (Gizmo g : members){
+				if (g != null) g.destroy();
+			}
+			clear();
+
+			pos = 3;
 
 			statSlot( Messages.get(this, "gold"), Statistics.goldCollected );
-			statSlot( Messages.get(this, "depth"), Statistics.deepestFloor );
+			statSlot( Messages.get(this, "food"), Statistics.foodEaten );
+			statSlot( Messages.get(this, "crafted"), Statistics.itemsCrafted );
+			statSlot( Messages.get(this, "sneak"), Statistics.sneakAttacks );
+			statSlot( Messages.get(this, "slain"), Statistics.enemiesSlain );
+			statSlot( Messages.get(this, "upgrades"), Statistics.upgradesUsed );
+			statSlot( Messages.get(this, "mana"), Statistics.elixirManaDrunk );
+			statSlot( Messages.get(this, "ankhs"), Statistics.ankhsUsed );
+			statSlot( Messages.get(this, "time"), Messages.get(this, "turn", Statistics.duration + Actor.now()) );
+			if (Dungeon.hero.buff(AscensionChallenge.class) == null) statSlot( Messages.get(this, "depth"), Statistics.deepestFloor );
+			else                                             statSlot( Messages.get(this, "ascent"), Statistics.highestAscent );
 			if (Dungeon.daily){
 				if (!Dungeon.dailyReplay) {
 					statSlot(Messages.get(this, "daily_for"), "_" + Dungeon.customSeedText + "_");
@@ -212,8 +290,6 @@ public class WndHero extends WndTabbed {
 			} else {
 				statSlot( Messages.get(this, "dungeon_seed"), DungeonSeed.convertToCode(Dungeon.seed) );
 			}
-
-			pos += GAP;
 		}
 
 		private void statSlot( String label, String value ) {
@@ -223,7 +299,7 @@ public class WndHero extends WndTabbed {
 			add( txt );
 			
 			txt = PixelScene.renderTextBlock( value, 8 );
-			txt.setPos(WIDTH * 0.55f, pos);
+			txt.setPos(WIDTH * 0.5f, pos);
 			PixelScene.align(txt);
 			add( txt );
 			
@@ -232,10 +308,6 @@ public class WndHero extends WndTabbed {
 		
 		private void statSlot( String label, int value ) {
 			statSlot( label, Integer.toString( value ) );
-		}
-		
-		public float height() {
-			return pos;
 		}
 	}
 

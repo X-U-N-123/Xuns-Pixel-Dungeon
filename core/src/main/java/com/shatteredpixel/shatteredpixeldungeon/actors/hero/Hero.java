@@ -620,6 +620,10 @@ public class Hero extends Char {
 	public void incAttackSkill(int amount){
 		attackSkill += amount;
 	}
+
+	public int baseAttackSkill(){
+		return attackSkill;
+	}
 	
 	@Override
 	public int defenseSkill( Char enemy ) {
@@ -687,6 +691,10 @@ public class Hero extends Char {
 
 	public void incDefenseSkill(int amount){
 		defenseSkill += amount;
+	}
+
+	public int baseDefenseSkill(){
+		return defenseSkill;
 	}
 
 	@Override
