@@ -93,7 +93,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.TrinketCatalyst;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.WornLock;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfRegrowth;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfWarding;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Shovel;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Boomerang;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.HeavyBoomerang;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.LightBoomerang;
@@ -1259,7 +1258,7 @@ public abstract class Level implements Bundlable {
 		case Terrain.EMPTY_WELL:
 			Heap heap = Dungeon.level.heaps.get( cell );
 			if (heap != null && heap.peek() instanceof Waterskin
-				&& Statistics.wellWaterDug < Dungeon.hero.pointsInTalent(Talent.DIG_THE_WELL) && Dungeon.hero.buff(Shovel.ExplorerCooldown.class) == null){
+				&& Statistics.wellWaterDug < Dungeon.hero.pointsInTalent(Talent.DIG_THE_WELL) && Dungeon.hero.buff(WellWater.DigTheWellCooldown.class) == null){
 				WellWater.affectCell( cell );
 			}
 			break;

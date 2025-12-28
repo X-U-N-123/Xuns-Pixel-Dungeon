@@ -34,6 +34,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.SacrificialFire;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.WellWater;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Adrenaline;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AdrenalineSurge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ArtifactRecharge;
@@ -523,7 +524,7 @@ public class Hero extends Char {
 		if (hit && wasEnemy){
 			if (subClass == HeroSubClass.GLADIATOR){
 				Buff.affect( this, Combo.class ).hit( enemy );
-				if (Dungeon.hero.hasTalent(Talent.FAR_STANDOFF))
+				if (hasTalent(Talent.FAR_STANDOFF))
 					Buff.affect( this, Combo.class ).hit( enemy );
 			}
 
@@ -2221,6 +2222,10 @@ public class Hero extends Char {
 					buff(ElixirOfMight.HTBoost.class).onLevelUp();
 				}
 
+				if (buff(WellWater.DigTheWellCooldown.class) != null){
+					buff(WellWater.DigTheWellCooldown.class).decreaseCD();
+				}
+
 				updateHT( true );
 				attackSkill++;
 				defenseSkill++;
@@ -2531,8 +2536,10 @@ public class Hero extends Char {
 		if (hit && wasEnemy){
 			if (subClass == HeroSubClass.GLADIATOR){
 				Buff.affect( this, Combo.class ).hit( attackTarget );
-				if (Dungeon.hero.hasTalent(Talent.FAR_STANDOFF))
-					Buff.affect( this, Combo.class ).hit( attackTarget );
+			}
+
+			if (hasTalent(Talent.SKILLED_DUAL)){
+				Buff.affect( this, Talent.SkilleddualTracker.class).Hit((Weapon)belongings.weapon());
 			}
 
 			if (heroClass == HeroClass.DUELIST)

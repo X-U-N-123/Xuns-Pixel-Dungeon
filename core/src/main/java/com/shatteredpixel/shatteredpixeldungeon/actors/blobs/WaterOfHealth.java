@@ -41,7 +41,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Waterskin;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRemoveCurse;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.VialOfBlood;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Shovel;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Notes.Landmark;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
@@ -91,7 +90,7 @@ public class WaterOfHealth extends WellWater {
 		if (cur[pos] == CUR_EMPTY) {
 			if (item instanceof Waterskin){
 				cur[pos] = 1;
-				Shovel.ExplorerCooldown.affectCD(100, Dungeon.hero);
+				DigTheWellCooldown.setup();
 				Level.set(pos, Terrain.WELL);
 
 				Splash.at( DungeonTilemap.tileCenterToWorld( pos ), -PointF.PI/2, PointF.PI/2, 0x5bc1e3, 10, 0.01f);

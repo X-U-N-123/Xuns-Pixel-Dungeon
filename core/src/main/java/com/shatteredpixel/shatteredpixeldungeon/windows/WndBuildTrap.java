@@ -101,6 +101,16 @@ public class WndBuildTrap extends Window {
                         public void onSelect(Integer cell) {
                             if (cell == null) return;
 
+                            if (Actor.findChar(cell) != null || !Dungeon.level.passable[cell]){
+                                GLog.w(Messages.get(WndBuildTrap.class, "invalid_pos"));
+                                return;
+                            }
+
+                            if (!Dungeon.level.adjacent(cell, Dungeon.hero.pos)){
+                                GLog.w(Messages.get(WndBuildTrap.class, "far"));
+                                return;
+                            }
+
                             if (Dungeon.level.passable[cell] && Actor.findChar(cell) == null){
                                 Level.set(cell, Terrain.TRAP);
                                 Dungeon.level.setTrap( trap, cell).reveal();
@@ -121,7 +131,7 @@ public class WndBuildTrap extends Window {
 
                         @Override
                         public String prompt() {
-                            return Messages.get(this, "build", trap.name());
+                            return Messages.get(WndBuildTrap.class, "build", trap.name());
                         }
                     });
                 }
@@ -138,8 +148,6 @@ public class WndBuildTrap extends Window {
         }
 
         add(trapList);
-        trapList.content().setSize(width, pos);
-        trapList.content().setRect(0, title.bottom() + 3*MARGIN, width, pos);
         trapList.setSize(width, pos - title.bottom() - 3*MARGIN);
         trapList.setRect(0, title.bottom(), width, pos - title.bottom() - 3*MARGIN);
 

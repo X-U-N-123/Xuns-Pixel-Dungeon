@@ -43,7 +43,6 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.CurrencyIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
-import com.watabou.utils.Random;
 
 public class WndTradeItem extends WndInfoItem {
 
@@ -286,15 +285,15 @@ public class WndTradeItem extends WndInfoItem {
 		if (item == null) return;
 
 		int price = Shopkeeper.sellPrice( item );
-		float chanceToPay = 1f;
-		if (Dungeon.hero.hasTalent(Talent.ROGUES_INSTINCT)) {
-			chanceToPay -= 0.05f + Dungeon.hero.pointsInTalent(Talent.ROGUES_INSTINCT) * 0.1f;
-		}
-		if (Random.Float() <= chanceToPay) {
+		Talent.RoguesInstinctCooldown cd = Dungeon.hero.buff(Talent.RoguesInstinctCooldown.class);
+
+		if (!Dungeon.hero.hasTalent(Talent.ROGUES_INSTINCT) || cd != null) {
 			Dungeon.gold -= price;
 			Catalog.countUses(Gold.class, price);
+			if (cd != null) cd.decreaseCD();
 		} else {
 			GLog.p(Messages.get(this, "instinct"));
+			Talent.RoguesInstinctCooldown.setup(9 - 3 * Dungeon.hero.pointsInTalent(Talent.ROGUES_INSTINCT));
 		}
 		if (!item.doPickUp( Dungeon.hero )) {
 			Dungeon.level.drop( item, heap.pos ).sprite.drop();

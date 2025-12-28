@@ -35,7 +35,6 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.Splash;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.Waterskin;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfIdentify;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Shovel;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Notes.Landmark;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
@@ -89,7 +88,7 @@ public class WaterOfAwareness extends WellWater {
 		if (item.isIdentified() || cur[pos] == CUR_EMPTY) {
 			if (item instanceof Waterskin && cur[pos] == CUR_EMPTY){
 				cur[pos] = 1;
-				Shovel.ExplorerCooldown.affectCD(100, Dungeon.hero);
+				DigTheWellCooldown.setup();
 				Level.set(pos, Terrain.WELL);
 
 				Splash.at( DungeonTilemap.tileCenterToWorld( pos ), -PointF.PI/2, PointF.PI/2, 0x5bc1e3, 10, 0.01f);

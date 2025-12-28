@@ -61,6 +61,7 @@ public class Corrosion extends Spell {
             Sample.INSTANCE.play(Assets.Sounds.BURNING);
             GLog.n(Messages.get(this, "ondeath"));
             hero.die(this);
+            Dungeon.fail(this);
         } else {
             GameScene.show(new WndTalentForget(this));
         }

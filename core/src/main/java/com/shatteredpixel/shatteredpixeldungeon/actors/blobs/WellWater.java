@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.blobs;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
@@ -29,7 +30,11 @@ import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.MagicWellRoom;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
+import com.watabou.noosa.Image;
+import com.watabou.utils.Bundle;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
@@ -136,6 +141,45 @@ public abstract class WellWater extends Blob {
 				
 				return;
 			}
+		}
+	}
+
+	public static class DigTheWellCooldown extends Buff{
+		public int icon() { return BuffIndicator.TIME; }
+		public void tintIcon(Image icon) { icon.hardlight(0.15f, 0.2f, 0.8f); }
+
+		@Override
+		public String iconTextDisplay() {
+			return Integer.toString(CD);
+		}
+
+		private int CD = 0;
+
+		public void decreaseCD(){
+			CD --;
+			if (CD <= 0) detach();
+		}
+
+		public static void setup(){
+			Buff.affect(Dungeon.hero, DigTheWellCooldown.class).CD = 2;
+		}
+
+		private static final String COOLDOWN = "cooldown";
+		@Override
+		public void storeInBundle(Bundle bundle) {
+			super.storeInBundle(bundle);
+			bundle.put( COOLDOWN, CD);
+		}
+
+		@Override
+		public void restoreFromBundle(Bundle bundle) {
+			super.restoreFromBundle(bundle);
+			CD = bundle.getInt( COOLDOWN );
+		}
+
+		@Override
+		public String desc(){
+			return Messages.get(this, "desc", CD);
 		}
 	}
 }

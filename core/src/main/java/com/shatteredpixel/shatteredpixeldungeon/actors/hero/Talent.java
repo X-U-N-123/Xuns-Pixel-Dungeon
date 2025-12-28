@@ -352,8 +352,45 @@ public enum Talent {
 			barrierInc = bundle.getFloat( BARRIER_INC );
 		}
 	}
-	public static class HashashinsTracker extends FlavourBuff{
+	public static class RoguesInstinctCooldown extends Buff{
 		public int icon() { return BuffIndicator.TIME; }
+		public void tintIcon(Image icon) { icon.hardlight(0.15f, 0.2f, 0.5f); }
+
+		@Override
+		public String iconTextDisplay() {
+			return Integer.toString(CD);
+		}
+
+		private int CD = 0;
+
+		public void decreaseCD(){
+			CD --;
+			if (CD <= 0) detach();
+		}
+
+		public static void setup(int cd){
+			Buff.affect(Dungeon.hero, RoguesInstinctCooldown.class).CD = cd;
+		}
+
+		private static final String COOLDOWN = "cooldown";
+		@Override
+		public void storeInBundle(Bundle bundle) {
+			super.storeInBundle(bundle);
+			bundle.put( COOLDOWN, CD);
+		}
+
+		@Override
+		public void restoreFromBundle(Bundle bundle) {
+			super.restoreFromBundle(bundle);
+			CD = bundle.getInt( COOLDOWN );
+		}
+
+		@Override
+		public String desc(){
+			return Messages.get(this, "desc", CD);
+		}
+	}
+	public static class HashashinsTracker extends FlavourBuff{
 		private int Dmg = 0;
 
 		public void hurt(int dmg){
