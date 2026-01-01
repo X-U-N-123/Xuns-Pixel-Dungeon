@@ -31,6 +31,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Splash;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TalismanOfForesight;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
@@ -85,6 +86,12 @@ public class GeyserTrap extends Trap {
 
 				if (source == this && ch instanceof Mob){
 					Buff.prolong(ch, Trap.HazardAssistTracker.class, HazardAssistTracker.DURATION);
+
+					if (Dungeon.hero.hasTalent(Talent.FLUORESCENCE)) {
+						Buff.append(Dungeon.hero, TalismanOfForesight.CharAwareness.class,
+						5 + 5 * Dungeon.hero.pointsInTalent(Talent.FLUORESCENCE))
+						.charID = ch.id();
+					}
 				}
 
 				//does the equivalent of a bomb's damage against fiery enemies.

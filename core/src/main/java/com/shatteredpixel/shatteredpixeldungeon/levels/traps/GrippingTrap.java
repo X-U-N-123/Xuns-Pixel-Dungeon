@@ -30,6 +30,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Wound;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TalismanOfForesight;
 
 public class GrippingTrap extends Trap {
 
@@ -55,6 +56,12 @@ public class GrippingTrap extends Trap {
 		if (c != null && !c.isFlying()) {
 			if (c instanceof Mob) {
 				Buff.prolong(c, Trap.HazardAssistTracker.class, HazardAssistTracker.DURATION);
+
+				if (Dungeon.hero.hasTalent(Talent.FLUORESCENCE)) {
+					Buff.append(Dungeon.hero, TalismanOfForesight.CharAwareness.class,
+					5 + 5 * Dungeon.hero.pointsInTalent(Talent.FLUORESCENCE))
+					.charID = c.id();
+				}
 			}
 			int damage = Math.max( 0,  (2 + scalingDepth()/2) - c.drRoll()/2 );
 			Buff.affect( c, Bleeding.class ).set( damage );

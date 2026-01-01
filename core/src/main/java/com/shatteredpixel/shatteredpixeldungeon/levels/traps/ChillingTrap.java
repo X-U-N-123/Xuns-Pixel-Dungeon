@@ -31,6 +31,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Splash;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TalismanOfForesight;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.PathFinder;
@@ -60,6 +61,12 @@ public class ChillingTrap extends Trap{
 				GameScene.add(Blob.seed(pos + i, 10, Freezing.class));
 				if (Actor.findChar(pos+i) instanceof Mob){
 					Buff.prolong(Actor.findChar(pos+i), Trap.HazardAssistTracker.class, HazardAssistTracker.DURATION);
+
+					if (Dungeon.hero.hasTalent(Talent.FLUORESCENCE)) {
+						Buff.append(Dungeon.hero, TalismanOfForesight.CharAwareness.class,
+						5 + 5 * Dungeon.hero.pointsInTalent(Talent.FLUORESCENCE))
+						.charID = Actor.findChar(pos + i).id();
+					}
 				}
 			}
 		}

@@ -30,6 +30,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.BlobImmunity;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TalismanOfForesight;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.BArray;
@@ -61,6 +62,12 @@ public class StormTrap extends Trap {
 				GameScene.add(Blob.seed(i, 20, Electricity.class));
 				if (Actor.findChar(i) instanceof Mob){
 					Buff.prolong(Actor.findChar(i), Trap.HazardAssistTracker.class, HazardAssistTracker.DURATION);
+
+					if (Dungeon.hero.hasTalent(Talent.FLUORESCENCE)) {
+						Buff.append(Dungeon.hero, TalismanOfForesight.CharAwareness.class,
+						5 + 5 * Dungeon.hero.pointsInTalent(Talent.FLUORESCENCE))
+						.charID = Actor.findChar(i).id();
+					}
 				}
 			}
 		}

@@ -33,6 +33,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Poison;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TalismanOfForesight;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.PoisonDart;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -115,6 +116,12 @@ public class PoisonDartTrap extends Trap {
 				if (target != null) {
 					if (target instanceof Mob){
 						Buff.prolong(target, Trap.HazardAssistTracker.class, HazardAssistTracker.DURATION);
+
+						if (Dungeon.hero.hasTalent(Talent.FLUORESCENCE)) {
+							Buff.append(Dungeon.hero, TalismanOfForesight.CharAwareness.class,
+							5 + 5 * Dungeon.hero.pointsInTalent(Talent.FLUORESCENCE))
+							.charID = target.id();
+						}
 					}
 					final Char finalTarget = target;
 					if (Dungeon.level.heroFOV[pos] || Dungeon.level.heroFOV[target.pos]) {

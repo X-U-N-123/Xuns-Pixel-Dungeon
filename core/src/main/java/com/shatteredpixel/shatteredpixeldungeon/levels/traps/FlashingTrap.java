@@ -31,6 +31,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TalismanOfForesight;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.watabou.noosa.audio.Sample;
 
@@ -65,6 +66,12 @@ public class FlashingTrap extends Trap {
 				Buff.prolong(c, Trap.HazardAssistTracker.class, HazardAssistTracker.DURATION);
 				if (((Mob)c).state == ((Mob)c).HUNTING) ((Mob)c).state = ((Mob)c).WANDERING;
 				((Mob)c).beckon( Dungeon.level.randomDestination( c ) );
+
+				if (Dungeon.hero.hasTalent(Talent.FLUORESCENCE)) {
+					Buff.append(Dungeon.hero, TalismanOfForesight.CharAwareness.class,
+					5 + 5 * Dungeon.hero.pointsInTalent(Talent.FLUORESCENCE))
+					.charID = c.id();
+				}
 			}
 		}
 		

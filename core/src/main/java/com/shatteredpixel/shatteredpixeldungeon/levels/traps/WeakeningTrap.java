@@ -30,6 +30,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TalismanOfForesight;
 
 public class WeakeningTrap extends Trap{
 
@@ -59,6 +60,12 @@ public class WeakeningTrap extends Trap{
 			Buff.prolong( ch, Weakness.class, Weakness.DURATION*3f );
 			if (ch instanceof Mob){
 				Buff.prolong(ch, Trap.HazardAssistTracker.class, HazardAssistTracker.DURATION);
+
+				if (Dungeon.hero.hasTalent(Talent.FLUORESCENCE)) {
+					Buff.append(Dungeon.hero, TalismanOfForesight.CharAwareness.class,
+					5 + 5 * Dungeon.hero.pointsInTalent(Talent.FLUORESCENCE))
+					.charID = ch.id();
+				}
 			}
 		}
 	}

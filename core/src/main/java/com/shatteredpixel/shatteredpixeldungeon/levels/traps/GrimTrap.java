@@ -33,6 +33,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TalismanOfForesight;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
@@ -101,6 +102,12 @@ public class GrimTrap extends Trap {
 				if (target != null) {
 					if (target instanceof Mob){
 						Buff.prolong(target, Trap.HazardAssistTracker.class, HazardAssistTracker.DURATION);
+
+						if (Dungeon.hero.hasTalent(Talent.FLUORESCENCE)) {
+							Buff.append(Dungeon.hero, TalismanOfForesight.CharAwareness.class,
+							5 + 5 * Dungeon.hero.pointsInTalent(Talent.FLUORESCENCE))
+							.charID = target.id();
+						}
 					}
 					final Char finalTarget = target;
 					//instant kill, use a mix of current HP and max HP, just like psi blast (for resistances)

@@ -33,6 +33,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Beam;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TalismanOfForesight;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
@@ -92,6 +93,12 @@ public class DisintegrationTrap extends Trap {
 		if (target != null) {
 			if (target instanceof Mob){
 				Buff.prolong(target, Trap.HazardAssistTracker.class, HazardAssistTracker.DURATION);
+
+				if (Dungeon.hero.hasTalent(Talent.FLUORESCENCE)) {
+					Buff.append(Dungeon.hero, TalismanOfForesight.CharAwareness.class,
+					5 + 5 * Dungeon.hero.pointsInTalent(Talent.FLUORESCENCE))
+					.charID = target.id();
+				}
 			}
 			if (Dungeon.level.heroFOV[pos] || Dungeon.level.heroFOV[target.pos]) {
 				Sample.INSTANCE.play(Assets.Sounds.RAY);

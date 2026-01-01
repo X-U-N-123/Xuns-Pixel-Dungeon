@@ -32,6 +32,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TalismanOfForesight;
 import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -105,6 +106,12 @@ public class RockfallTrap extends Trap {
 			if (ch != null && ch.isAlive()){
 				if (ch instanceof Mob) {
 					Buff.prolong(ch, Trap.HazardAssistTracker.class, HazardAssistTracker.DURATION);
+
+					if (Dungeon.hero.hasTalent(Talent.FLUORESCENCE)) {
+						Buff.append(Dungeon.hero, TalismanOfForesight.CharAwareness.class,
+						5 + 5 * Dungeon.hero.pointsInTalent(Talent.FLUORESCENCE))
+						.charID = ch.id();
+					}
 				}
 				int damage = Random.NormalIntRange(5+scalingDepth(), 10+scalingDepth()*2);
 				damage -= ch.drRoll();

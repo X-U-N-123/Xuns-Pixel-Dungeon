@@ -34,6 +34,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GnollGuard;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TalismanOfForesight;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.MiningLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
@@ -91,6 +92,12 @@ public class GnollRockfallTrap extends RockfallTrap {
 			if (ch != null && ch.isAlive() && !(ch instanceof GnollGeomancer)){
 				if (ch instanceof Mob){
 					Buff.prolong(ch, Trap.HazardAssistTracker.class, HazardAssistTracker.DURATION);
+
+					if (Dungeon.hero.hasTalent(Talent.FLUORESCENCE)) {
+						Buff.append(Dungeon.hero, TalismanOfForesight.CharAwareness.class,
+						5 + 5 * Dungeon.hero.pointsInTalent(Talent.FLUORESCENCE))
+						.charID = ch.id();
+					}
 				}
 
 				//deals notably less damage than a regular rockfall trap, but ignores armor

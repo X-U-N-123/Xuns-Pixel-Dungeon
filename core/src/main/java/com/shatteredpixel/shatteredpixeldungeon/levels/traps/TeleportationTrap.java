@@ -33,6 +33,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Honeypot;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TalismanOfForesight;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.PathFinder;
@@ -60,6 +61,12 @@ public class TeleportationTrap extends Trap {
 					if (ch instanceof Mob && ((Mob) ch).state == ((Mob) ch).HUNTING) {
 						((Mob) ch).state = ((Mob) ch).WANDERING;
 						Buff.prolong(ch, Trap.HazardAssistTracker.class, HazardAssistTracker.DURATION);
+
+						if (Dungeon.hero.hasTalent(Talent.FLUORESCENCE)) {
+							Buff.append(Dungeon.hero, TalismanOfForesight.CharAwareness.class,
+							5 + 5 * Dungeon.hero.pointsInTalent(Talent.FLUORESCENCE))
+							.charID = ch.id();
+						}
 					}
 				}
 			}
