@@ -35,7 +35,9 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vulnerable;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Weakness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
+import com.shatteredpixel.shatteredpixeldungeon.journal.Bestiary;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.BarricadeSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.watabou.utils.Bundle;
@@ -106,6 +108,19 @@ public class Barricade extends Mob {
         }
         super.damage( dmg, src );
         sprite.linkVisuals(this);//check sprite
+    }
+
+    public static Barricade buildBarricade(int pos, int HT, Alignment alignment, float aggression){
+        Barricade barricade = new Barricade();
+        barricade.alignment = alignment;
+        barricade.aggression = aggression;
+        barricade.HT = HT;
+        barricade.HP = HT;
+        barricade.pos = pos;
+        GameScene.add(barricade);
+        Dungeon.level.occupyCell(barricade);
+        Bestiary.setSeen(Barricade.class);
+        return barricade;
     }
 
     @Override

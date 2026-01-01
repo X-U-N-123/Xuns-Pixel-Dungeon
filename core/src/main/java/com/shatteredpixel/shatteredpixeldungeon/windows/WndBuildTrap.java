@@ -113,7 +113,7 @@ public class WndBuildTrap extends Window {
 
                             if (Dungeon.level.passable[cell] && Actor.findChar(cell) == null){
                                 Level.set(cell, Terrain.TRAP);
-                                Dungeon.level.setTrap( trap, cell).reveal();
+                                Dungeon.level.setTrap( trap, cell).reveal();//build a trap
 
                                 if (metal.quantity() <= choose.TrapClasses().get(trapCls))
                                     metal.detachAll(Dungeon.hero.belongings.backpack);
@@ -142,7 +142,7 @@ public class WndBuildTrap extends Window {
             trapBtn.setSize(width, trapBtn.reqHeight());
             trapBtn.setRect(0, pos, width, trapBtn.reqHeight());
 
-            trapList.add(trapBtn);
+            trapList.add(trapBtn);//add it to the content, this is where the bug is
 
             pos = trapBtn.bottom() + MARGIN;
         }

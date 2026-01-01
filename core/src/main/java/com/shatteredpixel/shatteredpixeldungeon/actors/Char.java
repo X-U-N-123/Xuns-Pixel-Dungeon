@@ -91,6 +91,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.cleric.PowerOfMany;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.duelist.Challenge;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.explorer.Sandstorm;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.rogue.DeathMark;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.Endure;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.AuraOfProtection;
@@ -163,7 +164,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sickle;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.ShockingDart;
-import com.shatteredpixel.shatteredpixeldungeon.journal.Bestiary;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.Chasm;
@@ -1198,6 +1198,7 @@ public abstract class Char extends Actor {
 		NO_ARMOR_PHYSICAL_SOURCES.add(DriedRose.GhostHero.NoRoseDamage.class);
 		NO_ARMOR_PHYSICAL_SOURCES.add(WandOfAvalanche.class);
 		NO_ARMOR_PHYSICAL_SOURCES.add(GeomancerBuff.class); //geomancer recharge damage
+		NO_ARMOR_PHYSICAL_SOURCES.add(Sandstorm.class); //chasm effect
 	}
 	
 	public void destroy() {
@@ -1288,17 +1289,11 @@ public abstract class Char extends Actor {
 		if (src instanceof Char && ((Char) src).buff(BarricadeCurse.BarricadeTracker.class) != null && !(this instanceof Barricade)){
 			BarricadeCurse.BarricadeTracker tracker = ((Char) src).buff(BarricadeCurse.BarricadeTracker.class);
 			tracker.detach();
-			Barricade barricade = new Barricade();
 
-			barricade.HT = (int)((hero.lvl * 2 + 5) * tracker.strength);
-			barricade.HP = (int)((hero.lvl * 2 + 5) * tracker.strength);
-			barricade.pos = pos;
-			barricade.aggression = 6f;
-			GameScene.add(barricade);
+			Barricade barricade =
+				Barricade.buildBarricade(pos, (int)((hero.lvl * 2 + 5) * tracker.strength), Alignment.ENEMY, 6f);
+
 			ScrollOfTeleportation.appear(barricade, barricade.pos);
-			Dungeon.level.occupyCell(barricade);
-
-			Bestiary.setSeen(Barricade.class);
 		}
 	}
 

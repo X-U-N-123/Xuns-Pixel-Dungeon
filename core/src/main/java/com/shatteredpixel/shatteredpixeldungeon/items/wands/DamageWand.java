@@ -61,7 +61,8 @@ public abstract class DamageWand extends Wand{
 			}
 			Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG, 0.75f, 1.2f);
 		}
-		if (Dungeon.hero.hasTalent(Talent.LAYERED_ARCHITECTURE) && Dungeon.level.map[Dungeon.hero.pos] == Terrain.EMPTY_SP)
+		if (Dungeon.hero.hasTalent(Talent.LAYERED_ARCHITECTURE)
+		&& (Dungeon.level.map[Dungeon.hero.pos] == Terrain.EMPTY_SP) || Dungeon.level.map[Dungeon.hero.pos] == Terrain.PEDESTAL)
 			dmg = Math.round(dmg * 1.1f);
 		return dmg;
 	}

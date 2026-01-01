@@ -35,7 +35,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.explorer.OpticalCamou;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Barricade;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Splash;
-import com.shatteredpixel.shatteredpixeldungeon.journal.Bestiary;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -149,22 +148,15 @@ public class Shovel extends MeleeWeapon {
                     Char ch = Actor.findChar(cell);
                     if (Dungeon.level.passable[cell] && ch == null){
                         //build a barricade that can block the enemy
-                        Barricade barricade = new Barricade();
+                        float aggression = 0;
+                        if (curUser.pointsInTalent(Talent.AGGRESSIVE_ROADBLOCK) >= 2) aggression = 5;
 
-                        barricade.HT = 2 * curUser.lvl + 5;
-                        barricade.HP = barricade.HT;
-                        barricade.alignment = Char.Alignment.ALLY;
-                        barricade.pos = cell;
-                        GameScene.add(barricade);
-                        Dungeon.level.occupyCell(barricade);
-                        if (curUser.pointsInTalent(Talent.AGGRESSIVE_ROADBLOCK) >= 2) barricade.aggression = 5;
+                        Barricade.buildBarricade(cell, 2 * curUser.lvl + 5, Char.Alignment.ALLY, aggression);
 
                         Sample.INSTANCE.play( Assets.Sounds.BUILD );
                         ExplorerCooldown.affectCD(50, curUser);
                         curUser.spendAndNext(Actor.TICK);
-                        Dungeon.observe();
                         curUser.sprite.zap(cell);
-                        Bestiary.setSeen(Barricade.class);
                         return;
 
                     } else if (ch instanceof Barricade && ch.alignment == Char.Alignment.ALLY) {
@@ -174,6 +166,7 @@ public class Shovel extends MeleeWeapon {
                         ExplorerCooldown.affectCD(10, curUser);
                         curUser.spendAndNext(Actor.TICK);
                         curUser.sprite.zap(cell);
+                        return;
                     }
                     break;
                 case AC_WATER:

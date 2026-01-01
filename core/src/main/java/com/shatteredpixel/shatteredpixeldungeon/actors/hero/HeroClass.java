@@ -34,6 +34,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.duelist.Ch
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.duelist.ElementalStrike;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.duelist.Feint;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.explorer.OpticalCamou;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.explorer.Sandstorm;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.huntress.NaturesPower;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.huntress.SpectralBlades;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.huntress.SpiritHawk;
@@ -365,7 +366,7 @@ public enum HeroClass {
 			case CLERIC:
 				return new ArmorAbility[]{new AscendedForm(), new Trinity(), new PowerOfMany()};
 			case EXPLORER:
-				return new ArmorAbility[]{new OpticalCamou()};
+				return new ArmorAbility[]{new OpticalCamou(), new Sandstorm()};
 		}
 	}
 

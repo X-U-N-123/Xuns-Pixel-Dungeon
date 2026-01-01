@@ -31,6 +31,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Regeneration;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.ArmorAbility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.cleric.Trinity;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.explorer.Sandstorm;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfEnergy;
@@ -303,6 +304,8 @@ abstract public class ClassArmor extends Armor {
 			ArmorAbility ability = Dungeon.hero.armorAbility;
 			if (ability != null) {
 				desc += "\n\n" + ability.shortDesc();
+				if (ability instanceof Sandstorm)
+					desc += "\n\n" + Sandstorm.terrainDesc(Dungeon.hero);
 				float chargeUse = ability.chargeUse(Dungeon.hero);
 				//trinity has variable charge cost
 				if (!(ability instanceof Trinity)) {

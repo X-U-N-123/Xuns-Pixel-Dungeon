@@ -243,4 +243,9 @@ public class Burning extends Buff implements Hero.Doom {
 		Dungeon.fail( this );
 		GLog.n( Messages.get(this, "ondeath") );
 	}
+
+	public void fireSpend(float time) {
+		spend(time);
+		left -= time;
+	}//only used in sandstorm
 }

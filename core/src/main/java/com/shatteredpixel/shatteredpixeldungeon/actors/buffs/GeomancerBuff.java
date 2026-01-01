@@ -28,6 +28,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.EMPTY_SP;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.FURROWED_GRASS;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.GRASS;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.HIGH_GRASS;
+import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.PEDESTAL;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.WATER;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
@@ -131,7 +132,7 @@ public class GeomancerBuff extends Buff implements ActionIndicator.Action {
             case GRASS: case HIGH_GRASS: case FURROWED_GRASS: return 0x009900;
             case EMPTY: case EMPTY_DECO:                      return 0x565656;
             case EMPTY_SP:                                    return 0x523c26;
-            case WATER:                                       return 0x2364bc;
+            case WATER: case PEDESTAL:                        return 0x2364bc;
             case CHASM:                                       return 0x333333;
             default:                                          return 0x000000;
         }
@@ -160,7 +161,7 @@ public class GeomancerBuff extends Buff implements ActionIndicator.Action {
                     GameScene.selectCell(action);
                     break;
                 }
-            case EMPTY_SP:
+            case EMPTY_SP: case PEDESTAL:
                 if (Dungeon.hero.pointsInTalent(Talent.LAYERED_ARCHITECTURE) >= 2){
                     GameScene.selectItem(new WndBag.ItemSelector() {
 

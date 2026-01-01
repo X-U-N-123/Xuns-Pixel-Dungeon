@@ -71,13 +71,13 @@ public class StoneCudgel extends MeleeWeapon {
         for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
             if (mob instanceof StoneGuardian && !(attacker instanceof StoneGuardian)) {
                 Guardamount ++;
-                mob.beckon(defender.pos);
+                mob.beckon(defender.pos);//call existing guard to here
             }
         }
 
         if (Math.pow(0.7, Guardamount) >= Random.Float()) {
             ArrayList<Integer> spawnPoints = new ArrayList<>();
-            for (int i : PathFinder.NEIGHBOURS8) {
+            for (int i : PathFinder.NEIGHBOURS8) {//determine where the guard can spawn
                 int pos = attacker.pos + i;
                 if (Actor.findChar(pos) == null && Dungeon.level.passable[pos]) {
                     spawnPoints.add(pos);
@@ -85,7 +85,7 @@ public class StoneCudgel extends MeleeWeapon {
             }
 
             if (!spawnPoints.isEmpty() && !(attacker instanceof StoneGuardian)){
-                StoneGuardian guardian = new StoneGuardian();
+                StoneGuardian guardian = new StoneGuardian();//spawn a new guard if can
                 guardian.createWeapon(this);
                 guardian.state = guardian.WANDERING;
                 guardian.pos = Random.element(spawnPoints);
@@ -110,15 +110,16 @@ public class StoneCudgel extends MeleeWeapon {
 
         beforeAbilityUsed(hero, null);
 
+        PathFinder.buildDistanceMap( target, BArray.not( Dungeon.level.solid, null ), 2 );
+
         int a = 0;
         int range = 0;
         for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
 
             ArrayList<Integer> telePoints = new ArrayList<>();
-            PathFinder.buildDistanceMap( target, BArray.not( Dungeon.level.solid, null ), 2 );
             for (int i = 0; i < PathFinder.distance.length; i++) {
                 if (PathFinder.distance[i] <= range && Actor.findChar(i) == null && Dungeon.level.passable[i]){
-                    telePoints.add(i);
+                    telePoints.add(i);//determine where is usable for teleportaion
                 }
             }
 
@@ -126,7 +127,7 @@ public class StoneCudgel extends MeleeWeapon {
 
                 if (!telePoints.isEmpty()) {
                     int point = Random.element(telePoints);
-                    mob.pos = point;
+                    mob.pos = point;//teleport guard to pos
                     mob.sprite.place( point );
                     Dungeon.level.occupyCell(mob);
                     CellEmitter.get( point ).burst( Speck.factory( Speck.ROCK ), 3 );

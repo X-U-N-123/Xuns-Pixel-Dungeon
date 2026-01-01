@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.spells;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
@@ -61,7 +62,7 @@ public class Corrosion extends Spell {
             Sample.INSTANCE.play(Assets.Sounds.BURNING);
             GLog.n(Messages.get(this, "ondeath"));
             hero.die(this);
-            Dungeon.fail(this);
+            if (!hero.isAlive()) Badges.validateDeathFromFriendlyMagic();
         } else {
             GameScene.show(new WndTalentForget(this));
         }

@@ -90,7 +90,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Shocki
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Unstable;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Vampiric;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
-import com.shatteredpixel.shatteredpixeldungeon.journal.Bestiary;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
@@ -594,7 +593,7 @@ public class ElementalStrike extends ArmorAbility {
 				}
 			}
 
-		//*** Pier ***
+		//*** Barricade ***
 		} else if (ench instanceof BarricadeCurse && primaryTarget != null){
 			ArrayList<Integer> spawnPoints = new ArrayList<>();
 			for (int i : PathFinder.NEIGHBOURS8) {
@@ -605,19 +604,11 @@ public class ElementalStrike extends ArmorAbility {
 			}
 
 			if (!spawnPoints.isEmpty()){
-				Barricade barricade = new Barricade();
-				barricade.alignment = Char.Alignment.ALLY;
-				barricade.aggression = 6f;
-				barricade.HT = hero.HT;
-				barricade.HP = hero.HT;
-				barricade.pos = Random.element(spawnPoints);
+				Barricade barricade =
+					Barricade.buildBarricade(Random.element(spawnPoints), hero.HT, Char.Alignment.ALLY, 6f);
 
-				GameScene.add(barricade);
 				ScrollOfTeleportation.appear(barricade, barricade.pos);
-				Dungeon.level.occupyCell(barricade);
 				Buff.affect(barricade, StoneOfAggression.Aggression.class, 5f * powerMulti);
-
-				Bestiary.setSeen(Barricade.class);
 			}
 		}
 

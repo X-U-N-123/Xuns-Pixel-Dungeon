@@ -676,8 +676,7 @@ public class Hero extends Char {
 			evasion /= 2;
 		}
 
-		if ((Dungeon.level.map[pos] == Terrain.EMPTY
-		|| Dungeon.level.map[pos] == Terrain.EMPTY_DECO)
+		if ((Dungeon.level.map[pos] == Terrain.EMPTY || Dungeon.level.map[pos] == Terrain.EMPTY_DECO)
 		&& heroClass == HeroClass.EXPLORER){
 			evasion *= 1.1f;
 		}
@@ -808,7 +807,8 @@ public class Hero extends Char {
 			dmg = Math.round(dmg * 1.025f + (.025f*pointsInTalent(Talent.WEAPON_RECHARGING)));
 		}
 
-		if (Dungeon.level.map[pos] == Terrain.EMPTY_SP && heroClass == HeroClass.EXPLORER){
+		if ((Dungeon.level.map[pos] == Terrain.EMPTY_SP || Dungeon.level.map[pos] == Terrain.PEDESTAL)
+			&& heroClass == HeroClass.EXPLORER){
 			dmg = Math.round(dmg * 1.1f);
 		}
 
@@ -2556,7 +2556,8 @@ public class Hero extends Char {
 			if (heroClass == HeroClass.DUELIST)
 				Buff.affect( this, Sai.ComboStrikeTracker.class).addHit();
 
-			if (subClass == HeroSubClass.GEOMANCER && Dungeon.level.map[pos] == Terrain.EMPTY_SP)
+			if (subClass == HeroSubClass.GEOMANCER
+			&& (Dungeon.level.map[pos] == Terrain.EMPTY_SP) || Dungeon.level.map[pos] == Terrain.PEDESTAL)
 				Buff.prolong(attackTarget, BrokenArmor.class, 3f);
 
 			if (hasTalent(Talent.SON_OF_SEA) && Dungeon.level.map[pos] == Terrain.WATER)

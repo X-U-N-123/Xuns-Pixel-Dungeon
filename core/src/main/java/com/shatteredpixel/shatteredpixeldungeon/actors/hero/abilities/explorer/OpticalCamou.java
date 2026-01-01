@@ -116,7 +116,7 @@ public class OpticalCamou extends ArmorAbility {
         }
 
         public void move(int newTerrain){
-            if (newTerrain != terrain){
+            if (newTerrain != terrain){ //decrease time
                 terrain = newTerrain;
                 if (Random.Float() >= Dungeon.hero.pointsInTalent(Talent.STRAIN_CAPACITY) * 0.3f) camouTime --;
                 if (Random.Float() + 1 <= Dungeon.hero.pointsInTalent(Talent.STRAIN_CAPACITY) * 0.3f) camouTime ++;

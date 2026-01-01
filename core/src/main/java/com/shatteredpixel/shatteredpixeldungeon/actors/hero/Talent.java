@@ -244,6 +244,8 @@ public enum Talent {
 	TRAP_MASTER(307, 3), FRIENDLY_MECHANISM(308, 3), SIMPLE_STRUCTURE(309, 3), FLUORESCENCE(310, 3), LIQUID_COLLECTING(311, 3),
 	//Optical Camouflage T4
 	LASTING_DISGUISE(317, 4), STRAIN_CAPACITY(318, 4), PAINTED_BLADE(319, 4), QUICK_BUILD(320, 4),
+	//Sandstorm T4
+	GLOOM_ABOVE(321, 4), SAND_FLOW(322, 4), HEART_OF_STORM(323, 4), DRIFT_SAND(324, 4),
 
 	//universal T4
 	HEROIC_ENERGY(26, 4), //See icon() and title() for special logic for this one
@@ -1759,7 +1761,7 @@ public enum Talent {
 		}
 		bundle.put("replacements", replacementsBundle);
 
-		if (hero.corroLostTalent != null) bundle.put(CORRO_TALENT, hero.corroLostTalent);
+		bundle.put(CORRO_TALENT, hero.corroLostTalent);
 	}
 
 	private static final HashSet<String> removedTalents = new HashSet<>();
@@ -1775,8 +1777,6 @@ public enum Talent {
 		renamedTalents.put("HOLY_DRAPE",                "DRAPE_OF_REDEMPTION");
 		renamedTalents.put("HOLY_ANTIMAGIC",            "HOLY_TRAP");
 		renamedTalents.put("HOLY_IMAGE",                "HOLY_GHOST");
-		//X_U_N v0.3.2
-		renamedTalents.put("HOLY_PROTECTION",           "HOLY_REGENERATION");
 		//X_U_N v0.2.5
 		renamedTalents.put("TESTED_ADRENALINE",         "TESTED_SWIFTNESS");
 		//X_U_N v0.2.2
