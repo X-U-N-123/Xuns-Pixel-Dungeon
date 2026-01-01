@@ -441,10 +441,11 @@ public abstract class Char extends Actor {
 				dr = 0;
 			}
 
-			/*if (this instanceof Hero && ((Hero) this).hasTalent() && ((Mob)enemy).surprisedBy(this)){
+			if (this instanceof Hero && ((Hero) this).pointsInTalent(Talent.EXTREMIST) >= 2
+			&& ((Mob)enemy).surprisedBy(this) && this.buff(Preparation.class) == null){
 				Preparation pr = Buff.affect(this, Preparation.class);
 				pr.incTurnsInvis(1);
-			}*/
+			}
 
 			//we use a float here briefly so that we don't have to constantly round while
 			// potentially applying various multiplier effects
@@ -452,18 +453,12 @@ public abstract class Char extends Actor {
 			Preparation prep = buff(Preparation.class);
 			if (prep != null){
 				dmg = prep.damageRoll(this);
-				if (this instanceof Hero) {
-					if (hero.hasTalent(Talent.TERRORIST_ATTACK)) {
-						for (Mob mob : Dungeon.level.mobs.toArray( new Mob[0] )) {
- 							if (Dungeon.level.distance(pos, mob.pos) <= prep.horrorDistance()
-									&& mob.alignment != Alignment.ALLY) {
-								Buff.affect( mob, Terror.class, prep.horrorTurn()).object = hero.id();
-							}
+				if (this == hero && hero.hasTalent(Talent.TERRORIST_ATTACK)) {
+					for (Mob mob : Dungeon.level.mobs.toArray( new Mob[0] )) {
+						if (Dungeon.level.distance(pos, mob.pos) <= prep.horrorDistance()
+						&& mob.alignment != Alignment.ALLY) {
+							Buff.affect( mob, Terror.class, prep.horrorTurn()).object = hero.id();
 						}
-					}
-
-					if (hero.hasTalent(Talent.HASHASHINS)){
-						Buff.affect(this, Talent.HashashinsTracker.class, Math.max(0, hero.attackDelay()-1f));
 					}
 				}
 			} else {
@@ -589,29 +584,38 @@ public abstract class Char extends Actor {
 			if (buff(FireImbue.class) != null)  buff(FireImbue.class).proc(enemy);
 			if (buff(FrostImbue.class) != null) buff(FrostImbue.class).proc(enemy);
 
-			if (hero.hasTalent(Talent.CHARGE_RECYCLING) && prep != null && this instanceof Hero &&
-			enemy.HP <= effectiveDamage && enemy.buff(Brute.BruteRage.class) == null) {
-				//2/3 turns of artifact recharging
-				ArtifactRecharge recharge = Buff.affect(hero, ArtifactRecharge.class)
-				.extend(1f + hero.pointsInTalent(Talent.CHARGE_RECYCLING));
-				recharge.ignoreHornOfPlenty = false;
-				recharge.ignoreHolyTome = false;
-			}
+			if (prep != null){
 
-			if (enemy.isAlive() && enemy.alignment != alignment && prep != null && prep.canKO(enemy)){
-				enemy.HP = 0;
-				if (enemy.buff(Brute.BruteRage.class) != null){
-					enemy.buff(Brute.BruteRage.class).detach();
+				if (enemy.isAlive() && enemy.alignment != alignment && prep.canKO(enemy)){
+					enemy.HP = 0;
+					if (enemy.buff(Brute.BruteRage.class) != null){
+						enemy.buff(Brute.BruteRage.class).detach();
+					}
+					if (!enemy.isAlive()) {
+						enemy.die(this);
+					} else {
+						//helps with triggering any on-damage effects that need to activate
+						enemy.damage(-1, this);
+						DeathMark.processFearTheReaper(enemy);
+					}
+					if (enemy.sprite != null) {
+						enemy.sprite.showStatus(CharSprite.NEGATIVE, Messages.get(Preparation.class, "assassinated"));
+					}
 				}
-				if (!enemy.isAlive()) {
-					enemy.die(this);
-				} else {
-					//helps with triggering any on-damage effects that need to activate
-					enemy.damage(-1, this);
-					DeathMark.processFearTheReaper(enemy);
-				}
-				if (enemy.sprite != null) {
-					enemy.sprite.showStatus(CharSprite.NEGATIVE, Messages.get(Preparation.class, "assassinated"));
+
+				if (!enemy.isAlive()){
+
+					if (hero.hasTalent(Talent.CHARGE_RECYCLING) && this instanceof Hero) {
+						//1/2/3 turns of artifact recharging
+						ArtifactRecharge recharge = Buff.affect(hero, ArtifactRecharge.class)
+							.extend(1f + hero.pointsInTalent(Talent.CHARGE_RECYCLING));
+						recharge.ignoreHornOfPlenty = false;
+						recharge.ignoreHolyTome = false;
+					}
+
+					if (prep.attackLevel() >= 5)
+						Buff.affect(this, ExtremistTracker.class);
+
 				}
 			}
 
@@ -1657,4 +1661,6 @@ public abstract class Char extends Actor {
 		public void tintIcon(Image icon) { icon.hardlight(0.7f, 0.7f, 0f); }
 		public float iconFadePercent() { return Math.max(0, visualcooldown()); }
 	}
+
+	public static class ExtremistTracker extends Buff {}
 }

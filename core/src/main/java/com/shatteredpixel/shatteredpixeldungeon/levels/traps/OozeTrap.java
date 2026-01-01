@@ -24,12 +24,12 @@ package com.shatteredpixel.shatteredpixeldungeon.levels.traps;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.BlobImmunity;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Ooze;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Splash;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TalismanOfForesight;
 import com.watabou.utils.PathFinder;
 
 public class OozeTrap extends Trap {
@@ -43,9 +43,10 @@ public class OozeTrap extends Trap {
 	public void activate() {
 		
 		if (Dungeon.hero.pos == pos && !Dungeon.hero.isFlying()
-			&& Dungeon.hero.hasTalent(Talent.FRIENDLY_MECHANISM) && Dungeon.hero.buff(FriendlyMechanismCooldown.class) == null){
-			Buff.affect(Dungeon.hero, BlobImmunity.class, 3f);
+		&& Dungeon.hero.pointsInTalent(Talent.FRIENDLY_MECHANISM) >= 3 && Dungeon.hero.buff(FriendlyMechanismCooldown.class) == null){
+			disarm();
 			Buff.affect(Dungeon.hero, FriendlyMechanismCooldown.class, 150f);
+			return;
 		}
 
 		for( int i : PathFinder.NEIGHBOURS9) {
@@ -56,6 +57,12 @@ public class OozeTrap extends Trap {
 					Buff.affect(ch, Ooze.class).set( Ooze.DURATION );
 					if (ch instanceof Mob){
 						Buff.prolong(ch, Trap.HazardAssistTracker.class, HazardAssistTracker.DURATION);
+
+						if (Dungeon.hero.hasTalent(Talent.FLUORESCENCE)) {
+							Buff.append(Dungeon.hero, TalismanOfForesight.CharAwareness.class,
+							5 + 5 * Dungeon.hero.pointsInTalent(Talent.FLUORESCENCE))
+							.charID = Actor.findChar(i).id();
+						}
 					}
 				}
 			}

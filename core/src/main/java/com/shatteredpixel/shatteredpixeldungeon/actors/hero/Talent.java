@@ -163,7 +163,7 @@ public enum Talent {
 	//Rogue T3
 	ENHANCED_RINGS(73, 3), LIGHT_CLOAK(74, 3), STEALTH_METABOLISM(93, 3),
 	//Assassin T3
-	ENHANCED_LETHALITY(75, 3), ASSASSINS_REACH(76, 3), TERRORIST_ATTACK(77, 3), CHARGE_RECYCLING(94, 3), HASHASHINS(95, 3),
+	ENHANCED_LETHALITY(75, 3), ASSASSINS_REACH(76, 3), TERRORIST_ATTACK(77, 3), CHARGE_RECYCLING(94, 3), EXTREMIST(95, 3),
 	//Freerunner T3
 	EVASIVE_ARMOR(78, 3), PROJECTILE_MOMENTUM(79, 3), SPEEDY_STEALTH(80, 3), ARCANE_STEP(228, 3), STRETCHING(229, 3),
 	//Ninja T3
@@ -241,7 +241,7 @@ public enum Talent {
 	//Geomancer T3
 	TAPESTRY_OF_VINES(302, 3), SON_OF_SEA(303, 3), STRIKING_STONE(304, 3), LAYERED_ARCHITECTURE(305, 3), RISING_WIND(306, 3),
 	//Trapper T3
-	TRAP_MASTER(307, 3), FRIENDLY_MECHANISM(308, 3), LIQUID_COLLECTING(311, 3),
+	TRAP_MASTER(307, 3), FRIENDLY_MECHANISM(308, 3), SIMPLE_STRUCTURE(309, 3), FLUORESCENCE(310, 3), LIQUID_COLLECTING(311, 3),
 	//Optical Camouflage T4
 	LASTING_DISGUISE(317, 4), STRAIN_CAPACITY(318, 4), PAINTED_BLADE(319, 4), QUICK_BUILD(320, 4),
 
@@ -388,22 +388,6 @@ public enum Talent {
 		@Override
 		public String desc(){
 			return Messages.get(this, "desc", CD);
-		}
-	}
-	public static class HashashinsTracker extends FlavourBuff{
-		private int Dmg = 0;
-
-		public void hurt(int dmg){
-			Dmg += dmg;
-		}
-
-		@Override
-		public void detach(){
-			int Boost = Math.round(Dmg *Dungeon.hero.pointsInTalent(HASHASHINS)/4f);
-			if (Boost > 0){
-				Buff.affect(Dungeon.hero, PhysicalEmpower.class).set( Boost, 1);
-			}
-			super.detach();
 		}
 	}
 	public static class RejuvenatingStepsCooldown extends FlavourBuff{
@@ -1685,7 +1669,7 @@ public enum Talent {
                 Collections.addAll(tierTalents, SHARED_ARCANA, SWITCH_MASTER, RELAY_RECHARGING, ENERGY_RECYCLING, MYSTICAL_SWITCH);
                 break;
 			case ASSASSIN:
-				Collections.addAll(tierTalents, ENHANCED_LETHALITY, ASSASSINS_REACH, TERRORIST_ATTACK, CHARGE_RECYCLING, HASHASHINS);
+				Collections.addAll(tierTalents, ENHANCED_LETHALITY, ASSASSINS_REACH, TERRORIST_ATTACK, CHARGE_RECYCLING, EXTREMIST);
 				break;
 			case FREERUNNER:
 				Collections.addAll(tierTalents, EVASIVE_ARMOR, PROJECTILE_MOMENTUM, SPEEDY_STEALTH, ARCANE_STEP, STRETCHING);
@@ -1724,7 +1708,7 @@ public enum Talent {
 				Collections.addAll(tierTalents, TAPESTRY_OF_VINES, SON_OF_SEA, STRIKING_STONE, LAYERED_ARCHITECTURE, RISING_WIND);
 				break;
 			case TRAPPER:
-				Collections.addAll(tierTalents, TRAP_MASTER, FRIENDLY_MECHANISM, LIQUID_COLLECTING);
+				Collections.addAll(tierTalents, TRAP_MASTER, FRIENDLY_MECHANISM, SIMPLE_STRUCTURE, FLUORESCENCE, LIQUID_COLLECTING);
 				break;
 		}
 		for (Talent talent : tierTalents){
@@ -1787,6 +1771,7 @@ public enum Talent {
 	private static final HashMap<String, String> renamedTalents = new HashMap<>();
 	static{
 		//X_U_N v1.0.0
+		renamedTalents.put("HASHASHINS",                "EXTREMIST");
 		renamedTalents.put("HOLY_DRAPE",                "DRAPE_OF_REDEMPTION");
 		renamedTalents.put("HOLY_ANTIMAGIC",            "HOLY_TRAP");
 		renamedTalents.put("HOLY_IMAGE",                "HOLY_GHOST");

@@ -66,6 +66,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Momentum;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MonkEnergy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.PhysicalEmpower;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Preparation;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Recharging;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Regeneration;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.SnipersMark;
@@ -518,6 +519,13 @@ public class Hero extends Char {
 		if (invis != null && !invis.invisGiven && hit){
 			Buff.affect(this, Invisibility.class, 3f);
 			invis.invisGiven = true;
+		}
+
+		Char.ExtremistTracker extreme = buff(ExtremistTracker.class);
+		if (extreme != null){
+			Buff.affect(this, Invisibility.class, 1f);
+			extreme.detach();
+			buff(Preparation.class).incTurnsInvis(8);
 		}
 		belongings.thrownWeapon = null;
 
@@ -1818,10 +1826,6 @@ public class Hero extends Char {
 
 		dmg = Math.round(damage);
 
-		if (buff(Talent.HashashinsTracker.class) != null){
-			buff(Talent.HashashinsTracker.class).hurt(dmg);
-		}
-
 		//向下取整，作为对韧性戒指的加强
 		//+0.1 后向下取整，作为削弱（免疫饥饿也太强了）
 		dmg = (int)Math.floor(dmg * RingOfTenacity.damageMultiplier( this ) + 0.1f);
@@ -2532,6 +2536,13 @@ public class Hero extends Char {
 			invis.invisGiven = true;
 		}
 		spend( attackDelay() );
+
+		Char.ExtremistTracker extreme = buff(ExtremistTracker.class);
+		if (extreme != null){
+			Buff.affect(this, Invisibility.class, attackDelay());
+			extreme.detach();
+			buff(Preparation.class).incTurnsInvis(8);
+		}
 
 		if (hit && wasEnemy){
 			if (subClass == HeroSubClass.GLADIATOR){

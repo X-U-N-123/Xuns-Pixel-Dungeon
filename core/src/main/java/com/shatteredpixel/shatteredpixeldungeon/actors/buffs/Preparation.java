@@ -63,7 +63,8 @@ public class Preparation extends Buff implements ActionIndicator.Action {
 		LVL_1( 1, 0.10f, 1),
 		LVL_2( 3, 0.20f, 1),
 		LVL_3( 5, 0.35f, 2),
-		LVL_4( 9, 0.50f, 3);
+		LVL_4( 9, 0.50f, 3),
+		LVL_5( 15, 0.50f, 3);
 
 		final int turnsReq;
 		final float baseDmgBonus;
@@ -80,6 +81,7 @@ public class Preparation extends Buff implements ActionIndicator.Action {
 				{.03f, .04f, .05f, .06f},
 				{.10f, .13f, .17f, .20f},
 				{.20f, .27f, .33f, .40f},
+				{.50f, .67f, .83f, 1.0f},
 				{.50f, .67f, .83f, 1.0f}
 		};
 
@@ -92,6 +94,7 @@ public class Preparation extends Buff implements ActionIndicator.Action {
 				{1, 1, 2, 2},
 				{2, 3, 4, 5},
 				{3, 4, 6, 7},
+				{4, 6, 8, 10},
 				{4, 6, 8, 10}
 		};
 
@@ -100,7 +103,7 @@ public class Preparation extends Buff implements ActionIndicator.Action {
 		}
 
 		//determined by prep lvl
-		private static final int[] horrorDistance = new int[]{2, 3, 5, 8};
+		private static final int[] horrorDistance = new int[]{2, 3, 5, 8, 8};
 		//determined by talent point
 		private static final int[] horrorTime = new int[]{0, 3, 5, 7};
 
@@ -134,7 +137,8 @@ public class Preparation extends Buff implements ActionIndicator.Action {
 			Collections.reverse(values);
 			for ( AttackLevel lvl : values ){
 				if (turnsInvis >= lvl.turnsReq){
-//					if (lvl == LVL_1 && ) return LVL_2;
+					if (lvl == LVL_5 && Dungeon.hero.pointsInTalent(Talent.EXTREMIST) < 3) return LVL_4;
+					if (lvl == LVL_1 && Dungeon.hero.hasTalent(Talent.EXTREMIST)) return LVL_2;
 					return lvl;
 				}
 			}
@@ -208,6 +212,9 @@ public class Preparation extends Buff implements ActionIndicator.Action {
 			case LVL_4:
 				icon.hardlight(1f, 0f, 0f);
 				break;
+			case LVL_5:
+				icon.hardlight(0.6f, 0f, 0.6f);
+				break;
 		}
 	}
 
@@ -235,8 +242,10 @@ public class Preparation extends Buff implements ActionIndicator.Action {
 		}
 		
 		desc += "\n\n" + Messages.get(this, "desc_invis_time", turnsInvis);
-		
-		if (lvl.ordinal() != AttackLevel.values().length-1){
+
+		int maxLvl = AttackLevel.values().length-1;
+		if (Dungeon.hero.pointsInTalent(Talent.EXTREMIST) < 3) maxLvl --;
+		if (lvl.ordinal() != maxLvl){
 			AttackLevel next = AttackLevel.values()[lvl.ordinal()+1];
 			desc += "\n" + Messages.get(this, "desc_invis_next", next.turnsReq);
 		}
@@ -278,8 +287,10 @@ public class Preparation extends Buff implements ActionIndicator.Action {
 
 	@Override
 	public Visual secondaryVisual() {
+		int maxTurn = Dungeon.hero.pointsInTalent(Talent.EXTREMIST) >= 3 ? 17 : 9;
+
 		BitmapText txt = new BitmapText(PixelScene.pixelFont);
-		txt.text(Integer.toString(Math.min(9, turnsInvis)));
+		txt.text(Integer.toString(Math.min(maxTurn, turnsInvis)));
 		txt.hardlight(CharSprite.POSITIVE);
 		txt.measure();
 		return txt;
