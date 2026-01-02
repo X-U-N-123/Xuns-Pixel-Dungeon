@@ -49,25 +49,31 @@ import com.watabou.utils.Reflection;
 
 public class WndBuildTrap extends Window {
 
+    private static final int WIDTH_P = 120;
+    private static final int WIDTH_L = 220;
+
     private static final int MARGIN  = 1;
+    ScrollPane trapList;
 
     public WndBuildTrap(TrapChoose choose){
         super();
 
-        int width = (int)Math.min(PixelScene.uiCamera.width * 0.9, 300);
+        int width1 = PixelScene.landscape() ? WIDTH_L : WIDTH_P;
         int height = (int)(PixelScene.uiCamera.height * 0.9);
 
         float pos = MARGIN;
 
         RenderedTextBlock title = PixelScene.renderTextBlock(Messages.titleCase(Messages.get(TrapChoose.class, "action")), 9);
         title.hardlight(TITLE_COLOR);
-        title.setPos((width-title.width())/2, pos);
-        title.maxWidth(width - MARGIN * 2);
+        title.setPos((width1-title.width())/2, pos);
+        title.maxWidth(width1 - MARGIN * 2);
         add(title);
 
         pos = title.bottom() + 3*MARGIN;
+        float reqHeight = 0;
 
-        ScrollPane trapList = new ScrollPane( new Component() ){};
+        trapList = new ScrollPane( new Component() ){};
+        trapList.content().setPos(0, title.bottom() + 3*MARGIN);
 
         for (Class<?> trapCls : Bestiary.TRAP.entities()) {
             if (!choose.TrapClasses().containsKey(trapCls)) continue;
@@ -136,21 +142,34 @@ public class WndBuildTrap extends Window {
                     });
                 }
             };
+            trapList.content().add(trapBtn);//add it to the content, this is where the bug is
+
             trapBtn.icon(icon);
             trapBtn.leftJustify = true;
             trapBtn.multiline = true;
-            trapBtn.setSize(width, trapBtn.reqHeight());
-            trapBtn.setRect(0, pos, width, trapBtn.reqHeight());
-
-            trapList.add(trapBtn);//add it to the content, this is where the bug is
+            trapBtn.setSize(width1, trapBtn.reqHeight());
+            trapBtn.setRect(0, pos, width1, trapBtn.reqHeight());
 
             pos = trapBtn.bottom() + MARGIN;
+
+            reqHeight += trapBtn.reqHeight() + MARGIN;
         }
 
         add(trapList);
-        trapList.setSize(width, pos - title.bottom() - 3*MARGIN);
-        trapList.setRect(0, title.bottom(), width, pos - title.bottom() - 3*MARGIN);
+        trapList.setSize(width1, reqHeight);
+        trapList.setRect(0, title.bottom() + 3*MARGIN, width1, reqHeight);
 
-        resize(width, (int)Math.min(height, trapList.height()));
+        // also set the width of the scroll pane
+        trapList.content().setSize(width = width1, pos);
+        width += 1; // padding on the right to cause the controller to be flush against the window.
+
+        resize(width1, (int)Math.min(height, trapList.height()));
+    }
+
+    @Override
+    public void offset(int xOffset, int yOffset) {
+        super.offset(xOffset, yOffset);
+        // refresh the scrollbar pane
+        trapList.setPos(trapList.left(), trapList.top());
     }
 }

@@ -94,7 +94,7 @@ public class HolyTrap extends TargetedClericSpell {
         GameScene.add(Blob.seed(target, 1, HolyTrapBlob.class));
 
         onSpellCast(tome, hero);
-        Sample.INSTANCE.play(Assets.Sounds.OPEN);
+        Sample.INSTANCE.play(Assets.Sounds.UNLOCK);
         hero.sprite.operate(target);
     }
 

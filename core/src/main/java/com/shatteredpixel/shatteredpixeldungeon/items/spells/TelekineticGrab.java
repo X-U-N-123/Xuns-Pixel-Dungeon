@@ -32,6 +32,9 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.LiquidMetal;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Ironball;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingClub;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingHammer;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
@@ -59,6 +62,8 @@ public class TelekineticGrab extends TargetedSpell {
 
 	@Override
 	protected void affectTarget(Ballistica bolt, Hero hero) {
+		boolean spendTime = true;
+
 		Char ch = Actor.findChar(bolt.collisionPos);
 
 		//special logic for DK when he is on his throne
@@ -72,6 +77,8 @@ public class TelekineticGrab extends TargetedSpell {
 		if (ch != null && ch.buff(PinCushion.class) != null){
 
 			while (ch.buff(PinCushion.class) != null) {
+				spendTime = false;
+
 				Item item = ch.buff(PinCushion.class).grabOne();
 
 				if (item.doPickUp(hero, ch.pos)) {
@@ -97,11 +104,16 @@ public class TelekineticGrab extends TargetedSpell {
 			}
 
 			while (!h.isEmpty()) {
+				spendTime = false;
+
 				Item item = h.peek();
 				if (item.doPickUp(hero, h.pos)) {
 					h.pickUp();
 					hero.spend(-Item.TIME_TO_PICK_UP); //casting the spell already takes a turn
 					GLog.i( Messages.capitalize(Messages.get(hero, "you_now_have", item.name())) );
+
+					if (!(item instanceof ThrowingClub) && !(item instanceof ThrowingHammer) && !(item instanceof Ironball))
+						spendTime = true;
 
 				} else {
 					GLog.w(Messages.get(this, "cant_grab"));
@@ -113,6 +125,8 @@ public class TelekineticGrab extends TargetedSpell {
 		} else {
 			GLog.w(Messages.get(this, "no_target"));
 		}
+
+		if (spendTime) hero.spend(-1f);
 
 	}
 
