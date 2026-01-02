@@ -32,6 +32,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.KindOfWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClassArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.MetalShard;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
@@ -67,7 +68,11 @@ public class Uptier extends InventorySpell {
 
         EquipableItem result = null;
 
-        if (item instanceof Armor){//change armor
+        if (item instanceof ClassArmor){//change hero armor
+            ((Armor)item).tier ++;
+            curUser.sprite.emitter().start(Speck.factory(Speck.CHANGE), 0.2f, 10);
+            return;
+        } else if (item instanceof Armor){//change armor
 
             result = (Armor) Reflection.newInstance(Generator.Category.ARMOR.classes[((Armor) item).tier]);
 

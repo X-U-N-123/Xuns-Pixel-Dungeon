@@ -21,11 +21,13 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
+import com.watabou.utils.Bundle;
 
 public class Fury extends Buff {
 	
-	public static float LEVEL	= 0.5f;
+	public float level = 0.5f;
 
 	{
 		type = buffType.POSITIVE;
@@ -34,7 +36,7 @@ public class Fury extends Buff {
 	
 	@Override
 	public boolean act() {
-		if (target.HP > target.HT * LEVEL) {
+		if (target.HP > target.HT * level) {
 			detach();
 		}
 		
@@ -46,5 +48,24 @@ public class Fury extends Buff {
 	@Override
 	public int icon() {
 		return BuffIndicator.FURY;
+	}
+
+	private static final String LEVEL = "level";
+
+	@Override
+	public void storeInBundle( Bundle bundle ) {
+		super.storeInBundle(bundle);
+		bundle.put(LEVEL, level);
+	}
+
+	@Override
+	public void restoreFromBundle( Bundle bundle ){
+		super.restoreFromBundle(bundle);
+		level = bundle.getFloat(LEVEL);
+	}
+
+	@Override
+	public String desc() {
+		return Messages.get(this, "desc", level);
 	}
 }

@@ -112,7 +112,11 @@ public abstract class Plant implements Bundlable {
 		}
 		
 	}
-	
+
+	public Class<? extends Seed> getSeedClass() {
+		return seedClass;
+	}
+
 	private static final String POS	= "pos";
 
 	@Override

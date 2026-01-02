@@ -28,6 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDAction;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.CrystalSpire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mimic;
@@ -53,6 +54,8 @@ import com.shatteredpixel.shatteredpixeldungeon.journal.Bestiary;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Document;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
+import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
+import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.Trap;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Plant;
@@ -82,6 +85,7 @@ import com.watabou.noosa.Visual;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.ui.Component;
 import com.watabou.utils.DeviceCompat;
+import com.watabou.utils.PathFinder;
 import com.watabou.utils.RectF;
 import com.watabou.utils.Reflection;
 
@@ -270,9 +274,11 @@ public class WndJournal extends WndTabbed {
 									Document.ADVENTURERS_GUIDE.pageBody(page) ));
 							Document.ADVENTURERS_GUIDE.readPage(page);
 							return true;
-						} else {
+						} else if (!found && (DeviceCompat.isDebug() || Dungeon.isChallenged(Challenges.X_U_NS_POWER))){
+							Document.ADVENTURERS_GUIDE.findPage(page);
+							Sample.INSTANCE.play(Assets.Sounds.ITEM);
 							return false;
-						}
+						} else return false;
 					}
 				};
 				if (!found){
@@ -859,12 +865,25 @@ public class WndJournal extends WndTabbed {
 						if (ShatteredPixelDungeon.scene() instanceof GameScene){
 							GameScene.show(new WndJournalItem(sprite, finalTitle, finalDesc));
 							if (Dungeon.hero != null
-									&& (DeviceCompat.isDebug() || Dungeon.isChallenged(Challenges.X_U_NS_POWER))
-									&& Item.class.isAssignableFrom(itemClass)) {
-								Item item = (Item) Reflection.newInstance(itemClass);
-								if (item != null) {
-									if (item.identify().collect() ) Sample.INSTANCE.play(Assets.Sounds.ITEM);
-									else Dungeon.level.drop(item, Dungeon.hero.pos).sprite.drop();
+									&& (DeviceCompat.isDebug() || Dungeon.isChallenged(Challenges.X_U_NS_POWER)) ){
+								if (Item.class.isAssignableFrom(itemClass)){
+									Item item = (Item) Reflection.newInstance(itemClass);
+									if (item != null) {
+										if (item.identify().collect() ) Sample.INSTANCE.play(Assets.Sounds.ITEM);
+										else Dungeon.level.drop(item, Dungeon.hero.pos).sprite.drop();
+									}
+
+								} else if (Weapon.Enchantment.class.isAssignableFrom(itemClass)
+										&& Dungeon.hero.belongings.weapon != null) {
+									((Weapon)Dungeon.hero.belongings.weapon)
+										.enchant((Weapon.Enchantment)Reflection.newInstance(itemClass));
+									Sample.INSTANCE.play(Assets.Sounds.READ);
+
+								} else if (Armor.Glyph.class.isAssignableFrom(itemClass)
+								&& Dungeon.hero.belongings.armor != null) {
+									Dungeon.hero.belongings.armor
+									.inscribe((Armor.Glyph) Reflection.newInstance(itemClass));
+									Sample.INSTANCE.play(Assets.Sounds.READ);
 								}
 							}
 						} else {
@@ -1004,6 +1023,33 @@ public class WndJournal extends WndTabbed {
 							image = new Image(icon);
 						}
 
+						if (Dungeon.hero != null
+								&& (DeviceCompat.isDebug() || Dungeon.isChallenged(Challenges.X_U_NS_POWER))){
+							if (Mob.class.isAssignableFrom(entityCls)){
+								for (int i : PathFinder.NEIGHBOURS8) {
+									if (Actor.findChar(Dungeon.hero.pos + i) == null
+											&& Dungeon.level.passable[Dungeon.hero.pos + i]){
+										finalMob.pos = Dungeon.hero.pos + i;
+										GameScene.add(finalMob);
+										Bestiary.setSeen(entityCls);
+										Sample.INSTANCE.play(Assets.Sounds.TELEPORT);
+										break;
+									}
+								}
+
+							} else if (Trap.class.isAssignableFrom(entityCls)) {
+								Level.set(Dungeon.hero.pos, Terrain.TRAP);
+								Dungeon.level.setTrap((Trap) Reflection.newInstance(entityCls), Dungeon.hero.pos).reveal();
+								Sample.INSTANCE.play(Assets.Sounds.UNLOCK);
+
+							} else if (Plant.class.isAssignableFrom(entityCls)) {
+								Dungeon.level.plant(
+									Reflection.newInstance(((Plant)Reflection.newInstance(entityCls)).getSeedClass()),
+									Dungeon.hero.pos);
+								Sample.INSTANCE.play(Assets.Sounds.PLANT);
+							}
+						}
+
 						if (ShatteredPixelDungeon.scene() instanceof GameScene){
 							GameScene.show(new WndJournalItem(image, finalTitle, finalDesc));
 						} else {
@@ -1058,6 +1104,10 @@ public class WndJournal extends WndTabbed {
 										Messages.get(CatalogTab.class, "not_seen_lore") + "\n\n" + doc.discoverHint()));
 							}
 
+							if (DeviceCompat.isDebug() || Dungeon.isChallenged(Challenges.X_U_NS_POWER)){
+								doc.findPage(page);
+								Sample.INSTANCE.play(Assets.Sounds.ITEM);
+							}
 						}
 						return true;
 					} else {

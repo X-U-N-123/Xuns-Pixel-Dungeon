@@ -25,19 +25,19 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bless;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Combo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.ArmorAbility;
+import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.SpellSprite;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClassArmor;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.HeroIcon;
 import com.watabou.noosa.Image;
@@ -56,7 +56,7 @@ public class Endure extends ArmorAbility {
 		if (hero.buff(EndureTracker.class) != null){
 			hero.buff(EndureTracker.class).detach();
 		}
-		Buff.prolong(hero, EndureTracker.class, 12f);
+		Buff.prolong(hero, EndureTracker.class, 102f);
 
 		Combo combo = hero.buff(Combo.class);
 		if (combo != null){
@@ -80,7 +80,7 @@ public class Endure extends ArmorAbility {
 
 		public int damageBonus = 0;
 		public int hitsLeft = 0;
-		public int Damagedtimes = 0;
+		public float vampiricPercent = 0f;
 
 		@Override
 		public int icon() {
@@ -94,12 +94,14 @@ public class Endure extends ArmorAbility {
 
 		@Override
 		public float iconFadePercent() {
-			return Math.max(0, (10f - visualcooldown()) / 10f);
+			return Math.max(0, (100f - visualcooldown()) / 100f);
 		}
 
 		@Override
 		public String desc() {
-			return Messages.get(this, "desc", damageBonus, hitsLeft);
+			String desc = Messages.get(this, "desc", damageBonus, hitsLeft);
+			if (vampiricPercent > 0) desc += "\n" + Messages.get(this, "desc_vampiric", vampiricPercent * 100);
+			return desc;
 		}
 
 		public float adjustDamageTaken(float damage){
@@ -111,7 +113,6 @@ public class Endure extends ArmorAbility {
 					//total damage reduction is 60%/70%/80%/90%, based on points in talent
 					damageMulti -= 0.1f*Dungeon.hero.pointsInTalent(Talent.SHRUG_IT_OFF);
 				}
-				if (Dungeon.hero.hasTalent(Talent.BOTTOM_LINE)) Damagedtimes += 1;
 
 				return damage*damageMulti;
 			}
@@ -123,27 +124,12 @@ public class Endure extends ArmorAbility {
 				return;
 			}
 
-			enduring = false;
-			damageBonus *= 1f + 0.15f*Dungeon.hero.pointsInTalent(Talent.SUSTAINED_RETRIBUTION);
-			if (Dungeon.hero.hasTalent(Talent.BOTTOM_LINE) && Damagedtimes > 0){
-				switch (Dungeon.hero.pointsInTalent(Talent.BOTTOM_LINE)){
-					case 1:
-						Buff.prolong(Dungeon.hero, Bless.class, Damagedtimes);
-						break;
-					case 2:
-						Buff.prolong(Dungeon.hero, Bless.class, Damagedtimes);
-						Buff.prolong(Dungeon.hero, Haste.class, Damagedtimes);
-						break;
-					case 3:
-						Buff.prolong(Dungeon.hero, Bless.class, 2*Damagedtimes);
-						Buff.prolong(Dungeon.hero, Haste.class, Damagedtimes);
-						break;
-					case 4:
-						Buff.prolong(Dungeon.hero, Bless.class, 2*Damagedtimes);
-						Buff.prolong(Dungeon.hero, Haste.class, 2*Damagedtimes);
-						break;
-				}
+			if (Dungeon.hero.hasTalent(Talent.BLOOD_FOR_BLOOD)){//damage bonus is already reduced by half
+				vampiricPercent = damageBonus*0.05f / (Dungeon.hero.lvl) * Dungeon.hero.pointsInTalent(Talent.BLOOD_FOR_BLOOD);
 			}
+
+			enduring = false;
+			damageBonus *= 0.4f + 0.2f*Dungeon.hero.pointsInTalent(Talent.SUSTAINED_RETRIBUTION);
 
 			int nearby = 0;
 			for (Char ch : Actor.chars()){
@@ -153,7 +139,7 @@ public class Endure extends ArmorAbility {
 			}
 			damageBonus *= 1f + (nearby*0.05f*Dungeon.hero.pointsInTalent(Talent.EVEN_THE_ODDS));
 
-			hitsLeft = 1+Dungeon.hero.pointsInTalent(Talent.SUSTAINED_RETRIBUTION);
+			hitsLeft = 3+Dungeon.hero.pointsInTalent(Talent.SUSTAINED_RETRIBUTION);
 			damageBonus /= hitsLeft;
 
 			if (damageBonus > 0) {
@@ -172,6 +158,12 @@ public class Endure extends ArmorAbility {
 				int bonusDamage = damageBonus;
 				hitsLeft--;
 
+				int toHeal = (int)Math.min(target.HT - target.HP, (damage + bonusDamage) * vampiricPercent);
+				if (toHeal > 0){
+					target.HP += toHeal;
+					target.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(toHeal), FloatingText.HEALING);
+				}
+
 				if (hitsLeft <= 0){
 					detach();
 				}
@@ -182,7 +174,7 @@ public class Endure extends ArmorAbility {
 		public static String ENDURING       = "enduring";
 		public static String DAMAGE_BONUS   = "damage_bonus";
 		public static String HITS_LEFT      = "hits_left";
-		public static String DAMAGE_TIMES   = "damage_times";
+		public static String VAMPIRIC       = "vampiric_percent";
 
 		@Override
 		public void storeInBundle(Bundle bundle) {
@@ -190,7 +182,7 @@ public class Endure extends ArmorAbility {
 			bundle.put(ENDURING, enduring);
 			bundle.put(DAMAGE_BONUS, damageBonus);
 			bundle.put(HITS_LEFT, hitsLeft);
-			bundle.put(DAMAGE_TIMES, Damagedtimes);
+			bundle.put(VAMPIRIC, vampiricPercent);
 		}
 
 		@Override
@@ -199,7 +191,7 @@ public class Endure extends ArmorAbility {
 			enduring = bundle.getBoolean(ENDURING);
 			damageBonus = bundle.getInt(DAMAGE_BONUS);
 			hitsLeft = bundle.getInt(HITS_LEFT);
-			Damagedtimes = bundle.getInt(DAMAGE_TIMES);
+			vampiricPercent = bundle.getFloat(VAMPIRIC);
 		}
 	}
 
@@ -210,6 +202,6 @@ public class Endure extends ArmorAbility {
 
 	@Override
 	public Talent[] talents() {
-		return new Talent[]{Talent.SUSTAINED_RETRIBUTION, Talent.SHRUG_IT_OFF, Talent.EVEN_THE_ODDS, Talent.BOTTOM_LINE, Talent.HEROIC_ENERGY};
+		return new Talent[]{Talent.SUSTAINED_RETRIBUTION, Talent.SHRUG_IT_OFF, Talent.EVEN_THE_ODDS, Talent.BLOOD_FOR_BLOOD, Talent.HEROIC_ENERGY};
 	}
 }
