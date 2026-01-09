@@ -25,6 +25,9 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.TrapChoose;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.explorer.Sandstorm;
+import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.LiquidMetal;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Shovel;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Bestiary;
@@ -107,30 +110,31 @@ public class WndBuildTrap extends Window {
                         public void onSelect(Integer cell) {
                             if (cell == null) return;
 
-                            if (Actor.findChar(cell) != null || !Dungeon.level.passable[cell]){
-                                GLog.w(Messages.get(WndBuildTrap.class, "invalid_pos"));
-                                return;
-                            }
-
                             if (!Dungeon.level.adjacent(cell, Dungeon.hero.pos)){
                                 GLog.w(Messages.get(WndBuildTrap.class, "far"));
                                 return;
                             }
 
-                            if (Dungeon.level.passable[cell] && Actor.findChar(cell) == null){
+                            if ((Actor.findChar(cell) != null && Dungeon.hero.pointsInTalent(Talent.SIMPLE_STRUCTURE) < 2)
+                                    || Sandstorm.canDrift(Dungeon.level.map[cell]) || Dungeon.level.map[cell] == Terrain.HIGH_GRASS){
+                                GLog.w(Messages.get(WndBuildTrap.class, "invalid_pos"));
+                            } else {
+
                                 Level.set(cell, Terrain.TRAP);
                                 Dungeon.level.setTrap( trap, cell).reveal();//build a trap
 
                                 if (metal.quantity() <= choose.TrapClasses().get(trapCls))
                                     metal.detachAll(Dungeon.hero.belongings.backpack);
-                                else
+                                else {
                                     metal.quantity(metal.quantity() - choose.TrapClasses().get(trapCls));
+                                    Item.updateQuickslot();
+                                }
 
                                 GameScene.updateMap(cell);
                                 Dungeon.observe();
                                 Sample.INSTANCE.play( Assets.Sounds.UNLOCK );
                                 Shovel.ExplorerCooldown.affectCD(50, Dungeon.hero);
-                                Dungeon.hero.spendAndNext(Actor.TICK);
+                                if (!Dungeon.hero.hasTalent(Talent.SIMPLE_STRUCTURE)) Dungeon.hero.spendAndNext(Actor.TICK);
                                 Dungeon.hero.sprite.operate(cell);
                             }
                         }

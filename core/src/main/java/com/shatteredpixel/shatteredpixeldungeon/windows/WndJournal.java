@@ -1029,10 +1029,14 @@ public class WndJournal extends WndTabbed {
 								for (int i : PathFinder.NEIGHBOURS8) {
 									if (Actor.findChar(Dungeon.hero.pos + i) == null
 											&& Dungeon.level.passable[Dungeon.hero.pos + i]){
-										finalMob.pos = Dungeon.hero.pos + i;
-										GameScene.add(finalMob);
+
+										Mob toSpawn = (Mob)Reflection.newInstance(entityCls);
+										toSpawn.pos = Dungeon.hero.pos + i;//spawn an instance near the hero
+										GameScene.add(toSpawn);
+										Dungeon.level.occupyCell(toSpawn);
 										Bestiary.setSeen(entityCls);
 										Sample.INSTANCE.play(Assets.Sounds.TELEPORT);
+										Dungeon.observe();
 										break;
 									}
 								}

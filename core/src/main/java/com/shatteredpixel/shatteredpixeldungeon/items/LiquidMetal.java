@@ -144,7 +144,7 @@ public class LiquidMetal extends Item {
 				float percentDurabilityLost = 0.999f - (m.durabilityLeft()/100f);
 				maxToUse = (int)Math.ceil(maxToUse*percentDurabilityLost);
 				float durPerUse = m.durabilityPerUse()/100f;
-				if (UpgradeToUse < quantity() && !(m instanceof Antimatter) && m.level() < 3
+				if (UpgradeToUse < quantity() && !(m instanceof Antimatter) && m.level() < 2
 				&& Dungeon.hero.pointsInTalent(Talent.L_M_MASTER) >= 3){
 					Catalog.countUses(LiquidMetal.class, UpgradeToUse);
 					GLog.p(Messages.get(LiquidMetal.class, "upgrade", UpgradeToUse));
@@ -225,7 +225,7 @@ public class LiquidMetal extends Item {
 				metalQuantity += Math.round((5*(m.tier+1))*quantity);
 			}
 			if (Dungeon.hero.hasTalent(Talent.L_M_MASTER)){
-				metalQuantity += Math.round(metalQuantity * 0.3f);
+				metalQuantity += Math.round(metalQuantity * 0.2f);
 			}
 			return new LiquidMetal().quantity(metalQuantity);
 		}

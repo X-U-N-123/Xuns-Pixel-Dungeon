@@ -29,23 +29,28 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Fire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Levitation;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Roots;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.explorer.OpticalCamou;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Barricade;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Splash;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
+import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.Callback;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.PointF;
 
@@ -57,6 +62,7 @@ public class Shovel extends MeleeWeapon {
     public static final String AC_WATER = "water";
     public static final String AC_PLANT = "plant";
     public static final String AC_CHASM = "chasm";
+    public static final String AC_JUMP  = "jump";
 
     {
         image = ItemSpriteSheet.SHOVEL;
@@ -77,6 +83,7 @@ public class Shovel extends MeleeWeapon {
     public ArrayList<String> actions(Hero hero ) {
         ArrayList<String> actions = super.actions( hero );
         actions.add(AC_BUILD);
+        actions.add(AC_JUMP);
         if (hero.subClass == HeroSubClass.GEOMANCER) {
             actions.add(AC_WATER);
             actions.add(AC_PLANT);
@@ -96,17 +103,18 @@ public class Shovel extends MeleeWeapon {
 
         super.execute(hero, action);
 
-        if (action.equals(AC_BUILD)
+        if (action.equals(AC_BUILD) || action.equals(AC_JUMP)
         || action.equals(AC_WATER) || action.equals(AC_PLANT) || action.equals(AC_CHASM)){//Geomancer ability
             defaultAction = action;
             switch (defaultAction){
+                case AC_JUMP:
                 case AC_BUILD: image = ItemSpriteSheet.WOOD_SHOVEL;  break;
                 case AC_PLANT: image = ItemSpriteSheet.PLANT_SHOVEL; break;
                 case AC_WATER: image = ItemSpriteSheet.WATER_SHOVEL; break;
                 case AC_CHASM: image = ItemSpriteSheet.CHASM_SHOVEL; break;
             }
             updateQuickslot();
-            if (curUser.buff(ExplorerCooldown.class) == null) GameScene.selectCell(changeTerrain);
+            if (curUser.buff(ExplorerCooldown.class) == null || action.equals(AC_JUMP)) GameScene.selectCell(changeTerrain);
             else GLog.w(Messages.get(this, "cd"));
         }
     }
@@ -141,31 +149,64 @@ public class Shovel extends MeleeWeapon {
                 GLog.w(Messages.get(this, "reach"));
                 return;
             }
+            Char ch = Actor.findChar(cell);
 
             switch (defaultAction){
+                case AC_JUMP:
+
+                    if (ch instanceof Barricade && ch.alignment == Char.Alignment.ALLY) {
+                        for (int i : PathFinder.NEIGHBOURS8) {
+                            if (curUser.pos == ch.pos + i && curUser.buff(Roots.class) == null
+                            && Dungeon.level.passable[ch.pos - i]
+                            && Actor.findChar(ch.pos - i ) == null){
+
+                                Sample.INSTANCE.play( Assets.Sounds.MISS, 1.5f);
+                                curUser.sprite.jump(curUser.pos, ch.pos - i, new Callback() {
+                                    @Override
+                                    public void call() {
+                                        curUser.pos = ch.pos - i;
+                                        Dungeon.level.occupyCell( curUser );
+                                        Dungeon.observe();
+                                        GameScene.updateFog();
+                                        //jump over the barricade if there is
+                                        curUser.spendAndNext(1f/curUser.speed());
+                                    }
+                                });
+                                return;
+                            } else if (curUser.buff(Roots.class) != null) {
+                                PixelScene.shake( 1, 1f );
+                                return;
+                            }
+                        }
+                    }
+
+                    break;
                 case AC_BUILD:
 
-                    Char ch = Actor.findChar(cell);
-                    if (Dungeon.level.passable[cell] && ch == null){
-                        //build a barricade that can block the enemy
-                        float aggression = 0;
-                        if (curUser.pointsInTalent(Talent.AGGRESSIVE_ROADBLOCK) >= 2) aggression = 5;
+                    if (Dungeon.level.passable[cell]){
+                        if (ch != null){
+                            //trace a ballistica to our target (which will also extend past them)
+                            Ballistica trajectory = new Ballistica(curUser.pos, cell, Ballistica.STOP_TARGET);
+                            //trim it to just be the part that goes past them
+                            trajectory = new Ballistica(trajectory.collisionPos, trajectory.path.get(trajectory.path.size() - 1), Ballistica.PROJECTILE);
+                            //knock them back along that ballistica
+                            WandOfBlastWave.throwChar(ch, trajectory, 1, true, false, curUser);
 
-                        Barricade.buildBarricade(cell, 2 * curUser.lvl + 5, Char.Alignment.ALLY, aggression);
+                            curUser.next();
+                        }
+                        curUser.sprite.zap(cell, new Callback() {
+                            @Override
+                            public void call() {
+                                if (Actor.findChar(cell) == null){
+                                    //build a barricade that can block the enemy
+                                    Barricade.buildBarricade(cell, 2 * curUser.lvl + 5, Char.Alignment.ALLY, 0);
 
-                        Sample.INSTANCE.play( Assets.Sounds.BUILD );
-                        ExplorerCooldown.affectCD(50, curUser);
-                        curUser.spendAndNext(Actor.TICK);
-                        curUser.sprite.zap(cell);
-                        return;
-
-                    } else if (ch instanceof Barricade && ch.alignment == Char.Alignment.ALLY) {
-                        ch.die(curUser);
-                        //break the barricade if there is
-                        Sample.INSTANCE.play( Assets.Sounds.BUILD );
-                        ExplorerCooldown.affectCD(10, curUser);
-                        curUser.spendAndNext(Actor.TICK);
-                        curUser.sprite.zap(cell);
+                                    Sample.INSTANCE.play( Assets.Sounds.BUILD );
+                                    ExplorerCooldown.affectCD(50, curUser);
+                                    if (curUser.pointsInTalent(Talent.AGGRESSIVE_ROADBLOCK) < 2) curUser.spendAndNext(Actor.TICK);
+                                }
+                            }
+                        });
                         return;
                     }
                     break;

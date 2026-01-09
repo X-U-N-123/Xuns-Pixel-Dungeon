@@ -1705,16 +1705,16 @@ public class Hero extends Char {
 					protected boolean act() {
 						if (enemy.isAlive()) {
 							if (hasTalent(Talent.SHARED_UPGRADES)){
-								int bonusTurns = wep.buffedLvl();
-								// bonus dmg is 2.5% x talent lvl x weapon level x weapon tier
-								float bonusDmg = wep.buffedLvl() * ((MissileWeapon) wep).tier * pointsInTalent(Talent.SHARED_UPGRADES) * 0.025f;
-								Buff.prolong(Hero.this, SnipersMark.class, SnipersMark.DURATION + bonusTurns).set(enemy.id(), bonusDmg);
+								int level = Math.min( 4*pointsInTalent(Talent.SHARED_UPGRADES), wep.buffedLvl() );
+								// bonus dmg is 2.5% x talent lvl x weapon level (4/8/12 max) x weapon tier
+								float bonusDmg = level * ((MissileWeapon) wep).tier * pointsInTalent(Talent.SHARED_UPGRADES) * 0.025f;
+								Buff.prolong(Hero.this, SnipersMark.class, SnipersMark.DURATION + wep.buffedLvl()).set(enemy.id(), bonusDmg);
 							} else {
 								Buff.prolong(Hero.this, SnipersMark.class, SnipersMark.DURATION).set(enemy.id(), 0);
 							}
 
 							if (Dungeon.hero.hasTalent(Talent.SUPRESSING_MARK) && enemy.buff(SupressingmarkTracker.class) == null){
-								Buff.prolong(enemy, Blindness.class, 2*Dungeon.hero.pointsInTalent(Talent.SUPRESSING_MARK));
+								Buff.prolong(enemy, Blindness.class, 3*Dungeon.hero.pointsInTalent(Talent.SUPRESSING_MARK));
 								Buff.affect(enemy, SupressingmarkTracker.class);
 							}
 						}

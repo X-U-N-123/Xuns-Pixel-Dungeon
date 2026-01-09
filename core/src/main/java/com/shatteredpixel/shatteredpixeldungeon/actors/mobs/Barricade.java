@@ -50,6 +50,7 @@ public class Barricade extends Mob {
     {
         spriteClass = BarricadeSprite.class;
 
+        HP = HT = (int)2e+9;
         EXP = 0;
         maxLvl = -6;
         state = PASSIVE;
