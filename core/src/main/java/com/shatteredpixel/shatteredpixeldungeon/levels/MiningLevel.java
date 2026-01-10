@@ -228,8 +228,6 @@ public class MiningLevel extends CavesLevel {
 		switch (tile) {
 			case Terrain.MINE_CRYSTAL:
 				return Messages.get(MiningLevel.class, "crystal_name");
-			case Terrain.MINE_BOULDER:
-				return Messages.get(MiningLevel.class, "boulder_name");
 			default:
 				return super.tileName( tile );
 		}
@@ -310,8 +308,6 @@ public class MiningLevel extends CavesLevel {
 				return super.tileDesc(tile) + "\n\n" +  Messages.get(MiningLevel.class, "gold_extra_desc");
 			case Terrain.MINE_CRYSTAL:
 				return Messages.get(MiningLevel.class, "crystal_desc");
-			case Terrain.MINE_BOULDER:
-				return Messages.get(MiningLevel.class, "boulder_desc");
 			case Terrain.BARRICADE:
 				return Messages.get(MiningLevel.class, "barricade_desc");
 			default:

@@ -241,6 +241,8 @@ public enum Talent {
 	TAPESTRY_OF_VINES(302, 3), SON_OF_SEA(303, 3), STRIKING_STONE(304, 3), LAYERED_ARCHITECTURE(305, 3), RISING_WIND(306, 3),
 	//Trapper T3
 	TRAP_MASTER(307, 3), FRIENDLY_MECHANISM(308, 3), SIMPLE_STRUCTURE(309, 3), FLUORESCENCE(310, 3), LIQUID_COLLECTING(311, 3),
+	//Rocksy T3
+	METEROIC_IRON(312, 3), ROCK_PROTECTOR(313, 3), MIND_CONTROL(314, 3), DESTRUCTIVE_STRIKE(315, 3) ,METEOR_CRATER(316, 3),
 	//Optical Camouflage T4
 	LASTING_DISGUISE(317, 4), STRAIN_CAPACITY(318, 4), PAINTED_BLADE(319, 4), QUICK_BUILD(320, 4),
 	//Sandstorm T4
@@ -980,14 +982,6 @@ public enum Talent {
 
 		if (Dungeon.level.map[hero.pos] == Terrain.EMBERS && talent == REKINDLED_EMBER && hero.buff(Burning.class) != null)
 			Buff.detach(hero, Burning.class);
-
-		if (talent == AGGRESSIVE_ROADBLOCK && hero.pointsInTalent(AGGRESSIVE_ROADBLOCK) == 2){
-			for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
-				if (mob instanceof Barricade && mob.alignment == Char.Alignment.ALLY){
-					((Barricade) mob).aggression = 5f;
-				}
-			}
-		}
 	}
 
 	public static class CachedRationsDropped extends CounterBuff{{revivePersists = true;}}
@@ -1710,6 +1704,9 @@ public enum Talent {
 				break;
 			case TRAPPER:
 				Collections.addAll(tierTalents, TRAP_MASTER, FRIENDLY_MECHANISM, SIMPLE_STRUCTURE, FLUORESCENCE, LIQUID_COLLECTING);
+				break;
+			case ROCKSY:
+				Collections.addAll(tierTalents, METEROIC_IRON, ROCK_PROTECTOR, MIND_CONTROL, DESTRUCTIVE_STRIKE, METEOR_CRATER);
 				break;
 		}
 		for (Talent talent : tierTalents){

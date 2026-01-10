@@ -62,6 +62,11 @@ public class DungeonTileSheet {
 
 	public static final int FLOOR_ALT_2     = GROUND +12;
 
+	public static final int FLAT_MINE_BOULDER       = GROUND+13;
+	public static final int FLAT_MINE_BOULDER_ALT   = GROUND+14;
+	public static final int FLAT_MINE_BOULDER_ALT_2 = GROUND+15;
+	//I put it here only because I have no enough space in flat_walls
+
 	public static final int ENTRANCE        = GROUND +16;
 	public static final int EXIT            = GROUND +17;
 	public static final int WELL            = GROUND +18;
@@ -211,9 +216,6 @@ public class DungeonTileSheet {
 	public static final int FLAT_MINE_CRYSTAL         = FLAT_OTHER+12;
 	public static final int FLAT_MINE_CRYSTAL_ALT     = FLAT_OTHER+13;
 	public static final int FLAT_MINE_CRYSTAL_ALT_2   = FLAT_OTHER+14;
-	public static final int FLAT_MINE_BOULDER         = FLAT_OTHER+12;
-	public static final int FLAT_MINE_BOULDER_ALT     = FLAT_OTHER+13;
-	public static final int FLAT_MINE_BOULDER_ALT_2   = FLAT_OTHER+14;
 
 	/**********************************************************************
 	 * Raised Tiles, Lower Layer
@@ -311,9 +313,9 @@ public class DungeonTileSheet {
 	public static final int RAISED_MINE_CRYSTAL     = RAISED_OTHER+12;
 	public static final int RAISED_MINE_CRYSTAL_ALT = RAISED_OTHER+13;
 	public static final int RAISED_MINE_CRYSTAL_ALT_2=RAISED_OTHER+14;
-	public static final int RAISED_MINE_BOULDER     = RAISED_OTHER+12;
-	public static final int RAISED_MINE_BOULDER_ALT = RAISED_OTHER+13;
-	public static final int RAISED_MINE_BOULDER_ALT_2=RAISED_OTHER+14;
+	public static final int RAISED_MINE_BOULDER     = RAISED_OTHER+15;
+	public static final int RAISED_MINE_BOULDER_ALT = RAISED_OTHER+16;
+	public static final int RAISED_MINE_BOULDER_ALT_2=RAISED_OTHER+17;
 
 
 	/**********************************************************************
@@ -397,9 +399,9 @@ public class DungeonTileSheet {
 	public static final int MINE_CRYSTAL_OVERHANG       = OTHER_OVERHANG+12;
 	public static final int MINE_CRYSTAL_OVERHANG_ALT   = OTHER_OVERHANG+13;
 	public static final int MINE_CRYSTAL_OVERHANG_ALT_2 = OTHER_OVERHANG+14;
-	public static final int MINE_BOULDER_OVERHANG       = OTHER_OVERHANG+12;
-	public static final int MINE_BOULDER_OVERHANG_ALT   = OTHER_OVERHANG+13;
-	public static final int MINE_BOULDER_OVERHANG_ALT_2 = OTHER_OVERHANG+14;
+	public static final int MINE_BOULDER_OVERHANG       = OTHER_OVERHANG+15;
+	public static final int MINE_BOULDER_OVERHANG_ALT   = OTHER_OVERHANG+16;
+	public static final int MINE_BOULDER_OVERHANG_ALT_2 = OTHER_OVERHANG+17;
 
 	public static final int HIGH_GRASS_UNDERHANG        = OTHER_OVERHANG+18;
 	public static final int FURROWED_UNDERHANG          = OTHER_OVERHANG+19;

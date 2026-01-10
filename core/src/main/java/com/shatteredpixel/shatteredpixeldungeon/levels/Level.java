@@ -1205,7 +1205,7 @@ public abstract class Level implements Bundlable {
 			}
 			
 			//characters which are not the hero or a sheep 'soft' press cells
-			pressCell( ch.pos, ch instanceof Hero || ch instanceof Sheep);
+			pressCell( ch.pos, ch instanceof Hero || ch instanceof Sheep || Dungeon.hero.pointsInTalent(Talent.SIMPLE_STRUCTURE)>=3 );
 		} else {
 			if (map[ch.pos] == Terrain.DOOR){
 				Door.enter( ch.pos );
@@ -1662,6 +1662,8 @@ public abstract class Level implements Bundlable {
 				return Messages.get(Level.class, "bookshelf_name");
 			case Terrain.ALCHEMY:
 				return Messages.get(Level.class, "alchemy_name");
+			case Terrain.MINE_BOULDER:
+				return Messages.get(Level.class, "boulder_name");
 			default:
 				return Messages.get(Level.class, "default_name");
 		}
@@ -1703,6 +1705,8 @@ public abstract class Level implements Bundlable {
 				return Messages.get(Level.class, "alchemy_desc");
 			case Terrain.EMPTY_WELL:
 				return Messages.get(Level.class, "empty_well_desc");
+			case Terrain.MINE_BOULDER:
+				return Messages.get(Level.class, "boulder_desc");
 			default:
 				return "";
 		}

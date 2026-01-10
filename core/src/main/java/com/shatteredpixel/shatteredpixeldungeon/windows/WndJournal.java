@@ -1036,7 +1036,7 @@ public class WndJournal extends WndTabbed {
 										Dungeon.level.occupyCell(toSpawn);
 										Bestiary.setSeen(entityCls);
 										Sample.INSTANCE.play(Assets.Sounds.TELEPORT);
-										Dungeon.observe();
+										Dungeon.hero.checkVisibleMobs();
 										break;
 									}
 								}

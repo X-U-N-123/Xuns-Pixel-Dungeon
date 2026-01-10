@@ -473,7 +473,7 @@ public class DwarfKing extends Mob {
 				Viscosity.DeferedDamage deferred = Buff.affect( this, Viscosity.DeferedDamage.class );
 				deferred.extend( dmg );
 
-				sprite.showStatus( CharSprite.WARNING, Messages.get(Viscosity.class, "deferred", dmg) );
+				sprite.showStatusWithIcon(CharSprite.WARNING, "+" + dmg, FloatingText.DEFERRED);
 			}
 			return;
 		}

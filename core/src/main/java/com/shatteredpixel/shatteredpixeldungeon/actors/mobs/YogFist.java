@@ -469,7 +469,7 @@ public abstract class YogFist extends Mob {
 				dmg = Math.round( dmg * resist( src.getClass() ));
 				if (dmg >= 0) {
 					Buff.affect(this, Viscosity.DeferedDamage.class).extend(dmg);
-					sprite.showStatus(CharSprite.WARNING, Messages.get(Viscosity.class, "deferred", dmg));
+					sprite.showStatusWithIcon(CharSprite.WARNING, "+" + dmg, FloatingText.DEFERRED);
 				}
 			} else{
 				super.damage(dmg, src);

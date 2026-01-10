@@ -58,6 +58,7 @@ public class HeroIcon extends Image {
 	public static final int PREACHER    = 22;
 	public static final int GEOMANCER   = 24;
 	public static final int TRAPPER     = 25;
+	public static final int ROCKSY      = 26;
 
 	//abilities
 	public static final int HEROIC_LEAP     = 48;
@@ -137,7 +138,7 @@ public class HeroIcon extends Image {
 	public static final int NINJA_TELEPORT  = 183;
 	public static final int MIRROR_IMAGE    = 184;
 	public static final int SHOVEL          = 185;
-	public static final int TRAP            = 186;
+	public static final int ROCK            = 186;
 
 	public HeroIcon(HeroSubClass subCls){
 		super( Assets.Interfaces.HERO_ICONS );

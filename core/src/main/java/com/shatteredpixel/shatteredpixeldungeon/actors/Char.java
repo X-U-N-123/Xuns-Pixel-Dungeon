@@ -75,6 +75,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Phantom;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Poison;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Preparation;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Regeneration;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RockFallBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ShieldBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Sleep;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Slow;
@@ -1199,6 +1200,7 @@ public abstract class Char extends Actor {
 		NO_ARMOR_PHYSICAL_SOURCES.add(WandOfAvalanche.class);
 		NO_ARMOR_PHYSICAL_SOURCES.add(GeomancerBuff.class); //geomancer recharge damage
 		NO_ARMOR_PHYSICAL_SOURCES.add(Sandstorm.class); //chasm effect
+		NO_ARMOR_PHYSICAL_SOURCES.add(RockFallBuff.class);
 	}
 	
 	public void destroy() {

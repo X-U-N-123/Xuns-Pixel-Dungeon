@@ -218,6 +218,7 @@ public class Badges {
 		BOSS_SLAIN_3_PREACHER,
 		BOSS_SLAIN_3_GEOMANCER,
 		BOSS_SLAIN_3_TRAPPER,
+		BOSS_SLAIN_3_ROCKSY,
 		BOSS_SLAIN_3_ALL_SUBCLASSES ( 104, BadgeType.GLOBAL ),
 		BOSS_CHALLENGE_3            ( 105 ),
 		BOSS_CHALLENGE_4            ( 106 ),
@@ -878,6 +879,7 @@ public class Badges {
 		thirdBossSubclassBadges.put(HeroSubClass.PREACHER, Badge.BOSS_SLAIN_3_PREACHER);
 		thirdBossSubclassBadges.put(HeroSubClass.GEOMANCER, Badge.BOSS_SLAIN_3_GEOMANCER);
 		thirdBossSubclassBadges.put(HeroSubClass.TRAPPER, Badge.BOSS_SLAIN_3_TRAPPER);
+		thirdBossSubclassBadges.put(HeroSubClass.ROCKSY, Badge.BOSS_SLAIN_3_ROCKSY);
 	}
 	
 	public static void validateBossSlain() {

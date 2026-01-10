@@ -62,7 +62,11 @@ public class Corrosion extends Spell {
             Sample.INSTANCE.play(Assets.Sounds.BURNING);
             GLog.n(Messages.get(this, "ondeath"));
             hero.die(this);
-            if (!hero.isAlive()) Badges.validateDeathFromFriendlyMagic();
+            if (!hero.isAlive()) {
+                Badges.validateDeathFromFriendlyMagic();
+                Dungeon.fail( Corrosion.class );
+                GLog.n( Messages.get( this, "ondeath") );
+            }
         } else {
             GameScene.show(new WndTalentForget(this));
         }

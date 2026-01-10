@@ -28,6 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.GeomancerBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Phantom;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Preparation;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RockFallBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.TrapChoose;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
@@ -119,6 +120,10 @@ public class TengusMask extends Item {
 
 		if (way == HeroSubClass.TRAPPER){
 			Buff.affect(curUser, TrapChoose.class);
+		}
+
+		if (way == HeroSubClass.ROCKSY){
+			Buff.affect(curUser, RockFallBuff.class);
 		}
 		
 		curUser.sprite.operate( curUser.pos );
