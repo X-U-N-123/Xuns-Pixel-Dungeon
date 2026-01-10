@@ -2058,7 +2058,7 @@ public class Hero extends Char {
 				Buff.affect(this, Momentum.class).gainStack();
 			}
 			if (Dungeon.hero.hasTalent(Talent.MARCH_FORWARD) && !Swiftness.enemynear(this)){
-				Buff.affect(Dungeon.hero, Talent.MarchForwardTracker.class).Move();
+				Buff.prolong(Dungeon.hero, Talent.MarchForwardTracker.class, 5f).step++;
 			}
 			sprite.move(pos, step);
 			move(step);
@@ -2549,8 +2549,8 @@ public class Hero extends Char {
 				Buff.affect( this, Combo.class ).hit( attackTarget );
 			}
 
-			if (hasTalent(Talent.SKILLED_DUAL)){
-				Buff.affect( this, Talent.SkilleddualTracker.class).Hit((Weapon)belongings.weapon());
+			if (hasTalent(Talent.SKILLED_DUAL) && belongings.weapon() != null){
+				Buff.prolong( this, Talent.SkilleddualTracker.class, 10).hit((Weapon)belongings.weapon());
 			}
 
 			if (heroClass == HeroClass.DUELIST)

@@ -337,7 +337,7 @@ public abstract class Char extends Actor {
 				Buff.affect(hero, Momentum.class).gainStack();
 			}
 			if (hero.hasTalent(Talent.MARCH_FORWARD) && !Swiftness.enemynear(c)){
-				Buff.affect(c, Talent.MarchForwardTracker.class).Move();
+				Buff.prolong(c, Talent.MarchForwardTracker.class, 5f).step++;
 			}
 
 			hero.justMoved = true;
@@ -907,7 +907,7 @@ public abstract class Char extends Actor {
 
 		if (this instanceof Hero && hero.hasTalent(Talent.EMERGENCY_SHIELD) && dmg > 1
 		&& !(src instanceof Buff) && !(src instanceof Chasm)){
-			int shield = (int)(Math.log(dmg)/Math.log(Math.pow(5 - hero.pointsInTalent(Talent.EMERGENCY_SHIELD), 0.5)));
+			int shield = (int)(Math.log(dmg)/Math.log(Math.pow(6 - hero.pointsInTalent(Talent.EMERGENCY_SHIELD), 0.5)));
 			Buff.affect(this, Barrier.class).incShield(shield);
 			sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(shield), FloatingText.SHIELDING);
 		}
@@ -1045,7 +1045,7 @@ public abstract class Char extends Actor {
 
 			if (this instanceof Hero && buff(Talent.MarchForwardTracker.class) != null
 			&& !(src instanceof Buff) && !(src instanceof Chasm) && !(src instanceof Trap)){
-				dmg = Math.round(buff(Talent.MarchForwardTracker.class).DmgResist(dmg));
+				dmg = Math.round(buff(Talent.MarchForwardTracker.class).dmgResist(dmg));
 			}
 
 			BrokenSeal.WarriorShield shield = buff(BrokenSeal.WarriorShield.class);

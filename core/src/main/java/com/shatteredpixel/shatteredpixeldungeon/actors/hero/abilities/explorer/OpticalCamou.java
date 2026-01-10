@@ -5,12 +5,12 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.ArmorAbility;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClassArmor;
-import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.HeroIcon;
@@ -28,8 +28,7 @@ public class OpticalCamou extends ArmorAbility {
     @Override
     protected void activate(ClassArmor armor, Hero hero, Integer target){
 
-        Camouflage camouflage = Buff.affect(hero, Camouflage.class);
-        camouflage.reset();
+        Buff.prolong(hero, Camouflage.class, 20 + 5 * Dungeon.hero.pointsInTalent(Talent.LASTING_DISGUISE));
         hero.sprite.operate(hero.pos);
 
         Sample.INSTANCE.play(Assets.Sounds.MELD, 0.5f);
@@ -48,7 +47,7 @@ public class OpticalCamou extends ArmorAbility {
         return new Talent[]{Talent.LASTING_DISGUISE, Talent.STRAIN_CAPACITY, Talent.PAINTED_BLADE, Talent.QUICK_BUILD, Talent.HEROIC_ENERGY};
     }
     
-    public static class Camouflage extends Buff {
+    public static class Camouflage extends FlavourBuff {
 
         {
             type = buffType.POSITIVE;
@@ -80,9 +79,7 @@ public class OpticalCamou extends ArmorAbility {
             else if (target.invisible == 0) target.sprite.remove( CharSprite.State.INVISIBLE );
         }
 
-        private float camouTime = 0;
         private int terrain = 0;
-        private boolean enabled = true;
 
 
         @Override
@@ -95,56 +92,28 @@ public class OpticalCamou extends ArmorAbility {
             icon.hardlight(0xcc7f0d);
         }
 
-        @Override
-        public String iconTextDisplay() {
-            return Integer.toString((int) camouTime);
-        }
-
-        @Override
-        public String desc() {
-            return Messages.get(this, "desc", camouTime);
-        }
-
-        @Override
-        public boolean act() {
-            camouTime -= TICK;
-            spend(TICK);
-            if (camouTime <= 0f) {
-                detach();
-            }
-            return true;
-        }
-
         public void move(int newTerrain){
             if (newTerrain != terrain){ //decrease time
                 terrain = newTerrain;
-                if (Random.Float() >= Dungeon.hero.pointsInTalent(Talent.STRAIN_CAPACITY) * 0.3f) camouTime --;
-                if (Random.Float() + 1 <= Dungeon.hero.pointsInTalent(Talent.STRAIN_CAPACITY) * 0.3f) camouTime ++;
-                if (camouTime <= 0f) {
+                if (Random.Float() >= Dungeon.hero.pointsInTalent(Talent.STRAIN_CAPACITY) * 0.3f) spend(-1f);
+                if (Random.Float() + 1 <= Dungeon.hero.pointsInTalent(Talent.STRAIN_CAPACITY) * 0.3f) spend(1f);
+                /*if (camouTime <= 0f) {
                     detach();
-                }
+                }*/
             }
         }
 
-        public void reset(){
-            camouTime = 21 + 5 * Dungeon.hero.pointsInTalent(Talent.LASTING_DISGUISE);//1 more turn as opening it consumes a turn
-            terrain = Dungeon.level.map[target.pos];
-        }
-
-        private static final String CAMOUTIME = "camouflage";
         private static final String TERRAIN   = "terrain";
 
         @Override
         public void storeInBundle(Bundle bundle) {
             super.storeInBundle(bundle);
-            bundle.put(CAMOUTIME, camouTime);
             bundle.put(TERRAIN, terrain);
         }
 
         @Override
         public void restoreFromBundle(Bundle bundle) {
             super.restoreFromBundle(bundle);
-            camouTime = bundle.getFloat(CAMOUTIME);
             terrain   = bundle.getInt(TERRAIN);
         }
         

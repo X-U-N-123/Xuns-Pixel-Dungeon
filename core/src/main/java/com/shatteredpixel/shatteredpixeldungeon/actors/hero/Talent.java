@@ -492,57 +492,36 @@ public enum Talent {
 			secondUse = bundle.getBoolean(SECOND_USE);
 		}
 	}
-	public static class MarchForwardTracker extends Buff{
+	public static class MarchForwardTracker extends FlavourBuff{
 		{ type = Buff.buffType.POSITIVE; }
 		public int icon() { return BuffIndicator.MOMENTUM; }
 
 		public void tintIcon(Image icon) {
-			float a = Math.min(2/3f, Step / 120f);
+			float a = Math.min(2/3f, step / 120f);
 			icon.hardlight(1/3f + a, 0f, 1/3f + a);
 		}
 
-		private int Step = 0;
-		private int Time = 3;
+		public int step = 0;
 
-		@Override
-		public String iconTextDisplay() {
-			return Integer.toString(Time);
-		}
-
-		public void Move(){
-			Step += 1;
-			Time = 5;
-		}
-
-		@Override
-		public boolean act() {
-			Time-=TICK;
-			spend(TICK);
-			if (Time <= 0) {
-				detach();
-			}
-			return true;
-		}
-
-		public float DmgResist(float dmg) {
+		public float dmgResist(float dmg) {
 			detach();
-			return (float)(dmg * Math.max(0.8-0.2*Dungeon.hero.pointsInTalent(MARCH_FORWARD), 1-(Step * 0.01) ));
+			return (float)(dmg * Math.max(0.8-0.2*Dungeon.hero.pointsInTalent(MARCH_FORWARD), 1-(step * 0.01) ));
 		}
 
 		@Override
 		public String desc(){
-			return Messages.get(this, "desc", Time, Math.min(20*(Dungeon.hero.pointsInTalent(MARCH_FORWARD) + 1), Step));
+			return Messages.get(this, "desc", dispTurns(), Math.min(20*(Dungeon.hero.pointsInTalent(MARCH_FORWARD) + 1), step));
 		}
 		private static final String STEP = "step";
 		@Override
 		public void storeInBundle(Bundle bundle) {
 			super.storeInBundle(bundle);
-			bundle.put(STEP, Step);
+			bundle.put(STEP, step);
 		}
 		@Override
 		public void restoreFromBundle(Bundle bundle) {
 			super.restoreFromBundle(bundle);
-			Step = bundle.getInt(STEP);
+			step = bundle.getInt(STEP);
 		}
 	}
 	public static class DeadlyFollowupTracker extends FlavourBuff{
@@ -585,63 +564,43 @@ public enum Talent {
 		}
 	}
 
-	public static class SkilleddualTracker extends Buff{
+	public static class SkilleddualTracker extends FlavourBuff{
 		{
 			type = buffType.POSITIVE;
 		}
 		public int icon() { return BuffIndicator.SKILLED_DUAL; }
-		private int Stack = 0;
-		private int Time = 0;
-		Weapon Wep = null;
+		private int stack = 0;
+		private Weapon wep = null;
 
-		public void Hit(Weapon wep){
-			if (Wep != wep) {
-				Wep = wep;
-				Stack = Math.min(Stack+Dungeon.hero.pointsInTalent(SKILLED_DUAL), 10*Dungeon.hero.pointsInTalent(SKILLED_DUAL));
-				Time = 10;
+		public void hit(Weapon weapon){
+			if (wep != weapon) {
+				wep = weapon;
+				stack = Math.min(stack +Dungeon.hero.pointsInTalent(SKILLED_DUAL), 10*Dungeon.hero.pointsInTalent(SKILLED_DUAL));
 			}
-		}
-
-		@Override
-		public String iconTextDisplay() {
-			return Integer.toString(Time);
 		}
 
 		public float attackBoost(){
-			return Stack/100f;
-		}
-
-		@Override
-		public boolean act() {
-			Time -=TICK;
-			spend(TICK);
-			if (Time <= 0) {
-				detach();
-			}
-			return true;
+			return stack /100f;
 		}
 
 		private static final String STACK = "stack";
-		private static final String TIME = "time";
 		private static final String WEP = "wep";
 		@Override
 		public void storeInBundle(Bundle bundle) {
 			super.storeInBundle(bundle);
-			bundle.put(STACK, Stack);
-			bundle.put(TIME, Time);
-			bundle.put(WEP, Wep);
+			bundle.put(STACK, stack);
+			bundle.put(WEP, wep);
 		}
 		@Override
 		public void restoreFromBundle(Bundle bundle) {
 			super.restoreFromBundle(bundle);
-			Stack = bundle.getInt(STACK);
-			Time = bundle.getInt(TIME);
-			Wep = (Weapon) bundle.get(WEP);
+			stack = bundle.getInt(STACK);
+			wep = (Weapon) bundle.get(WEP);
 		}
 
 		@Override
 		public String desc() {
-			return Messages.get(this, "desc", Time, Stack, Wep.name());
+			return Messages.get(this, "desc", dispTurns(), stack, wep.name());
 		}
 	}
 
@@ -1436,7 +1395,7 @@ public enum Talent {
 		}
 
 		if(hero.hasTalent(ARMOR_SEIZING)){
-			Buff.affect(enemy, BrokenArmor.class, hero.pointsInTalent(ARMOR_SEIZING));
+			Buff.affect(enemy, BrokenArmor.class, 1 + hero.pointsInTalent(ARMOR_SEIZING));
 		}
 
 		if (hero.hasTalent(DEADLY_FOLLOWUP) && enemy.alignment == Char.Alignment.ENEMY) {

@@ -140,10 +140,11 @@ public class SpiritBow extends Weapon {
 			ScoutMark mark = defender.buff(ScoutMark.class);
 			if (mark != null){
 				for (int i = 1; i <= mark.level; i++){
-					damage = Math.max(damage, Random.NormalIntRange(fDamage, (int)(max() * (1 + 0.12f*i)) ) );
+					damage = Math.max(damage, Hero.heroDamageIntRange(fDamage, (int)(max() * (1 + 0.12f*i)) ) );
 				}
 			}
-			Buff.affect(defender, ScoutMark.class).hit();
+			Buff.prolong(defender, ScoutMark.class, 3 + 2*Dungeon.hero.pointsInTalent(Talent.STRONG_MARK_SC) )
+				.level = Math.min(defender.buff(ScoutMark.class).level + 1, 3 + Dungeon.hero.pointsInTalent(Talent.STRONG_MARK_SC));
 		}
 
 		if (attacker.buff(NaturesPower.naturesPowerTracker.class) != null && !sniperSpecial){
@@ -585,61 +586,40 @@ public class SpiritBow extends Weapon {
 		return STRReq() / 20f;
 	}
 
-	public static class ScoutMark extends Buff {
+	public static class ScoutMark extends FlavourBuff {
 
 		public int level = 0;
-		public float markTime = 3;
 
 		public int icon() {
 			return BuffIndicator.INVERT_MARK;
 		}
 
-		private float maxTime(){
-			return 3 + 2*Dungeon.hero.pointsInTalent(Talent.STRONG_MARK_SC);
-		}
-
-		public void hit(){
-			int point = Dungeon.hero.pointsInTalent(Talent.STRONG_MARK_SC);
-			level ++;
-			if (level > 3 + point ) level = 3 + point;
-			markTime = maxTime();
-		}
-
 		@Override
-		public boolean act() {
-			markTime -=TICK;
-			spend(TICK);
-			if (markTime <= 0) {
-				markTime = maxTime();
-				level--;
-				if (level <= 0) detach();
-			}
-			return true;
+		public void detach() {
+			super.detach();
+			if (level > 1) Buff.prolong(target, ScoutMark.class, 3 + 2*Dungeon.hero.pointsInTalent(Talent.STRONG_MARK_SC))
+			 .level = level - 1;
 		}
 
 		@Override
 		public String desc() {
-			return Messages.get(this, "desc", level, markTime);
+			return Messages.get(this, "desc", level, dispTurns());
 		}
 
 		public void tintIcon(Image icon) { icon.hardlight(0f, 0f, 0.8f + 0.05f*level); }
-		public float iconFadePercent() { return GameMath.gate(0, visualcooldown() / 5, 1); }
 
 		private static final String LEVEL = "level";
-		private static final String TIME  = "marktime";
 
 		@Override
 		public void storeInBundle(Bundle bundle){
 			super.storeInBundle(bundle);
 			bundle.put(LEVEL, level);
-			bundle.put(TIME, markTime);
 		}
 
 		@Override
 		public void restoreFromBundle(Bundle bundle){
 			super.restoreFromBundle(bundle);
 			level = bundle.getInt(LEVEL);
-			markTime = bundle.getFloat(TIME);
 		}
 	}
 }
