@@ -157,7 +157,7 @@ public class ElementalMask extends Artifact {//will replace Ring of Elements
 
         for (Class c : RESISTS){
             if (c.isAssignableFrom(effect)){
-                return 1-(2 + level)*0.07f;
+                return 1-(2 + level)*0.06f;
             }
         }
 

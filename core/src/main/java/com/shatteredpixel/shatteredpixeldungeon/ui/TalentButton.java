@@ -38,6 +38,7 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndHero;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndInfoTalent;
 import com.watabou.noosa.ColorBlock;
@@ -253,11 +254,16 @@ public class TalentButton extends Button {
 				public void call() {
 					Corrosion.WndTalentForget.INSTANCE.hide();
 
+					if (Dungeon.hero.pointsInTalent(talent) > 0){
+						GLog.w(Messages.get(Corrosion.class, "upgraded"));
+						return;
+					}
+
 					for (Talent f : Dungeon.hero.talents.get(2).keySet()){
 						if (f == talent){
-							Dungeon.hero.talents.get(2).put(f, 0);
 							Dungeon.hero.talents.get(2).remove(f);
 							Dungeon.hero.corroLostTalent = talent;
+							Talent.onTalentUpgraded(Dungeon.hero, talent);
 							break;
 						}
 					}

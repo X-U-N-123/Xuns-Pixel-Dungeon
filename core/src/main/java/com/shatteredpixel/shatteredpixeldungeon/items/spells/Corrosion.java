@@ -60,7 +60,6 @@ public class Corrosion extends Spell {
         if (Statistics.corrosionUsed || hero.subClass == HeroSubClass.NONE || hero.lvl < 12){
             hero.HP = 0;
             Sample.INSTANCE.play(Assets.Sounds.BURNING);
-            GLog.n(Messages.get(this, "ondeath"));
             hero.die(this);
             if (!hero.isAlive()) {
                 Badges.validateDeathFromFriendlyMagic();
