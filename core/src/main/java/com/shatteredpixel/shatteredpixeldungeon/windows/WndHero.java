@@ -30,6 +30,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Regeneration;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -157,7 +159,7 @@ public class WndHero extends WndTabbed {
 
 	private class StatusTab extends Group {
 		
-		private static final int GAP = 7;
+		private static final int GAP = 6;
 		
 		private float pos;
 		
@@ -204,7 +206,7 @@ public class WndHero extends WndTabbed {
 			infoButton.setRect(title.right(), 0, 16, 16);
 			add(infoButton);
 
-			pos = title.bottom() + GAP;
+			pos = title.bottom() + GAP / 2f;
 
 			int strBonus = hero.STR() - hero.STR;
 			if (strBonus > 0)           statSlot( Messages.get(this, "str"), hero.STR + " + " + strBonus );
@@ -225,6 +227,18 @@ public class WndHero extends WndTabbed {
 			}
 			statSlot( Messages.get(this, "movedly"), Messages.get(this, "turn", 1f/hero.speed() ));
 			statSlot( Messages.get(this, "atkdly"), Messages.get(this, "turn", hero.attackDelay() ));
+
+			float regenDelay = hero.buff(Regeneration.class).regenDelay();
+			if (!Regeneration.regenOn()) {
+				regenDelay = -1f;
+			}
+			if (hero.isStarving()) {
+				regenDelay = 1000f / hero.HT;
+				statSlot(Messages.get(this, "starvingdmg"), Messages.get(this, "turn", regenDelay));
+			} else statSlot(Messages.get(this, "regendly"), Messages.get(this, "turn", regenDelay));
+
+			statSlot(Messages.get(this, "hunger"), hero.buff(Hunger.class).hunger() + "/" + (int)Hunger.STARVING);
+
 			if (hero.shielding() > 0)   statSlot( Messages.get(this, "health"), hero.HP + "+" + hero.shielding() + "/" + hero.HT );
 			else                        statSlot( Messages.get(this, "health"), (hero.HP) + "/" + hero.HT );
 			statSlot( Messages.get(this, "exp"), hero.exp + "/" + hero.maxExp() );

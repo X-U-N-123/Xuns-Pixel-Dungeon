@@ -26,6 +26,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDAction;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CircleArc;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -65,6 +66,9 @@ public class StatusPane extends Component {
 	private Image exp;
 	private BitmapText expText;
 
+	private Image hunger;
+	private BitmapText hungerText;
+
 	private int lastLvl = -1;
 
 	private BitmapText level;
@@ -94,7 +98,7 @@ public class StatusPane extends Component {
 
 		this.large = large;
 
-		if (large)  bg = new NinePatch( asset, 0, 64, 41, 39, 33, 0, 4, 0 );
+		if (large)  bg = new NinePatch( asset, 0, 55, 41, 39, 33, 0, 4, 0 );
 		else        bg = new NinePatch( asset, 0,  0, 82, 38, 32, 0, 5, 0 );
 		add( bg );
 
@@ -134,12 +138,16 @@ public class StatusPane extends Component {
 		add( compass );
 
 		if (large)  shieldHP = new Image(asset, 0, 112, 128, 9);
-		else        shieldHP = new Image(asset, 0, 44, 50, 4);
+		else        shieldHP = new Image(asset, 50, 38, 50, 5);
 		add(shieldHP);
 
 		if (large)  hp = new Image(asset, 0, 103, 128, 9);
-		else        hp = new Image(asset, 0, 40, 50, 4);
+		else        hp = new Image(asset, 0, 38, 50, 5);
 		add( hp );
+
+		if (large)  hunger = new Image(asset, 0, 94, 128, 9);
+		else        hunger = new Image(asset, 0, 43, 43, 5);
+		add( hunger );
 
 		hpText = new BitmapText(PixelScene.pixelFont);
 		hpText.alpha(0.6f);
@@ -155,7 +163,7 @@ public class StatusPane extends Component {
 		add(heroInfoOnBar);
 
 		if (large)  exp = new Image(asset, 0, 121, 128, 7);
-		else        exp = new Image(asset, 0, 48, 17, 4);
+		else        exp = new Image(asset, 100, 38, 17, 5);
 		add( exp );
 
 		expText = new BitmapText(PixelScene.pixelFont);
@@ -163,11 +171,17 @@ public class StatusPane extends Component {
 		expText.alpha(0.6f);
 		add(expText);
 
+		hungerText = new BitmapText(PixelScene.pixelFont);
+		hungerText.hardlight( 0x00CC99 );
+		hungerText.alpha(0.6f);
+		add(hungerText);
+
 		level = new BitmapText( PixelScene.pixelFont);
 		level.hardlight( 0xFFFFAA );
 		add( level );
 
 		buffs = new BuffIndicator( Dungeon.hero, large );
+		if (large) buffs.maxBuffs = 20;
 		add( buffs );
 
 		busy = new BusyIndicator();
@@ -207,6 +221,9 @@ public class StatusPane extends Component {
 			hp.x = shieldHP.x = x + 30;
 			hp.y = shieldHP.y = y + 19;
 
+			hunger.x = x + 30;
+			hunger.y = y + 8;
+
 			hpText.x = hp.x + (128 - hpText.width())/2f;
 			hpText.y = hp.y + 1;
 			PixelScene.align(hpText);
@@ -215,10 +232,14 @@ public class StatusPane extends Component {
 			expText.y = exp.y;
 			PixelScene.align(expText);
 
+			hungerText.x = hunger.x + (128 - hunger.width())/2f;
+			hungerText.y = hunger.y + 1;
+			PixelScene.align(hungerText);
+
 			heroInfoOnBar.setRect(heroInfo.right(), y + 19, 130, 20);
 
 			//little extra for 14th buff
-			buffs.setRect(x + 31, y, 142, 16);
+			buffs.setRect(3, 3, 250, 16);
 
 			busy.x = x + bg.width + 1;
 			busy.y = y + bg.height - 9;
@@ -244,24 +265,34 @@ public class StatusPane extends Component {
 					hpCutout.x = hpleft - 2;
 					hpCutout.y = y;
 				}
-				hp.frame(50-hpWidth, 40, 50, 4);
-				shieldHP.frame(50-hpWidth, 44, 50, 4);
+				hp.frame(50-hpWidth, 38, 50, 5);
+				shieldHP.frame(100-hpWidth, 38, 50, 5);
+				hunger.frame(50-hpWidth, 43, 50, 5);
 			}
 
 			hp.x = shieldHP.x = hpleft;
 			hp.y = shieldHP.y = y + 2;
 
-			hpText.scale.set(PixelScene.align(0.5f));
+			hunger.x = hpleft;
+			hunger.y = y + 9;
+
+			hpText.scale.set(PixelScene.align(0.7f));
 			hpText.x = hp.x + 1;
 			hpText.y = hp.y + (hp.height - (hpText.baseLine()+hpText.scale.y))/2f;
 			hpText.y -= 0.001f; //prefer to be slightly higher
 			PixelScene.align(hpText);
 
-			expText.scale.set(PixelScene.align(0.5f));
+			expText.scale.set(PixelScene.align(0.7f));
 			expText.x = exp.x + 1;
 			expText.y = exp.y + (exp.height - (expText.baseLine()+expText.scale.y))/2f;
 			expText.y -= 0.001f; //prefer to be slightly higher
 			PixelScene.align(expText);
+
+			hungerText.scale.set(PixelScene.align(0.7f));
+			hungerText.x = hunger.x + 1;
+			hungerText.y = hunger.y + (hunger.height - (hungerText.baseLine()+hungerText.scale.y))/2f;
+			hungerText.y -= 0.001f; //prefer to be slightly higher
+			PixelScene.align(hungerText);
 
 			heroInfoOnBar.setRect(heroInfo.right(), y, 50, 9);
 
@@ -271,7 +302,7 @@ public class StatusPane extends Component {
 			if (buffBarRowAdjusts != null){
 				buffs.rowHeightAdjusts = buffBarRowAdjusts;
 			}
-			buffs.setRect( x + heroPaneWidth + 1, y + 8, 55, 16 );
+			buffs.setRect( x + heroPaneWidth + 1, y + 16, 55, 16 );
 
 			busy.x = x + 1;
 			busy.y = y + 37;
@@ -293,6 +324,8 @@ public class StatusPane extends Component {
 		int health = Dungeon.hero.HP;
 		int shield = Dungeon.hero.shielding();
 		int max = Dungeon.hero.HT;
+
+		Hunger hungerBuff = Dungeon.hero.buff(Hunger.class);
 
 		if (!Dungeon.hero.isAlive()) {
 			avatar.tint(0x000000, 0.5f);
@@ -318,6 +351,7 @@ public class StatusPane extends Component {
 
 		hp.scale.x = healthPercent;
 		shieldHP.scale.x = healthPercent + shieldPercent;
+		hunger.scale.x = 1 - hungerBuff.level / Hunger.STARVING;
 
 		if (oldHP != health || oldShield != shield || oldMax != max){
 			if (shield <= 0) {
@@ -340,9 +374,15 @@ public class StatusPane extends Component {
 			expText.measure();
 			expText.x = hp.x + (128 - expText.width())/2f;
 
+			hungerText.text(hungerBuff.hunger() + "/" + (int)Hunger.STARVING);
+			hungerText.measure();
+			hungerText.x = hunger.x + (128 - hungerText.width())/2f;
+
 		} else {
 			exp.scale.x = ((17 + heroPaneExtraWidth) / exp.width) * Dungeon.hero.exp / Dungeon.hero.maxExp();
 			expText.text(Dungeon.hero.exp + "/" + Dungeon.hero.maxExp());
+
+			hungerText.text(hungerBuff.hunger() + "/" + (int)Hunger.STARVING);
 		}
 
 		if (Dungeon.hero.lvl != lastLvl) {
@@ -391,6 +431,8 @@ public class StatusPane extends Component {
 		hpText.alpha(0.6f*value);
 		exp.alpha(value);
 		if (expText != null) expText.alpha(0.6f*value);
+		hunger.alpha(value);
+		hungerText.alpha(0.6f*value);
 		level.alpha(value);
 		compass.alpha(value);
 		busy.alpha(value);

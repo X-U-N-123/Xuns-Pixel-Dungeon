@@ -56,50 +56,8 @@ public class Regeneration extends Buff {
 			}
 
 			if (regenOn() && target.HP < regencap() && !((Hero)target).isStarving()) {
-				boolean chaliceCursed = false;
-				int chaliceLevel = -1;
-				if (target.buff(MagicImmune.class) == null) {
-					if (Dungeon.hero.buff(ChaliceOfBlood.chaliceRegen.class) != null) {
-						chaliceCursed = Dungeon.hero.buff(ChaliceOfBlood.chaliceRegen.class).isCursed();
-						chaliceLevel = Dungeon.hero.buff(ChaliceOfBlood.chaliceRegen.class).itemLevel();
-					} else if (Dungeon.hero.buff(SpiritForm.SpiritFormBuff.class) != null
-							&& Dungeon.hero.buff(SpiritForm.SpiritFormBuff.class).artifact() instanceof ChaliceOfBlood) {
-						chaliceLevel = SpiritForm.artifactLevel();
-					}
-				}
 
-				float delay = REGENERATION_DELAY;
-				if (chaliceLevel != -1 && target.buff(MagicImmune.class) == null) {
-					if (chaliceCursed) {
-						delay *= 1.5f;
-					} else {
-						//15% boost at +0, scaling to a 500% boost at +10
-						delay -= 1.33f + chaliceLevel*0.667f;
-						delay /= RingOfEnergy.artifactChargeMultiplier(target);
-					}
-				}
-
-				//salt cube is turned off while regen is disabled.
-				if (target.buff(LockedFloor.class) == null) {
-					delay /= SaltCube.healthRegenMultiplier();
-				}
-				if (Dungeon.hero.hasTalent(Talent.STEALTH_METABOLISM) && Dungeon.hero.invisible > 0){
-					delay /= 1+Dungeon.hero.pointsInTalent(Talent.STEALTH_METABOLISM)/3f;
-				}
-				if (Dungeon.hero.hasTalent(Talent.INTACT_SEAL) && Dungeon.hero.heroClass != HeroClass.WARRIOR){
-					delay /= 1+Dungeon.hero.pointsInTalent(Talent.INTACT_SEAL)/8f;
-				}
-				if (Dungeon.hero.hasTalent(Talent.EMERGENCY_CHARGE) && Dungeon.hero.heroClass != HeroClass.ROGUE){
-					delay /= 1+Dungeon.hero.pointsInTalent(Talent.EMERGENCY_CHARGE)*0.2f* (target.HT - target.HP)/ target.HT;
-				}
-				if (Dungeon.hero.heroClass == HeroClass.EXPLORER ||
-				(Dungeon.level.map[target.pos] == Terrain.GRASS
-				|| Dungeon.level.map[target.pos] == Terrain.HIGH_GRASS
-				|| Dungeon.level.map[target.pos] == Terrain.FURROWED_GRASS)){
-					delay /= 1.25f;
-				}
-
-				partialRegen += 1f / delay;
+				partialRegen += 1f / regenDelay();
 
 				if (partialRegen >= 1) {
 					target.HP += 1;
@@ -146,5 +104,53 @@ public class Regeneration extends Buff {
 	public void restoreFromBundle(Bundle bundle) {
 		super.restoreFromBundle(bundle);
 		partialRegen = bundle.getFloat(PARTIAL_REGEN);
+	}
+
+	public float regenDelay(){
+
+		boolean chaliceCursed = false;
+		int chaliceLevel = -1;
+		if (target.buff(MagicImmune.class) == null) {
+			if (Dungeon.hero.buff(ChaliceOfBlood.chaliceRegen.class) != null) {
+				chaliceCursed = Dungeon.hero.buff(ChaliceOfBlood.chaliceRegen.class).isCursed();
+				chaliceLevel = Dungeon.hero.buff(ChaliceOfBlood.chaliceRegen.class).itemLevel();
+			} else if (Dungeon.hero.buff(SpiritForm.SpiritFormBuff.class) != null
+			&& Dungeon.hero.buff(SpiritForm.SpiritFormBuff.class).artifact() instanceof ChaliceOfBlood) {
+				chaliceLevel = SpiritForm.artifactLevel();
+			}
+		}
+
+		float delay = REGENERATION_DELAY;
+		if (chaliceLevel != -1 && target.buff(MagicImmune.class) == null) {
+			if (chaliceCursed) {
+				delay *= 1.5f;
+			} else {
+				//15% boost at +0, scaling to a 500% boost at +10
+				delay -= 1.33f + chaliceLevel*0.667f;
+				delay /= RingOfEnergy.artifactChargeMultiplier(target);
+			}
+		}
+
+		//salt cube is turned off while regen is disabled.
+		if (target.buff(LockedFloor.class) == null) {
+			delay /= SaltCube.healthRegenMultiplier();
+		}
+		if (Dungeon.hero.hasTalent(Talent.STEALTH_METABOLISM) && Dungeon.hero.invisible > 0){
+			delay /= 1+Dungeon.hero.pointsInTalent(Talent.STEALTH_METABOLISM)/3f;
+		}
+		if (Dungeon.hero.hasTalent(Talent.INTACT_SEAL) && Dungeon.hero.heroClass != HeroClass.WARRIOR){
+			delay /= 1+Dungeon.hero.pointsInTalent(Talent.INTACT_SEAL)/8f;
+		}
+		if (Dungeon.hero.hasTalent(Talent.EMERGENCY_CHARGE) && Dungeon.hero.heroClass != HeroClass.ROGUE){
+			delay /= 1+Dungeon.hero.pointsInTalent(Talent.EMERGENCY_CHARGE)*0.2f* (target.HT - target.HP)/ target.HT;
+		}
+		if (Dungeon.hero.heroClass == HeroClass.EXPLORER &&
+		(Dungeon.level.map[target.pos] == Terrain.GRASS
+		|| Dungeon.level.map[target.pos] == Terrain.HIGH_GRASS
+		|| Dungeon.level.map[target.pos] == Terrain.FURROWED_GRASS)){
+			delay /= 1.25f;
+		}
+
+		return delay;
 	}
 }

@@ -108,10 +108,12 @@ public class GuidingLight extends TargetedClericSpell {
 							Buff.affect(ch, WasIlluminatedTracker.class);
 						}
 						if (hero.subClass == HeroSubClass.PREACHER){
+							Buff.append(Dungeon.hero, TalismanOfForesight.CharAwareness.class, Integer.MAX_VALUE)
+								.charID = ch.id();
+
 							if (ch.alignment == Char.Alignment.ENEMY) Buff.affect(ch, Slow.class, 6f);
 							if (ch.alignment == Char.Alignment.ALLY) {
 								Buff.affect(ch, Adrenaline.class, 6f);
-								Buff.append(Dungeon.hero, TalismanOfForesight.CharAwareness.class, Integer.MAX_VALUE).charID = ch.id();
 							}
 							Dungeon.observe();
 							GameScene.updateFog();

@@ -185,6 +185,10 @@ public class Shovel extends MeleeWeapon {
 
                     if (Dungeon.level.passable[cell]){
                         if (ch != null){
+                            for (int i : PathFinder.NEIGHBOURS8) {
+                                if (Actor.findChar(ch.pos + i) == curUser && Dungeon.level.pit[ch.pos - i]) return;
+                            } // cannot knock back target into chasm
+
                             //trace a ballistica to our target (which will also extend past them)
                             Ballistica trajectory = new Ballistica(curUser.pos, cell, Ballistica.STOP_TARGET);
                             //trim it to just be the part that goes past them

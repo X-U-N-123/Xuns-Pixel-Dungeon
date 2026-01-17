@@ -55,7 +55,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.cleric.Pow
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.explorer.OpticalCamou;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.huntress.SpiritHawk;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.DivineSense;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.GuidingLight;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.HolyTrap;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.Stasis;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GnollGeomancer;
@@ -1495,13 +1494,6 @@ public abstract class Level implements Bundlable {
 				for (Heap heap : heaps.valueList()) {
 					int p = heap.pos;
 					for (int i : PathFinder.NEIGHBOURS9) heroMindFov[p+i] = true;
-				}
-			}
-
-			if (Dungeon.hero.subClass == HeroSubClass.PREACHER) {
-				for (Mob m : mobs.toArray(new Mob[0])){
-					if (m.buff(GuidingLight.Illuminated.class) != null)
-						for (int i : PathFinder.NEIGHBOURS9) heroMindFov[m.pos+i] = true;
 				}
 			}
 
