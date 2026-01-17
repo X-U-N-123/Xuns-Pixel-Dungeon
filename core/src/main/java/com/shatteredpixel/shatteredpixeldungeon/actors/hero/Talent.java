@@ -247,6 +247,8 @@ public enum Talent {
 	LASTING_DISGUISE(317, 4), STRAIN_CAPACITY(318, 4), PAINTED_BLADE(319, 4), QUICK_BUILD(320, 4),
 	//Sandstorm T4
 	GLOOM_ABOVE(321, 4), SAND_FLOW(322, 4), HEART_OF_STORM(323, 4), DRIFT_SAND(324, 4),
+	//Underpass T4
+	EXPRESS_UNDERWAY(325, 4) ,MONITOR_BENEATH(326, 4), SLY_RABBIT(327, 4), GRENADE_COVER(328 ,4) ,
 
 	//universal T4
 	HEROIC_ENERGY(26, 4), //See icon() and title() for special logic for this one

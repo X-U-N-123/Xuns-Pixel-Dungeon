@@ -73,6 +73,8 @@ public class DungeonTileSheet {
 	public static final int EMPTY_WELL      = GROUND +19;
 	public static final int PEDESTAL        = GROUND +20;
 
+	public static final int UNDERPASS       = GROUND +21;
+
 	public static final int ENTRANCE_SP     = GROUND +22;
 
 	public static final int CHASM           =                               xy(9, 2);   //8 slots
@@ -107,6 +109,7 @@ public class DungeonTileSheet {
 		chasmStitcheable.put( Terrain.CUSTOM_DECO_EMPTY,CHASM_FLOOR );
 		chasmStitcheable.put( Terrain.MINE_BOULDER, CHASM_FLOOR );
 		chasmStitcheable.put( Terrain.MINE_CRYSTAL, CHASM_FLOOR );
+		chasmStitcheable.put( Terrain.UNDERPASS,    CHASM_FLOOR );
 
 		//special floor
 		chasmStitcheable.put( Terrain.EMPTY_SP,     CHASM_FLOOR_SP );
@@ -147,7 +150,7 @@ public class DungeonTileSheet {
 	//These tiles can stitch with water
 	public static HashSet<Integer> waterStitcheable = new HashSet<>(Arrays.asList(
 			Terrain.EMPTY, Terrain.GRASS, Terrain.EMPTY_WELL,
-			Terrain.ENTRANCE, Terrain.EXIT, Terrain.EMBERS,
+			Terrain.ENTRANCE, Terrain.EXIT, Terrain.EMBERS, Terrain.UNDERPASS,
 			Terrain.BARRICADE, Terrain.HIGH_GRASS, Terrain.FURROWED_GRASS, Terrain.SECRET_TRAP,
 			Terrain.TRAP, Terrain.INACTIVE_TRAP, Terrain.EMPTY_DECO,
 			Terrain.CUSTOM_DECO, Terrain.WELL, Terrain.STATUE, Terrain.REGION_DECO, Terrain.ALCHEMY,
@@ -420,6 +423,7 @@ public class DungeonTileSheet {
 		directVisuals.put(Terrain.GRASS,            GRASS);
 		directVisuals.put(Terrain.EMPTY_WELL,       EMPTY_WELL);
 		directVisuals.put(Terrain.ENTRANCE,         ENTRANCE);
+		directVisuals.put(Terrain.UNDERPASS,        UNDERPASS);
 		directVisuals.put(Terrain.EXIT,             EXIT);
 		directVisuals.put(Terrain.EMBERS,           EMBERS);
 		directVisuals.put(Terrain.PEDESTAL,         PEDESTAL);

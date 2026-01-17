@@ -67,6 +67,8 @@ public class Terrain {
 	public static final int MINE_CRYSTAL    = 35;
 	public static final int MINE_BOULDER    = 36;
 
+	public static final int UNDERPASS	    = 39;
+
 	public static final int WATER		    = 29;
 	
 	public static final int PASSABLE		= 0x01;
@@ -123,6 +125,8 @@ public class Terrain {
 		flags[REGION_DECO_ALT] = flags[STATUE_SP];
 		flags[MINE_CRYSTAL] = SOLID;
 		flags[MINE_BOULDER] = SOLID;
+
+		flags[UNDERPASS] = PASSABLE;
 
 	}
 
