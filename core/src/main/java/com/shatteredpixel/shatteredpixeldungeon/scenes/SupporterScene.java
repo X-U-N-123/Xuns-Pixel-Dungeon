@@ -33,7 +33,6 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.TitleBackground;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.windows.IconTitle;
 import com.watabou.noosa.Camera;
-import com.watabou.noosa.Image;
 import com.watabou.noosa.NinePatch;
 import com.watabou.noosa.ui.Component;
 import com.watabou.utils.RectF;
@@ -78,37 +77,19 @@ public class SupporterScene extends PixelScene {
 		msg.setSize(elementWidth, 0);
 		add(msg);
 
-		StyledButton patreonLink = new StyledButton(Chrome.Type.GREY_BUTTON_TR, Messages.get(this, "supporter_link")){
+		StyledButton link = new StyledButton(Chrome.Type.GREY_BUTTON_TR, Messages.get(this, "supporter_link")){
 			@Override
 			protected void onClick() {
 				super.onClick();
-				String link = "https://www.patreon.com/ShatteredPixel";
-				//tracking codes, so that the website knows where this pageview came from
-				link += "?utm_source=shatteredpd";
-				link += "&utm_medium=supporter_page";
-				link += "&utm_campaign=ingame_link";
-				ShatteredPixelDungeon.platform.openURI(link);
+				ShatteredPixelDungeon.platform.openURI("https://qm.qq.com/q/6F4JNkWx1u");
 			}
 		};
-		patreonLink.icon(Icons.get(Icons.GOLD));
-		patreonLink.textColor(Window.TITLE_COLOR);
-		patreonLink.setSize(elementWidth, BTN_HEIGHT);
-		add(patreonLink);
+		link.icon(Icons.get(Icons.QQ));
+		link.textColor(Window.TITLE_COLOR);
+		link.setSize(elementWidth, BTN_HEIGHT);
+		add(link);
 
-		StyledButton qqLink = new StyledButton(Chrome.Type.GREY_BUTTON_TR, Messages.get(this, "qq_link")){
-			@Override
-			protected void onClick() {
-				super.onClick();
-				String link = "https://qm.qq.com/q/6F4JNkWx1u";
-				ShatteredPixelDungeon.platform.openURI(link);
-			}
-		};
-		qqLink.icon(Icons.get(Icons.QQ));
-		qqLink.textColor(Window.TITLE_COLOR);
-		qqLink.setSize(elementWidth, BTN_HEIGHT);
-		add(qqLink);
-
-		float elementHeight = msg.height() + 2*BTN_HEIGHT + GAP;
+		float elementHeight = msg.height() + BTN_HEIGHT + GAP;
 
 		float top = insets.top + 16 + (h - 16 - elementHeight)/2f;
 		float left = insets.left + (w-elementWidth)/2f;
@@ -116,10 +97,8 @@ public class SupporterScene extends PixelScene {
 		msg.setPos(left, top);
 		align(msg);
 
-		patreonLink.setPos(left, msg.bottom()+GAP);
-		align(patreonLink);
-		qqLink.setPos(left, patreonLink.bottom()+GAP);
-		align(qqLink);
+		link.setPos(left, msg.bottom()+GAP);
+		align(link);
 
 	}
 
@@ -132,7 +111,6 @@ public class SupporterScene extends PixelScene {
 
 		NinePatch bg;
 		RenderedTextBlock text;
-		Image icon;
 
 		@Override
 		protected void createChildren() {
@@ -141,7 +119,7 @@ public class SupporterScene extends PixelScene {
 
 			String message = Messages.get(SupporterScene.class, "intro");
 			message += "\n\n" + Messages.get(SupporterScene.class, "patreon_msg");
-			if (Messages.lang() != Languages.ENGLISH) {
+			if (Messages.lang() != Languages.CHI_SMPL) {
 				message += "\n" + Messages.get(SupporterScene.class, "patreon_english");
 			}
 			message += "\n\n-迅";
@@ -157,9 +135,6 @@ public class SupporterScene extends PixelScene {
 
 			text.maxWidth((int)width - bg.marginHor());
 			text.setPos(x + bg.marginLeft(), y + bg.marginTop() + 1);
-
-			icon.y = text.bottom() - icon.height() + 4;
-			icon.x = x + 25;
 
 			height = (text.bottom() + 3) - y;
 

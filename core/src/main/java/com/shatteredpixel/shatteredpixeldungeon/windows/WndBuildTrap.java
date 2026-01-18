@@ -39,68 +39,79 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.TerrainFeaturesTilemap;
-import com.shatteredpixel.shatteredpixeldungeon.ui.ActionIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
-import com.shatteredpixel.shatteredpixeldungeon.ui.ScrollPane;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.audio.Sample;
-import com.watabou.noosa.ui.Component;
 import com.watabou.utils.Reflection;
 
 public class WndBuildTrap extends Window {
 
-    private static final int WIDTH_P = 120;
-    private static final int WIDTH_L = 220;
-
-    private static final int MARGIN  = 1;
-    ScrollPane trapList;
+    private static final int MARGIN  = 2;
 
     public WndBuildTrap(TrapChoose choose){
         super();
 
-        int width1 = PixelScene.landscape() ? WIDTH_L : WIDTH_P;
+        int width1 = 118;
         int height = (int)(PixelScene.uiCamera.height * 0.9);
 
-        float pos = MARGIN;
+        float posY = MARGIN;
+        float posX = 0;
 
         RenderedTextBlock title = PixelScene.renderTextBlock(Messages.titleCase(Messages.get(TrapChoose.class, "action")), 9);
         title.hardlight(TITLE_COLOR);
-        title.setPos((width1-title.width())/2, pos);
+        title.setPos((width1-title.width())/2, posY);
         title.maxWidth(width1 - MARGIN * 2);
         add(title);
 
-        pos = title.bottom() + 3*MARGIN;
-        float reqHeight = 0;
-
-        trapList = new ScrollPane( new Component() ){};
-        trapList.content().setPos(0, title.bottom() + 3*MARGIN);
+        posY = title.bottom() + 3*MARGIN;
 
         for (Class<?> trapCls : Bestiary.TRAP.entities()) {
             if (!choose.TrapClasses().containsKey(trapCls)) continue;
 
-            Trap trap = Reflection.newInstance((Class<Trap>)trapCls);
+            if (posX > 110){
+                posX = 0;
+                posY += 24;
+            }
 
-            String text = "_" + trap.name() + "_  " + trap.desc().replace("\n\n", "\n")
-            + "\n_" + Messages.get(this, "lmcost") + choose.TrapClasses().get(trapCls) + "_";
+            Trap trap = Reflection.newInstance((Class<Trap>)trapCls);
 
             Image icon = TerrainFeaturesTilemap.getTrapVisual(trap);
 
-            RedButton trapBtn = new RedButton(text, 6){
+            RedButton trapBtn = new RedButton("", 6){
                 @Override
                 protected void onClick() {
-                    super.onClick();
+                    GameScene.show(new WndTrapConfirm(WndBuildTrap.this, choose, trap));
+                }
+            };
+
+            add(trapBtn);
+            trapBtn.icon(icon);
+            trapBtn.leftJustify = true;
+            trapBtn.setRect(posX, posY, 22, 22);
+
+            posX += trapBtn.width() + MARGIN;
+        }
+
+        resize(width1, (int)Math.min(height, posY + 24));
+    }
+
+    public static class WndTrapConfirm extends WndTitledMessage {
+
+        public WndTrapConfirm(Window parentWnd, TrapChoose choose, Trap trap){
+            super(TerrainFeaturesTilemap.getTrapVisual(trap), Messages.titleCase(trap.name()), getText(trap, choose));
+
+            String text = Messages.get(WndBuildTrap.class, "will_build", trap.name());
+
+            RedButton btnConfirm = new RedButton(text){
+                @Override
+                protected void onClick() {
+                    parentWnd.hide();
                     hide();
-                    choose.trapClass = (Class<? extends Trap>) trapCls;
-                    ActionIndicator.refresh();
-                    if (Dungeon.hero.buff(Shovel.ExplorerCooldown.class) != null){
-                        GLog.w(Messages.get(TrapChoose.class, "cd"));
-                        return;
-                    }
                     LiquidMetal metal = Dungeon.hero.belongings.getItem(LiquidMetal.class);
-                    if (metal == null || metal.quantity() < choose.TrapClasses().get(trapCls)){
+                    if (metal == null || metal.quantity() < choose.TrapClasses().get(trap.getClass())){
                         GLog.w(Messages.get(TrapChoose.class, "no_metal"));
                         return;
                     }
@@ -116,17 +127,18 @@ public class WndBuildTrap extends Window {
                             }
 
                             if ((Actor.findChar(cell) != null && Dungeon.hero.pointsInTalent(Talent.SIMPLE_STRUCTURE) < 2)
-                                    || Sandstorm.canDrift(Dungeon.level.map[cell]) || Dungeon.level.map[cell] == Terrain.HIGH_GRASS){
+                            || (!Sandstorm.canDrift(Dungeon.level.map[cell])
+                            && Dungeon.level.map[cell] != Terrain.HIGH_GRASS && Dungeon.level.map[cell] != Terrain.INACTIVE_TRAP)){
                                 GLog.w(Messages.get(WndBuildTrap.class, "invalid_pos"));
                             } else {
 
                                 Level.set(cell, Terrain.TRAP);
                                 Dungeon.level.setTrap( trap, cell).reveal();//build a trap
 
-                                if (metal.quantity() <= choose.TrapClasses().get(trapCls))
+                                if (metal.quantity() <= choose.TrapClasses().get(trap.getClass()))
                                     metal.detachAll(Dungeon.hero.belongings.backpack);
                                 else {
-                                    metal.quantity(metal.quantity() - choose.TrapClasses().get(trapCls));
+                                    metal.quantity(metal.quantity() - choose.TrapClasses().get(trap.getClass()));
                                     Item.updateQuickslot();
                                 }
 
@@ -146,34 +158,17 @@ public class WndBuildTrap extends Window {
                     });
                 }
             };
-            trapList.content().add(trapBtn);//add it to the content, this is where the bug is
+            btnConfirm.setRect(0, height+2, width, 16);
+            add(btnConfirm);
 
-            trapBtn.icon(icon);
-            trapBtn.leftJustify = true;
-            trapBtn.multiline = true;
-            trapBtn.setSize(width1, trapBtn.reqHeight());
-            trapBtn.setRect(0, pos, width1, trapBtn.reqHeight());
+            resize(width, (int)btnConfirm.bottom());
 
-            pos = trapBtn.bottom() + MARGIN;
-
-            reqHeight += trapBtn.reqHeight() + MARGIN;
         }
 
-        add(trapList);
-        trapList.setSize(width1, reqHeight);
-        trapList.setRect(0, title.bottom() + 3*MARGIN, width1, reqHeight);
+        private static String getText(Trap trap, TrapChoose choose){
+            return trap.desc() + "\n\n_"
+                + Messages.get(WndBuildTrap.class, "lmcost", choose.TrapClasses().get(trap.getClass())) + "_";
+        }
 
-        // also set the width of the scroll pane
-        trapList.content().setSize(width = width1, pos);
-        width += 1; // padding on the right to cause the controller to be flush against the window.
-
-        resize(width1, (int)Math.min(height, trapList.height()));
-    }
-
-    @Override
-    public void offset(int xOffset, int yOffset) {
-        super.offset(xOffset, yOffset);
-        // refresh the scrollbar pane
-        trapList.setPos(trapList.left(), trapList.top());
     }
 }

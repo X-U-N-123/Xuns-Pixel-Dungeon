@@ -24,6 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Shovel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.BlazingTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.BurningTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.ChillingTrap;
@@ -50,15 +51,13 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.TerrainFeaturesTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ActionIndicator;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndBuildTrap;
 import com.watabou.noosa.Visual;
-import com.watabou.utils.Reflection;
 
 import java.util.LinkedHashMap;
 
 public class TrapChoose extends Buff implements ActionIndicator.Action {
-
-    public Class<? extends Trap> trapClass = WornDartTrap.class;
 
     {
         revivePersists = true;
@@ -86,7 +85,7 @@ public class TrapChoose extends Buff implements ActionIndicator.Action {
 
     @Override
     public Visual primaryVisual(){
-        return TerrainFeaturesTilemap.getTrapVisual(Reflection.newInstance(trapClass));
+        return TerrainFeaturesTilemap.getTrapVisual(new WornDartTrap());
     }
 
     public LinkedHashMap<Class<? extends Trap>, Integer> TrapClasses(){
@@ -131,6 +130,7 @@ public class TrapChoose extends Buff implements ActionIndicator.Action {
 
     @Override
     public void doAction() {
-        GameScene.show(new WndBuildTrap(this));
+        if (target.buff(Shovel.ExplorerCooldown.class) == null) GameScene.show(new WndBuildTrap(this));
+        else GLog.w(Messages.get(this, "cd"));
     }
 }

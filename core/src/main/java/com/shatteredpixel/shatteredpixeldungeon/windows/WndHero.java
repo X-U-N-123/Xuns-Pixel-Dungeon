@@ -228,16 +228,21 @@ public class WndHero extends WndTabbed {
 			statSlot( Messages.get(this, "movedly"), Messages.get(this, "turn", 1f/hero.speed() ));
 			statSlot( Messages.get(this, "atkdly"), Messages.get(this, "turn", hero.attackDelay() ));
 
-			float regenDelay = hero.buff(Regeneration.class).regenDelay();
-			if (!Regeneration.regenOn()) {
-				regenDelay = -1f;
-			}
+			float regenDelay = -1f;
+			if (hero.buff(Regeneration.class) != null)
+				regenDelay = hero.buff(Regeneration.class).regenDelay();
+			if (!Regeneration.regenOn()) regenDelay = -1f;
+
 			if (hero.isStarving()) {
 				regenDelay = 1000f / hero.HT;
 				statSlot(Messages.get(this, "starvingdmg"), Messages.get(this, "turn", regenDelay));
 			} else statSlot(Messages.get(this, "regendly"), Messages.get(this, "turn", regenDelay));
 
-			statSlot(Messages.get(this, "hunger"), hero.buff(Hunger.class).hunger() + "/" + (int)Hunger.STARVING);
+			int hunger = 0;
+			if (hero.buff(Hunger.class) != null)
+				hunger = hero.buff(Hunger.class).hunger();
+
+			statSlot(Messages.get(this, "hunger"), hunger + "/" + (int)Hunger.STARVING);
 
 			if (hero.shielding() > 0)   statSlot( Messages.get(this, "health"), hero.HP + "+" + hero.shielding() + "/" + hero.HT );
 			else                        statSlot( Messages.get(this, "health"), (hero.HP) + "/" + hero.HT );

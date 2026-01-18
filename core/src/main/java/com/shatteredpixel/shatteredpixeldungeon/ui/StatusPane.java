@@ -351,7 +351,7 @@ public class StatusPane extends Component {
 
 		hp.scale.x = healthPercent;
 		shieldHP.scale.x = healthPercent + shieldPercent;
-		hunger.scale.x = 1 - hungerBuff.level / Hunger.STARVING;
+		if (hungerBuff != null) hunger.scale.x = 1 - hungerBuff.level / Hunger.STARVING;
 
 		if (oldHP != health || oldShield != shield || oldMax != max){
 			if (shield <= 0) {
@@ -364,6 +364,8 @@ public class StatusPane extends Component {
 			oldMax = max;
 		}
 
+		if (hungerBuff != null) hungerText.text(hungerBuff.hunger() + "/" + (int)Hunger.STARVING);
+
 		if (large) {
 			exp.scale.x = (128 / exp.width) * Dungeon.hero.exp / Dungeon.hero.maxExp();
 
@@ -374,15 +376,12 @@ public class StatusPane extends Component {
 			expText.measure();
 			expText.x = hp.x + (128 - expText.width())/2f;
 
-			hungerText.text(hungerBuff.hunger() + "/" + (int)Hunger.STARVING);
 			hungerText.measure();
 			hungerText.x = hunger.x + (128 - hungerText.width())/2f;
 
 		} else {
 			exp.scale.x = ((17 + heroPaneExtraWidth) / exp.width) * Dungeon.hero.exp / Dungeon.hero.maxExp();
 			expText.text(Dungeon.hero.exp + "/" + Dungeon.hero.maxExp());
-
-			hungerText.text(hungerBuff.hunger() + "/" + (int)Hunger.STARVING);
 		}
 
 		if (Dungeon.hero.lvl != lastLvl) {
