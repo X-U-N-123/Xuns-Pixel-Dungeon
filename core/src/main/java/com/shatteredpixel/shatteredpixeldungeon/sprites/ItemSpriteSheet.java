@@ -536,6 +536,7 @@ public class ItemSpriteSheet {
 	public static final int ARMOR_DUELIST   = ARMOR+9;
 	public static final int ARMOR_CLERIC    = ARMOR+10;
 	public static final int ARMOR_LAMELLAR  = ARMOR+11;
+    public static final int ARMOR_EXPLORER  = ARMOR+12;
 	static{
 		assignItemRect(ARMOR_CLOTH,     15, 12);
 		assignItemRect(ARMOR_LEATHER,   14, 13);
@@ -549,6 +550,7 @@ public class ItemSpriteSheet {
 		assignItemRect(ARMOR_DUELIST,   12, 13);
 		assignItemRect(ARMOR_CLERIC,    13, 14);
 		assignItemRect(ARMOR_LAMELLAR,  12, 12);
+        assignItemRect(ARMOR_LAMELLAR,  15, 14);
 	}
 
 	private static final int WANDS              = xy(1, 10);  //16 slots

@@ -22,8 +22,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.spells;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
-import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Wraith;
@@ -52,18 +50,18 @@ public class SummonWraith extends TargetedSpell {
 	
 	@Override
 	protected void affectTarget(Ballistica bolt, Hero hero) {
-		final Char ch = Actor.findChar(bolt.collisionPos);
-		
-		if (ch == null) {
-			Wraith w = Wraith.spawnAt(bolt.collisionPos, Wraith.class, true, false);
-			Buff.affect(w, ScrollOfSirensSong.Enthralled.class);
 
-			Sample.INSTANCE.play(Assets.Sounds.CURSED);
+        Wraith w = Wraith.spawnAt(bolt.collisionPos, Wraith.class, true, false);
+
+		if (w != null) {
+            Buff.affect(w, ScrollOfSirensSong.Enthralled.class);
+            Sample.INSTANCE.play(Assets.Sounds.CURSED);
+            w.beckon(bolt.collisionPos);
 		} else {
 			GLog.w( Messages.get(this, "no_target") );
 		}
 	}
-	
+
 	@Override
 	public int value() {
 		return (int)(60 * (quantity/(float) Recipe.OUT_QUANTITY));

@@ -26,7 +26,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 public class ExplorerArmor extends ClassArmor {
 
     {
-        image = ItemSpriteSheet.ARMOR_CLOTH;
+        image = ItemSpriteSheet.ARMOR_EXPLORER;
     }
 
 }

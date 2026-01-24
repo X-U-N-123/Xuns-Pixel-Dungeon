@@ -539,7 +539,8 @@ public class Hero extends Char {
 			if (heroClass == HeroClass.DUELIST)
 				Buff.affect( this, Sai.ComboStrikeTracker.class).addHit();
 
-			if (subClass == HeroSubClass.GEOMANCER && Dungeon.level.map[pos] == Terrain.EMPTY_SP)
+			if (subClass == HeroSubClass.GEOMANCER
+            && (Dungeon.level.map[pos] == Terrain.EMPTY_SP || Dungeon.level.map[pos] == Terrain.PEDESTAL))
 				Buff.prolong(enemy, BrokenArmor.class, 3f);
 
 			if (hasTalent(Talent.SON_OF_SEA) && Dungeon.level.map[pos] == Terrain.WATER)
@@ -2557,7 +2558,7 @@ public class Hero extends Char {
 				Buff.affect( this, Sai.ComboStrikeTracker.class).addHit();
 
 			if (subClass == HeroSubClass.GEOMANCER
-			&& (Dungeon.level.map[pos] == Terrain.EMPTY_SP) || Dungeon.level.map[pos] == Terrain.PEDESTAL)
+			&& (Dungeon.level.map[pos] == Terrain.EMPTY_SP || Dungeon.level.map[pos] == Terrain.PEDESTAL))
 				Buff.prolong(attackTarget, BrokenArmor.class, 3f);
 
 			if (hasTalent(Talent.SON_OF_SEA) && Dungeon.level.map[pos] == Terrain.WATER)

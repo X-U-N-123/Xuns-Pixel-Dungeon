@@ -27,7 +27,6 @@ import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bless;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfDivineInspiration;
@@ -39,7 +38,6 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.StatusPane;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndHero;
 import com.watabou.noosa.audio.Sample;
-import com.watabou.utils.Random;
 
 public class ElixirOfEnlightening extends Elixir {
 
@@ -85,12 +83,6 @@ public class ElixirOfEnlightening extends Elixir {
             Sample.INSTANCE.playDelayed(Assets.Sounds.LEVELUP, 0.8f, 0.7f, 1.2f);
             new Flare( 6, 32 ).color(0xFFFF00, true).show( curUser.sprite, 2f );
             curUser.sprite.showStatusWithIcon(CharSprite.NEUTRAL, "4", FloatingText.TALENT);
-
-            if (!anonymous) {
-                if (Random.Float() < talentChance) {
-                    Talent.onPotionUsed(curUser, curUser.pos, talentFactor);
-                }
-            }
         }
     }
 

@@ -514,7 +514,7 @@ public abstract class Char extends Actor {
 				dmg = endure.adjustDamageTaken(dmg);
 			}
 
-			if (Dungeon.isChallenged(Challenges.EXERCISES))//exercise increase strength logic
+			if (Dungeon.isChallenged(Challenges.EXERCISES) && Regeneration.regenOn())//exercise increase strength logic
 				if ((enemy == hero && hero.belongings.armor() != null && hero.belongings.armor().STRReq() > hero.STR())
 				|| (this == hero && hero.belongings.attackingWeapon() != null && ((Weapon)hero.belongings.attackingWeapon()).STRReq() > hero.STR())){
 					hero.partialSTR += 0.01f;
