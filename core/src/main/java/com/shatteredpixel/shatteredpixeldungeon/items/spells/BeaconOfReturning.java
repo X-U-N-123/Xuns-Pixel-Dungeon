@@ -165,7 +165,7 @@ public class BeaconOfReturning extends Spell {
 
 		} else {
 
-			if (!Dungeon.interfloorTeleportAllowed()) {
+			if (!Dungeon.interfloorTeleportAllowed(returnDepth)) {
 				GLog.w( Messages.get(this, "preventing") );
 				return;
 			}

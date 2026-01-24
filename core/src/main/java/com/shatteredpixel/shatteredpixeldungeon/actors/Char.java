@@ -47,6 +47,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Charm;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Chill;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Collapse;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Corrosion;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Corruption;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
@@ -1201,6 +1202,7 @@ public abstract class Char extends Actor {
 		NO_ARMOR_PHYSICAL_SOURCES.add(GeomancerBuff.class); //geomancer recharge damage
 		NO_ARMOR_PHYSICAL_SOURCES.add(Sandstorm.class); //chasm effect
 		NO_ARMOR_PHYSICAL_SOURCES.add(RockFallBuff.class);
+        NO_ARMOR_PHYSICAL_SOURCES.add(Collapse.class);
 	}
 	
 	public void destroy() {

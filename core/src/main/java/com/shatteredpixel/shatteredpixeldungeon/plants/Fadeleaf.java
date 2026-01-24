@@ -49,12 +49,14 @@ public class Fadeleaf extends Plant {
 		if (ch instanceof Hero) {
 			
 			((Hero)ch).curAction = null;
+
+            int wardenReturnDepth = Math.max(1, (Dungeon.depth - 1));
 			
-			if (((Hero) ch).subClass == HeroSubClass.WARDEN && Dungeon.interfloorTeleportAllowed()){
+			if (((Hero) ch).subClass == HeroSubClass.WARDEN && Dungeon.interfloorTeleportAllowed(wardenReturnDepth)){
 
 				Level.beforeTransition();
 				InterlevelScene.mode = InterlevelScene.Mode.RETURN;
-				InterlevelScene.returnDepth = Math.max(1, (Dungeon.depth - 1));
+				InterlevelScene.returnDepth = wardenReturnDepth;
 				InterlevelScene.returnBranch = 0;
 				InterlevelScene.returnPos = -2;
 				Game.switchScene( InterlevelScene.class );

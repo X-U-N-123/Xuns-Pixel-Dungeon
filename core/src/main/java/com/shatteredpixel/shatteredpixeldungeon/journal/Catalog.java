@@ -125,6 +125,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.spells.Recycle;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Scout;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.SummonElemental;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.SummonWraith;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Support;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.TelekineticGrab;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.UnstableSpell;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Uptier;
@@ -268,12 +269,13 @@ public enum Catalog {
 
 		BREWS_ELIXIRS.addItems( UnstableBrew.class, InfernalBrew.class, BlizzardBrew.class, ConfusionBrew.class, ShockingBrew.class, CausticBrew.class,
 				AquaBrew.class, HeatBrew.class, RegrowingBrew.class, TrackingBrew.class,
-				ElixirOfHoneyedHealing.class, ElixirOfAquaticRejuvenation.class, ElixirOfArcaneArmor.class, ElixirOfDragonsBlood.class, ElixirOfMana.class, ElixirOfAmnesia.class,
-				ElixirOfIcyTouch.class, ElixirOfToxicEssence.class, ElixirOfMight.class, ElixirOfFeatherFall.class, ElixirOfEnlightening.class, ElixirOfOverdraft.class, ElixirOfCrashCourse.class);
+				ElixirOfHoneyedHealing.class, ElixirOfAquaticRejuvenation.class, ElixirOfArcaneArmor.class, ElixirOfDragonsBlood.class, ElixirOfMana.class,
+				ElixirOfIcyTouch.class, ElixirOfToxicEssence.class, ElixirOfMight.class, ElixirOfFeatherFall.class,
+                ElixirOfAmnesia.class, ElixirOfEnlightening.class, ElixirOfOverdraft.class, ElixirOfCrashCourse.class);
 
 		SPELLS.addItems( UnstableSpell.class, WildEnergy.class, TelekineticGrab.class, PhaseShift.class, SummonWraith.class, Watchtower.class, MagicBan.class,
 				Alchemize.class, CurseInfusion.class, MagicalInfusion.class, Recycle.class, MagicalTran.class, Uptier.class, //Extract.class,
-				ReclaimTrap.class, SummonElemental.class, BeaconOfReturning.class, Scout.class, Corrosion.class, CorruptionSpell.class);
+				ReclaimTrap.class, SummonElemental.class, BeaconOfReturning.class, Scout.class, Corrosion.class, CorruptionSpell.class, Support.class);
 
 		MISC_CONSUMABLES.addItems( Gold.class, EnergyCrystal.class, Dewdrop.class,
 				IronKey.class, GoldenKey.class, CrystalKey.class, SkeletonKey.class,

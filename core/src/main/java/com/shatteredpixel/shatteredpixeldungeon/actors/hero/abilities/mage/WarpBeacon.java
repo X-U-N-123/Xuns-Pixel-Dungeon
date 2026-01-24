@@ -182,7 +182,7 @@ public class WarpBeacon extends ArmorAbility {
 
 						} else {
 
-							if (!Dungeon.interfloorTeleportAllowed()){
+							if (!Dungeon.interfloorTeleportAllowed(tracker.depth)){
 								GLog.w( Messages.get(ScrollOfTeleportation.class, "no_tele") );
 								return;
 							}

@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special;
 
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Belongings;
@@ -53,6 +54,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfIdentify;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMagicMapping;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRemoveCurse;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Alchemize;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Support;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAugmentation;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.MemberCard;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
@@ -287,6 +289,10 @@ public class ShopRoom extends SpecialRoom {
 		itemsToSpawn.add(m);
 		
 		itemsToSpawn.add( TippedDart.randomTipped(2) );
+
+        Support s = new Support();
+        while (Random.Float() < MemberCard.betterItemChance()) s.quantity(s.quantity() +1);
+        if (Dungeon.isChallenged(Challenges.NO_RETURN)) itemsToSpawn.add(s);
 
 		Alchemize al = new Alchemize();
 		al.quantity(Random.IntRange(2, 3));

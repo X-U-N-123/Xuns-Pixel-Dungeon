@@ -69,6 +69,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.spells.Recycle;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Scout;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.SummonElemental;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.SummonWraith;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Support;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.TelekineticGrab;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.UnstableSpell;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Uptier;
@@ -249,6 +250,7 @@ public abstract class Recipe {
 		new SummonWraith.Recipe(),
 		new Corrosion.Recipe(),
 		new Uptier.Recipe(),
+        new Support.Recipe(),
 		new StewedMeat.twoMeat()
 	};
 	

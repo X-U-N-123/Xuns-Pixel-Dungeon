@@ -876,8 +876,8 @@ public class ItemSpriteSheet {
 
 	//10 slots for others
 	public static final int RECLAIM_TRAP    = SPELLS+22;
-
-	//2 unused slots
+    public static final int SUPPORT         = SPELLS+23;
+	//1 unused slot
 	public static final int CORRUPTION      = SPELLS+25;
 	public static final int CORROSION       = SPELLS+26;
 	public static final int SUMMON_ELE      = SPELLS+27;

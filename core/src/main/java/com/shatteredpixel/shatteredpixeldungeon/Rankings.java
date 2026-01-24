@@ -23,6 +23,7 @@ package com.shatteredpixel.shatteredpixeldungeon;
 
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Collapse;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Belongings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
@@ -173,7 +174,7 @@ public enum Rankings {
 	}
 
 	//assumes a ranking is loaded, or game is ending
-	public int calculateScore(){
+    public int calculateScore(){
 
 		if (Dungeon.initialVersion > ShatteredPixelDungeon.v1_2_3){
 			Statistics.progressScore = Dungeon.hero.lvl * Statistics.deepestFloor * 65;
@@ -210,7 +211,10 @@ public enum Rankings {
 
 			Statistics.winMultiplier = 1f;
 			if (Statistics.gameWon)         Statistics.winMultiplier += 1f;
-			if (Statistics.ascended)        Statistics.winMultiplier += 0.5f;
+
+            if (Dungeon.isChallenged(Challenges.NO_RETURN) && Statistics.highestAscent > 0){
+                Statistics.winMultiplier += Math.min(0.5f, (25 - Statistics.highestAscent) * 0.1f);
+            } else if (Statistics.ascended) Statistics.winMultiplier += 0.5f;
 
 		//pre v1.3.0 runs have different score calculations
 		//only progress and treasure score, and they are each up to 50% bigger
@@ -496,6 +500,7 @@ public enum Rankings {
 		public String desc(){
 			if (win){
 				if (ascending){
+                    if (cause == Collapse.class) return Messages.get(this, "ascended_collapse");
 					return Messages.get(this, "ascended");
 				} else {
 					return Messages.get(this, "won");

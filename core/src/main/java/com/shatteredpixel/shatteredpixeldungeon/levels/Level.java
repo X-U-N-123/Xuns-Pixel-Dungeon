@@ -25,6 +25,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
@@ -39,6 +40,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Collapse;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicalSight;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MindVision;
@@ -107,6 +109,7 @@ import com.shatteredpixel.shatteredpixeldungeon.plants.Plant;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.SurfaceScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.CustomTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
@@ -595,6 +598,25 @@ public abstract class Level implements Bundlable {
 				|| transition.type == LevelTransition.Type.BRANCH_EXIT) {
 			InterlevelScene.mode = InterlevelScene.Mode.DESCEND;
 		} else {
+            Collapse collapse = hero.buff(Collapse.class);
+            if (collapse != null && !collapse.canReturnTo(Dungeon.depth - 1)){
+                if (Statistics.highestAscent > 0){
+
+                    Game.switchScene(SurfaceScene.class, new Game.SceneChangeCallback() {
+                        @Override
+                        public void beforeCreate() {}
+
+                        @Override
+                        public void afterCreate() {
+                            Dungeon.win( Collapse.class );
+                            Dungeon.deleteGame( GamesInProgress.curSlot, true );
+                            Badges.saveGlobal();
+                        }
+                    });
+                } else GLog.w(Messages.get(this, "no_return"));
+                return false;
+            }
+
 			InterlevelScene.mode = InterlevelScene.Mode.ASCEND;
 		}
 		Game.switchScene(InterlevelScene.class);

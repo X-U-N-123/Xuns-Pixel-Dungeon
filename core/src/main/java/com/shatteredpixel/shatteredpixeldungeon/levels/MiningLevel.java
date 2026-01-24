@@ -38,6 +38,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.Torch;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.DarkGold;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Pickaxe;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Support;
 import com.shatteredpixel.shatteredpixeldungeon.levels.builders.Builder;
 import com.shatteredpixel.shatteredpixeldungeon.levels.builders.FigureEightBuilder;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
@@ -215,6 +216,22 @@ public class MiningLevel extends CavesLevel {
 			}
 			drop( new Torch(), cell );
 		}
+
+        if (Dungeon.isChallenged(Challenges.NO_RETURN)){// 2 support is dropped for extra time
+            cell = randomDropCell();
+            if (map[cell] == Terrain.HIGH_GRASS || map[cell] == Terrain.FURROWED_GRASS) {
+                map[cell] = Terrain.GRASS;
+                losBlocking[cell] = false;
+            }
+            drop( new Support(), cell );
+
+            cell = randomDropCell();
+            if (map[cell] == Terrain.HIGH_GRASS || map[cell] == Terrain.FURROWED_GRASS) {
+                map[cell] = Terrain.GRASS;
+                losBlocking[cell] = false;
+            }
+            drop( new Support(), cell );
+        }
 	}
 
 	@Override

@@ -26,6 +26,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Amok;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Awareness;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Collapse;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Dread;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Light;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicalSight;
@@ -448,14 +449,12 @@ public class Dungeon {
 		}
 	}
 
-	public static boolean interfloorTeleportAllowed(){
-		if (Dungeon.level.locked
-				|| Dungeon.level instanceof MiningLevel
-				|| (Dungeon.hero != null && Dungeon.hero.belongings.getItem(Amulet.class) != null)){
-			return false;
-		}
-		return true;
-	}
+	public static boolean interfloorTeleportAllowed(int depth){
+        return !Dungeon.level.locked
+            && !(Dungeon.level instanceof MiningLevel)
+            && (Dungeon.hero == null || (Dungeon.hero.belongings.getItem(Amulet.class) == null
+            && (Dungeon.hero.buff(Collapse.class) == null || Dungeon.hero.buff(Collapse.class).canReturnTo(depth)) ));
+    }
 	
 	public static void switchLevel( final Level level, int pos ) {
 
