@@ -282,7 +282,7 @@ public class RockFallBuff extends Buff implements ActionIndicator.Action {
                                 Ballistica trajectory =
                                     new Ballistica(ch.pos, rockPath.path.get(rockPath.dist + 1), Ballistica.MAGIC_BOLT);
                                 int knockDistance = ((Hero)target).pointsInTalent(Talent.DESTRUCTIVE_STRIKE) >= 3 ? 2 : 1;
-                                WandOfBlastWave.throwChar(ch, trajectory, knockDistance, false, false, target);
+                                WandOfBlastWave.throwChar(ch, trajectory, knockDistance, false, true, target);
                             }
                         }
 

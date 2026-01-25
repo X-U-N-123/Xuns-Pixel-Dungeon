@@ -546,7 +546,7 @@ public class ItemSpriteSheet {
 		assignItemRect(ARMOR_DUELIST,   12, 13);
 		assignItemRect(ARMOR_CLERIC,    13, 14);
 		assignItemRect(ARMOR_LAMELLAR,  12, 12);
-        assignItemRect(ARMOR_LAMELLAR,  15, 14);
+        assignItemRect(ARMOR_EXPLORER,  15, 14);
 	}
 
 	private static final int WANDS              = xy(1, 10);  //16 slots

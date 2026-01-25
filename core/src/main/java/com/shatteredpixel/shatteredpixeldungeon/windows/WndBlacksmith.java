@@ -496,7 +496,7 @@ public class WndBlacksmith extends Window {
 				ItemButton btnReward = new ItemButton(){
 					@Override
 					protected void onClick() {
-						GameScene.show(new RewardWindow(troll, hero, item()));
+						GameScene.show(new RewardWindow( hero, item()));
 					}
 				};
 				btnReward.item( i );
@@ -516,7 +516,7 @@ public class WndBlacksmith extends Window {
 
 		private class RewardWindow extends WndInfoItem {
 
-			public RewardWindow( Blacksmith troll, Hero hero, Item item ) {
+			public RewardWindow( Hero hero, Item item ) {
 				super(item);
 
 				RedButton btnConfirm = new RedButton(Messages.get(WndSadGhost.class, "confirm")){
@@ -532,11 +532,11 @@ public class WndBlacksmith extends Window {
 
 						item.identify(false);
 						Sample.INSTANCE.play(Assets.Sounds.EVOKE);
-						Item.evoke( Dungeon.hero );
-						if (item.doPickUp( Dungeon.hero )) {
-							GLog.i( Messages.capitalize(Messages.get(Dungeon.hero, "you_now_have", item.name())) );
+						Item.evoke( hero );
+						if (item.doPickUp( hero )) {
+							GLog.i( Messages.capitalize(Messages.get(hero, "you_now_have", item.name())) );
 						} else {
-							Dungeon.level.drop( item, Dungeon.hero.pos ).sprite.drop();
+							Dungeon.level.drop( item, hero.pos ).sprite.drop();
 						}
 						WndSmith.this.hide();
 						Blacksmith.Quest.smithRewards = null;
@@ -563,5 +563,4 @@ public class WndBlacksmith extends Window {
 		}
 
 	}
-
 }

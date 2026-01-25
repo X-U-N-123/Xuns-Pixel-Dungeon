@@ -86,11 +86,6 @@ public class Extract extends InventorySpell {
 		Transmuting.show(curUser, item, result);
 		curUser.sprite.emitter().start(Speck.factory(Speck.CHANGE), 0.2f, 10);
 	}
-
-	@Override
-	public String desc() {
-		return Messages.get(this, "desc");
-	}
 	
 	@Override
 	public int value() {
