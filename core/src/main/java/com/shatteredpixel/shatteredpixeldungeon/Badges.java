@@ -216,7 +216,7 @@ public class Badges {
 		BOSS_SLAIN_3_PRIEST,
 		BOSS_SLAIN_3_PALADIN,
 		BOSS_SLAIN_3_PREACHER,
-		BOSS_SLAIN_3_GEOMANCER,
+        BOSS_SLAIN_3_WAVECHASER,
 		BOSS_SLAIN_3_TRAPPER,
 		BOSS_SLAIN_3_ROCKSY,
 		BOSS_SLAIN_3_ALL_SUBCLASSES ( 104, BadgeType.GLOBAL ),
@@ -281,12 +281,12 @@ public class Badges {
 	
 	private static final HashSet<String> removedBadges = new HashSet<>();
 	static{
-		removedBadges.add("xuanwu");
+		removedBadges.add("XUANWU");
 	}
 
 	private static final HashMap<String, String> renamedBadges = new HashMap<>();
 	static{
-		//no renamed badges currently
+		renamedBadges.put("BOSS_SLAIN_3_GEOMANCER", "BOSS_SLAIN_3_WAVECHASER");
 	}
 
 	public static HashSet<Badge> restore( Bundle bundle ) {
@@ -877,7 +877,7 @@ public class Badges {
 		thirdBossSubclassBadges.put(HeroSubClass.PRIEST, Badge.BOSS_SLAIN_3_PRIEST);
 		thirdBossSubclassBadges.put(HeroSubClass.PALADIN, Badge.BOSS_SLAIN_3_PALADIN);
 		thirdBossSubclassBadges.put(HeroSubClass.PREACHER, Badge.BOSS_SLAIN_3_PREACHER);
-		thirdBossSubclassBadges.put(HeroSubClass.GEOMANCER, Badge.BOSS_SLAIN_3_GEOMANCER);
+		thirdBossSubclassBadges.put(HeroSubClass.WAVECHASER, Badge.BOSS_SLAIN_3_WAVECHASER);
 		thirdBossSubclassBadges.put(HeroSubClass.TRAPPER, Badge.BOSS_SLAIN_3_TRAPPER);
 		thirdBossSubclassBadges.put(HeroSubClass.ROCKSY, Badge.BOSS_SLAIN_3_ROCKSY);
 	}

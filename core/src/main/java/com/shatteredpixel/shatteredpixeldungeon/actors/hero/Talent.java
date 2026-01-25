@@ -236,9 +236,9 @@ public enum Talent {
 	//Explorer T2
 	FARSIGHT_MEAL(293), LIQUID_CLAIRVOYANCE(294), ARCANE_BARRICADE(295), WINDING_PORCH(296), REKINDLED_EMBER(297), AGGRESSIVE_ROADBLOCK(298),
 	//Explorer T3
-	VARIED_ENVIRONMENT(299, 3), DIG_THE_WELL(300, 3), CONVENIENT_SHOVEL(301, 3),
-	//Geomancer T3
-	TAPESTRY_OF_VINES(302, 3), SON_OF_SEA(303, 3), STRIKING_STONE(304, 3), LAYERED_ARCHITECTURE(305, 3), RISING_WIND(306, 3),
+	DEMOLITION(299, 3), DIG_THE_WELL(300, 3), CONVENIENT_SHOVEL(301, 3),
+	//WaveChaser T3
+	RIVER_EROSION(302, 3), SON_OF_SEA(303, 3), DROWNING(304, 3), LAKE_DEVELOPMENT(305, 3), UNDERCURRENT(306, 3),
 	//Trapper T3
 	TRAP_MASTER(307, 3), FRIENDLY_MECHANISM(308, 3), SIMPLE_STRUCTURE(309, 3), FLUORESCENCE(310, 3), LIQUID_COLLECTING(311, 3),
 	//Rocksy T3
@@ -887,7 +887,7 @@ public enum Talent {
 			}
 		}
 
-		if (talent == HEIGHTENED_SENSES || talent == FARSIGHT || talent == DIVINE_SENSE || talent == YANG_SEEING || talent == WINDING_PORCH || talent == TAPESTRY_OF_VINES){
+		if (talent == HEIGHTENED_SENSES || talent == FARSIGHT || talent == DIVINE_SENSE || talent == YANG_SEEING || talent == WINDING_PORCH){
 			Dungeon.observe();
 			Dungeon.hero.checkVisibleMobs();
 		}
@@ -1576,7 +1576,7 @@ public enum Talent {
 				Collections.addAll(tierTalents, CLEANSE, LIGHT_READING, SHARED_CHARGE);
 				break;
 			case EXPLORER:
-				Collections.addAll(tierTalents, VARIED_ENVIRONMENT, DIG_THE_WELL, CONVENIENT_SHOVEL);
+				Collections.addAll(tierTalents, DEMOLITION, DIG_THE_WELL, CONVENIENT_SHOVEL);
 				break;
 		}
 		for (Talent talent : tierTalents){
@@ -1660,8 +1660,8 @@ public enum Talent {
 			case PREACHER:
 				Collections.addAll(tierTalents, PUNISHMENT, DRAPE_OF_REDEMPTION, HOLY_TRAP, HOLY_GHOST, ENHANCED_BOOKPAGE);
 				break;
-			case GEOMANCER:
-				Collections.addAll(tierTalents, TAPESTRY_OF_VINES, SON_OF_SEA, STRIKING_STONE, LAYERED_ARCHITECTURE, RISING_WIND);
+			case WAVECHASER:
+				Collections.addAll(tierTalents, RIVER_EROSION, SON_OF_SEA, DROWNING, LAKE_DEVELOPMENT, UNDERCURRENT);
 				break;
 			case TRAPPER:
 				Collections.addAll(tierTalents, TRAP_MASTER, FRIENDLY_MECHANISM, SIMPLE_STRUCTURE, FLUORESCENCE, LIQUID_COLLECTING);
@@ -1730,6 +1730,7 @@ public enum Talent {
 	private static final HashMap<String, String> renamedTalents = new HashMap<>();
 	static{
 		//X_U_N v1.0.0
+        renamedTalents.put("VARIED_ENVIRONMENT",        "DEMOLITION");
 		renamedTalents.put("HASHASHINS",                "EXTREMIST");
 		renamedTalents.put("HOLY_DRAPE",                "DRAPE_OF_REDEMPTION");
 		renamedTalents.put("HOLY_ANTIMAGIC",            "HOLY_TRAP");

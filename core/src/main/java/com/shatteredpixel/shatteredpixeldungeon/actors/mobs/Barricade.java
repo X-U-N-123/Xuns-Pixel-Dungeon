@@ -21,7 +21,9 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
+import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.BrokenArmor;
@@ -29,6 +31,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Daze;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Roots;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Slow;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vulnerable;
@@ -38,9 +41,12 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Bestiary;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.BarricadeSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
+import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
+import com.watabou.utils.Callback;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
@@ -83,6 +89,41 @@ public class Barricade extends Mob {
     @Override
     protected boolean canAttack(Char enemy) {
         return false;
+    }
+
+    @Override
+    public boolean heroShouldInteract() {
+        return alignment == Alignment.ALLY;
+    }
+
+    @Override
+    public boolean canInteract(Char c){
+        return c instanceof Hero && alignment == Alignment.ALLY && Dungeon.level.adjacent( pos, c.pos );
+    }
+
+    @Override
+    public boolean interact(Char c) {
+
+        if (c.buff(Roots.class) == null
+            && Dungeon.level.passable[pos * 2 - c.pos]
+            && Actor.findChar(pos * 2 - c.pos ) == null){
+
+            Sample.INSTANCE.play( Assets.Sounds.MISS, 1.5f);
+            c.sprite.jump(c.pos, pos * 2 - c.pos, new Callback() {
+                @Override
+                public void call() {
+                    c.pos = pos * 2 - c.pos;
+                    Dungeon.level.occupyCell( c );
+                    Dungeon.observe();
+                    GameScene.updateFog();
+                    //jump over the barricade if there is
+                    ((Hero)c).spendAndNext(1f/c.speed());
+                }
+            });
+        } else if (c.buff(Roots.class) != null) {
+            PixelScene.shake( 1, 1f );
+        }
+        return true;
     }
 
     @Override

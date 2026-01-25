@@ -158,6 +158,7 @@ public class ItemSpriteSheet {
 	public static final int SHIELD              = MISC_CONSUMABLE +25;
 	public static final int POT                 = MISC_CONSUMABLE +26;
 	public static final int SHOVEL_SCRAP        = MISC_CONSUMABLE +27;
+    public static final int DOOR_PLANK          = MISC_CONSUMABLE +28;
 	static{
 		assignItemRect(ANKH,            10, 16);
 		assignItemRect(STYLUS,          12, 13);
@@ -179,6 +180,7 @@ public class ItemSpriteSheet {
 		assignItemRect(MASTERY,         13, 16);
 		assignItemRect(KIT,             16, 15);
 		assignItemRect(POT,             14, 12);
+        assignItemRect(DOOR_PLANK,      14, 16);
 
 		assignItemRect(SEAL_SHARD,      11, 11);
 		assignItemRect(BROKEN_STAFF,    14, 10);
@@ -478,11 +480,8 @@ public class ItemSpriteSheet {
 
 	public static final int CHANGEABLE_WEP = xy(1, 9);//16 slots
 	public static final int SHOVEL               = CHANGEABLE_WEP+0;
-	public static final int STONE_SHOVEL         = CHANGEABLE_WEP+1;
+    public static final int WOOD_SHOVEL          = CHANGEABLE_WEP+1;
 	public static final int WATER_SHOVEL         = CHANGEABLE_WEP+2;
-	public static final int PLANT_SHOVEL         = CHANGEABLE_WEP+3;
-	public static final int CHASM_SHOVEL         = CHANGEABLE_WEP+4;
-	public static final int WOOD_SHOVEL          = CHANGEABLE_WEP+5;
 
 	public static final int BLADE_OF_REAL        = CHANGEABLE_WEP+6;
 	public static final int BLADE_OF_UNREAL      = CHANGEABLE_WEP+7;
@@ -491,11 +490,8 @@ public class ItemSpriteSheet {
 		public static final int coatOfArmsKind = 8;//currently 8 kinds of coat of arms is usable
 	static {
 		assignItemRect(SHOVEL,          16, 16);
-		assignItemRect(STONE_SHOVEL,    16, 16);
+        assignItemRect(WOOD_SHOVEL,     16, 16);
 		assignItemRect(WATER_SHOVEL,    16, 16);
-		assignItemRect(PLANT_SHOVEL,    16, 16);
-		assignItemRect(CHASM_SHOVEL,    16, 16);
-		assignItemRect(WOOD_SHOVEL,     16, 16);
 
 		assignItemRect(BLADE_OF_REAL,   15, 16);
 		assignItemRect(BLADE_OF_UNREAL, 15, 16);

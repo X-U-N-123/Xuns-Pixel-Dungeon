@@ -56,7 +56,7 @@ public class HeroIcon extends Image {
 	public static final int PRIEST      = 20;
 	public static final int PALADIN     = 21;
 	public static final int PREACHER    = 22;
-	public static final int GEOMANCER   = 24;
+	public static final int WAVECHASER  = 24;
 	public static final int TRAPPER     = 25;
 	public static final int ROCKSY      = 26;
 
@@ -138,7 +138,7 @@ public class HeroIcon extends Image {
 	public static final int MONK_ABILITIES  = 182;
 	public static final int NINJA_TELEPORT  = 183;
 	public static final int MIRROR_IMAGE    = 184;
-	public static final int SHOVEL          = 185;
+	public static final int WHIRLPOOL       = 185;
 	public static final int ROCK            = 186;
 
 	public HeroIcon(HeroSubClass subCls){

@@ -45,10 +45,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Berserk;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bless;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.BrokenArmor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Charm;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Chill;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Combo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Drowsy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
@@ -539,12 +537,6 @@ public class Hero extends Char {
 			if (heroClass == HeroClass.DUELIST)
 				Buff.affect( this, Sai.ComboStrikeTracker.class).addHit();
 
-			if (subClass == HeroSubClass.GEOMANCER
-            && (Dungeon.level.map[pos] == Terrain.EMPTY_SP || Dungeon.level.map[pos] == Terrain.PEDESTAL))
-				Buff.prolong(enemy, BrokenArmor.class, 3f);
-
-			if (hasTalent(Talent.SON_OF_SEA) && Dungeon.level.map[pos] == Terrain.WATER)
-				Buff.prolong(enemy, Chill.class, 3f);
 		}
 
 		attackTarget = null;
@@ -611,11 +603,6 @@ public class Hero extends Char {
 		&& heroClass == HeroClass.EXPLORER)
 			accuracy *= 1.1f;
 
-		if (hasTalent(Talent.STRIKING_STONE)){
-			for (int i : PathFinder.NEIGHBOURS8)
-				if (!Dungeon.level.passable[pos + i]) accuracy += 0.04f;
-		}
-
 		if(attackDelay() >1 && hasTalent(Talent.OVERWHELMING)){
 			accuracy += accuracy * Math.max (attackDelay()-(pointsInTalent(Talent.OVERWHELMING) / 3f),0.5f);
 		}
@@ -680,11 +667,6 @@ public class Hero extends Char {
 		if ((Dungeon.level.map[pos] == Terrain.EMPTY || Dungeon.level.map[pos] == Terrain.EMPTY_DECO)
 		&& heroClass == HeroClass.EXPLORER){
 			evasion *= 1.1f;
-		}
-
-		if (hasTalent(Talent.STRIKING_STONE)){
-			for (int i : PathFinder.NEIGHBOURS8)
-				if (!Dungeon.level.passable[pos + i]) evasion += 0.04f;
 		}
 
 		if (belongings.armor() != null) {
@@ -877,8 +859,8 @@ public class Hero extends Char {
 			speed *= courierFactor;
 		}
 
-		if (heroClass == HeroClass.EXPLORER && Dungeon.level.map[pos] == Terrain.WATER && subClass != HeroSubClass.GEOMANCER)
-			speed *= 1.1f; //overriden by geomancer ability, see spend(float time)
+		if (heroClass == HeroClass.EXPLORER && Dungeon.level.map[pos] == Terrain.WATER && subClass != HeroSubClass.WAVECHASER)
+			speed *= 1.1f; //overriden by wavechaser ability, see spend(float time)
 
 		speed = AscensionChallenge.modifyHeroSpeed(speed);
 		
@@ -979,7 +961,7 @@ public class Hero extends Char {
 		if (hasTalent(Talent.YIN_GAIT) && energy != null)
 			time /= 1f + 0.08f * pointsInTalent(Talent.YIN_GAIT) * energy.Getenergy() / energy.energyCap();
 
-		if (subClass == HeroSubClass.GEOMANCER && Dungeon.level.map[pos] == Terrain.WATER) time /= 1.1f;
+		if (subClass == HeroSubClass.WAVECHASER && Dungeon.level.map[pos] == Terrain.WATER) time /= 1.1f;
 
 		super.spend(time);
 	}
@@ -1083,7 +1065,10 @@ public class Hero extends Char {
 			} else if (curAction instanceof HeroAction.Mine) {
 				actResult = actMine( (HeroAction.Mine)curAction );
 
-			}else if (curAction instanceof HeroAction.LvlTransition) {
+			} else if (curAction instanceof HeroAction.BreakDeco) {
+                actResult = actBreakDeco( (HeroAction.BreakDeco)curAction );
+
+            } else if (curAction instanceof HeroAction.LvlTransition) {
 				actResult = actTransition( (HeroAction.LvlTransition)curAction );
 				
 			} else if (curAction instanceof HeroAction.Attack) {
@@ -1558,6 +1543,65 @@ public class Hero extends Char {
 			return false;
 		}
 	}
+
+    private boolean actBreakDeco(HeroAction.BreakDeco action){
+        if (Dungeon.level.adjacent(pos, action.dst) && (Dungeon.depth-1) / 5 != 3){//can't break flaming pedestal
+            path = null;
+            
+            if ((Dungeon.level.map[action.dst] == Terrain.REGION_DECO
+             || Dungeon.level.map[action.dst] == Terrain.REGION_DECO_ALT)
+            && Dungeon.level.insideMap(action.dst)){
+                int terrain = Dungeon.level.map[action.dst];
+                
+                sprite.attack(action.dst, new Callback() {
+                    @Override
+                    public void call() {
+                        switch ((Dungeon.depth - 1) / 5){ //0~4 for sewers ~ halls
+                            case 0:
+                                if (terrain == Terrain.REGION_DECO_ALT)
+                                    Level.set(action.dst, Terrain.EMPTY_SP);
+                                if (terrain == Terrain.REGION_DECO){
+                                    Level.set(action.dst, Terrain.WATER);
+                                    Splash.at(action.dst, 0xFF507B5D, 10);
+                                }
+                                break;
+                            case 1:
+                                if (terrain == Terrain.REGION_DECO_ALT)
+                                    Level.set(action.dst, Terrain.CHASM);
+                                if (terrain == Terrain.REGION_DECO)
+                                    Level.set(action.dst, Terrain.EMPTY);
+                                break;
+                            case 2:
+                                if (terrain == Terrain.REGION_DECO_ALT)
+                                    Level.set(action.dst, Terrain.EMPTY_SP);
+                                if (terrain == Terrain.REGION_DECO)
+                                    Level.set(action.dst, Terrain.EMPTY);
+                                break;
+                            case 3: ready(); return;
+                            case 4: default:
+                                Level.set(action.dst, Terrain.EMPTY);
+                                break;
+                        }
+                        GameScene.updateMap(action.dst);
+                        Sample.INSTANCE.play( Assets.Sounds.MINE );
+
+                        spendAndNext(TICK);
+                        ready();
+                    }
+                });
+            } else {
+                ready();
+            }
+            return false;
+        } else if (getCloser( action.dst )) {
+
+            return true;
+
+        } else {
+            ready();
+            return false;
+        }
+    }
 	
 	private boolean actTransition(HeroAction.LvlTransition action ) {
 		int stairs = action.dst;
@@ -1820,10 +1864,6 @@ public class Hero extends Char {
 			if (pointsInTalent(Talent.IRON_STOMACH) == 1)       damage /= 4f;
 			else if (pointsInTalent(Talent.IRON_STOMACH) == 2)  damage = 0;
 		}
-
-		if (subClass == HeroSubClass.GEOMANCER
-		&& (Dungeon.level.map[pos] == Terrain.EMPTY || Dungeon.level.map[pos] == Terrain.EMPTY_DECO))
-			damage *= 0.9f;
 
 		dmg = Math.round(damage);
 
@@ -2124,7 +2164,13 @@ public class Hero extends Char {
 
 			curAction = new HeroAction.Mine( cell );
 
-		} else if (heap != null
+		} else if (belongings.getItem(Pickaxe.class) != null &&
+        (Dungeon.level.map[cell] == Terrain.REGION_DECO
+        || Dungeon.level.map[cell] == Terrain.REGION_DECO_ALT)) {
+
+            curAction = new HeroAction.BreakDeco(cell);
+
+        } else if (heap != null
 				//moving to an item doesn't auto-pickup when enemies are near...
 				&& (visibleEnemies.size() == 0 || cell == pos ||
 				//...but only for standard heaps. Chests and similar open as normal.
@@ -2556,13 +2602,6 @@ public class Hero extends Char {
 
 			if (heroClass == HeroClass.DUELIST)
 				Buff.affect( this, Sai.ComboStrikeTracker.class).addHit();
-
-			if (subClass == HeroSubClass.GEOMANCER
-			&& (Dungeon.level.map[pos] == Terrain.EMPTY_SP || Dungeon.level.map[pos] == Terrain.PEDESTAL))
-				Buff.prolong(attackTarget, BrokenArmor.class, 3f);
-
-			if (hasTalent(Talent.SON_OF_SEA) && Dungeon.level.map[pos] == Terrain.WATER)
-				Buff.prolong(attackTarget, Chill.class, 3f);
 		}
 
 		curAction = null;

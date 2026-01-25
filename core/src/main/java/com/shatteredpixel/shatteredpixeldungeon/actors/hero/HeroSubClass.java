@@ -56,7 +56,7 @@ public enum HeroSubClass {
 	PALADIN(HeroIcon.PALADIN),
 	PREACHER(HeroIcon.PREACHER),
 
-	GEOMANCER(HeroIcon.GEOMANCER),
+	WAVECHASER(HeroIcon.WAVECHASER),
 	TRAPPER(HeroIcon.TRAPPER),
 	ROCKSY(HeroIcon.ROCKSY);
 

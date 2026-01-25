@@ -28,14 +28,16 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Fire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Levitation;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Roots;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Recharging;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.WhirlpoolBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.explorer.OpticalCamou;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Barricade;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Splash;
+import com.shatteredpixel.shatteredpixeldungeon.items.DoorPlank;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
@@ -43,7 +45,6 @@ import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
-import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
@@ -53,6 +54,7 @@ import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Callback;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.PointF;
+import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 
@@ -60,9 +62,7 @@ public class Shovel extends MeleeWeapon {
 
     public static final String AC_BUILD = "build";
     public static final String AC_WATER = "water";
-    public static final String AC_PLANT = "plant";
-    public static final String AC_CHASM = "chasm";
-    public static final String AC_JUMP  = "jump";
+    public static final String AC_BREAK = "break";
 
     {
         image = ItemSpriteSheet.SHOVEL;
@@ -83,12 +83,8 @@ public class Shovel extends MeleeWeapon {
     public ArrayList<String> actions(Hero hero ) {
         ArrayList<String> actions = super.actions( hero );
         actions.add(AC_BUILD);
-        actions.add(AC_JUMP);
-        if (hero.subClass == HeroSubClass.GEOMANCER) {
-            actions.add(AC_WATER);
-            actions.add(AC_PLANT);
-            actions.add(AC_CHASM);
-        }
+        if (hero.subClass == HeroSubClass.WAVECHASER) actions.add(AC_WATER);
+        if (hero.hasTalent(Talent.DEMOLITION))        actions.add(AC_BREAK);
         return actions;
     }
 
@@ -103,19 +99,15 @@ public class Shovel extends MeleeWeapon {
 
         super.execute(hero, action);
 
-        if (action.equals(AC_BUILD) || action.equals(AC_JUMP)
-        || action.equals(AC_WATER) || action.equals(AC_PLANT) || action.equals(AC_CHASM)){//Geomancer ability
+        if (action.equals(AC_BUILD) || action.equals(AC_WATER) || action.equals(AC_BREAK)){
             defaultAction = action;
             switch (defaultAction){
-                case AC_JUMP:
-                case AC_BUILD: image = ItemSpriteSheet.WOOD_SHOVEL;  break;
-                case AC_PLANT: image = ItemSpriteSheet.PLANT_SHOVEL; break;
+                case AC_BUILD: image = ItemSpriteSheet.SHOVEL;       break;
+                case AC_BREAK: image = ItemSpriteSheet.WOOD_SHOVEL;  break;
                 case AC_WATER: image = ItemSpriteSheet.WATER_SHOVEL; break;
-                case AC_CHASM: image = ItemSpriteSheet.CHASM_SHOVEL; break;
             }
             updateQuickslot();
-            if (curUser.buff(ExplorerCooldown.class) == null || action.equals(AC_JUMP)) GameScene.selectCell(changeTerrain);
-            else GLog.w(Messages.get(this, "cd"));
+            GameScene.selectCell(changeTerrain);
         }
     }
 
@@ -151,37 +143,14 @@ public class Shovel extends MeleeWeapon {
             }
             Char ch = Actor.findChar(cell);
 
+            int terrain = Dungeon.level.map[cell];
+
             switch (defaultAction){
-                case AC_JUMP:
-
-                    if (ch instanceof Barricade && ch.alignment == Char.Alignment.ALLY) {
-                        for (int i : PathFinder.NEIGHBOURS8) {
-                            if (curUser.pos == ch.pos + i && curUser.buff(Roots.class) == null
-                            && Dungeon.level.passable[ch.pos - i]
-                            && Actor.findChar(ch.pos - i ) == null){
-
-                                Sample.INSTANCE.play( Assets.Sounds.MISS, 1.5f);
-                                curUser.sprite.jump(curUser.pos, ch.pos - i, new Callback() {
-                                    @Override
-                                    public void call() {
-                                        curUser.pos = ch.pos - i;
-                                        Dungeon.level.occupyCell( curUser );
-                                        Dungeon.observe();
-                                        GameScene.updateFog();
-                                        //jump over the barricade if there is
-                                        curUser.spendAndNext(1f/curUser.speed());
-                                    }
-                                });
-                                return;
-                            } else if (curUser.buff(Roots.class) != null) {
-                                PixelScene.shake( 1, 1f );
-                                return;
-                            }
-                        }
-                    }
-
-                    break;
                 case AC_BUILD:
+                    if (curUser.buff(ExplorerCooldown.class) != null) {
+                        GLog.w(Messages.get(Shovel.class, "cd"));
+                        return;
+                    }
 
                     if (Dungeon.level.passable[cell]){
                         if (ch != null){
@@ -217,7 +186,8 @@ public class Shovel extends MeleeWeapon {
                 case AC_WATER:
                     Fire fire = (Fire) Dungeon.level.blobs.get(Fire.class);
 
-                    if (curUser.pointsInTalent(Talent.SON_OF_SEA) >= 3){
+                    if (curUser.hasTalent(Talent.LAKE_DEVELOPMENT) && cell == curUser.pos
+                            && curUser.buff(ExplorerCooldown.class) == null){
                         boolean watered = false;
                         for (int i : PathFinder.NEIGHBOURS9) {
                             if (Dungeon.level.setCellToWater(true, curUser.pos + i)){
@@ -229,15 +199,37 @@ public class Shovel extends MeleeWeapon {
 
                         if (watered){
                             Sample.INSTANCE.play(Assets.Sounds.WATER, 2f);
-                            Splash.at( DungeonTilemap.tileCenterToWorld( curUser.pos ), -PointF.PI/2, PointF.PI/2, 0x5bc1e3, 5, 0.01f);
-                            ExplorerCooldown.affectCD(50, curUser);
+                            Splash.at( DungeonTilemap.tileCenterToWorld( curUser.pos ), -PointF.PI/2, PointF.PI/2, 0x5bc1e3, 10, 0.01f);
+                            ExplorerCooldown.affectCD(10 * (7 - curUser.pointsInTalent(Talent.LAKE_DEVELOPMENT)), curUser);
                             curUser.spendAndNext(Actor.TICK);
                             Dungeon.observe();
                             curUser.sprite.zap(cell);
                             return;
                         }
 
-                    } else if (Dungeon.level.setCellToWater(true, cell)){
+                    } else if (terrain == Terrain.WATER){
+                        Level.set(cell, Terrain.EMPTY);
+
+                        //remove water here if here is
+                        if (ch != null && ch.alignment == Char.Alignment.ENEMY){
+                            switch (curUser.pointsInTalent(Talent.SON_OF_SEA)){
+                                case 3:
+                                    curUser.buff(WhirlpoolBuff.class).decreaseCD(4);//1 turn less because this takes a turn
+                                case 2:
+                                    Buff.prolong(curUser, Recharging.class, 4f);
+                                case 1:
+                                    Buff.prolong(ch, Vertigo.class, 4f);
+                            }
+                        }
+                        Sample.INSTANCE.play(Assets.Sounds.WATER, 2f);
+                        curUser.spendAndNext(Actor.TICK);
+                        GameScene.updateMap(cell);
+                        Dungeon.observe();
+                        curUser.sprite.zap(cell);
+                        return;
+
+                    } else if (curUser.buff(ExplorerCooldown.class) == null
+                            && Dungeon.level.setCellToWater(true, cell)){
                         if (fire != null) fire.clear(cell);
 
                         //put water if there has no water
@@ -252,104 +244,56 @@ public class Shovel extends MeleeWeapon {
 
                     }
                     break;
-                case AC_PLANT:
-                    boolean grown = false;
-
-                    for (int i : PathFinder.NEIGHBOURS9) {
-                        if (Dungeon.level.map[curUser.pos + i] == Terrain.EMPTY || Dungeon.level.map[curUser.pos + i] == Terrain.EMPTY_DECO
-                        || Dungeon.level.map[curUser.pos + i] == Terrain.EMBERS || Dungeon.level.map[curUser.pos + i] == Terrain.GRASS){
-
-                            Level.set(curUser.pos + i, Terrain.GRASS);
-                            grown = true;
-                            if (curUser.pointsInTalent(Talent.TAPESTRY_OF_VINES) >= 3){
-                                Level.set(curUser.pos + i, Terrain.FURROWED_GRASS);
-                            }
-                            GameScene.updateMap(curUser.pos + i);
-                        }
-                    }//plant grass if grass can grow there
-
-                    if (grown){
-                        Sample.INSTANCE.play(Assets.Sounds.PLANT);
-                        if (curUser.hasTalent(Talent.TAPESTRY_OF_VINES)) ExplorerCooldown.affectCD(50, curUser);
-                        else                                             ExplorerCooldown.affectCD(15, curUser);
-                        curUser.spendAndNext(Actor.TICK);
-                        Dungeon.observe();
-                        curUser.sprite.zap(cell);
-                        return;
-                    }
+                case AC_BREAK:
+                    if (breakTerrain(cell)) return;
                     break;
-                case AC_CHASM:
-                    if (Dungeon.level.map[cell] == Terrain.CHASM){
-                        Level.set(cell, Terrain.EMPTY_SP);
-
-                        Sample.INSTANCE.play( Assets.Sounds.BUILD );
-                        ExplorerCooldown.affectCD(60, curUser);
-                        curUser.spendAndNext(Actor.TICK);
-                        GameScene.updateMap(cell);
-                        Dungeon.observe();
-                        curUser.sprite.zap(cell);
-                        return;
-                        //prevent player from escaping boss fight by this
-                    } else if (Dungeon.level.passable[cell] && Actor.findChar(cell) == null && Dungeon.depth % 5 != 0) {
-                        Level.set(cell, Terrain.CHASM);
-
-                        Sample.INSTANCE.play( Assets.Sounds.ROCKS );
-                        GameScene.shake(2, 0.5f);
-                        ExplorerCooldown.affectCD(60, curUser);
-                        curUser.spendAndNext(Actor.TICK);
-                        GameScene.updateMap(cell);
-                        Dungeon.observe();
-                        curUser.sprite.zap(cell);
-                        return;
-
-                        //dig floor
-                    } else if ((Actor.findChar(cell) != null || Dungeon.depth % 5 == 0) && curUser.hasTalent(Talent.RISING_WIND)) {
-                        Buff.affect(curUser, Levitation.class, 15f);
-                        Sample.INSTANCE.play(Assets.Sounds.MISS);
-
-                        ExplorerCooldown.affectCD(60, curUser);
-                        curUser.spendAndNext(Actor.TICK);
-                        curUser.sprite.zap(cell);
-                        return;
-                    }
-                    if (curUser.pointsInTalent(Talent.STRIKING_STONE) >= 3 && Dungeon.level.map[cell] == Terrain.BARRICADE) {
-                        Level.set(cell, Terrain.EMPTY);
-
-                        Sample.INSTANCE.play( Assets.Sounds.BUILD );
-                        ExplorerCooldown.affectCD(50, curUser);
-                        curUser.spendAndNext(Actor.TICK);
-                        GameScene.updateMap(cell);
-                        Dungeon.observe();
-                        curUser.sprite.zap(cell);
-                        return;
-                        //remove barricade
-                    } else if (curUser.pointsInTalent(Talent.LAYERED_ARCHITECTURE) >= 3) {
-                        if (Dungeon.level.map[cell] == Terrain.STATUE){
-                            Level.set(cell, Terrain.EMPTY);
-
-                            Sample.INSTANCE.play( Assets.Sounds.MINE );
-                            ExplorerCooldown.affectCD(75, curUser);
-                            curUser.spendAndNext(Actor.TICK);
-                            GameScene.updateMap(cell);
-                            Dungeon.observe();
-                            curUser.sprite.zap(cell);
-                            return;
-                        }
-                        if (Dungeon.level.map[cell] == Terrain.STATUE_SP){
-                            Level.set(cell, Terrain.EMPTY_SP);
-
-                            Sample.INSTANCE.play( Assets.Sounds.MINE );
-                            ExplorerCooldown.affectCD(75, curUser);
-                            curUser.spendAndNext(Actor.TICK);
-                            GameScene.updateMap(cell);
-                            Dungeon.observe();
-                            curUser.sprite.zap(cell);
-                            return;
-                        }
-                        //break the statues
-                    }
             }
             GLog.w(Messages.get(this, "hard"));
         }
     };
+
+    public static boolean breakTerrain(int cell) {
+        int terrain = Dungeon.level.map[cell];
+
+        if (curUser.buff(ExplorerCooldown.class) != null) {
+            GLog.w(Messages.get(Shovel.class, "cd"));
+            return true;
+        }
+        if (terrain == Terrain.BARRICADE
+        || terrain == Terrain.DOOR || terrain == Terrain.OPEN_DOOR
+        && curUser.hasTalent(Talent.DEMOLITION) ) {
+            Level.set(cell, Terrain.EMPTY);
+
+            Sample.INSTANCE.play( Assets.Sounds.BUILD );
+            ExplorerCooldown.affectCD(30, curUser);
+
+            if (curUser.pointsInTalent(Talent.DEMOLITION) >= 3 && Random.Float() > 1/3f
+            && (terrain == Terrain.DOOR || terrain == Terrain.OPEN_DOOR)){
+                new DoorPlank().doPickUp(curUser);
+            } else curUser.spendAndNext(Actor.TICK);//picking the door already consumes a turn
+
+            GameScene.updateMap(cell);
+            Dungeon.observe();
+            curUser.sprite.zap(cell);
+            return true;
+            //remove barricade and door
+        } else if (curUser.pointsInTalent(Talent.DEMOLITION) >= 2) {
+            if (terrain != Terrain.STATUE && terrain != Terrain.STATUE_SP) return false;
+
+            if (terrain == Terrain.STATUE)
+                Level.set(cell, Terrain.EMPTY);
+            if (terrain == Terrain.STATUE_SP)
+                Level.set(cell, Terrain.EMPTY_SP);
+
+            Sample.INSTANCE.play( Assets.Sounds.MINE );
+            ExplorerCooldown.affectCD(30, curUser);
+            curUser.spendAndNext(Actor.TICK);
+            GameScene.updateMap(cell);
+            Dungeon.observe();
+            curUser.sprite.zap(cell);
+            return true;
+            //break the statues
+        }
+        return false;
+    }
 }

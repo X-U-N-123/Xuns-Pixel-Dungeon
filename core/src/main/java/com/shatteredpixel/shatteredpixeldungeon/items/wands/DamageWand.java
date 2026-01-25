@@ -25,8 +25,6 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.WandEmpower;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
-import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.watabou.noosa.audio.Sample;
 
@@ -61,9 +59,6 @@ public abstract class DamageWand extends Wand{
 			}
 			Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG, 0.75f, 1.2f);
 		}
-		if (Dungeon.hero.hasTalent(Talent.LAYERED_ARCHITECTURE)
-		&& (Dungeon.level.map[Dungeon.hero.pos] == Terrain.EMPTY_SP) || Dungeon.level.map[Dungeon.hero.pos] == Terrain.PEDESTAL)
-			dmg = Math.round(dmg * 1.1f);
 		return dmg;
 	}
 

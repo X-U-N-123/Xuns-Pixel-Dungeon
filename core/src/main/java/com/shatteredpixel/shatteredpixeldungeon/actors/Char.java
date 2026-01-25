@@ -30,6 +30,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Electricity;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.StormCloud;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ToxicGas;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Whirlpool;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Adrenaline;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AllyBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Amok;
@@ -59,7 +60,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Frost;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FrostImbue;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Fury;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.GeomancerBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hex;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
@@ -1156,6 +1156,7 @@ public abstract class Char extends Actor {
 			if (src instanceof Hunger)                                  icon = FloatingText.HUNGER;
 			if (src instanceof Chill || src instanceof Frost)           icon = FloatingText.FROST;
 			if (src instanceof GeyserTrap || src instanceof StormCloud) icon = FloatingText.WATER;
+            if (src instanceof Whirlpool)                               icon = FloatingText.WATER;
 			if (src instanceof Burning)                                 icon = FloatingText.BURNING;
 			if (src instanceof HeatBrew)                                icon = FloatingText.HEAT;
 			if (src instanceof Electricity)                             icon = FloatingText.SHOCKING;
@@ -1199,7 +1200,6 @@ public abstract class Char extends Actor {
 		NO_ARMOR_PHYSICAL_SOURCES.add(Necromancer.SummoningBlockDamage.class);
 		NO_ARMOR_PHYSICAL_SOURCES.add(DriedRose.GhostHero.NoRoseDamage.class);
 		NO_ARMOR_PHYSICAL_SOURCES.add(WandOfAvalanche.class);
-		NO_ARMOR_PHYSICAL_SOURCES.add(GeomancerBuff.class); //geomancer recharge damage
 		NO_ARMOR_PHYSICAL_SOURCES.add(Sandstorm.class); //chasm effect
 		NO_ARMOR_PHYSICAL_SOURCES.add(RockFallBuff.class);
         NO_ARMOR_PHYSICAL_SOURCES.add(Collapse.class);

@@ -40,6 +40,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Chill;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Collapse;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicalSight;
@@ -300,15 +301,6 @@ public abstract class Level implements Bundlable {
 						} else if (Random.Float() < WornLock.overrideNormalLevelChance()) {
 							feeling = WornLock.getNextFeeling();
 						//and we need priority here
-						} else if (Random.Float() <= Dungeon.hero.pointsInTalent(Talent.VARIED_ENVIRONMENT) /3f){
-							ArrayList<Feeling> usableFeelings = new ArrayList<>();
-								usableFeelings.add(Feeling.GRASS);
-								usableFeelings.add(Feeling.WATER);
-								usableFeelings.add(Feeling.TRAPS);
-								usableFeelings.add(Feeling.CHASM);
-								usableFeelings.add(Feeling.LARGE);
-								usableFeelings.add(Feeling.SECRETS);
-							feeling = usableFeelings.get(Random.Int(usableFeelings.size()));
 						} else {
 							feeling = Feeling.NONE;
 						}
@@ -1194,6 +1186,10 @@ public abstract class Level implements Bundlable {
 					if (ch instanceof Hero) Badges.validateExplorerUnlock();
 					ch.buff(Ooze.class).act();
 				}
+                if (Dungeon.hero.hasTalent(Talent.RIVER_EROSION) && ch.alignment == Char.Alignment.ENEMY
+                    && (!ch.isFlying() || Dungeon.hero.pointsInTalent(Talent.UNDERCURRENT) >= 3)){
+                    Buff.prolong(ch, Chill.class, 1 + Dungeon.hero.pointsInTalent(Talent.RIVER_EROSION));
+                }
 			}
 
 			if (map[ch.pos] == Terrain.EMBERS && ch instanceof Hero
@@ -1356,8 +1352,8 @@ public abstract class Level implements Bundlable {
 			}
 
 			//grass is see-through by some specific entities, but not during the fungi quest
-			if (!(Dungeon.level instanceof  MiningLevel) || Blacksmith.Quest.Type() != Blacksmith.Quest.FUNGI){
-				if ((c instanceof Hero && (((Hero) c).subClass == HeroSubClass.WARDEN || ((Hero) c).hasTalent(Talent.TAPESTRY_OF_VINES)))
+			if (!(Dungeon.level instanceof MiningLevel) || Blacksmith.Quest.Type() != Blacksmith.Quest.FUNGI){
+				if ((c instanceof Hero && ((Hero) c).subClass == HeroSubClass.WARDEN)
 						|| c instanceof YogFist.SoiledFist || c instanceof GnollGeomancer) {
 					if (blocking == null) {
 						System.arraycopy(Dungeon.level.losBlocking, 0, modifiableBlocking, 0, modifiableBlocking.length);

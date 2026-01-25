@@ -30,17 +30,16 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vulnerable;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Barricade;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Bee;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Crab;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Scorpio;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Spinner;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Swarm;
-import com.shatteredpixel.shatteredpixeldungeon.effects.Splash;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
-import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Shovel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.MiningLevel;
-import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -78,13 +77,21 @@ public class Pickaxe extends MeleeWeapon {
 	@Override
 	public ArrayList<String> actions( Hero hero ) {
 		ArrayList<String> actions = super.actions( hero );
-		actions.add(AC_MINE);
+		if (hero.hasTalent(Talent.DEMOLITION)) actions.add(AC_MINE);
 		if (Dungeon.level instanceof MiningLevel){
 			actions.remove(AC_DROP);
 			actions.remove(AC_THROW);
 		}
 		return actions;
 	}
+
+    @Override
+    public String desc(){
+        String desc = super.desc();
+        if (Dungeon.hero != null && Dungeon.hero.hasTalent(Talent.DEMOLITION))
+            desc += Messages.get(this, "desc_demolition");
+        return desc;
+    }
 
 	@Override
 	public boolean keptThroughLostInventory() {
@@ -109,43 +116,9 @@ public class Pickaxe extends MeleeWeapon {
 						GLog.w(Messages.get(this, "reach"));
 						return;
 					}
-					if (Dungeon.level.map[cell] == Terrain.REGION_DECO || Dungeon.level.map[cell] == Terrain.REGION_DECO_ALT){
-						if (0<Dungeon.depth && Dungeon.depth<=5){//Sewer
-							if (Dungeon.level.map[cell] == Terrain.REGION_DECO_ALT){
-								Level.set(cell, Terrain.EMPTY_SP);
-							} else if (Dungeon.level.map[cell] == Terrain.REGION_DECO){
-								Level.set(cell, Terrain.WATER);
-								Splash.at(cell, 0xFF507B5D, 10);
-							}
-						}
-						if (5<Dungeon.depth && Dungeon.depth<=10){//Prison
-							if (Dungeon.level.map[cell] == Terrain.REGION_DECO_ALT){
-								Level.set(cell, Terrain.CHASM);
-							} else if (Dungeon.level.map[cell] == Terrain.REGION_DECO){
-								Level.set(cell, Terrain.EMPTY);
-							}
-						}
-						if (10<Dungeon.depth && Dungeon.depth<=15){//Cave
-							if (Dungeon.level.map[cell] == Terrain.REGION_DECO_ALT){
-								Level.set(cell, Terrain.EMPTY_SP);
-							} else if (Dungeon.level.map[cell] == Terrain.REGION_DECO){
-								Level.set(cell, Terrain.EMPTY);
-							}
-						}
-						if (15<Dungeon.depth && Dungeon.depth<=20){//City
-							GLog.w(Messages.get(this, "hard"));
-							return;
-						}
-						if (20<Dungeon.depth && Dungeon.depth<=25){//Hall
-							Level.set(cell, Terrain.EMPTY);
-						}
-						GameScene.updateMap(cell);
-						Dungeon.hero.sprite.turnTo( Dungeon.hero.pos, cell);
-						Dungeon.hero.sprite.zap(cell);
-						Sample.INSTANCE.play( Assets.Sounds.MINE );
-						hero.spendConstant(Actor.TICK);
-					} else {
-						GLog.w(Messages.get(this, "hard"));
+
+					if (!Shovel.breakTerrain(cell)){
+                        GLog.w(Messages.get(this, "hard"));
 						return;
 					}
 
