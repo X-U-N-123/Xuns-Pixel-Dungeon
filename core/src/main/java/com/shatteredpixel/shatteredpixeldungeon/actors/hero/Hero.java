@@ -244,9 +244,8 @@ public class Hero extends Char {
 	public Belongings belongings;
 	
 	public int STR;
-	public float partialSTR = 0;
-	
-	public float awareness;
+
+    public float awareness;
 	
 	public int lvl = 1;
 	public int fakeLvl = 0;
@@ -312,7 +311,6 @@ public class Hero extends Char {
 	private static final String ATTACK		= "attackSkill";
 	private static final String DEFENSE		= "defenseSkill";
 	private static final String STRENGTH	= "STR";
-	private static final String PARTIALSTR  = "partSTR";
 	private static final String LEVEL		= "lvl";
 	private static final String FAKELEVEL	= "fakeLvl";
 	private static final String EXPERIENCE	= "exp";
@@ -332,7 +330,6 @@ public class Hero extends Char {
 		bundle.put( DEFENSE, defenseSkill );
 		
 		bundle.put( STRENGTH, STR );
-		bundle.put( PARTIALSTR, partialSTR );
 		
 		bundle.put( LEVEL, lvl );
 		bundle.put( FAKELEVEL, fakeLvl );
@@ -363,7 +360,6 @@ public class Hero extends Char {
 		defenseSkill = bundle.getInt( DEFENSE );
 		
 		STR = bundle.getInt( STRENGTH );
-		partialSTR = bundle.getInt( PARTIALSTR );
 
 		belongings.restoreFromBundle( bundle );
 

@@ -134,7 +134,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ElementalMask;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.items.devShield;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfStrength;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.HeatBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfCleansing;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Pickaxe;
@@ -513,19 +512,6 @@ public abstract class Char extends Actor {
 			if (endure != null){
 				dmg = endure.adjustDamageTaken(dmg);
 			}
-
-			if (Dungeon.isChallenged(Challenges.EXERCISES) && Regeneration.regenOn())//exercise increase strength logic
-				if ((enemy == hero && hero.belongings.armor() != null && hero.belongings.armor().STRReq() > hero.STR())
-				|| (this == hero && hero.belongings.attackingWeapon() != null && ((Weapon)hero.belongings.attackingWeapon()).STRReq() > hero.STR())){
-					hero.partialSTR += 0.01f;
-					while (hero.partialSTR >= 1){
-						hero.partialSTR --;
-						hero.STR ++;
-
-						hero.sprite.showStatusWithIcon(CharSprite.POSITIVE, "1", FloatingText.STRENGTH);
-						GLog.p( Messages.get(PotionOfStrength.class, "msg", hero.STR()) );
-					}
-				}
 
 			if (enemy.buff(ScrollOfChallenge.ChallengeArena.class) != null){
 				dmg *= 0.67f;

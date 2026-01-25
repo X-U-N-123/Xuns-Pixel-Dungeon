@@ -84,7 +84,7 @@ public class Collapse extends Buff {
             else                   Sample.INSTANCE.play(Assets.Sounds.ROCKS, 0.4f, 0.7f);
         }
         if (!canReturnTo(Dungeon.depth)) {
-            if (Dungeon.bossLevel()) {
+            if (Dungeon.bossLevel() || Dungeon.branch == 1) {
                 target.damage(target.HT / 10, this);
                 if (!target.isAlive()){
                     Badges.validateDeathFromFalling();

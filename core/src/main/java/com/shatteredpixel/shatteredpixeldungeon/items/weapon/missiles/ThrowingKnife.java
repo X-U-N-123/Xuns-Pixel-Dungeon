@@ -22,8 +22,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.Challenges;
-import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
@@ -55,8 +53,7 @@ public class ThrowingKnife extends MissileWeapon {
 						max()));
 				int exStr = hero.STR() - STRReq();
 				if (exStr > 0) {
-					if (Dungeon.isChallenged(Challenges.EXERCISES)) damage += exStr;
-					else damage += Hero.heroDamageIntRange(0, exStr);
+					damage += Hero.heroDamageIntRange(0, exStr);
 				}
 				return damage;
 			}
