@@ -84,8 +84,8 @@ public class Collapse extends Buff {
             else                   Sample.INSTANCE.play(Assets.Sounds.ROCKS, 0.4f, 0.7f);
         }
         if (!canReturnTo(Dungeon.depth)) {
-            if (target.buff(LockedFloor.class) != null) {
-                target.damage(target.HT / 20, this);
+            if (Dungeon.bossLevel()) {
+                target.damage(target.HT / 10, this);
                 if (!target.isAlive()){
                     Badges.validateDeathFromFalling();
 

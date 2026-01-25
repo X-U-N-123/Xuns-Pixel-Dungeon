@@ -591,7 +591,7 @@ public abstract class Level implements Bundlable {
 			InterlevelScene.mode = InterlevelScene.Mode.DESCEND;
 		} else {
             Collapse collapse = hero.buff(Collapse.class);
-            if (collapse != null && !collapse.canReturnTo(Dungeon.depth - 1)){
+            if (collapse != null && (!collapse.canReturnTo(Dungeon.depth - 1) || Dungeon.depth <= 21)){
                 if (Statistics.highestAscent > 0){
 
                     Game.switchScene(SurfaceScene.class, new Game.SceneChangeCallback() {
