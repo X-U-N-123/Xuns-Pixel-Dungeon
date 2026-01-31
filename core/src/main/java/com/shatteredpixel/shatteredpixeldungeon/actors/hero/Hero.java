@@ -147,6 +147,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfLivingEarth;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.BladeOfMimic;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Crossbow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Fetter;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Flail;
@@ -867,14 +868,15 @@ public class Hero extends Char {
 	@Override
 	public boolean canSurpriseAttack(){
 		KindOfWeapon w = belongings.attackingWeapon();
-		if (!(w instanceof Weapon))             return true;
-		if (RingOfForce.fightingUnarmed(this))  return true;
-		if (STR() < ((Weapon)w).STRReq())       return false;
-		if (w instanceof StoneHammer)           return false;
-		if (w instanceof LightFlail)            return false;
-		if (w instanceof Flail)                 return false;
-		if (w instanceof HeavyFlail)            return false;
-		if (w instanceof Fetter)                return false;
+		if (!(w instanceof Weapon))                                    return true;
+		if (RingOfForce.fightingUnarmed(this))                    return true;
+		if (STR() < ((Weapon)w).STRReq())                              return false;
+		if (w instanceof StoneHammer)                                  return false;
+		if (w instanceof LightFlail)                                   return false;
+		if (w instanceof Flail)                                        return false;
+		if (w instanceof HeavyFlail)                                   return false;
+		if (w instanceof Fetter)                                       return false;
+        if (w instanceof BladeOfMimic && !((BladeOfMimic) w).canSneak) return false;
 
 		return super.canSurpriseAttack();
 	}
@@ -953,14 +955,20 @@ public class Hero extends Char {
 
 	@Override
 	public void spend( float time ) {
-		MonkEnergy energy = buff(MonkEnergy.class);
-		if (hasTalent(Talent.YIN_GAIT) && energy != null)
-			time /= 1f + 0.08f * pointsInTalent(Talent.YIN_GAIT) * energy.Getenergy() / energy.energyCap();
-
-		if (subClass == HeroSubClass.WAVECHASER && Dungeon.level.map[pos] == Terrain.WATER) time /= 1.1f;
-
 		super.spend(time);
 	}
+
+    @Override
+    public float timeScale(){
+        float timeScale = 1f;
+        MonkEnergy energy = buff(MonkEnergy.class);
+        if (hasTalent(Talent.YIN_GAIT) && energy != null)
+            timeScale *= 1f + 0.08f * pointsInTalent(Talent.YIN_GAIT) * energy.Getenergy() / energy.energyCap();
+
+        if (subClass == HeroSubClass.WAVECHASER && Dungeon.level.map[pos] == Terrain.WATER) timeScale *= 1.1f;
+
+        return timeScale * super.timeScale();
+    }
 
 	@Override
 	public void spendConstant(float time) {
@@ -1864,8 +1872,8 @@ public class Hero extends Char {
 		dmg = Math.round(damage);
 
 		//向下取整，作为对韧性戒指的加强
-		//+0.1 后向下取整，作为削弱（免疫饥饿也太强了）
-		dmg = (int)Math.floor(dmg * RingOfTenacity.damageMultiplier( this ) + 0.1f);
+		//+0.2 后向下取整，作为削弱（免疫饥饿也太强了）
+		dmg = (int)Math.floor(dmg * RingOfTenacity.damageMultiplier( this ) + 0.2f);
 
 		int preHP = HP + shielding();
 		if (src instanceof Hunger) preHP -= shielding();

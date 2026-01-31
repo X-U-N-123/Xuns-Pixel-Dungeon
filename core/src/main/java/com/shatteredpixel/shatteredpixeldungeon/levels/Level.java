@@ -40,7 +40,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Chill;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Collapse;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicalSight;
@@ -1188,7 +1187,7 @@ public abstract class Level implements Bundlable {
 				}
                 if (Dungeon.hero.hasTalent(Talent.RIVER_EROSION) && ch.alignment == Char.Alignment.ENEMY
                     && (!ch.isFlying() || Dungeon.hero.pointsInTalent(Talent.UNDERCURRENT) >= 3)){
-                    Buff.prolong(ch, Chill.class, 1 + Dungeon.hero.pointsInTalent(Talent.RIVER_EROSION));
+                    Buff.affect(ch, Talent.RiverErosionTracker.class);
                 }
 			}
 

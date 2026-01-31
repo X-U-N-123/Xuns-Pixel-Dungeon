@@ -29,6 +29,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Electricity;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Fire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Freezing;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Adrenaline;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AllyBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Amok;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
@@ -75,6 +76,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Friendly;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Polarized;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Sacrificial;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Wayward;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Alienating;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Blazing;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Blocking;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Blooming;
@@ -115,6 +117,7 @@ public class ElementalStrike extends ArmorAbility {
 	//TODO a few duplicates here (curse duplicates are fine)
 	private static final HashMap<Class<?extends Weapon.Enchantment>, Integer> effectTypes = new HashMap<>();
 	static {
+        effectTypes.put(Alienating.class,   MagicMissile.FORCE_CONE);
 		effectTypes.put(Blazing.class,      MagicMissile.FIRE_CONE);
 		effectTypes.put(Chilling.class,     MagicMissile.FROST_CONE);
 		effectTypes.put(Kinetic.class,      MagicMissile.FORCE_CONE);
@@ -131,6 +134,7 @@ public class ElementalStrike extends ArmorAbility {
 		effectTypes.put(Vampiric.class,     MagicMissile.BLOOD_CONE);
 
 		effectTypes.put(Annoying.class,     MagicMissile.SHADOW_CONE);
+        effectTypes.put(BarricadeCurse.class,MagicMissile.SHADOW_CONE);
 		effectTypes.put(Displacing.class,   MagicMissile.SHADOW_CONE);
 		effectTypes.put(Dazzling.class,     MagicMissile.SHADOW_CONE);
 		effectTypes.put(Explosive.class,    MagicMissile.SHADOW_CONE);
@@ -138,7 +142,6 @@ public class ElementalStrike extends ArmorAbility {
 		effectTypes.put(Wayward.class,      MagicMissile.SHADOW_CONE);
 		effectTypes.put(Polarized.class,    MagicMissile.SHADOW_CONE);
 		effectTypes.put(Friendly.class,     MagicMissile.SHADOW_CONE);
-		effectTypes.put(BarricadeCurse.class,         MagicMissile.SHADOW_CONE);
 
 		effectTypes.put(null,            MagicMissile.MAGIC_MISS_CONE);
 	}
@@ -268,7 +271,14 @@ public class ElementalStrike extends ArmorAbility {
 				hero.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(shield), FloatingText.SHIELDING);
 			}
 
-		//*** Vampiric ***
+        //*** Alienating ***
+        } else if (ench instanceof Alienating){
+            if (targetsHit > 0){
+                int turn = Math.round(Math.round(3f*targetsHit*powerMulti));
+                Buff.affect(hero, Adrenaline.class, turn);
+            }
+
+            //*** Vampiric ***
 		} else if (ench instanceof Vampiric){
 			if (targetsHit > 0){
 				int heal = Math.round(2.5f*targetsHit*powerMulti);

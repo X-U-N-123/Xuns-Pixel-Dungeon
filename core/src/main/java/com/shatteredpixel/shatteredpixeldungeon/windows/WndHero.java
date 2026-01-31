@@ -159,7 +159,7 @@ public class WndHero extends WndTabbed {
 
 	private class StatusTab extends Group {
 		
-		private static final int GAP = 6;
+		private static final int GAP = 5;
 		
 		private float pos;
 		
@@ -227,6 +227,7 @@ public class WndHero extends WndTabbed {
 			}
 			statSlot( Messages.get(this, "movedly"), Messages.get(this, "turn", 1f/hero.speed() ));
 			statSlot( Messages.get(this, "atkdly"), Messages.get(this, "turn", hero.attackDelay() ));
+            statSlot( Messages.get(this, "timescale"), Messages.get(this, "scale", 1/hero.timeScale() ));
 
 			float regenDelay = -1f;
 			if (hero.buff(Regeneration.class) != null)

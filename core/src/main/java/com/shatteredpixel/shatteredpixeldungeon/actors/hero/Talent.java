@@ -33,6 +33,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.BrokenArmor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Chill;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.CounterBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedRings;
@@ -115,6 +116,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 
+@SuppressWarnings("SuspiciousIndentation")
 public enum Talent {
 
 	//Warrior T1
@@ -655,6 +657,21 @@ public enum Talent {
 		public void tintIcon(Image icon) { icon.hardlight(0.6f, 0.6f, 0f); }
 		public float iconFadePercent() { return Math.max(0, visualcooldown() / 500f); }
 	}
+    public static class RiverErosionTracker extends Buff {
+
+        {
+            actPriority = MOB_PRIO + 2; // to make sure it gives chill correctly
+        }
+
+        @Override
+        public boolean act() {
+            if (Dungeon.level.water[target.pos]){
+                Buff.prolong(target, Chill.class, 0.1f + Dungeon.hero.pointsInTalent(RIVER_EROSION));
+            } else detach();
+            spend( 0.1f * TICK );
+            return true;
+        }
+    }
 
 	public static class CombinedLethalityAbilityTracker extends FlavourBuff{
 		public MeleeWeapon weapon;
@@ -943,6 +960,15 @@ public enum Talent {
 
 		if (Dungeon.level.map[hero.pos] == Terrain.EMBERS && talent == REKINDLED_EMBER && hero.buff(Burning.class) != null)
 			Buff.detach(hero, Burning.class);
+
+        if (talent == RIVER_EROSION || (talent == UNDERCURRENT && Dungeon.hero.pointsInTalent(talent) >= 3)){
+            for (Mob m : Dungeon.level.mobs.toArray(new Mob[0])) {
+                if (m.alignment == Char.Alignment.ENEMY && m.state != m.SLEEPING
+                && (!m.isFlying() || Dungeon.hero.pointsInTalent(Talent.UNDERCURRENT) >= 3)){
+                    Buff.affect(m, Talent.RiverErosionTracker.class).act();
+                }
+            }
+        }
 	}
 
 	public static class CachedRationsDropped extends CounterBuff{{revivePersists = true;}}

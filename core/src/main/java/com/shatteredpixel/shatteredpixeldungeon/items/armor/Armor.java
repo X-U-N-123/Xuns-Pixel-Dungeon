@@ -63,6 +63,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Repulsion;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Stone;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Swiftness;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Thorns;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Vengeance;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Viscosity;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfArcana;
@@ -799,12 +800,12 @@ public class Armor extends EquipableItem {
 				Repulsion.class, Camouflage.class, Flow.class, Freezingglyph.class};
 
 		public static final Class<?>[] rare = new Class<?>[]{
-				Affection.class, AntiMagic.class, Thorns.class };
+				Affection.class, AntiMagic.class, Thorns.class, Vengeance.class};
 
 		public static final float[] typeChances = new float[]{
-				50, //12.5% each
-				40, //6.67% each
-				10  //3.33% each
+				35, //8.75% each
+				45, //6.42% each
+				20  //5% each
 		};
 
 		public static final Class<?>[] curses = new Class<?>[]{

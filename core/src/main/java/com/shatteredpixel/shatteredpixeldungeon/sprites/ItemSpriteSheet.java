@@ -478,15 +478,16 @@ public class ItemSpriteSheet {
 		assignItemRect(HEAVYBOOMERANG,  15, 15);
 	}
 
-	public static final int CHANGEABLE_WEP = xy(1, 9);//16 slots
-	public static final int SHOVEL               = CHANGEABLE_WEP+0;
-    public static final int WOOD_SHOVEL          = CHANGEABLE_WEP+1;
-	public static final int WATER_SHOVEL         = CHANGEABLE_WEP+2;
+	public static final int OTHER_WEP = xy(1, 9);//16 slots
+	public static final int SHOVEL               = OTHER_WEP +0;
+    public static final int WOOD_SHOVEL          = OTHER_WEP +1;
+	public static final int WATER_SHOVEL         = OTHER_WEP +2;
+    public static final int BLADE_OF_MIMIC       = OTHER_WEP +3;
 
-	public static final int BLADE_OF_REAL        = CHANGEABLE_WEP+6;
-	public static final int BLADE_OF_UNREAL      = CHANGEABLE_WEP+7;
+	public static final int BLADE_OF_REAL        = OTHER_WEP +6;
+	public static final int BLADE_OF_UNREAL      = OTHER_WEP +7;
 
-	public static final int KITESHIELD_START     = CHANGEABLE_WEP+8;
+	public static final int KITESHIELD_START     = OTHER_WEP +8;
 		public static final int coatOfArmsKind = 8;//currently 8 kinds of coat of arms is usable
 	static {
 		assignItemRect(SHOVEL,          16, 16);

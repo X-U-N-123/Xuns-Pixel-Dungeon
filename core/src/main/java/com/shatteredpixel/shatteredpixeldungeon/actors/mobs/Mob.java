@@ -1167,7 +1167,8 @@ public abstract class Mob extends Char {
 			if (this.buff(BrokenArmor.class) != null){
 				armor = 0;
 			}
-			desc_dev = Messages.get(this, "dev_info", HP, HT, attackSkill(this), defenseSkill(this), EXP, maxLvl + inc, damageRoll(), attackDelay(), armor, speed());
+			desc_dev = Messages.get(this, "dev_info", HP, HT, attackSkill(this), defenseSkill(this),
+                EXP, maxLvl + inc, damageRoll(), attackDelay(), armor, speed(), 1/timeScale());
 		}
 		if (Dungeon.isChallenged(Challenges.CRAZY_LOOT) && plunderedItem != null){
 			plunder += "\n\n" + Messages.get(this, "plunder");
