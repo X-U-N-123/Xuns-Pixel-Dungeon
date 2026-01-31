@@ -237,11 +237,8 @@ public class HeroSelectScene extends PixelScene {
 			title.setPos( (leftArea - title.width())/2f, (Camera.main.height-uiHeight)/2f);
 			align(title);
 
-			int btnWidth = HeroBtn.MIN_WIDTH + 6;
+			int btnWidth = HeroBtn.MIN_WIDTH;
 			int btnHeight = HeroBtn.HEIGHT;
-			if (uiHeight >= 180){
-				btnHeight += 6;
-			}
 
 			int cols = (int)Math.ceil(heroBtns.size()/2f);
 			float curX = (leftArea - btnWidth * cols + (cols-1))/2f;
@@ -534,8 +531,8 @@ public class HeroSelectScene extends PixelScene {
 
 		private HeroClass cl;
 
-		private static final int MIN_WIDTH = 20;
-		private static final int HEIGHT = 20;
+		private static final int MIN_WIDTH = 22;
+		private static final int HEIGHT = 22;
 
 		HeroBtn ( HeroClass cl ){
 			super(Chrome.Type.GREY_BUTTON_TR, "");

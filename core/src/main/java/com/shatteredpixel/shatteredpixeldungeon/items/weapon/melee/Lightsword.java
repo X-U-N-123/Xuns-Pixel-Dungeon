@@ -58,7 +58,7 @@ public class Lightsword extends MeleeWeapon{
         if ((owner != Dungeon.hero || Dungeon.hero.STR >= STRReq())
         && (target.properties().contains(Char.Property.UNDEAD) || target.properties().contains(Char.Property.DEMONIC))) {
             //always hit while fighting against undead and demonic enemies
-            return Float.POSITIVE_INFINITY;
+            return super.accuracyFactor(owner, target) * 1.5f;
         } else {
             return super.accuracyFactor(owner, target);
         }

@@ -204,7 +204,7 @@ public enum HeroClass {
 			havoc.identify().collect();
 			new LamellarArmor().upgrade(210).identify().collect();
 			new Windblade().upgrade(105).identify().collect();
-            new BladeOfMimic().collect();
+            new BladeOfMimic().identify().collect();
 
 			for (int s = 0; s < QuickSlot.SIZE; s++) {
 				if (Dungeon.quickslot.getItem(s) == null) {

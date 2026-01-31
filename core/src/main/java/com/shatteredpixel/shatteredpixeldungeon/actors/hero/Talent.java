@@ -1167,8 +1167,8 @@ public enum Talent {
 
 	public static void onPotionUsed( Hero hero, int cell, float factor ){
 		if (hero.hasTalent(LIQUID_WILLPOWER)){
-			// 10/15% of max HP
-			int shieldToGive = Math.round( factor * hero.HT * (0.05f + 0.05f*hero.pointsInTalent(LIQUID_WILLPOWER)));
+			// 8/12% of max HP
+			int shieldToGive = Math.round( factor * hero.HT * (0.04f + 0.04f*hero.pointsInTalent(LIQUID_WILLPOWER)));
 			hero.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(shieldToGive), FloatingText.SHIELDING);
 			Buff.affect(hero, Barrier.class).setShield(shieldToGive);
         }

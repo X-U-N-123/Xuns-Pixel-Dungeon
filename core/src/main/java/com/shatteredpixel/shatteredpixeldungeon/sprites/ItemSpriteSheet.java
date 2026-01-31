@@ -493,6 +493,7 @@ public class ItemSpriteSheet {
 		assignItemRect(SHOVEL,          16, 16);
         assignItemRect(WOOD_SHOVEL,     16, 16);
 		assignItemRect(WATER_SHOVEL,    16, 16);
+        assignItemRect(BLADE_OF_MIMIC,  15, 15);
 
 		assignItemRect(BLADE_OF_REAL,   15, 16);
 		assignItemRect(BLADE_OF_UNREAL, 15, 16);

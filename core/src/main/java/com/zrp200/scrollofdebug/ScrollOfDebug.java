@@ -279,7 +279,6 @@ public class ScrollOfDebug extends Scroll {
                         GLog.newLine();
                     }
                 }
-                lastCommand = text;
 
                 String[] initialInput = text.split(" ");
                 Callback init = null;
@@ -287,6 +286,8 @@ public class ScrollOfDebug extends Scroll {
                 final String[] input = handleVariables(initialInput);
 
                 if (input == null || input.length == 0) return;
+
+                lastCommand = text;
 
                 interpret(input);
             }

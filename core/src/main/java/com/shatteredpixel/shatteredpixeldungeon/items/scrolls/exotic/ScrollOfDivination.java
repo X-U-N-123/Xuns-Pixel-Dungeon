@@ -66,7 +66,7 @@ public class ScrollOfDivination extends ExoticScroll {
 		ArrayList<Item> IDed = new ArrayList<>();
 		int left = 4;
 		
-		float[] baseProbs = new float[]{3, 3, 3};
+		float[] baseProbs = new float[]{2, 2, 1};
 		float[] probs = baseProbs.clone();
 		
 		while (left > 0 && total > 0) {

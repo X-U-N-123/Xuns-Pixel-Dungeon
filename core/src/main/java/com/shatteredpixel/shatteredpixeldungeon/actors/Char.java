@@ -1013,7 +1013,7 @@ public abstract class Char extends Actor {
 		if (AntiMagic.RESISTS.contains(src.getClass())){
 			dmg -= AntiMagic.drRoll(this, glyphLevel(AntiMagic.class));
 			if (hero.hasTalent(Talent.ARCANE_ARMOR) && this instanceof Hero){
-				dmg -= Random.NormalIntRange(0, Math.round(0.05f*hero.pointsInTalent(Talent.ARCANE_ARMOR)*HT));
+				dmg -= Random.NormalIntRange(0, Math.round(0.2f*hero.pointsInTalent(Talent.ARCANE_ARMOR)*((Hero)this).lvl ));
 			}
 			if (buff(ArcaneArmor.class) != null) {
 				dmg -= Random.NormalIntRange(0, buff(ArcaneArmor.class).level());

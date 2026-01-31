@@ -76,7 +76,7 @@ public class BladeOfMimic extends MeleeWeapon {
 
     //6 extra defence, plus 2 per level
     public int DRMax(int lvl){
-        return 6 + 2*lvl;
+        return baseBlock + lvl * scaleBlock;
     }
 
     //改变攻击距离、力量要求、基础最小值、成长最小值、基础最大值、成长最大值、精准、基础格挡、成长格挡、延迟
@@ -90,6 +90,7 @@ public class BladeOfMimic extends MeleeWeapon {
 
     @Override
     public void execute(Hero hero, String action) {
+        super.execute(hero, action);
         if (action.equals(AC_MIMIC)){
 
         }
