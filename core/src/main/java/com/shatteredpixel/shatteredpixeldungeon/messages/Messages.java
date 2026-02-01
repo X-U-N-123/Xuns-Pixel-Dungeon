@@ -87,9 +87,9 @@ public class Messages {
 		//store language and locale info for various string logic
 		Messages.lang = lang;
 		Locale bundleLocal;
-		if (lang == Languages.ENGLISH){
-			locale = Locale.ENGLISH;
-			bundleLocal = Locale.ROOT; //english is source, uses root locale for fetching bundle
+		if (lang == Languages.CHI_SMPL){
+			locale = Locale.SIMPLIFIED_CHINESE;
+			bundleLocal = Locale.ROOT; //chinese is source, uses root locale for fetching bundle
 		} else {
 			locale = new Locale(lang.code());
 			bundleLocal = locale;
