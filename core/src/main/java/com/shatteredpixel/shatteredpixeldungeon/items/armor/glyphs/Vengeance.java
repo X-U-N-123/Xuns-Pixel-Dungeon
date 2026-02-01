@@ -23,8 +23,8 @@ package com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs;
 
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.PhysicalEmpower;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Kinetic;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.watabou.utils.Random;
 
@@ -37,15 +37,15 @@ public class Vengeance extends Armor.Glyph {
 
         int level = Math.max(0, armor.buffedLvl());
 
-        // lvl 0 - 16.7%
-        // lvl 1 - 23.1%
-        // lvl 2 - 28.5%
-        float procChance = (level+2f)/(level+12f) * procChanceMultiplier(defender);
+        // lvl 0 - 20%
+        // lvl 1 - 27.2%
+        // lvl 2 - 33.3%
+        float procChance = (level+2f)/(level+10f) * procChanceMultiplier(defender);
         if ( Random.Float() < procChance ) {
 
             float powerMulti = Math.max(1f, procChance);
 
-            Buff.affect(attacker, Kinetic.KineticTracker.class).conservedDamage = Math.round(damage * 0.5f * powerMulti);
+            Buff.affect(defender, PhysicalEmpower.class).set(Math.round(damage * 0.5f * powerMulti), 1);
 
         }
         return damage;
