@@ -29,7 +29,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.explorer.Sandstorm;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.LiquidMetal;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Shovel;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Bestiary;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
@@ -145,7 +144,7 @@ public class WndBuildTrap extends Window {
                                 GameScene.updateMap(cell);
                                 Dungeon.observe();
                                 Sample.INSTANCE.play( Assets.Sounds.UNLOCK );
-                                Shovel.ExplorerCooldown.affectCD(50, Dungeon.hero);
+                                choose.CD += 51; // 1 more turn as building the trap takes a turn
                                 if (!Dungeon.hero.hasTalent(Talent.SIMPLE_STRUCTURE)) Dungeon.hero.spendAndNext(Actor.TICK);
                                 Dungeon.hero.sprite.operate(cell);
                             }

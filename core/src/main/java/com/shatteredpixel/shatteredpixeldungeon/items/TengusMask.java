@@ -38,6 +38,7 @@ import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.shatteredpixel.shatteredpixeldungeon.ui.ActionIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndChooseSubclass;
 import com.watabou.noosa.audio.Sample;
@@ -115,11 +116,11 @@ public class TengusMask extends Item {
 		}
 
 		if (way == HeroSubClass.WAVECHASER){
-			Buff.affect(curUser, WhirlpoolBuff.class);
+			ActionIndicator.setAction(Buff.affect(curUser, WhirlpoolBuff.class));
 		}
 
 		if (way == HeroSubClass.TRAPPER){
-			Buff.affect(curUser, TrapChoose.class);
+            ActionIndicator.setAction(Buff.affect(curUser, TrapChoose.class));
 		}
 
 		if (way == HeroSubClass.ROCKSY){

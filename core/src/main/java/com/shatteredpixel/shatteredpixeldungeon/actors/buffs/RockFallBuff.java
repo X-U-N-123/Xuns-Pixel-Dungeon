@@ -224,7 +224,7 @@ public class RockFallBuff extends Buff implements ActionIndicator.Action {
                     }
                     Sample.INSTANCE.play(Assets.Sounds.ROCKS);
                     PixelScene.shake(2, 0.5f);
-                    CD += 51; //1 more turn because this takes a turn
+                    CD += 81; //1 more turn because this takes a turn
                     Dungeon.hero.sprite.zap(cell);
                     Dungeon.hero.spendAndNext(Actor.TICK);
                 }

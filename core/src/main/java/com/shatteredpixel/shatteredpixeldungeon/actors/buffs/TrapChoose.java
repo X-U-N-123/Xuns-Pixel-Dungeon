@@ -21,10 +21,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 
-import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Shovel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.BlazingTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.BurningTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.ChillingTrap;
@@ -49,11 +47,14 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.traps.Trap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.WornDartTrap;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.TerrainFeaturesTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ActionIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndBuildTrap;
+import com.watabou.noosa.BitmapText;
 import com.watabou.noosa.Visual;
+import com.watabou.utils.Bundle;
 
 import java.util.LinkedHashMap;
 
@@ -63,14 +64,14 @@ public class TrapChoose extends Buff implements ActionIndicator.Action {
         revivePersists = true;
     }
 
+    public int CD = 0;
+
     @Override
-    public boolean attachTo( Char target ) {
-        if (super.attachTo( target )) {
-            ActionIndicator.setAction(this);
-            return true;
-        } else {
-            return false;
-        }
+    public boolean act(){
+        if (CD > 0) CD --;
+        spend(1f);
+        ActionIndicator.refresh();
+        return true;
     }
 
     @Override
@@ -80,12 +81,24 @@ public class TrapChoose extends Buff implements ActionIndicator.Action {
 
     @Override
     public int indicatorColor() {
-        return 0x333333;
+        if (CD <= 0) return 0x666666;
+        else         return 0x333333;
     }
 
     @Override
     public Visual primaryVisual(){
         return TerrainFeaturesTilemap.getTrapVisual(new WornDartTrap());
+    }
+
+    @Override
+    public Visual secondaryVisual() {
+        if (CD <= 0) return null;
+
+        BitmapText txt = new BitmapText(PixelScene.pixelFont);
+        txt.text( Integer.toString(CD) );
+        txt.hardlight(0x999999);
+        txt.measure();
+        return txt;
     }
 
     public LinkedHashMap<Class<? extends Trap>, Integer> TrapClasses(){
@@ -130,7 +143,22 @@ public class TrapChoose extends Buff implements ActionIndicator.Action {
 
     @Override
     public void doAction() {
-        if (target.buff(Shovel.ExplorerCooldown.class) == null) GameScene.show(new WndBuildTrap(this));
+        if (CD <= 0) GameScene.show(new WndBuildTrap(this));
         else GLog.w(Messages.get(this, "cd"));
+    }
+
+    private static final String COOLDOWN = "cd";
+
+    @Override
+    public void storeInBundle(Bundle bundle) {
+        super.storeInBundle(bundle);
+        bundle.put(COOLDOWN, CD);
+    }
+
+    @Override
+    public void restoreFromBundle(Bundle bundle) {
+        super.restoreFromBundle(bundle);
+        CD = bundle.getInt(COOLDOWN);
+        ActionIndicator.setAction(this);
     }
 }

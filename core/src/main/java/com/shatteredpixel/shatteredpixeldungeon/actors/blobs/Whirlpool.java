@@ -51,6 +51,11 @@ public class Whirlpool extends Blob {
         for (int k = 0; k < Dungeon.level.length(); k ++) {
             if (cur[k] <= 0) continue;
 
+            if (!Dungeon.level.water[k]){
+                clear(k);
+                continue;
+            }
+
             for (Mob m : Dungeon.level.mobs.toArray( new Mob[0])) {
                 if (m.isFlying() && Dungeon.hero.pointsInTalent(Talent.UNDERCURRENT) < 3) continue;
 
@@ -88,7 +93,8 @@ public class Whirlpool extends Blob {
     @Override
     public String tileDesc() {
         String desc = Messages.get(this, "desc");
-        if (Dungeon.hero.hasTalent(Talent.DROWNING)) desc += Messages.get(this, "desc_drowning");
+        int drowningDmg = Math.round(Dungeon.hero.lvl * Dungeon.hero.pointsInTalent(Talent.DROWNING) / 3f);
+        if (drowningDmg > 0) desc += Messages.get(this, "desc_drowning", drowningDmg);
         return desc;
     }
 
