@@ -2836,7 +2836,7 @@ public class Hero extends Char {
 		if (intentional) {
 			sprite.showStatus( CharSprite.DEFAULT, Messages.get(this, "search") );
 			sprite.operate( pos );
-			if (!Dungeon.level.locked) {
+			if (!Dungeon.level.locked && !foresight) {
 				if (cursed) {
 					GLog.n(Messages.get(this, "search_distracted"));
 					Buff.affect(this, Hunger.class).affectHunger(TIME_TO_SEARCH - (2 * HUNGER_FOR_SEARCH));
@@ -2844,7 +2844,8 @@ public class Hero extends Char {
 					Buff.affect(this, Hunger.class).affectHunger(TIME_TO_SEARCH - HUNGER_FOR_SEARCH);
 				}
 			}
-			spendAndNext(TIME_TO_SEARCH);
+			if (foresight) next();
+            else spendAndNext(TIME_TO_SEARCH);
 			
 		}
 		

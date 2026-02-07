@@ -94,7 +94,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Havoc;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Rapier;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Shovel;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Windblade;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WornShortsword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Clay;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingKnife;
@@ -203,7 +202,6 @@ public enum HeroClass {
 			havoc.Enemieskilled = 127;
 			havoc.identify().collect();
 			new LamellarArmor().upgrade(210).identify().collect();
-			new Windblade().upgrade(105).identify().collect();
             new BladeOfMimic().identify().collect();
 
 			for (int s = 0; s < QuickSlot.SIZE; s++) {

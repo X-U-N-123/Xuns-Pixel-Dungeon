@@ -491,7 +491,7 @@ public class Generator {
 			
 			WEP_T1.classes = new Class<?>[]{//10 Weapons
 					WornShortsword.class,
-					MagesStaff.class, //Mage's special wep
+					MagesStaff.class,   //Mage's special wep
 					Dagger.class,
 					Gloves.class,
 					Rapier.class,
@@ -499,7 +499,7 @@ public class Generator {
 					Fork.class,
 					Cudgel.class,
 					Woodsword.class,
-					Shovel.class //the special wep for a new Hero
+					Shovel.class        //Explorer's special wep
 			};
 			WEP_T1.defaultProbs = new float[]{ 2, 0, 2, 2, 2, 2, 2, 2, 2, 0};
 			WEP_T1.probs = WEP_T1.defaultProbs.clone();

@@ -32,7 +32,7 @@ import java.util.ArrayList;
 
 public class devShield extends Item {
 
-    String AC_SHIELD = "shield";
+    private static final String AC_SHIELD = "shield";
 
     {
         defaultAction = AC_SHIELD;

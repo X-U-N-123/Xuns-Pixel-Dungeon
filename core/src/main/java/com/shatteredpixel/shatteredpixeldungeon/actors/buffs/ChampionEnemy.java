@@ -195,10 +195,10 @@ public abstract class ChampionEnemy extends Buff {
 
 		@Override
 		public void onAttackProc(Char enemy) {
-			if (!Dungeon.level.water[enemy.pos]) {
-				Buff.affect(enemy, Chill.class, 3f);
+			if (Dungeon.level.water[enemy.pos]) {
+				Buff.prolong(enemy, Chill.class, 3f);
 			} else {
-				Buff.affect(enemy, Chill.class, 5f);
+				Buff.prolong(enemy, Chill.class, 2f);
 			}
 		}
 
@@ -239,7 +239,7 @@ public abstract class ChampionEnemy extends Buff {
 		@Override
 		public void onAttackProc(Char enemy) {
 			if (!Dungeon.level.water[enemy.pos]) {
-				Buff.affect(enemy, Ooze.class).set(3f);
+				Buff.affect(enemy, Ooze.class).set(4f);
 			}
 		}
 
@@ -281,9 +281,11 @@ public abstract class ChampionEnemy extends Buff {
 
 		@Override
 		public void onAttackProc(Char enemy) {
-			int toheal = Math.round(0.15f*(target.HT - target.HP));
-			target.HP += toheal;
-			target.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(toheal), FloatingText.HEALING);
+			int toHeal = (int)(0.125f*(target.HT - target.HP));
+            if (toHeal > 0){
+		    	target.HP += toHeal;
+			    target.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(toHeal), FloatingText.HEALING);
+            }
 		}
 
 		@Override
@@ -331,7 +333,7 @@ public abstract class ChampionEnemy extends Buff {
 
 		@Override
 		public float meleeDamageFactor() {
-			return 1f + 0.75f*(float)(target.HT - target.HP)/target.HT;
+			return 1f + 0.6f * (target.HT - target.HP) / target.HT;
 		}
 	}
 
