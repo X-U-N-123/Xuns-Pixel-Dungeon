@@ -65,6 +65,8 @@ public class WndBadge extends Window {
 			info.hardlight( 0x888888 );
 			info.setHightlighting( true, 0x888822 );
 		}
+        //special logic for this badge, as this needs to display _ in its desc
+        if (badge == Badges.Badge.BLASPHEMY) info.setHightlighting(false);
 		add(info);
 		
 		float w = Math.max( icon.width(), Math.max(title.width(), info.width()) ) + MARGIN * 2;

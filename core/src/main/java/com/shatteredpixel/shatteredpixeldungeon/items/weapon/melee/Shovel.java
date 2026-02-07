@@ -198,7 +198,7 @@ public class Shovel extends MeleeWeapon {
                         }//put water if there has no water
 
                         if (watered){
-                            Sample.INSTANCE.play(Assets.Sounds.WATER, 2f);
+                            Sample.INSTANCE.play(Assets.Sounds.WATER, 3f);
                             Splash.at( DungeonTilemap.tileCenterToWorld( curUser.pos ), -PointF.PI/2, PointF.PI/2, 0x5bc1e3, 10, 0.01f);
                             ExplorerCooldown.affectCD(10 * (7 - curUser.pointsInTalent(Talent.LAKE_DEVELOPMENT)), curUser);
                             curUser.spendAndNext(Actor.TICK);
@@ -214,14 +214,16 @@ public class Shovel extends MeleeWeapon {
                         if (ch != null && ch.alignment == Char.Alignment.ENEMY){
                             switch (curUser.pointsInTalent(Talent.SON_OF_SEA)){
                                 case 3:
-                                    curUser.buff(WhirlpoolBuff.class).decreaseCD(4);//1 turn less because this takes a turn
+                                    curUser.buff(WhirlpoolBuff.class).decreaseCD(5);
                                 case 2:
                                     Buff.prolong(curUser, Recharging.class, 4f);
                                 case 1:
                                     Buff.prolong(ch, Vertigo.class, 4f);
                             }
                         }
-                        Sample.INSTANCE.play(Assets.Sounds.WATER, 2f);
+                        CellEmitter.get(cell).burst( Speck.factory( Speck.STEAM ), 5 );
+
+                        Sample.INSTANCE.play(Assets.Sounds.WATER, 3f);
                         curUser.spendAndNext(Actor.TICK);
                         GameScene.updateMap(cell);
                         Dungeon.observe();
@@ -233,7 +235,7 @@ public class Shovel extends MeleeWeapon {
                         if (fire != null) fire.clear(cell);
 
                         //put water if there has no water
-                        Sample.INSTANCE.play(Assets.Sounds.WATER, 2f);
+                        Sample.INSTANCE.play(Assets.Sounds.WATER, 3f);
                         Splash.at( DungeonTilemap.tileCenterToWorld( cell ), -PointF.PI/2, PointF.PI/2, 0x5bc1e3, 5, 0.01f);
                         ExplorerCooldown.affectCD(10, curUser);
                         curUser.spendAndNext(Actor.TICK);

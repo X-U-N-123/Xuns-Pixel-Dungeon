@@ -155,6 +155,11 @@ public class Piranha extends Mob {
 			return false;
 		}
 	}
+
+    @Override
+    public boolean[] modifyPassable( boolean[] passable){
+        return Dungeon.level.water;
+    }
 	
 	{
 		for (Class c : new BlobImmunity().immunities()){

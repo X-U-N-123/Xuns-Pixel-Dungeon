@@ -50,7 +50,7 @@ public class PotionOfStrength extends Potion {
 		identify();
 
 		hero.STR++;
-		if (Dungeon.isChallenged(Challenges.EXERCISES)) exreciseDebuff(hero);
+		exreciseDebuff(hero);
 		hero.sprite.showStatusWithIcon(CharSprite.POSITIVE, "1", FloatingText.STRENGTH);
 
 		GLog.p( Messages.get(this, "msg", hero.STR()) );
@@ -70,8 +70,10 @@ public class PotionOfStrength extends Potion {
 	}
 
 	public static void exreciseDebuff(Hero hero){
-		if (hero.buff(Weakness.class) == null)        Buff.prolong(hero, Weakness.class,   1e+9f);
-		else if (hero.buff(Daze.class) == null)       Buff.prolong(hero, Daze.class,       1e+9f);
+        if (!Dungeon.isChallenged(Challenges.EXERCISES)) return;
+
+		if (hero.buff(Weakness.class) == null)        Buff.prolong(hero, Weakness.class,   2e+9f);
+		else if (hero.buff(Daze.class) == null)       Buff.prolong(hero, Daze.class,       2e+9f);
         else                                          Buff.affect( hero, Doom.class);
 	}
 }
