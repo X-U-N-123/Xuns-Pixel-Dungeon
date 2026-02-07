@@ -595,7 +595,7 @@ public abstract class Level implements Bundlable {
 
                     Game.switchScene(SurfaceScene.class, new Game.SceneChangeCallback() {
                         @Override
-                        public void beforeCreate() {}
+                        public void beforeCreate() {/*do nothing*/}
 
                         @Override
                         public void afterCreate() {
@@ -604,8 +604,12 @@ public abstract class Level implements Bundlable {
                             Badges.saveGlobal();
                         }
                     });
-                } else GLog.w(Messages.get(this, "no_return"));
-                return false;
+                    return false;
+
+                } else if (!collapse.canReturnTo(Dungeon.depth - 1)){
+                    GLog.w(Messages.get(this, "no_return"));
+                    return false;
+                }
             }
 
 			InterlevelScene.mode = InterlevelScene.Mode.ASCEND;

@@ -36,6 +36,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.explorer.OpticalCamou;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Barricade;
+import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Splash;
 import com.shatteredpixel.shatteredpixeldungeon.items.DoorPlank;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
@@ -126,6 +128,10 @@ public class Shovel extends MeleeWeapon {
                 percent -= 0.12f * hero.pointsInTalent(Talent.QUICK_BUILD);
             }
             Buff.affect(hero, ExplorerCooldown.class, turn * percent);
+        }
+
+        public void decreaseCD(float turn){
+            spend(-turn);
         }
     }
 

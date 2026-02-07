@@ -1069,10 +1069,7 @@ public class Hero extends Char {
 			} else if (curAction instanceof HeroAction.Mine) {
 				actResult = actMine( (HeroAction.Mine)curAction );
 
-			} else if (curAction instanceof HeroAction.BreakDeco) {
-                actResult = actBreakDeco( (HeroAction.BreakDeco)curAction );
-
-            } else if (curAction instanceof HeroAction.LvlTransition) {
+			} else if (curAction instanceof HeroAction.LvlTransition) {
 				actResult = actTransition( (HeroAction.LvlTransition)curAction );
 				
 			} else if (curAction instanceof HeroAction.Attack) {
@@ -1437,7 +1434,9 @@ public class Hero extends Char {
 			if ((Dungeon.level.map[action.dst] == Terrain.WALL
 					|| Dungeon.level.map[action.dst] == Terrain.WALL_DECO
 					|| Dungeon.level.map[action.dst] == Terrain.MINE_CRYSTAL
-					|| Dungeon.level.map[action.dst] == Terrain.MINE_BOULDER)
+					|| Dungeon.level.map[action.dst] == Terrain.MINE_BOULDER
+                    || Dungeon.level.map[action.dst] == Terrain.REGION_DECO
+                    || Dungeon.level.map[action.dst] == Terrain.REGION_DECO_ALT)
 				&& Dungeon.level.insideMap(action.dst)){
 				sprite.attack(action.dst, new Callback() {
 					@Override
@@ -1494,7 +1493,56 @@ public class Hero extends Char {
 							Splash.at(action.dst, 0x555555, 5);
 							Sample.INSTANCE.play( Assets.Sounds.MINE, 0.6f );
 							Level.set( action.dst, Terrain.EMPTY_DECO );
-						}
+
+						} else if (Dungeon.level.map[action.dst] == Terrain.REGION_DECO){
+                            switch ((Dungeon.depth - 1) / 5){ //0~4 for sewers ~ halls
+                                case 0:
+                                    Level.set(action.dst, Terrain.WATER);
+                                    Splash.at(action.dst, 0xFF507B5D, 10);
+                                    Sample.INSTANCE.play(Assets.Sounds.WATER, 3f );
+                                    break;
+                                case 1:
+                                    Level.set(action.dst, Terrain.EMPTY);
+                                    Splash.at(action.dst, 0xD3CECE, 10);
+                                    Sample.INSTANCE.play( Assets.Sounds.EVOKE, 1f, 0.8f );
+                                    break;
+                                case 2:
+                                    Level.set(action.dst, Terrain.EMPTY);
+                                    Splash.at(action.dst, 0x5F5A5E, 10);
+                                    Sample.INSTANCE.play( Assets.Sounds.EVOKE, 1f, 0.8f );
+                                    break;
+                                case 3: ready(); return;
+                                case 4: default:
+                                    Level.set(action.dst, Terrain.EMPTY);
+                                    Splash.at(action.dst, 0x8D7A6B, 10);
+                                    Sample.INSTANCE.play( Assets.Sounds.MINE, 0.6f );
+                                    break;
+                            }
+                        } else if (Dungeon.level.map[action.dst] == Terrain.REGION_DECO_ALT){
+                            switch ((Dungeon.depth - 1) / 5){ //0~4 for sewers ~ halls
+                                case 0:
+                                    Level.set(action.dst, Terrain.EMPTY_SP);
+                                    Splash.at(action.dst, 0x89632D, 10);
+                                    Sample.INSTANCE.play( Assets.Sounds.BUILD, 0.8f );
+                                    break;
+                                case 1:
+                                    Level.set(action.dst, Terrain.CHASM);
+                                    Splash.at(action.dst, 0xD3CECE, 10);
+                                    Sample.INSTANCE.play( Assets.Sounds.EVOKE, 1f, 0.8f );
+                                    break;
+                                case 2:
+                                    Level.set(action.dst, Terrain.EMPTY_SP);
+                                    Splash.at(action.dst, 0x5F5A5E, 10);
+                                    Sample.INSTANCE.play( Assets.Sounds.EVOKE, 1f, 0.8f );
+                                    break;
+                                case 3: ready(); return;
+                                case 4: default:
+                                    Level.set(action.dst, Terrain.EMPTY);
+                                    Splash.at(action.dst, 0x8D7A6B, 10);
+                                    Sample.INSTANCE.play( Assets.Sounds.MINE, 0.6f );
+                                    break;
+                            }
+                        }
 
 						for (int i : PathFinder.NEIGHBOURS9) {
 							Dungeon.level.discoverable[action.dst + i] = true;
@@ -1547,65 +1595,6 @@ public class Hero extends Char {
 			return false;
 		}
 	}
-
-    private boolean actBreakDeco(HeroAction.BreakDeco action){
-        if (Dungeon.level.adjacent(pos, action.dst) && (Dungeon.depth-1) / 5 != 3){//can't break flaming pedestal
-            path = null;
-            
-            if ((Dungeon.level.map[action.dst] == Terrain.REGION_DECO
-             || Dungeon.level.map[action.dst] == Terrain.REGION_DECO_ALT)
-            && Dungeon.level.insideMap(action.dst)){
-                int terrain = Dungeon.level.map[action.dst];
-                
-                sprite.attack(action.dst, new Callback() {
-                    @Override
-                    public void call() {
-                        switch ((Dungeon.depth - 1) / 5){ //0~4 for sewers ~ halls
-                            case 0:
-                                if (terrain == Terrain.REGION_DECO_ALT)
-                                    Level.set(action.dst, Terrain.EMPTY_SP);
-                                if (terrain == Terrain.REGION_DECO){
-                                    Level.set(action.dst, Terrain.WATER);
-                                    Splash.at(action.dst, 0xFF507B5D, 10);
-                                }
-                                break;
-                            case 1:
-                                if (terrain == Terrain.REGION_DECO_ALT)
-                                    Level.set(action.dst, Terrain.CHASM);
-                                if (terrain == Terrain.REGION_DECO)
-                                    Level.set(action.dst, Terrain.EMPTY);
-                                break;
-                            case 2:
-                                if (terrain == Terrain.REGION_DECO_ALT)
-                                    Level.set(action.dst, Terrain.EMPTY_SP);
-                                if (terrain == Terrain.REGION_DECO)
-                                    Level.set(action.dst, Terrain.EMPTY);
-                                break;
-                            case 3: ready(); return;
-                            case 4: default:
-                                Level.set(action.dst, Terrain.EMPTY);
-                                break;
-                        }
-                        GameScene.updateMap(action.dst);
-                        Sample.INSTANCE.play( Assets.Sounds.MINE );
-
-                        spendAndNext(TICK);
-                        ready();
-                    }
-                });
-            } else {
-                ready();
-            }
-            return false;
-        } else if (getCloser( action.dst )) {
-
-            return true;
-
-        } else {
-            ready();
-            return false;
-        }
-    }
 	
 	private boolean actTransition(HeroAction.LvlTransition action ) {
 		int stairs = action.dst;
@@ -2172,7 +2161,7 @@ public class Hero extends Char {
         (Dungeon.level.map[cell] == Terrain.REGION_DECO
         || Dungeon.level.map[cell] == Terrain.REGION_DECO_ALT)) {
 
-            curAction = new HeroAction.BreakDeco(cell);
+            curAction = new HeroAction.Mine(cell);
 
         } else if (heap != null
 				//moving to an item doesn't auto-pickup when enemies are near...

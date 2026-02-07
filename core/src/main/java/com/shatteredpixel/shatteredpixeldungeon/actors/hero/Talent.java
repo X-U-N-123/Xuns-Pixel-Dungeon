@@ -38,7 +38,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.CounterBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedRings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Foresight;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LostInventory;
@@ -87,12 +86,14 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.BladeOfUnreal;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dagger;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Shovel;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.Trap;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.ShadowCaster;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
@@ -236,7 +237,7 @@ public enum Talent {
 	//Explorer T1
 	KEEN_MEAL(288), SECRET_FORESIGHT(289), TESTED_AWARENESS(290), HOME_ADVANTAGE(291), SAFE_SURVEY(292),
 	//Explorer T2
-	FARSIGHT_MEAL(293), LIQUID_CLAIRVOYANCE(294), ARCANE_BARRICADE(295), WINDING_PORCH(296), REKINDLED_EMBER(297), AGGRESSIVE_ROADBLOCK(298),
+	PREPARING_MEAL(293), LIQUID_CLAIRVOYANCE(294), ARCANE_BARRICADE(295), WINDING_PORCH(296), REKINDLED_EMBER(297), AGGRESSIVE_ROADBLOCK(298),
 	//Explorer T3
 	DEMOLITION(299, 3), DIG_THE_WELL(300, 3), CONVENIENT_SHOVEL(301, 3),
 	//WaveChaser T3
@@ -1574,7 +1575,7 @@ public enum Talent {
 				Collections.addAll(tierTalents, ENLIGHTENING_MEAL, RECALL_INSCRIPTION, SUNRAY, DIVINE_SENSE, BLESS, ASCETICISM);
 				break;
 			case EXPLORER:
-				Collections.addAll(tierTalents, FARSIGHT_MEAL, LIQUID_CLAIRVOYANCE, ARCANE_BARRICADE, WINDING_PORCH, REKINDLED_EMBER, AGGRESSIVE_ROADBLOCK);
+				Collections.addAll(tierTalents, PREPARING_MEAL, LIQUID_CLAIRVOYANCE, ARCANE_BARRICADE, WINDING_PORCH, REKINDLED_EMBER, AGGRESSIVE_ROADBLOCK);
 				break;
 		}
 		for (Talent talent : tierTalents){
@@ -1760,6 +1761,7 @@ public enum Talent {
 	private static final HashMap<String, String> renamedTalents = new HashMap<>();
 	static{
         //X_U_N v1.0.1
+        renamedTalents.put("FARSIGHT_MEAL",             "PREPARING_MEAL");
         renamedTalents.put("FLUORESCENCE",              "SENSITIVE_PEDAL");
 		//X_U_N v1.0.0
         renamedTalents.put("VARIED_ENVIRONMENT",        "DEMOLITION");
