@@ -226,7 +226,11 @@ public abstract class Wand extends Item {
 				Dungeon.hero.subClass == HeroSubClass.WARLOCK &&
 				//standard 1 - 0.92^x chance, plus 7%. Starts at 15%
 				Random.Float() > (Math.pow(0.92f, (wandLevel*chargesUsed)+1) - 0.07f)){
-			SoulMark.prolong(target, SoulMark.class, SoulMark.DURATION + wandLevel);
+            float duration = SoulMark.DURATION + wandLevel;
+            if (Dungeon.hero.hasTalent(Talent.CLEAR_YOUR_SOUL)){
+                duration += 1 + 3 * Dungeon.hero.pointsInTalent(Talent.CLEAR_YOUR_SOUL);
+            }
+            SoulMark.prolong(target, SoulMark.class, duration);
 		}
 
 		MagesStaff staff = Dungeon.hero.belongings.getItem(MagesStaff.class);

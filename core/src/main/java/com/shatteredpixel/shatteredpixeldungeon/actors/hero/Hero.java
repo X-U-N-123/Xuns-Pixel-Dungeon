@@ -527,7 +527,7 @@ public class Hero extends Char {
 		if (hit && wasEnemy){
 			if (subClass == HeroSubClass.GLADIATOR){
 				Buff.affect( this, Combo.class ).hit( enemy );
-				if (hasTalent(Talent.FAR_STANDOFF))
+				if (pointsInTalent(Talent.FAR_STANDOFF) >= 2)
 					Buff.affect( this, Combo.class ).hit( enemy );
 			}
 
@@ -920,6 +920,10 @@ public class Hero extends Char {
 		if (buff(Adrenaline.class) != null){
 			delay /= 1.5f;
 		}
+
+        if (buff(Talent.AgileCountATKTracker.class) != null){
+            delay /= 1f + 0.08f * pointsInTalent(Talent.AGILE_COUNTATK);
+        }
 
 		if (heroClass != HeroClass.EXPLORER){
 			delay /= 1f + 0.05f * pointsInTalent(Talent.CONVENIENT_SHOVEL);
@@ -2587,6 +2591,8 @@ public class Hero extends Char {
 		if (hit && wasEnemy){
 			if (subClass == HeroSubClass.GLADIATOR){
 				Buff.affect( this, Combo.class ).hit( attackTarget );
+                if (!Dungeon.level.adjacent(pos, attackTarget.pos) && hasTalent(Talent.FAR_STANDOFF))
+                    Buff.affect( this, Combo.class ).hit( attackTarget );
 			}
 
 			if (hasTalent(Talent.SKILLED_DUAL) && belongings.weapon() != null){

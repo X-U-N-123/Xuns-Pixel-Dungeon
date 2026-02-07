@@ -667,16 +667,18 @@ public abstract class Char extends Actor {
 			}
 
 			if (enemy instanceof Hero){
-				if (hero.hasTalent(Talent.AGILE_COUNTATK)){
-					Buff.prolong(hero, Talent.AgileCountATKTracker.class, 3f);
-				}
-
 				Phantom p = hero.buff(Phantom.class);
 				if (hero.hasTalent(Talent.FLEXIBLE_FOOTWORK) && p != null && p.getCD() <= 0){
 					p.summon();
-					p.reduceCD(5f*hero.pointsInTalent(Talent.FLEXIBLE_FOOTWORK));
+					p.reduceCD(5*hero.pointsInTalent(Talent.FLEXIBLE_FOOTWORK));
 				}
 			}
+
+            if (this instanceof Hero){
+                if (hero.hasTalent(Talent.AGILE_COUNTATK)){
+                    Buff.affect(hero, Talent.AgileCountATKTracker.class, 0f);
+                }
+            }
 
 			return false;
 			

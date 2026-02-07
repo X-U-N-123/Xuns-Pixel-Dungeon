@@ -462,11 +462,7 @@ public enum Talent {
 			uses = bundle.getInt(USES);
 		}
 	}
-	public static class AgileCountATKTracker extends FlavourBuff{
-		public int icon() { return BuffIndicator.INVERT_MARK; }
-		public void tintIcon(Image icon) { icon.hardlight(0.7f, 0f, 0f); }
-		public float iconFadePercent() { return Math.max(0, 1f - (visualcooldown()/3)); }
-	}
+	public static class AgileCountATKTracker extends FlavourBuff{}
 	public static class LethalHasteCooldown extends FlavourBuff{
 		public int icon() { return BuffIndicator.TIME; }
 		public void tintIcon(Image icon) { icon.hardlight(0.35f, 0f, 0.7f); }
@@ -1440,11 +1436,6 @@ public enum Talent {
 					&& hero.buff(DeadlyFollowupTracker.class).object == enemy.id()){
 				dmg = Math.round(dmg * (1.0f + .1f*hero.pointsInTalent(DEADLY_FOLLOWUP)));
 			}
-		}
-
-		if (hero.hasTalent(AGILE_COUNTATK) && hero.buff(AgileCountATKTracker.class) != null){
-			hero.buff(AgileCountATKTracker.class).detach();
-			dmg = Math.round(dmg * (1.0f + 0.05f*hero.pointsInTalent(AGILE_COUNTATK)));
 		}
 
 		if (hero.hasTalent(GUARD_THE_PASS) && !Dungeon.level.openSpace[hero.pos]){

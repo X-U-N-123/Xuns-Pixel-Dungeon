@@ -112,7 +112,7 @@ public class TengusMask extends Item {
 		}
 
 		if (way == HeroSubClass.PHANTOM){
-			Buff.affect(curUser, Phantom.class);
+			ActionIndicator.setAction(Buff.affect(curUser, Phantom.class));
 		}
 
 		if (way == HeroSubClass.WAVECHASER){

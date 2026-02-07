@@ -796,7 +796,7 @@ public abstract class Mob extends Char {
 				Buff.affect(Dungeon.hero, Hunger.class).affectHunger(restoration*Dungeon.hero.pointsInTalent(Talent.SOUL_EATER)/3f);
 
 				if (Dungeon.hero.HP < Dungeon.hero.HT) {
-					int heal = (int)Math.ceil(restoration * (0.4f + 0.15f*Dungeon.hero.pointsInTalent(Talent.CLEAR_YOUR_SOUL)));
+					int heal = (int)Math.ceil(restoration * 0.4f);
 					Dungeon.hero.HP = Math.min(Dungeon.hero.HT, Dungeon.hero.HP + heal);
 					Dungeon.hero.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(heal), FloatingText.HEALING);
 				}
@@ -866,12 +866,18 @@ public abstract class Mob extends Char {
 			}
 		}
 
-		//TODO improve this when I have proper damage source logic
-		if (src instanceof Wand && this.buff(SoulMark.class) != null && Dungeon.hero.hasTalent(Talent.MANA_EATING)){
-			int heal = Math.round(Dungeon.hero.pointsInTalent(Talent.MANA_EATING)*0.2f*dmg);
-			Dungeon.hero.HP = Math.min(Dungeon.hero.HT, Dungeon.hero.HP + heal);
-			Dungeon.hero.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(heal), FloatingText.HEALING);
-		}
+        if (src instanceof Wand && buff(SoulMark.class) != null && Dungeon.hero.hasTalent(Talent.MANA_EATING)) {
+            int restoration = Math.min(dmg, HP+shielding());
+
+            if (restoration > 0) {
+
+                if (Dungeon.hero.HP < Dungeon.hero.HT) {
+                    int heal = (int)Math.ceil(restoration * (0.1f + Dungeon.hero.pointsInTalent(Talent.MANA_EATING) * 0.1f));
+                    Dungeon.hero.HP = Math.min(Dungeon.hero.HT, Dungeon.hero.HP + heal);
+                    Dungeon.hero.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(heal), FloatingText.HEALING);
+                }
+            }
+        }
 		
 		super.damage( dmg, src );
 	}

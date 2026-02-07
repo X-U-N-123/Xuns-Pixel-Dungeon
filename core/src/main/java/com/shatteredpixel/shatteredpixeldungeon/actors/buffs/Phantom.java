@@ -25,43 +25,22 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMirrorImage;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ActionIndicator;
-import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.HeroIcon;
-import com.watabou.noosa.Image;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.watabou.noosa.BitmapText;
+import com.watabou.noosa.Visual;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 
 public class Phantom extends Buff implements ActionIndicator.Action {
 
     {
-        type = buffType.POSITIVE;
         revivePersists = true;
     }
 
-    private float CD = 0;
-
-    @Override
-    public int icon() {
-        return BuffIndicator.IMBUE;
-    }
-
-    @Override
-    public void tintIcon(Image icon) {
-        if (CD <= 0) icon.hardlight(1.6f, 0.4f, 2f);
-        else         icon.hardlight(1.2f, 0.3f, 1.5f);
-    }
-
-    @Override
-    public String iconTextDisplay() {
-        return Integer.toString((int)CD);
-    }
-
-    @Override
-    public String desc() {
-        if (CD > 0) return Messages.get(this, "desc", CD);
-        else return Messages.get(this, "desc_ready");
-    }
+    private int CD = 0;
 
     public float getCD(){
         return CD;
@@ -69,21 +48,15 @@ public class Phantom extends Buff implements ActionIndicator.Action {
 
     @Override
     public boolean act() {
-        CD -= TICK;
-        spend(TICK);
-        if (CD <= 0f) {
-            ActionIndicator.setAction(this);
-            CD = 0f;
-        }
+        if (CD > 0) CD --;
+        spend(1f);
+        ActionIndicator.refresh();
         return true;
     }
 
-    public void reduceCD(float turn) {
-        CD -= turn;
-        if (CD <= 0f) {
-            ActionIndicator.setAction(this);
-            CD = 0f;
-        }
+    public void reduceCD(int turn) {
+        CD = Math.max(CD - turn, 0);
+        ActionIndicator.refresh();
     }
 
     private static final String COOLDOWN = "cd";
@@ -97,8 +70,8 @@ public class Phantom extends Buff implements ActionIndicator.Action {
     @Override
     public void restoreFromBundle(Bundle bundle) {
         super.restoreFromBundle(bundle);
-        CD = bundle.getFloat(COOLDOWN);
-        if (CD <= 0) ActionIndicator.setAction(this);
+        CD = bundle.getInt(COOLDOWN);
+        ActionIndicator.setAction(this);
     }
 
     @Override
@@ -112,21 +85,36 @@ public class Phantom extends Buff implements ActionIndicator.Action {
     }
 
     @Override
+    public Visual secondaryVisual() {
+        if (CD <= 0) return null;
+
+        BitmapText txt = new BitmapText(PixelScene.pixelFont);
+        txt.text( Integer.toString(CD) );
+        txt.hardlight(0x5A00B2);
+        txt.measure();
+        return txt;
+    }
+
+    @Override
     public int indicatorColor() {
+        if (CD > 0) return 0x48008E;
         return 0x5A00B2;
     }
 
     @Override
     public void doAction() {//spawn a mirror image beside Phantom
+        if (CD > 0){
+            GLog.w(Messages.get(this, "cd"));
+            return;
+        }
         Sample.INSTANCE.play(Assets.Sounds.MISS);
         summon();
     }
 
-    public int summon(){
-        CD += 40f;
-        ActionIndicator.clearAction();
-        BuffIndicator.refreshHero();
-        return ScrollOfMirrorImage.spawnImages((Hero)target, 1);
+    public void summon(){
+        if (ScrollOfMirrorImage.spawnImages((Hero)target, 1) > 0){
+            CD += 50;
+            ActionIndicator.refresh();
+        } else GLog.w(Messages.get(this, "no_space"));
     }
-
 }

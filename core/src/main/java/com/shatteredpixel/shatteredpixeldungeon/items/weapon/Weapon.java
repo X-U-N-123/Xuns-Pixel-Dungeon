@@ -327,12 +327,13 @@ abstract public class Weapon extends KindOfWeapon {
 	@Override
 	public int reachFactor(Char owner) {
 		int reach = RCH;
+        Combo combo = owner.buff(Combo.class);
+
 		if (owner instanceof Hero && RingOfForce.fightingUnarmed((Hero) owner)){
 			reach = 1; //brawlers stance benefits from enchantments, but not innate reach
-			if (Dungeon.hero.pointsInTalent(Talent.FAR_STANDOFF)>=2 && owner.buff(Combo.class)!=null){
-				if (90 - 25*Dungeon.hero.pointsInTalent(Talent.FAR_STANDOFF) <= owner.buff(Combo.class).getComboCount()){
-					reach += 1;
-				}
+			if (Dungeon.hero.pointsInTalent(Talent.FAR_STANDOFF) >= 3
+                && combo != null && combo.getComboCount() >= 20){
+				reach ++;
 			}
 			if (!RingOfForce.unarmedGetsWeaponEnchantment((Hero) owner)){
 				return reach;
@@ -342,10 +343,9 @@ abstract public class Weapon extends KindOfWeapon {
 			if (owner.buff(AscendedForm.AscendBuff.class) != null){
 				reach += 2;
 			}
-			if (Dungeon.hero.pointsInTalent(Talent.FAR_STANDOFF)>=2 && owner.buff(Combo.class)!=null){
-				if (65 - 25*Dungeon.hero.pointsInTalent(Talent.FAR_STANDOFF) <= owner.buff(Combo.class).getComboCount()){
-					reach += 1;
-				}
+			if (Dungeon.hero.pointsInTalent(Talent.FAR_STANDOFF) >= 2
+                && combo != null && combo.getComboCount() >= 20){
+				reach ++;
 			}
 			if (owner.buff(Smite.SmiteTracker.class) != null && Dungeon.hero.pointsInTalent(Talent.ENHANCED_SMITE) > 2){
 				reach += 1;
