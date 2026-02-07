@@ -1492,6 +1492,12 @@ public abstract class Char extends Actor {
 	}
 
 	public boolean[] modifyPassable( boolean[] passable){
+        if (hero == null || hero.pointsInTalent(Talent.SENSITIVE_PEDAL) < 2 || alignment != Alignment.ENEMY)
+            return passable;
+
+        for (int i = 0; i < Dungeon.level.length(); i++){
+            passable[i] = passable[i] || Dungeon.level.map[i] == Terrain.TRAP; //Trapper ability
+        }
 		//do nothing by default, but some chars can pass over terrain that others can't
 		return passable;
 	}

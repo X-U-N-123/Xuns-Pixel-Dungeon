@@ -28,6 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfSirensSong;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Bestiary;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.watabou.utils.PathFinder;
@@ -46,12 +47,6 @@ public class SummoningTrap extends Trap {
 
 	@Override
 	public void activate() {
-		if (Dungeon.hero.pos == pos && !Dungeon.hero.isFlying()
-		&& Dungeon.hero.pointsInTalent(Talent.FRIENDLY_MECHANISM) >= 3 && Dungeon.hero.buff(FriendlyMechanismCooldown.class) == null){
-			disarm();
-			Buff.affect(Dungeon.hero, FriendlyMechanismCooldown.class, 150f);
-			return;
-		}
 
 		int nMobs = 1;
 		if (Random.Int( 2 ) == 0) {
@@ -81,6 +76,8 @@ public class SummoningTrap extends Trap {
 
 		ArrayList<Mob> mobs = new ArrayList<>();
 
+        boolean enthralled = false;
+
 		for (Integer point : respawnPoints) {
 			Mob mob = Dungeon.level.createMob();
 			while (Char.hasProp(mob, Char.Property.LARGE) && !Dungeon.level.openSpace[point]){
@@ -91,10 +88,16 @@ public class SummoningTrap extends Trap {
 					mob.state = mob.WANDERING;
 				}
 				mob.pos = point;
+                if (Dungeon.hero.pointsInTalent(Talent.FRIENDLY_MECHANISM) >= 2
+                && Dungeon.hero.buff(FriendlyMechanismCooldown.class) == null){
+                    Buff.affect(mob, ScrollOfSirensSong.Enthralled.class);
+                    enthralled = true;
+                }
 				GameScene.add(mob, DELAY);
 				mobs.add(mob);
 			}
 		}
+        if (enthralled) Buff.affect(Dungeon.hero, FriendlyMechanismCooldown.class, 150f);
 
 		//important to process the visuals and pressing of cells last, so spawned mobs have a chance to occupy cells first
 		Trap t;

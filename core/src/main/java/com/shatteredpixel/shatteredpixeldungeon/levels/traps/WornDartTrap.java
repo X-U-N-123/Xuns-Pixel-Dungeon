@@ -102,9 +102,8 @@ public class WornDartTrap extends Trap {
 					if (target instanceof Mob){
 						Buff.prolong(target, Trap.HazardAssistTracker.class, HazardAssistTracker.DURATION);
 
-						if (Dungeon.hero.hasTalent(Talent.FLUORESCENCE)) {
-							Buff.append(Dungeon.hero, TalismanOfForesight.CharAwareness.class,
-							5 + 5 * Dungeon.hero.pointsInTalent(Talent.FLUORESCENCE))
+						if (Dungeon.hero.pointsInTalent(Talent.SENSITIVE_PEDAL) >= 3) {
+							Buff.append(Dungeon.hero, TalismanOfForesight.CharAwareness.class, 10)
 							.charID = target.id();
 						}
 					}

@@ -67,11 +67,10 @@ public class FlashingTrap extends Trap {
 				if (((Mob)c).state == ((Mob)c).HUNTING) ((Mob)c).state = ((Mob)c).WANDERING;
 				((Mob)c).beckon( Dungeon.level.randomDestination( c ) );
 
-				if (Dungeon.hero.hasTalent(Talent.FLUORESCENCE)) {
-					Buff.append(Dungeon.hero, TalismanOfForesight.CharAwareness.class,
-					5 + 5 * Dungeon.hero.pointsInTalent(Talent.FLUORESCENCE))
-					.charID = c.id();
-				}
+                if (Dungeon.hero.pointsInTalent(Talent.SENSITIVE_PEDAL) >= 3) {
+                    Buff.append(Dungeon.hero, TalismanOfForesight.CharAwareness.class, 10)
+                    .charID = c.id();
+                }
 			}
 		}
 		

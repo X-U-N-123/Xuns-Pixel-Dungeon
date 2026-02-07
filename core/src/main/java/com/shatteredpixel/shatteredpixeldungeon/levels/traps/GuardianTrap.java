@@ -30,6 +30,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Statue;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfSirensSong;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -46,12 +47,6 @@ public class GuardianTrap extends Trap {
 
 	@Override
 	public void activate() {
-		if (Dungeon.hero.pos == pos && !Dungeon.hero.isFlying()
-		&& Dungeon.hero.pointsInTalent(Talent.FRIENDLY_MECHANISM) >= 3 && Dungeon.hero.buff(FriendlyMechanismCooldown.class) == null){
-			disarm();
-			Buff.affect(Dungeon.hero, FriendlyMechanismCooldown.class, 150f);
-			return;
-		}
 
 		for (Mob mob : Dungeon.level.mobs) {
 			mob.beckon( pos );
@@ -72,8 +67,16 @@ public class GuardianTrap extends Trap {
 			if (guardian.pos != -1) {
 				GameScene.add(guardian);
 				guardian.beckon(Dungeon.hero.pos);
+                if (Dungeon.hero.pointsInTalent(Talent.FRIENDLY_MECHANISM) >= 2
+                    && Dungeon.hero.buff(FriendlyMechanismCooldown.class) == null){
+                    Buff.affect(guardian, ScrollOfSirensSong.Enthralled.class);
+                }
 			}
 		}
+        if (Dungeon.hero.pointsInTalent(Talent.FRIENDLY_MECHANISM) >= 2
+        && Dungeon.hero.buff(FriendlyMechanismCooldown.class) == null){
+            Buff.affect(Dungeon.hero, FriendlyMechanismCooldown.class, 150);
+        }
 
 	}
 

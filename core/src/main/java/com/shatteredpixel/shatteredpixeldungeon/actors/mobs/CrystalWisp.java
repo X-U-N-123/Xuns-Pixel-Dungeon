@@ -68,6 +68,7 @@ public class CrystalWisp extends Mob{
 
 	@Override
 	public boolean[] modifyPassable(boolean[] passable) {
+        passable = super.modifyPassable(passable);
 		for (int i = 0; i < Dungeon.level.length(); i++){
 			passable[i] = passable[i] || Dungeon.level.map[i] == Terrain.MINE_CRYSTAL;
 		}

@@ -242,7 +242,7 @@ public enum Talent {
 	//WaveChaser T3
 	RIVER_EROSION(302, 3), SON_OF_SEA(303, 3), DROWNING(304, 3), LAKE_DEVELOPMENT(305, 3), UNDERCURRENT(306, 3),
 	//Trapper T3
-	TRAP_MASTER(307, 3), FRIENDLY_MECHANISM(308, 3), SIMPLE_STRUCTURE(309, 3), FLUORESCENCE(310, 3), LIQUID_COLLECTING(311, 3),
+	TRAP_MASTER(307, 3), FRIENDLY_MECHANISM(308, 3), SIMPLE_STRUCTURE(309, 3), SENSITIVE_PEDAL(310, 3), LIQUID_COLLECTING(311, 3),
 	//Rocksy T3
 	METEROIC_IRON(312, 3), ROCK_PROTECTOR(313, 3), MIND_CONTROL(314, 3), DESTRUCTIVE_STRIKE(315, 3) ,METEOR_CRATER(316, 3),
 	//Optical Camouflage T4
@@ -846,7 +846,9 @@ public enum Talent {
 			}
 		}
 		if (hero.hasTalent(TESTED_AWARENESS)){
-			Buff.affect(hero, Foresight.class, 2 + 2*hero.pointsInTalent(TESTED_AWARENESS));
+			Buff.affect(hero, MagicalSight.class, 1 + hero.pointsInTalent(TESTED_AWARENESS));
+            Dungeon.observe();
+            Dungeon.hero.checkVisibleMobs();
 		}
 	}
 
@@ -1129,10 +1131,12 @@ public enum Talent {
 
 			if (disarmed)Sample.INSTANCE.play( Assets.Sounds.TELEPORT );
 		}
-		if (hero.hasTalent(FARSIGHT_MEAL)){
-			Buff.affect(hero, MagicalSight.class, 2 + 3*hero.pointsInTalent(FARSIGHT_MEAL));
-			Dungeon.observe();
-			Dungeon.hero.checkVisibleMobs();
+		if (hero.hasTalent(PREPARING_MEAL)){
+            Shovel.ExplorerCooldown cd = hero.buff(Shovel.ExplorerCooldown.class);
+            if (hero.heroClass == HeroClass.EXPLORER){
+                if (cd != null) cd.decreaseCD(5 + 10 * hero.pointsInTalent(PREPARING_MEAL));
+            } else Buff.affect(Dungeon.hero, Swiftthistle.TimeBubble.class)
+                    .reset(hero.pointsInTalent(PREPARING_MEAL) - 1); // effectively 2/3 turn of time bubble
 		}
 	}
 
@@ -1690,7 +1694,7 @@ public enum Talent {
 				Collections.addAll(tierTalents, RIVER_EROSION, SON_OF_SEA, DROWNING, LAKE_DEVELOPMENT, UNDERCURRENT);
 				break;
 			case TRAPPER:
-				Collections.addAll(tierTalents, TRAP_MASTER, FRIENDLY_MECHANISM, SIMPLE_STRUCTURE, FLUORESCENCE, LIQUID_COLLECTING);
+				Collections.addAll(tierTalents, TRAP_MASTER, FRIENDLY_MECHANISM, SIMPLE_STRUCTURE, SENSITIVE_PEDAL, LIQUID_COLLECTING);
 				break;
 			case ROCKSY:
 				Collections.addAll(tierTalents, METEROIC_IRON, ROCK_PROTECTOR, MIND_CONTROL, DESTRUCTIVE_STRIKE, METEOR_CRATER);
@@ -1755,6 +1759,8 @@ public enum Talent {
 
 	private static final HashMap<String, String> renamedTalents = new HashMap<>();
 	static{
+        //X_U_N v1.0.1
+        renamedTalents.put("FLUORESCENCE",              "SENSITIVE_PEDAL");
 		//X_U_N v1.0.0
         renamedTalents.put("VARIED_ENVIRONMENT",        "DEMOLITION");
 		renamedTalents.put("HASHASHINS",                "EXTREMIST");

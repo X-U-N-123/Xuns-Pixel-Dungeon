@@ -24,6 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon.windows;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.TrapChoose;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.explorer.Sandstorm;
@@ -125,7 +126,9 @@ public class WndBuildTrap extends Window {
                                 return;
                             }
 
-                            if ((Actor.findChar(cell) != null && Dungeon.hero.pointsInTalent(Talent.SIMPLE_STRUCTURE) < 2)
+                            Char ch = Actor.findChar(cell);
+
+                            if ((ch != null && Dungeon.hero.pointsInTalent(Talent.SIMPLE_STRUCTURE) < 2)
                             || (!Sandstorm.canDrift(Dungeon.level.map[cell])
                             && Dungeon.level.map[cell] != Terrain.HIGH_GRASS && Dungeon.level.map[cell] != Terrain.INACTIVE_TRAP)){
                                 GLog.w(Messages.get(WndBuildTrap.class, "invalid_pos"));
@@ -141,11 +144,17 @@ public class WndBuildTrap extends Window {
                                     Item.updateQuickslot();
                                 }
 
+                                if (ch != null && ch.alignment == Char.Alignment.ENEMY
+                                    && Dungeon.hero.pointsInTalent(Talent.SIMPLE_STRUCTURE) >= 3){
+                                    trap.trigger();
+                                }
+
                                 GameScene.updateMap(cell);
                                 Dungeon.observe();
                                 Sample.INSTANCE.play( Assets.Sounds.UNLOCK );
                                 choose.CD += 51; // 1 more turn as building the trap takes a turn
-                                if (!Dungeon.hero.hasTalent(Talent.SIMPLE_STRUCTURE)) Dungeon.hero.spendAndNext(Actor.TICK);
+                                if (Dungeon.hero.hasTalent(Talent.SIMPLE_STRUCTURE)) Dungeon.hero.next();
+                                else Dungeon.hero.spendAndNext(Actor.TICK);
                                 Dungeon.hero.sprite.operate(cell);
                             }
                         }

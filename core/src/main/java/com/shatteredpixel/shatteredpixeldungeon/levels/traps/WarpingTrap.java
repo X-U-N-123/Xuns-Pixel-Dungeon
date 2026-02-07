@@ -24,6 +24,9 @@ package com.shatteredpixel.shatteredpixeldungeon.levels.traps;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.watabou.utils.BArray;
 
@@ -38,19 +41,27 @@ public class WarpingTrap extends TeleportationTrap {
 	public void activate() {
 		if (Dungeon.hero.pos == pos && !Dungeon.hero.isFlying()
 		&& Dungeon.hero.pointsInTalent(Talent.FRIENDLY_MECHANISM) >= 3 && Dungeon.hero.buff(FriendlyMechanismCooldown.class) == null){
-			disarm();
-			Buff.affect(Dungeon.hero, FriendlyMechanismCooldown.class, 150f);
-			return;
-		}
-		if (Dungeon.level.distance(Dungeon.hero.pos, pos) <= 1){
-			BArray.setFalse(Dungeon.level.visited);
-			BArray.setFalse(Dungeon.level.mapped);
-		}
 
-		super.activate();
+            GameScene.selectCell(new CellSelector.Listener() {
+                @Override public String prompt() {
+                    return Messages.get(this, "friendly_target");
+                }
 
-		GameScene.updateFog(); //just in case hero wasn't moved
-		Dungeon.observe();
+                @Override public void onSelect(Integer cell) {
+                    if (cell != null && ScrollOfTeleportation.teleportToLocation(Dungeon.hero, cell))
+                        Buff.affect(Dungeon.hero, FriendlyMechanismCooldown.class, 150f);
+                }
+            });
+		} else {
+    		if (Dungeon.level.distance(Dungeon.hero.pos, pos) <= 1){
+	    		BArray.setFalse(Dungeon.level.visited);
+		    	BArray.setFalse(Dungeon.level.mapped);
+    		}
 
+	    	super.activate();
+
+		    GameScene.updateFog(); //just in case hero wasn't moved
+	    	Dungeon.observe();
+        }
 	}
 }

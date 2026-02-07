@@ -43,6 +43,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Statue;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Wraith;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.RatKing;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfSirensSong;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Bestiary;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.watabou.utils.PathFinder;
@@ -70,12 +71,6 @@ public class DistortionTrap extends Trap{
 
 	@Override
 	public void activate() {
-		if (Dungeon.hero.pos == pos && !Dungeon.hero.isFlying()
-		&& Dungeon.hero.pointsInTalent(Talent.FRIENDLY_MECHANISM) >= 3 && Dungeon.hero.buff(FriendlyMechanismCooldown.class) == null){
-			disarm();
-			Buff.affect(Dungeon.hero, FriendlyMechanismCooldown.class, 150f);
-			return;
-		}
 
 		int nMobs = 3;
 		if (Random.Int( 2 ) == 0) {
@@ -104,6 +99,8 @@ public class DistortionTrap extends Trap{
 		}
 
 		ArrayList<Mob> mobs = new ArrayList<>();
+
+        boolean enthralled = false;
 
 		int summoned = 0;
 		for (Integer point : respawnPoints) {
@@ -155,9 +152,17 @@ public class DistortionTrap extends Trap{
 				mob.state = mob.WANDERING;
 			}
 			mob.pos = point;
+            if (Dungeon.hero.pointsInTalent(Talent.FRIENDLY_MECHANISM) >= 2 && mob.alignment == Char.Alignment.ENEMY
+                    && Dungeon.hero.buff(FriendlyMechanismCooldown.class) == null){
+                Buff.affect(mob, ScrollOfSirensSong.Enthralled.class);
+                enthralled = true;
+            }
+
 			GameScene.add(mob, DELAY);
 			mobs.add(mob);
 		}
+
+        if (enthralled) Buff.affect(Dungeon.hero, FriendlyMechanismCooldown.class, 150f);
 
 		//important to process the visuals and pressing of cells last, so spawned mobs have a chance to occupy cells first
 		Trap t;

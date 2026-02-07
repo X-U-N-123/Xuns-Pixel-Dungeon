@@ -228,6 +228,7 @@ public class CrystalGuardian extends Mob{
 
 	@Override
 	public boolean[] modifyPassable(boolean[] passable) {
+        passable = super.modifyPassable(passable);
 		//if we are hunting, we can stomp through crystals, but prefer not to
 		if (state == HUNTING && target != -1){
 			PathFinder.buildDistanceMap(target, passable);
