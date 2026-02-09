@@ -89,6 +89,8 @@ public enum Icons {
 	ALCHEMY,
 	GRASS,
 	TERRAIN,
+    STRENGTHEN,
+    WEAKEN,
 
 	STAIRS,
 	STAIRS_CHASM,
@@ -299,6 +301,12 @@ public enum Icons {
 			case TERRAIN:
 				icon.frame( icon.texture.uvRectBySize( 128, 48, 16, 16 ) );
 				break;
+            case STRENGTHEN:
+                icon.frame( icon.texture.uvRectBySize( 144, 48, 15, 15 ) );
+                break;
+            case WEAKEN:
+                icon.frame( icon.texture.uvRectBySize( 160, 48, 15, 15 ) );
+                break;
 
 			case STAIRS:
 				icon.frame( icon.texture.uvRectBySize( 0, 64, 15, 16 ) );

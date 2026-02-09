@@ -61,8 +61,8 @@ public class Bones {
 
 		branch = Dungeon.branch;
 
-		//daily runs do not interact with remains
-		if (Dungeon.daily) {
+		//daily runs or dev mode do not interact with remains
+		if (Dungeon.daily || Dungeon.isChallenged(Challenges.X_U_NS_POWER)) {
 			depth = branch = -1;
 			return;
 		}
@@ -86,9 +86,9 @@ public class Bones {
 	private static Item pickItem(Hero hero){
 		Item item = null;
 
-		//seeded runs or dev mode don't leave items
+		//seeded runs don't leave items
 		//This is to prevent using specific seeds to transport items to regular runs
-		if (!Dungeon.customSeedText.isEmpty() || Dungeon.isChallenged(Challenges.X_U_NS_POWER)){
+		if (!Dungeon.customSeedText.isEmpty()){
 			return null;
 		}
 
@@ -152,8 +152,8 @@ public class Bones {
 	}
 
 	public static ArrayList<Item> get() {
-		//daily runs do not interact with remains
-		if (Dungeon.daily){
+		//daily runs or dev mode do not interact with remains
+		if (Dungeon.daily || Dungeon.isChallenged(Challenges.X_U_NS_POWER)){
 			return null;
 		}
 

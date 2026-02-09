@@ -33,6 +33,7 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.shatteredpixel.shatteredpixeldungeon.ui.AttackIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ScrollPane;
@@ -613,6 +614,7 @@ public class ScrollOfDebug extends Scroll {
                                         GameScene.add(mob);
                                         Dungeon.observe();
                                         hero.checkVisibleMobs();
+                                        AttackIndicator.updateState();
                                         // doing this means that I can't actually let you select cells for methods; it'll be immediately cancelled.
                                         executeMethod(mob,input,3);
                                         GLog.w("生成了" + mob.name());

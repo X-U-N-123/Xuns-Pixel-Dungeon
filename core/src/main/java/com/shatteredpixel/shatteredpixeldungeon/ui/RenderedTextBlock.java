@@ -47,7 +47,8 @@ public class RenderedTextBlock extends Component {
 	private float zoom;
 	private int color = -1;
 	
-	private int hightlightColor = Window.TITLE_COLOR;
+	private int hightlightColor1 = Window.TITLE_COLOR;
+    private int hightlightColor2 = 0x44FFFF;
 	private boolean highlightingEnabled = true;
 
 	public static final int LEFT_ALIGN = 1;
@@ -114,21 +115,26 @@ public class RenderedTextBlock extends Component {
 		
 		clear();
 		words = new ArrayList<>();
-		boolean highlighting = false;
+		boolean highlighting1 = false;
+        boolean highlighting2 = false;
 		for (String str : tokens){
 
-			//if highlighting is enabled, '_' or '**' is used to toggle highlighting on or off
+			//if highlighting1 is enabled, '_'  is used to toggle highlighting1 on or off
+            //if highlighting2 is enabled, '**' is used to toggle highlighting2 on or off
 			// the actual symbols are not rendered
-			if ((str.equals("_") || str.equals("**")) && highlightingEnabled){
-				highlighting = !highlighting;
-			} else if (str.equals("\n")){
+			if (str.equals("_") && highlightingEnabled){
+				highlighting1 = !highlighting1;
+			} else if (str.equals("**") && highlightingEnabled){
+                highlighting2 = !highlighting2;
+            } else if (str.equals("\n")){
 				words.add(NEWLINE);
 			} else if (str.equals(" ")){
 				words.add(SPACE);
 			} else {
 				RenderedText word = new RenderedText(str, size);
 				
-				if (highlighting) word.hardlight(hightlightColor);
+				if (highlighting1) word.hardlight(hightlightColor1);
+                else if (highlighting2) word.hardlight(hightlightColor2);
 				else if (color != -1) word.hardlight(color);
 				word.scale.set(zoom);
 				
@@ -173,13 +179,18 @@ public class RenderedTextBlock extends Component {
 		setHightlighting(enabled, Window.TITLE_COLOR);
 	}
 	
-	public synchronized void setHightlighting(boolean enabled, int color){
-		if (enabled != highlightingEnabled || color != hightlightColor) {
-			hightlightColor = color;
-			highlightingEnabled = enabled;
-			build();
-		}
+	public synchronized void setHightlighting(boolean enabled, int color1){
+		setHightlighting(enabled, color1, Window.SHPX_COLOR);
 	}
+
+    public synchronized void setHightlighting(boolean enabled, int color1, int color2){
+        if (enabled != highlightingEnabled || color1 != hightlightColor1 || color2 != hightlightColor2) {
+            hightlightColor1 = color1;
+            hightlightColor2 = color2;
+            highlightingEnabled = enabled;
+            build();
+        }
+    }
 
 	public synchronized void invert(){
 		if (words != null) {

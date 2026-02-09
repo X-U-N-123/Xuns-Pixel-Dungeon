@@ -343,7 +343,7 @@ abstract public class Weapon extends KindOfWeapon {
 			if (owner.buff(AscendedForm.AscendBuff.class) != null){
 				reach += 2;
 			}
-			if (Dungeon.hero.pointsInTalent(Talent.FAR_STANDOFF) >= 2
+			if (Dungeon.hero.pointsInTalent(Talent.FAR_STANDOFF) >= 3
                 && combo != null && combo.getComboCount() >= 20){
 				reach ++;
 			}
