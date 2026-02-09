@@ -94,7 +94,7 @@ public abstract class Scroll extends Item {
 	//affects how strongly on-scroll talents trigger from this scroll
 	protected float talentFactor = 1;
 	//the chance (0-1) of whether on-scroll talents trigger from this potion
-	protected float talentChance = 1;
+	public float talentChance = 1;
 	
 	{
 		stackable = true;

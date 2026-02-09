@@ -150,7 +150,7 @@ public class WornKey extends Artifact {
                             return;
                         }
                         if (charge < 1){
-                            GLog.i( Messages.get(this, "iron_charges") );
+                            GLog.i( Messages.get(WornKey.class, "iron_charges") );
                             return;
                         }
                         Sample.INSTANCE.play(Assets.Sounds.UNLOCK);
@@ -205,6 +205,9 @@ public class WornKey extends Artifact {
                                 CellEmitter.get( target ).start( Speck.factory( Speck.DISCOVER ), 0.025f, 20 );
                                 curUser.spendAndNext(Actor.TICK);
                                 curUser.sprite.idle();
+
+								//if there is a distant well landmark above, remove it, as we just opened the door
+								Notes.remove(Notes.Landmark.DISTANT_WELL, Dungeon.depth-1);
                             }
                         });
                         curUser.busy();
@@ -497,6 +500,7 @@ public class WornKey extends Artifact {
                     l.solid[cell] = off[cell] > 0 || (Terrain.flags[l.map[cell]] & Terrain.SOLID) != 0;
                     l.passable[cell] = off[cell] == 0 && (Terrain.flags[l.map[cell]] & Terrain.PASSABLE) != 0;
                     l.avoid[cell] = off[cell] == 0 && (Terrain.flags[l.map[cell]] & Terrain.AVOID) != 0;
+					l.updateOpenSpace(cell);
                 }
             }
 
@@ -512,6 +516,7 @@ public class WornKey extends Artifact {
             level.solid[cell] = cur[cell] > 0 || (Terrain.flags[level.map[cell]] & Terrain.SOLID) != 0;
             level.passable[cell] = cur[cell] == 0 && (Terrain.flags[level.map[cell]] & Terrain.PASSABLE) != 0;
             level.avoid[cell] = cur[cell] == 0 && (Terrain.flags[level.map[cell]] & Terrain.AVOID) != 0;
+			level.updateOpenSpace(cell);
         }
 
         @Override
@@ -523,6 +528,7 @@ public class WornKey extends Artifact {
             l.solid[cell] = cur[cell] > 0 || (Terrain.flags[l.map[cell]] & Terrain.SOLID) != 0;
             l.passable[cell] = cur[cell] == 0 && (Terrain.flags[l.map[cell]] & Terrain.PASSABLE) != 0;
             l.avoid[cell] = cur[cell] == 0 && (Terrain.flags[l.map[cell]] & Terrain.AVOID) != 0;
+			l.updateOpenSpace(cell);
         }
 
         @Override
@@ -539,6 +545,7 @@ public class WornKey extends Artifact {
                     l.solid[i] = l.solid[i] || cur[i] > 0;
                     l.passable[i] = l.passable[i] && cur[i] == 0;
                     l.avoid[i] = l.avoid[i] && cur[i] == 0;
+					//openSpace will be updated as part of building flap maps
                 }
             }
         }

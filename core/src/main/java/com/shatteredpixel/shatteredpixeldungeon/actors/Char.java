@@ -130,6 +130,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Obfuscation;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Potential;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Swiftness;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Viscosity;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ChaliceOfBlood;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ElementalMask;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
@@ -1120,14 +1121,14 @@ public abstract class Char extends Actor {
 		
 		if (sprite != null) {
 			//defaults to normal damage icon if no other ones apply
-			int                                                         icon = FloatingText.PHYS_DMG;
-			if (NO_ARMOR_PHYSICAL_SOURCES.contains(src.getClass()))     icon = FloatingText.PHYS_DMG_NO_BLOCK;
-			if (buff(BrokenArmor.class) != null)                        icon = FloatingText.PHYS_DMG_NO_BLOCK;
-			if (AntiMagic.RESISTS.contains(src.getClass()))             icon = FloatingText.MAGIC_DMG;
-			if (src instanceof Pickaxe)                                 icon = FloatingText.PICK_DMG;
-			if (isReal)                                                 icon = FloatingText.REALITY;
+			int                                                     icon = FloatingText.PHYS_DMG;
+			if (NO_ARMOR_PHYSICAL_SOURCES.contains(src.getClass())) icon = FloatingText.PHYS_DMG_NO_BLOCK;
+			if (buff(BrokenArmor.class) != null)                    icon = FloatingText.PHYS_DMG_NO_BLOCK;
+			if (AntiMagic.RESISTS.contains(src.getClass()))         icon = FloatingText.MAGIC_DMG;
+			if (src instanceof Pickaxe)                             icon = FloatingText.PICK_DMG;
+			if (isReal)                                             icon = FloatingText.REALITY;
 
-			//special case for sniper when using ranged attacks
+			//special case for sniper and scout when using ranged attacks
 			if (src == hero
 					&& (hero.subClass == HeroSubClass.SNIPER || hero.subClass == HeroSubClass.SCOUT)
 					&& !Dungeon.level.adjacent(hero.pos, pos)
@@ -1141,21 +1142,21 @@ public abstract class Char extends Actor {
 				icon = FloatingText.PHYS_DMG_NO_BLOCK;
 			}
 
-			if (src instanceof Hunger)                                  icon = FloatingText.HUNGER;
-			if (src instanceof Chill || src instanceof Frost)           icon = FloatingText.FROST;
-			if (src instanceof GeyserTrap || src instanceof StormCloud) icon = FloatingText.WATER;
-            if (src instanceof Whirlpool)                               icon = FloatingText.WATER;
-			if (src instanceof Burning)                                 icon = FloatingText.BURNING;
-			if (src instanceof HeatBrew)                                icon = FloatingText.HEAT;
-			if (src instanceof Electricity)                             icon = FloatingText.SHOCKING;
-			if (src instanceof Bleeding)                                icon = FloatingText.BLEEDING;
-			if (src instanceof ToxicGas)                                icon = FloatingText.TOXIC;
-			if (src instanceof Corrosion)                               icon = FloatingText.CORROSION;
-			if (src instanceof Poison)                                  icon = FloatingText.POISON;
-			if (src instanceof Ooze)                                    icon = FloatingText.OOZE;
-			if (src instanceof Viscosity.DeferedDamage)                 icon = FloatingText.DEFERRED;
-			if (src instanceof Corruption)                              icon = FloatingText.CORRUPTION;
-			if (src instanceof AscensionChallenge)                      icon = FloatingText.AMULET;
+			if (src instanceof Hunger)                                    icon = FloatingText.HUNGER;
+			if (src instanceof Chill || src instanceof Frost)             icon = FloatingText.FROST;
+			if (src instanceof GeyserTrap || src instanceof StormCloud)   icon = FloatingText.WATER;
+            if (src instanceof Whirlpool)                                 icon = FloatingText.WATER;
+			if (src instanceof Burning)                                   icon = FloatingText.BURNING;
+			if (src instanceof HeatBrew)                                  icon = FloatingText.HEAT;
+			if (src instanceof Electricity)                               icon = FloatingText.SHOCKING;
+			if (src instanceof Bleeding || src instanceof ChaliceOfBlood) icon = FloatingText.BLEEDING;
+			if (src instanceof ToxicGas)                                  icon = FloatingText.TOXIC;
+			if (src instanceof Corrosion)                                 icon = FloatingText.CORROSION;
+			if (src instanceof Poison)                                    icon = FloatingText.POISON;
+			if (src instanceof Ooze)                                      icon = FloatingText.OOZE;
+			if (src instanceof Viscosity.DeferedDamage)                   icon = FloatingText.DEFERRED;
+			if (src instanceof Corruption)                                icon = FloatingText.CORRUPTION;
+			if (src instanceof AscensionChallenge)                        icon = FloatingText.AMULET;
 
 			sprite.showStatusWithIcon(CharSprite.NEGATIVE, Integer.toString(dmg + shielded), icon);
 		}

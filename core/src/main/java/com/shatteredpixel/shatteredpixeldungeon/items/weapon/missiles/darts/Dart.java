@@ -48,6 +48,8 @@ import java.util.ArrayList;
 public class Dart extends MissileWeapon {
 
 	{
+		levelKnown = true;
+
 		image = ItemSpriteSheet.DART;
 		hitSound = Assets.Sounds.HIT_ARROW;
 		hitSoundPitch = 1.3f;
@@ -242,6 +244,11 @@ public class Dart extends MissileWeapon {
 	public boolean isUpgradable() {
 		return false;
 	}
+
+    @Override
+    public boolean isIdentified() {
+        return true;
+    }
 	
 	@Override
 	public int value() {

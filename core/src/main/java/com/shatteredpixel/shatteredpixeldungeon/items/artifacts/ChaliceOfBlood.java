@@ -24,8 +24,11 @@ package com.shatteredpixel.shatteredpixeldungeon.items.artifacts;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.HolyWard;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
@@ -105,6 +108,10 @@ public class ChaliceOfBlood extends Artifact {
 			damage = armor.absorb(damage);
 		}
 
+		if (hero.buff(MagicImmune.class) != null && hero.buff(HolyWard.HolyArmBuff.class) != null){
+			damage -= hero.subClass == HeroSubClass.PALADIN ? 3 : 1;
+		}
+
 		WandOfLivingEarth.RockArmor rockArmor = hero.buff(WandOfLivingEarth.RockArmor.class);
 		if (rockArmor != null) {
 			damage = rockArmor.absorb(damage);
@@ -114,7 +121,7 @@ public class ChaliceOfBlood extends Artifact {
 
 		hero.sprite.operate( hero.pos );
 		hero.busy();
-		hero.spend(3f);
+		hero.spend(Actor.TICK);
 		GLog.w( Messages.get(this, "onprick") );
 		if (damage <= 0){
 			damage = 1;

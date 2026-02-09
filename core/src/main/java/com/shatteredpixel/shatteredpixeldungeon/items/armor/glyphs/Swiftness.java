@@ -24,9 +24,11 @@ package com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.watabou.utils.PathFinder;
+import com.watabou.utils.Random;
 
 public class Swiftness extends Armor.Glyph {
 
@@ -46,6 +48,10 @@ public class Swiftness extends Armor.Glyph {
 		if (enemynear(owner)){
 			return 1;
 		} else {
+			if (owner.sprite != null){
+				int particles = 1 + (int)Random.Float(1+level/5f);
+				owner.sprite.emitter().start(Speck.factory(Speck.YELLOW_LIGHT), 0.02f, particles);
+			}
 			return (1.2f + 0.04f * level) * genericProcChanceMultiplier(owner);
 		}
 	}

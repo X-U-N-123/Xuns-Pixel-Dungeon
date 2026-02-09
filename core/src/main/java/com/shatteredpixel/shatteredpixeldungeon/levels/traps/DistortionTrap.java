@@ -27,18 +27,10 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Acidic;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Albino;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ArmoredBrute;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Bandit;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.CausticSlime;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM201;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Elemental;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.MobSpawner;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Piranha;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Senior;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Statue;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Wraith;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.RatKing;
@@ -51,7 +43,6 @@ import com.watabou.utils.Random;
 import com.watabou.utils.Reflection;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class DistortionTrap extends Trap{
 
@@ -61,13 +52,6 @@ public class DistortionTrap extends Trap{
 		color = TEAL;
 		shape = LARGE_DOT;
 	}
-
-	private static final ArrayList<Class<?extends Mob>> RARE = new ArrayList<>(Arrays.asList(
-			Albino.class, CausticSlime.class,
-			Bandit.class,
-			ArmoredBrute.class, DM201.class,
-			Elemental.ChaosElemental.class, Senior.class,
-			Acidic.class));
 
 	@Override
 	public void activate() {
@@ -120,7 +104,7 @@ public class DistortionTrap extends Trap{
 					mob = Reflection.newInstance(MobSpawner.getMobRotation(floor).get(0));
 					break;
 				case 2:
-					switch (2){
+					switch (Random.Int(4)){
 						case 0: default:
 							Wraith.spawnAt(point);
 							continue; //wraiths spawn themselves, no need to do more
@@ -139,7 +123,7 @@ public class DistortionTrap extends Trap{
 					}
 					break;
 				case 4:
-					mob = Reflection.newInstance(Random.element(RARE));
+					mob = Reflection.newInstance(Random.element(MobSpawner.RARE_ALTS.values()));
 					break;
 			}
 

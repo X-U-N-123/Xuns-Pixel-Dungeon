@@ -123,7 +123,7 @@ public class MirrorImage extends NPC {
 	}
 	@Override
 	public float speed() {
-		if (hero.subClass == HeroSubClass.PHANTOM) return super.speed() * 1.5f;
+		if (hero.subClass == HeroSubClass.PHANTOM) return super.speed() * 1.2f;
 		else return super.speed();
 	}
 	

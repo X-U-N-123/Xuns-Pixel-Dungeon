@@ -154,6 +154,7 @@ public class UnstableSpellbook extends Artifact {
 		}
 
 		scroll.anonymize();
+		scroll.talentChance = 0;  //spellbook does not trigger on-scroll talents
 		curItem = scroll;
 		curUser = hero;
 		if (scroll instanceof ScrollOfTransmutation) charge --;
@@ -178,6 +179,7 @@ public class UnstableSpellbook extends Artifact {
 						curItem = scroll;
 						charge--;
 						scroll.anonymize();
+						scroll.talentChance = 0;
 						checkForArtifactProc(curUser, scroll);
 						scroll.doRead();
 						Talent.onArtifactUsed(Dungeon.hero);
@@ -231,6 +233,7 @@ public class UnstableSpellbook extends Artifact {
 			curUser = Dungeon.hero;
 			curItem = scroll;
 			scroll.anonymize();
+			scroll.talentChance = 0;
 			Game.runOnRenderThread(new Callback() {
 				@Override
 				public void call() {

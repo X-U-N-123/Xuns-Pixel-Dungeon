@@ -550,8 +550,16 @@ public class GnollGeomancer extends Mob {
 		@Override
 		public boolean act(boolean enemyInFOV, boolean justAlerted) {
 			if (!enemyInFOV){
+				//if we can't see our current target, try to find a new one
+				enemy = null;
+				enemy = chooseEnemy();
+				if (enemy != null){
+					return act(true, justAlerted);
+				} else {
+					//wait if we can't
 				spend(TICK);
 				return true;
+				}
 			} else {
 				enemySeen = true;
 

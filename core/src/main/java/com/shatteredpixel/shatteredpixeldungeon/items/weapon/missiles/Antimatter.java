@@ -26,6 +26,8 @@ import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.SnipersMark;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
@@ -84,7 +86,13 @@ public class Antimatter extends MissileWeapon{
         Dungeon.level.pressCell(cell);
 
         ArrayList<Char> targets = new ArrayList<>();
-        if (Actor.findChar(cell) != null) targets.add(Actor.findChar(cell));
+        Char primaryTarget;
+        if (Actor.findChar(cell) != null) {
+            primaryTarget = Actor.findChar(cell);
+            targets.add(primaryTarget);
+        } else {
+            primaryTarget = null;
+        }
 
         PathFinder.buildDistanceMap( cell, BArray.not( Dungeon.level.solid, null ), 2 );
         for (int i = 0; i < PathFinder.distance.length; i++) {
@@ -110,6 +118,26 @@ public class Antimatter extends MissileWeapon{
                 Dungeon.fail(this);
                 GLog.n(Messages.get(this, "ondeath"));
             }
+        }
+
+        //if we're applying sniper's mark, prioritize giving it to the primary target of the attack
+        if (curUser.subClass == HeroSubClass.SNIPER && primaryTarget != null && primaryTarget.isActive()){
+            Actor.add(new Actor() {
+
+                {
+                    actPriority = VFX_PRIO-1;
+                }
+
+                @Override
+                protected boolean act() {
+                    SnipersMark mark = Dungeon.hero.buff(SnipersMark.class);
+                    if (mark != null && primaryTarget.isActive()){
+                        mark.object = primaryTarget.id();
+                    }
+                    Actor.remove(this);
+                    return true;
+                }
+            });
         }
 
         PixelScene.shake( 5, 1.5f );

@@ -81,7 +81,6 @@ import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.IconTitle;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndTitledMessage;
 import com.watabou.noosa.audio.Sample;
-import com.watabou.noosa.ui.Component;
 import com.watabou.utils.Bundlable;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
@@ -102,7 +101,7 @@ public class Trinity extends ArmorAbility {
 	public  Talent    mimicForm = null;
 
 	@Override
-	public void activate(ClassArmor armor, Hero hero, Integer target) {
+	protected void activate(ClassArmor armor, Hero hero, Integer target) {
 
 		if (bodyForm == null && mindForm == null && spiritForm == null && mimicForm == null){
 			GLog.w(Messages.get(this, "no_imbue"));
@@ -128,8 +127,6 @@ public class Trinity extends ArmorAbility {
 					Messages.get(WndUseTrinity.class, "text"));
 
 			int top = height;
-
-			ArrayList<Component> toAdd = new ArrayList<>();
 
 			if (bodyForm != null){
 				RedButton btnBody = null;
