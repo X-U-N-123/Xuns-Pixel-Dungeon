@@ -90,7 +90,7 @@ import java.util.Arrays;
 
 public class Armor extends EquipableItem {
 
-	public static final String AC_DETACH       = "DETACH";
+	protected static final String AC_DETACH       = "DETACH";
 	
 	public enum Augment {
 		EVASION (2f , -1f),

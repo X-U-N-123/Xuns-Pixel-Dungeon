@@ -217,12 +217,12 @@ public class WndHero extends WndTabbed {
 
 				int accBonus = hero.attackSkill(ch) - hero.baseAttackSkill();
 				if (accBonus > 0)      statSlot( Messages.get(this, "acc"), hero.baseAttackSkill() + " + " + accBonus);
-				else if (accBonus < 0) statSlot( Messages.get(this, "acc"), hero.baseAttackSkill() + " + " + -accBonus);
+				else if (accBonus < 0) statSlot( Messages.get(this, "acc"), hero.baseAttackSkill() + " - " + -accBonus);
 				else                   statSlot( Messages.get(this, "acc"), hero.attackSkill(ch));
 
 				int evaBonus = hero.defenseSkill(ch) - hero.baseDefenseSkill();
 				if (evaBonus > 0)      statSlot( Messages.get(this, "eva"), hero.baseDefenseSkill() + " + " + evaBonus);
-				else if (accBonus < 0) statSlot( Messages.get(this, "eva"), hero.baseDefenseSkill() + " + " + -evaBonus);
+				else if (evaBonus < 0) statSlot( Messages.get(this, "eva"), hero.baseDefenseSkill() + " - " + -evaBonus);
 				else                   statSlot( Messages.get(this, "eva"), hero.defenseSkill(ch));
 			}
 			statSlot( Messages.get(this, "movedly"), Messages.get(this, "turn", 1f/hero.speed() ));

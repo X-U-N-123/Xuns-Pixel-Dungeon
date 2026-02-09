@@ -611,6 +611,8 @@ public class ScrollOfDebug extends Scroll {
                                         }
                                         mob.pos = cell;
                                         GameScene.add(mob);
+                                        Dungeon.observe();
+                                        hero.checkVisibleMobs();
                                         // doing this means that I can't actually let you select cells for methods; it'll be immediately cancelled.
                                         executeMethod(mob,input,3);
                                         GLog.w("生成了" + mob.name());

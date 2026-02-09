@@ -908,11 +908,11 @@ public enum Talent {
 			Dungeon.hero.checkVisibleMobs();
 		}
 
+        BrokenSeal seal = Dungeon.hero.belongings.getItem(BrokenSeal.class);
+        if (seal != null && talent == INTACT_SEAL) seal.image = ItemSpriteSheet.INTACT_SEAL;
+
 		if (talent == INTACT_SEAL || talent == TWIN_UPGRADES || talent == DESPERATE_POWER || talent == SHARED_ARCANA
 				|| talent == STRONGMAN || talent == DURABLE_PROJECTILES || talent == ARCANE_STEP){
-			if (Dungeon.hero.belongings.getItem(BrokenSeal.class) != null && talent == INTACT_SEAL){
-				Dungeon.hero.belongings.getItem(BrokenSeal.class).image = ItemSpriteSheet.INTACT_SEAL;
-			}
 			Item.updateQuickslot();
 		}
 

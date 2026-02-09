@@ -24,6 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon.items.spells;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Transmuting;
+import com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.KindOfWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
@@ -66,7 +67,11 @@ public class Extract extends InventorySpell {
 		if (item.unique) item.degrade(toget);
 		else {
 			if (item instanceof Armor && ((Armor) item).checkSeal() != null){
-				item.execute(Dungeon.hero, Armor.AC_DETACH);
+                BrokenSeal detaching = ((Armor)item).detachSeal();
+                if (!detaching.collect()){
+                    Dungeon.level.drop(detaching, Dungeon.hero.pos);
+                }
+                updateQuickslot();
 			}
 			item.detach(Dungeon.hero.belongings.backpack);
 			if (Dungeon.hero.belongings.weapon == item || Dungeon.hero.belongings.secondWep == item){

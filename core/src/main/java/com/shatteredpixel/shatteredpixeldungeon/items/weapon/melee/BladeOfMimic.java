@@ -24,6 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Annoying;
@@ -56,7 +57,6 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.CanScrollCheckBox;
 import com.shatteredpixel.shatteredpixeldungeon.ui.CheckBox;
-import com.shatteredpixel.shatteredpixeldungeon.ui.OptionSlider;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ScrollPane;
@@ -71,7 +71,7 @@ import com.watabou.utils.Reflection;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
-public class BladeOfMimic extends MeleeWeapon { //copied from Magic Ling Pixel Dungeon
+public class BladeOfMimic extends MeleeWeapon { //copied from Magic Ling Pixel Dungeon, with some extension
 
     private static final String AC_MIMIC = "mimic";
 
@@ -98,7 +98,7 @@ public class BladeOfMimic extends MeleeWeapon { //copied from Magic Ling Pixel D
     private float scaling_max = 2f;
     private int base_block = 0;
     private float scaling_block = 0f;
-    private boolean DLY_swap = false;
+    private float sneak_bonus = 0f;
 
     public boolean canSneak = true;
 
@@ -175,21 +175,6 @@ public class BladeOfMimic extends MeleeWeapon { //copied from Magic Ling Pixel D
         return damage;
     }
 
-    public boolean dispelEnchant(Class<? extends Enchantment> ench){
-        if(ench!=null){
-            int id = 0;
-            for(Enchantment e: enchList){
-                if (e.getClass() == ench){
-                    enchList.remove(e);
-                    enchOn -= 1<<id;
-                    return true;
-                }
-                ++id;
-            }
-        }
-        return false;
-    }
-
     public void dispelAllEnch(){
         enchList.clear();
         enchOn = 0L;
@@ -209,6 +194,7 @@ public class BladeOfMimic extends MeleeWeapon { //copied from Magic Ling Pixel D
     private static final String CAN_SNEAK   = "can_sneak";
     private static final String BASE_BLOCK  = "base_block";
     private static final String SCALE_BLOCK = "scale_block";
+    private static final String SNEAK_BONUS = "sneak_bonus";
 
     @Override
     public void storeInBundle(Bundle bundle) {
@@ -224,12 +210,12 @@ public class BladeOfMimic extends MeleeWeapon { //copied from Magic Ling Pixel D
         bundle.put("scaling_max", scaling_max);
         bundle.put("accuracy", ACC);
         bundle.put("delay", DLY);
-        bundle.put("delay_swap", DLY_swap);
         bundle.put("reach", RCH);
         bundle.put("ench_on", enchOn);
         bundle.put(CAN_SNEAK, canSneak);
         bundle.put(BASE_BLOCK, base_block);
         bundle.put(SCALE_BLOCK, scaling_block);
+        bundle.put(SNEAK_BONUS, sneak_bonus);
     }
 
     @Override
@@ -246,13 +232,13 @@ public class BladeOfMimic extends MeleeWeapon { //copied from Magic Ling Pixel D
         scaling_max = bundle.getFloat("scaling_max");
         ACC = bundle.getFloat("accuracy");
         DLY = bundle.getFloat("delay");
-        DLY_swap = bundle.getBoolean("delay_swap");
         RCH = bundle.getInt("reach");
         enchOn = bundle.getLong("ench_on");
         canSneak = bundle.getBoolean(CAN_SNEAK);
         base_block = bundle.getInt(BASE_BLOCK);
-        scaling_block = bundle.getInt(SCALE_BLOCK);
-        adjustStatus();
+        scaling_block = bundle.getFloat(SCALE_BLOCK);
+        sneak_bonus = bundle.getFloat(SNEAK_BONUS);
+        Item.updateQuickslot();
         setEnchant(enchOn);
     }
 
@@ -268,14 +254,9 @@ public class BladeOfMimic extends MeleeWeapon { //copied from Magic Ling Pixel D
     public void execute(Hero hero, String action) {
         super.execute(hero, action);
         if (action.equals(AC_MIMIC)){
-            adjustStatus();
+            Item.updateQuickslot();
             GameScene.show(new SettingsWindow());
         }
-    }
-
-    public void adjustStatus() {
-        Item.updateQuickslot();
-        curUser.checkVisibleMobs();
     }
 
     @Override
@@ -292,6 +273,41 @@ public class BladeOfMimic extends MeleeWeapon { //copied from Magic Ling Pixel D
     @Override
     public int max(int lvl) {
         return Math.round(maxBase() + level() * maxScaling());
+    }
+
+    @Override
+    public int defenseFactor( Char owner ) {
+        return DRMax();
+    }
+
+    public int DRMax(){
+        return DRMax(buffedLvl());
+    }
+
+    //7 extra defence, plus 3 per level
+    public int DRMax(int lvl){
+        return Math.round(base_block + lvl * scaling_block);
+    }
+
+    @Override
+    public int damageRoll(Char owner) {
+        if (owner instanceof Hero) {
+            Hero hero = (Hero)owner;
+            Char enemy = hero.attackTarget();
+            if (enemy instanceof Mob && ((Mob) enemy).surprisedBy(hero)) {
+                //deals sneak_bonus percentage toward max to max on surprise, instead of min to max.
+                int diff = max() - min();
+                int damage = augment.damageFactor(Hero.heroDamageIntRange(
+                min() + Math.round(diff*sneak_bonus),
+                max()));
+                int exStr = hero.STR() - STRReq();
+                if (exStr > 0) {
+                    damage += Hero.heroDamageIntRange(0, exStr);
+                }
+                return damage;
+            }
+        }
+        return super.damageRoll(owner);
     }
 
     private float defaultDamageModifier(){
@@ -322,7 +338,7 @@ public class BladeOfMimic extends MeleeWeapon { //copied from Magic Ling Pixel D
     }
 
     private float minScaling() {
-        return (use_default_scaling ? 1f*defaultDamageModifier() : scaling_min);
+        return (use_default_scaling ? defaultDamageModifier() : scaling_min);
     }
 
     private float maxScaling() {
@@ -341,36 +357,49 @@ public class BladeOfMimic extends MeleeWeapon { //copied from Magic Ling Pixel D
         scaling_max = 2f;
         ACC = 1f;
         DLY = 1f;
-        DLY_swap = false;
         RCH = 1;
         enchOn = 0L;
         canSneak = true;
         base_block = 0;
         scaling_block = 0f;
-        adjustStatus();
+        sneak_bonus = 0f;
+        Item.updateQuickslot();
         setEnchant(enchOn);
     }
 
     protected class SettingsWindow extends Window {
         private static final int WIDTH = 120;
         private static final int GAP = 2;
-        private static final int SLIDER_HEIGHT = 24;
-        private RedButton tierButton;
-        private RedButton strengthButton;
-        private RedButton baseDamageButton;
-        private RedButton damageScalingButton;
-        private RedButton accuracyButton;
-        private RedButton reachBottom;
-        private RedButton delayButton;
-        private RedButton resetButton;
-        private RedButton enchButton;
-        private CheckBox canSneakBox;
+        private final RedButton tierButton;
+        private final RedButton strengthButton;
+        private final RedButton baseDamageButton;
+        private final RedButton damageScalingButton;
+        private final RedButton accuracyButton;
+        private final RedButton reachButton;
+        private final RedButton delayButton;
+        private final RedButton baseBlockButton;
+        private final RedButton scalingBlockButton;
+        private final RedButton sneakBonusButton;
 
         public SettingsWindow() {
             tierButton = new RedButton(Messages.get(this, "tier_button", tier), 7) {
                 @Override
                 protected void onClick() {
-                    GameScene.show(new TierWindow());
+                    Game.runOnRenderThread(() ->GameScene.show(new WndTextInput(
+                    Messages.get(SettingsWindow.class, "level_title"), Messages.get(SettingsWindow.class, "level_title_desc"),
+                    Integer.toString(tier),
+                    Short.MAX_VALUE, false, Messages.get(SettingsWindow.class, "confirm"),
+                    Messages.get(SettingsWindow.class, "cancel")) {
+                        @Override
+                        public void onSelect(boolean check, String text) {
+                            if (check && text.matches("\\d+")) {
+                                tier = Math.min(Integer.parseInt(text), Short.MAX_VALUE);
+                                tierButton.text(Messages.get(SettingsWindow.class, "tier_button", tier));
+                                Item.updateQuickslot();
+                            }
+                        }
+                    }));
+                    super.onClick();
                 }
             };
             tierButton.setRect(0, 0, WIDTH / 2 - 1, 16);
@@ -406,40 +435,82 @@ public class BladeOfMimic extends MeleeWeapon { //copied from Magic Ling Pixel D
             accuracyButton = new RedButton(Messages.get(this, "accuracy_button", ACC), 7) {
                 @Override
                 protected void onClick() {
-                    GameScene.show(new AccuracyWindow());
+                    Game.runOnRenderThread(() ->GameScene.show(new WndTextInput(
+                    Messages.get(SettingsWindow.class, "level_title"), Messages.get(SettingsWindow.class, "level_title_desc"),
+                    Float.toString(ACC),
+                    Short.MAX_VALUE, false, Messages.get(SettingsWindow.class, "confirm"),
+                    Messages.get(SettingsWindow.class, "cancel")) {
+                        @Override
+                        public void onSelect(boolean check, String text) {
+                            if (check && text.matches("^\\d+\\.?\\d{0,3}")) {
+                                ACC = Math.min(Float.parseFloat(text), Short.MAX_VALUE);
+                                accuracyButton.text(Messages.get(SettingsWindow.class, "accuracy_button", ACC));
+                                Item.updateQuickslot();
+                            }
+                        }
+                    }));
+                    super.onClick();
                 }
             };
             accuracyButton.setRect(0, baseDamageButton.bottom() + GAP, WIDTH / 2 - 1, 16);
             add(accuracyButton);
 
-            reachBottom = new RedButton(Messages.get(this, "reach_button", (RCH > 10 ? "+∞" : String.valueOf(RCH))), 7) {
+            reachButton = new RedButton(Messages.get(this, "reach_button", RCH), 7) {
                 @Override
                 protected void onClick() {
-                    GameScene.show(new ReachWindow());
+                    Game.runOnRenderThread(() ->GameScene.show(new WndTextInput(
+                    Messages.get(SettingsWindow.class, "level_title"), Messages.get(SettingsWindow.class, "level_title_desc"),
+                    Integer.toString(RCH),
+                    Short.MAX_VALUE, false, Messages.get(SettingsWindow.class, "confirm"),
+                    Messages.get(SettingsWindow.class, "cancel")) {
+                        @Override
+                        public void onSelect(boolean check, String text) {
+                            if (check && text.matches("\\d+")) {
+                                RCH = Math.min(Integer.parseInt(text), Short.MAX_VALUE);
+                                reachButton.text(Messages.get(SettingsWindow.class, "reach_button", RCH));
+                                Item.updateQuickslot();
+                            }
+                        }
+                    }));
+                    super.onClick();
                 }
             };
-            reachBottom.setRect(WIDTH / 2 + 1, damageScalingButton.bottom() + GAP, WIDTH / 2 - 1, 16);
-            add(reachBottom);
+            reachButton.setRect(WIDTH / 2 + 1, damageScalingButton.bottom() + GAP, WIDTH / 2 - 1, 16);
+            add(reachButton);
 
-            delayButton = new RedButton(Messages.get(this, "delay_button", DLY, 1 / DLY), 7) {
+            delayButton = new RedButton(Messages.get(this, "delay_button", DLY), 7) {
                 @Override
                 protected void onClick() {
-                    GameScene.show(new DelayWindow());
+                    Game.runOnRenderThread(() ->GameScene.show(new WndTextInput(
+                    Messages.get(SettingsWindow.class, "level_title"), Messages.get(SettingsWindow.class, "level_title_desc"),
+                    Float.toString(DLY),
+                    Short.MAX_VALUE, false, Messages.get(SettingsWindow.class, "confirm"),
+                    Messages.get(SettingsWindow.class, "cancel")) {
+                        @Override
+                        public void onSelect(boolean check, String text) {
+                            if (check && text.matches("^\\d+\\.?\\d{0,3}")) {
+                                DLY = Math.min(Float.parseFloat(text), Short.MAX_VALUE);
+                                delayButton.text(Messages.get(SettingsWindow.class, "reach_button", DLY));
+                                Item.updateQuickslot();
+                            }
+                        }
+                    }));
+                    super.onClick();
                 }
             };
-            delayButton.setRect(0, accuracyButton.bottom() + GAP, WIDTH, 16);
+            delayButton.setRect(0, accuracyButton.bottom() + GAP, WIDTH / 2 - 1, 16);
             add(delayButton);
 
-            enchButton = new RedButton(Messages.get(this, "ench_button"), 7) {
+            RedButton enchButton = new RedButton(Messages.get(this, "ench_button"), 7) {
                 @Override
                 protected void onClick() {
                     GameScene.show(new EnchantWindow());
                 }
             };
-            enchButton.setRect(0, delayButton.bottom() + GAP, WIDTH, 16);
+            enchButton.setRect(WIDTH / 2 + 1, accuracyButton.bottom() + GAP, WIDTH / 2 - 1, 16);
             add(enchButton);
 
-            canSneakBox = new CheckBox(Messages.titleCase(Messages.get(this, "can_sneak"))){
+            CheckBox canSneakBox = new CheckBox(Messages.titleCase(Messages.get(this, "can_sneak"))) {
                 @Override
                 protected void onClick() {
                     super.onClick();
@@ -447,10 +518,51 @@ public class BladeOfMimic extends MeleeWeapon { //copied from Magic Ling Pixel D
                 }
             };
             canSneakBox.checked(canSneak);
-            canSneakBox.setRect(0, enchButton.bottom() + GAP, WIDTH, 16);
+            canSneakBox.setRect(0, enchButton.bottom() + GAP, WIDTH / 2 - 1, 16);
             add(canSneakBox);
 
-            resetButton = new RedButton(Messages.get(this, "reset"), 7) {
+            sneakBonusButton = new RedButton(Messages.get(this, "sneak_bonus_button", sneak_bonus), 7) {
+                @Override
+                protected void onClick() {
+                    Game.runOnRenderThread(() ->GameScene.show(new WndTextInput(
+                    Messages.get(SettingsWindow.class, "level_title"), Messages.get(SettingsWindow.class, "level_title_desc"),
+                    Float.toString(sneak_bonus),
+                    Short.MAX_VALUE, false, Messages.get(SettingsWindow.class, "confirm"),
+                    Messages.get(SettingsWindow.class, "cancel")) {
+                        @Override
+                        public void onSelect(boolean check, String text) {
+                            if (check && text.matches("^\\d+\\.?\\d{0,3}")) {
+                                sneak_bonus = Math.min(Float.parseFloat(text), 1f);
+                                sneakBonusButton.text(Messages.get(SettingsWindow.class, "sneak_bonus_button", sneak_bonus));
+                                Item.updateQuickslot();
+                            }
+                        }
+                    }));
+                    super.onClick();
+                }
+            };
+            sneakBonusButton.setRect(WIDTH / 2 + 1, enchButton.bottom() + GAP, WIDTH / 2 - 1, 16);
+            add(sneakBonusButton);
+
+            baseBlockButton = new RedButton(Messages.get(this, "base_block_button", base_block), 7) {
+                @Override
+                protected void onClick() {
+                    GameScene.show(new BlockWindow());
+                }
+            };
+            baseBlockButton.setRect(0, canSneakBox.bottom() + GAP, WIDTH / 2 - 1, 16);
+            add(baseBlockButton);
+
+            scalingBlockButton = new RedButton(Messages.get(this, "scaling_block_button", scaling_block), 7) {
+                @Override
+                protected void onClick() {
+                    GameScene.show(new BlockWindow());
+                }
+            };
+            scalingBlockButton.setRect(WIDTH / 2 + 1, canSneakBox.bottom() + GAP, WIDTH / 2 - 1, 16);
+            add(scalingBlockButton);
+
+            RedButton resetButton = new RedButton(Messages.get(this, "reset"), 7) {
                 @Override
                 protected void onClick() {
                     GameScene.show(
@@ -469,7 +581,7 @@ public class BladeOfMimic extends MeleeWeapon { //copied from Magic Ling Pixel D
                     );
                 }
             };
-            resetButton.setRect(0, canSneakBox.bottom() + GAP, WIDTH, 16);
+            resetButton.setRect(0, baseBlockButton.bottom() + GAP, WIDTH, 16);
             add(resetButton);
 
             resize(WIDTH, (int) resetButton.bottom());
@@ -481,45 +593,17 @@ public class BladeOfMimic extends MeleeWeapon { //copied from Magic Ling Pixel D
             baseDamageButton.text(Messages.get(this, "base_damage_button", minBase(), maxBase()));
             damageScalingButton.text(Messages.get(this, "damage_scaling_button", minScaling(), maxScaling()));
             accuracyButton.text(Messages.get(this, "accuracy_button", ACC));
-            reachBottom.text(Messages.get(this, "reach_button", (RCH > 10 ? "+∞" : String.valueOf(RCH))));
-            delayButton.text(Messages.get(this, "delay_button", DLY, 1 / DLY));
-            resetButton.text(Messages.get(this, "reset"));
-        }
-
-        private class TierWindow extends Window {
-            OptionSlider tierSlider;
-
-            public TierWindow() {
-                tierSlider = new OptionSlider(Messages.get(BladeOfMimic.class, "tier"), "0", "10", 0, 10) {
-                    @Override
-                    protected void onChange() {
-                        tier = getSelectedValue();
-                    }
-                };
-                tierSlider.setSelectedValue(tier);
-                tierSlider.setRect(0, GAP, WIDTH, SLIDER_HEIGHT);
-                add(tierSlider);
-                resize(WIDTH, (int) tierSlider.bottom() + GAP);
-            }
-
-            @Override
-            public void onBackPressed(){
-                adjustStatus();
-                updateAllButtonText();
-                super.onBackPressed();
-            }
+            reachButton.text(Messages.get(this, "reach_button", RCH));
+            delayButton.text(Messages.get(this, "delay_button", DLY));
+            baseBlockButton.text(Messages.get(this, "base_block_button", base_block));
+            scalingBlockButton.text(Messages.get(this, "scaling_block_button", scaling_block));
         }
 
         private class StrengthWindow extends Window {
             CheckBox c_default;
             RedButton strSet1;
-            RenderedTextBlock strText;
 
             public StrengthWindow() {
-                strText = PixelScene.renderTextBlock("", 8);
-                strText.text(Messages.get(SettingsWindow.class, "str_button", (use_default_strength?(2*tier+8):(s_str_req))));
-                strText.setPos(0, GAP);
-                add(strText);
 
                 c_default = new CheckBox(Messages.get(SettingsWindow.class, "default")){
                     @Override
@@ -532,7 +616,7 @@ public class BladeOfMimic extends MeleeWeapon { //copied from Magic Ling Pixel D
                     }
                 };
                 c_default.checked(use_default_strength);
-                c_default.setRect(0, GAP + strText.bottom(), WIDTH, 18);
+                c_default.setRect(0, GAP, WIDTH, 18);
                 add(c_default);
 
                 strSet1 = new RedButton(Messages.get(SettingsWindow.class,"str_button",s_str_req)){
@@ -541,16 +625,15 @@ public class BladeOfMimic extends MeleeWeapon { //copied from Magic Ling Pixel D
                         Game.runOnRenderThread(() ->GameScene.show(new WndTextInput(
                                 Messages.get(SettingsWindow.class, "level_title"), Messages.get(SettingsWindow.class, "level_title_desc"),
                                 Integer.toString(s_str_req),
-                                Integer.MAX_VALUE, false, Messages.get(SettingsWindow.class, "confirm"),
+                                Short.MAX_VALUE, false, Messages.get(SettingsWindow.class, "confirm"),
                                 Messages.get(SettingsWindow.class, "cancel")) {
                             @Override
                             public void onSelect(boolean check, String text) {
                                 if (check && text.matches("\\d+")) {
-                                    int level = Integer.parseInt(text);
-                                    s_str_req = level;
+                                    s_str_req = Integer.parseInt(text);
                                     updateText();
                                     strengthButton.text(Messages.get(SettingsWindow.class, "str_button", s_str_req));
-                                    adjustStatus();
+                                    Item.updateQuickslot();
                                 }
                             }
                         }));
@@ -570,50 +653,43 @@ public class BladeOfMimic extends MeleeWeapon { //copied from Magic Ling Pixel D
 
             private void updateText() {
                 strengthButton.text(Messages.get(SettingsWindow.class, "str_button", (use_default_strength?(2*tier+8):(s_str_req))));
-                strText.text(Messages.get(SettingsWindow.class, "str_button", (use_default_strength?(2*tier+8):(s_str_req))));
                 strSet1.text(Messages.get(SettingsWindow.class, "str_button", (use_default_strength?(2*tier+8):(s_str_req))));
             }
 
             private void layout() {
-                strText.setPos(0, GAP);
-                c_default.setRect(0, GAP + strText.bottom(), WIDTH, 18);
+                c_default.setRect(0, GAP, WIDTH, 18);
                 strSet1.setRect(0, GAP + c_default.bottom(), WIDTH, 18);
                 resize(WIDTH, (int) strSet1.bottom() + GAP);
             }
 
             @Override
             public void onBackPressed(){
-                adjustStatus();
+                Item.updateQuickslot();
                 updateAllButtonText();
                 super.onBackPressed();
             }
         }
 
         private class BaseDamageWindow extends Window {
-            private RenderedTextBlock damageText;
-            private CheckBox useDefault;
-            private RedButton mindmg,maxdmg;
+            private final RedButton mindmg;
+            private final RedButton maxdmg;
 
             public BaseDamageWindow() {
-                damageText = PixelScene.renderTextBlock("", 8);
-                damageText.text(Messages.get(SettingsWindow.class, "base_damage_button", minBase(), maxBase()));
-                damageText.setPos(0, GAP);
-                add(damageText);
 
-                useDefault = new CheckBox(Messages.get(SettingsWindow.class, "default")) {
+                CheckBox useDefault = new CheckBox(Messages.get(SettingsWindow.class, "default")) {
                     @Override
                     protected void onClick() {
                         super.onClick();
                         use_default_base = checked();
                         updateText();
                         mindmg.active = !checked();
-                        mindmg.alpha(checked()?0.4f:1.0f);
+                        mindmg.alpha(checked() ? 0.4f : 1.0f);
                         maxdmg.active = !checked();
-                        maxdmg.alpha(checked()?0.4f:1.0f);
+                        maxdmg.alpha(checked() ? 0.4f : 1.0f);
                     }
                 };
                 useDefault.checked(use_default_base);
-                useDefault.setRect(0, damageText.bottom() + 2 * GAP, WIDTH, 18);
+                useDefault.setRect(0, GAP, WIDTH, 18);
                 add(useDefault);
 
                 mindmg = new RedButton(Messages.get(SettingsWindow.class,"base_dmg_min",base_min)){
@@ -622,13 +698,13 @@ public class BladeOfMimic extends MeleeWeapon { //copied from Magic Ling Pixel D
                         Game.runOnRenderThread(() ->GameScene.show(new WndTextInput(
                                 Messages.get(SettingsWindow.class, "level_title"), Messages.get(SettingsWindow.class, "level_title_desc"),
                                 Integer.toString(base_min),
-                                Integer.MAX_VALUE, false, Messages.get(SettingsWindow.class, "confirm"),
+                                Short.MAX_VALUE, false, Messages.get(SettingsWindow.class, "confirm"),
                                 Messages.get(SettingsWindow.class, "cancel")) {
                             @Override
                             public void onSelect(boolean check, String text) {
                                 if (check && text.matches("\\d+")) {
                                     int level = Integer.parseInt(text);
-                                    base_min = Math.min(level, 6666);
+                                    base_min = Math.min(level, Short.MAX_VALUE);
                                     suppressMin();
                                     updateText();
                                     baseDamageButton.text(Messages.get(SettingsWindow.class, "base_damage_button", base_min,base_max));
@@ -650,13 +726,13 @@ public class BladeOfMimic extends MeleeWeapon { //copied from Magic Ling Pixel D
                         Game.runOnRenderThread(() ->GameScene.show(new WndTextInput(
                                 Messages.get(SettingsWindow.class, "level_title"), Messages.get(SettingsWindow.class, "level_title_desc"),
                                 Integer.toString(base_max),
-                                Integer.MAX_VALUE, false, Messages.get(SettingsWindow.class, "confirm"),
+                                Short.MAX_VALUE, false, Messages.get(SettingsWindow.class, "confirm"),
                                 Messages.get(SettingsWindow.class, "cancel")) {
                             @Override
                             public void onSelect(boolean check, String text) {
                                 if (check && text.matches("\\d+")) {
                                     int level = Integer.parseInt(text);
-                                    base_max = Math.min(level, 6666);
+                                    base_max = Math.min(level, Short.MAX_VALUE);
                                     suppressMin();
                                     updateText();
                                     baseDamageButton.text(Messages.get(SettingsWindow.class, "base_damage_button", base_min,base_max));
@@ -680,7 +756,6 @@ public class BladeOfMimic extends MeleeWeapon { //copied from Magic Ling Pixel D
             private void updateText() {
                 mindmg.text(Messages.get(SettingsWindow.class,"base_dmg_min",base_min));
                 maxdmg.text(Messages.get(SettingsWindow.class,"base_dmg_max",base_max));
-                damageText.text(Messages.get(SettingsWindow.class, "base_damage_button", minBase(), maxBase()));
             }
 
             private void suppressMin() {
@@ -697,9 +772,9 @@ public class BladeOfMimic extends MeleeWeapon { //copied from Magic Ling Pixel D
         }
 
         private class DamageScalingWindow extends Window {
-            private RenderedTextBlock damageScaleText;
-            private CheckBox useDefault;
-            private RedButton minDmgScale,maxDmgScale;
+            private final RenderedTextBlock damageScaleText;
+            private final RedButton minDmgScale;
+            private final RedButton maxDmgScale;
 
             public DamageScalingWindow() {
                 damageScaleText = PixelScene.renderTextBlock("", 8);
@@ -707,16 +782,16 @@ public class BladeOfMimic extends MeleeWeapon { //copied from Magic Ling Pixel D
                 damageScaleText.setPos(0, GAP);
                 add(damageScaleText);
 
-                useDefault = new CheckBox(Messages.get(SettingsWindow.class, "default")) {
+                CheckBox useDefault = new CheckBox(Messages.get(SettingsWindow.class, "default")) {
                     @Override
                     protected void onClick() {
                         super.onClick();
                         use_default_scaling = checked();
                         updateText();
                         minDmgScale.active = !checked();
-                        minDmgScale.alpha(checked()?0.4f:1.0f);
+                        minDmgScale.alpha(checked() ? 0.4f : 1.0f);
                         maxDmgScale.active = !checked();
-                        maxDmgScale.alpha(checked()?0.4f:1.0f);
+                        maxDmgScale.alpha(checked() ? 0.4f : 1.0f);
                     }
                 };
                 useDefault.checked(use_default_scaling);
@@ -729,13 +804,13 @@ public class BladeOfMimic extends MeleeWeapon { //copied from Magic Ling Pixel D
                         Game.runOnRenderThread(() ->GameScene.show(new WndTextInput(
                                 Messages.get(SettingsWindow.class, "level_title"), Messages.get(SettingsWindow.class, "level_title_desc"),
                                 Float.toString(scaling_min),
-                                Integer.MAX_VALUE, false, Messages.get(SettingsWindow.class, "confirm"),
+                                Short.MAX_VALUE, false, Messages.get(SettingsWindow.class, "confirm"),
                                 Messages.get(SettingsWindow.class, "cancel")) {
                             @Override
                             public void onSelect(boolean check, String text) {
-                                if (check && text.matches("^\\d+\\.?\\d{0,1}")) {
+                                if (check && text.matches("^\\d+\\.?\\d{0,3}")) {
                                     float level = Float.parseFloat(text);
-                                    scaling_min = Math.min(level, 6666);
+                                    scaling_min = Math.min(level, Short.MAX_VALUE);
                                     suppressMin();
                                     updateText();
                                     damageScalingButton.text(Messages.get(SettingsWindow.class, "damage_scaling_button", scaling_min,scaling_max));
@@ -757,13 +832,13 @@ public class BladeOfMimic extends MeleeWeapon { //copied from Magic Ling Pixel D
                         Game.runOnRenderThread(() ->GameScene.show(new WndTextInput(
                                 Messages.get(SettingsWindow.class, "level_title"), Messages.get(SettingsWindow.class, "level_title_desc"),
                                 Float.toString(scaling_max),
-                                Integer.MAX_VALUE, false, Messages.get(SettingsWindow.class, "confirm"),
+                                Short.MAX_VALUE, false, Messages.get(SettingsWindow.class, "confirm"),
                                 Messages.get(SettingsWindow.class, "cancel")) {
                             @Override
                             public void onSelect(boolean check, String text) {
-                                if (check && text.matches("^\\d+\\.?\\d{0,1}")) {
+                                if (check && text.matches("^\\d+\\.?\\d{0,3}")) {
                                     float level = Float.parseFloat(text);
-                                    scaling_max = Math.min(level, 6666);
+                                    scaling_max = Math.min(level, Short.MAX_VALUE);
                                     suppressMin();
                                     updateText();
                                     damageScalingButton.text(Messages.get(SettingsWindow.class, "damage_scaling_button", scaling_min,scaling_max));
@@ -803,160 +878,77 @@ public class BladeOfMimic extends MeleeWeapon { //copied from Magic Ling Pixel D
             }
         }
 
-        private class AccuracyWindow extends Window {
-            private RedButton accuracy;
-            private RenderedTextBlock t_acc;
+        private class BlockWindow extends Window {
+            private final RedButton baseblock;
+            private final RedButton scalingblock;
 
-            public AccuracyWindow() {
-                t_acc = PixelScene.renderTextBlock("", 8);
-                t_acc.text(Messages.get(SettingsWindow.class, "accuracy_button", ACC));
-                t_acc.setPos(0, GAP);
-                add(t_acc);
+            public BlockWindow() {
 
-                accuracy = new RedButton(Messages.get(SettingsWindow.class,"accuracy_button",ACC)){
+                baseblock = new RedButton(Messages.get(SettingsWindow.class,"base_block_button",base_block)){
                     @Override
                     protected void onClick() {
                         Game.runOnRenderThread(() ->GameScene.show(new WndTextInput(
-                                Messages.get(SettingsWindow.class, "level_title"), Messages.get(SettingsWindow.class, "level_title_desc"),
-                                Float.toString(ACC),
-                                Integer.MAX_VALUE, false, Messages.get(SettingsWindow.class, "confirm"),
-                                Messages.get(SettingsWindow.class, "cancel")) {
+                        Messages.get(SettingsWindow.class, "level_title"), Messages.get(SettingsWindow.class, "level_title_desc"),
+                        Integer.toString(base_block),
+                        Short.MAX_VALUE, false, Messages.get(SettingsWindow.class, "confirm"),
+                        Messages.get(SettingsWindow.class, "cancel")) {
                             @Override
                             public void onSelect(boolean check, String text) {
-                                if (check && text.matches("^\\d+\\.?\\d{0,1}")) {
-                                    float level = Float.parseFloat(text);
-                                    ACC = Math.min(level, 6666);
+                                if (check && text.matches("\\d+")) {
+                                    base_block = Math.min(Integer.parseInt(text), Short.MAX_VALUE);
                                     updateText();
-                                    accuracyButton.text(Messages.get(SettingsWindow.class, "accuracy_button", ACC));
+                                    baseBlockButton.text(Messages.get(SettingsWindow.class, "base_block_button", base_block));
                                 }
                             }
                         }));
                         super.onClick();
                     }
                 };
-                accuracy.setRect(0, GAP + t_acc.bottom(), WIDTH, 18);
-                add(accuracy);
+                baseblock.setRect(0, GAP, WIDTH, 18);
+                add(baseblock);
 
-                updateText();
-
-                resize(WIDTH, (int) accuracy.bottom() + GAP);
-            }
-
-            private void updateText() {
-                t_acc.text(Messages.get(SettingsWindow.class, "accuracy_button", ACC));
-                accuracy.text(Messages.get(SettingsWindow.class, "accuracy_button", ACC));
-            }
-
-            @Override
-            public void onBackPressed(){
-                adjustStatus();
-                updateAllButtonText();
-                super.onBackPressed();
-            }
-        }
-
-        private class DelayWindow extends Window {
-            private OptionSlider dly1;
-            private OptionSlider dly2;
-            private RenderedTextBlock t_dly;
-            private CheckBox c_reverse;
-
-            public DelayWindow() {
-                t_dly = PixelScene.renderTextBlock("", 8);
-                t_dly.setPos(0, GAP);
-                updateText();
-                add(t_dly);
-                //0.5x
-                dly1 = new OptionSlider("x0.5", "0", "4.5", 0, 9) {
-                    @Override
-                    protected void onChange() {
-                        setValue();
-                        updateText();
-                    }
-                };
-                dly1.setSelectedValue((int) ((DLY_swap ? 1 / DLY : DLY) / 0.5f));
-                dly1.setRect(0, t_dly.bottom() + GAP, WIDTH, SLIDER_HEIGHT);
-                add(dly1);
-                //0.05x
-                dly2 = new OptionSlider("x0.05", "0", "0.45", 0, 9) {
-                    @Override
-                    protected void onChange() {
-                        setValue();
-                        updateText();
-                    }
-                };
-                dly2.setSelectedValue((int) (((DLY_swap ? 1 / DLY : DLY) - dly1.getSelectedValue() * 0.5f) / 0.05f));
-                dly2.setRect(0, dly1.bottom() + GAP, WIDTH, SLIDER_HEIGHT);
-                add(dly2);
-
-                c_reverse = new CheckBox(Messages.get(BladeOfMimic.class, "delay_swap")) {
+                scalingblock = new RedButton(Messages.get(SettingsWindow.class,"scaling_block_button",scaling_block)){
                     @Override
                     protected void onClick() {
+                        Game.runOnRenderThread(() ->GameScene.show(new WndTextInput(
+                        Messages.get(SettingsWindow.class, "level_title"), Messages.get(SettingsWindow.class, "level_title_desc"),
+                        Float.toString(scaling_block),
+                        Short.MAX_VALUE, false, Messages.get(SettingsWindow.class, "confirm"),
+                        Messages.get(SettingsWindow.class, "cancel")) {
+                            @Override
+                            public void onSelect(boolean check, String text) {
+                                if (check && text.matches("^\\d+\\.?\\d{0,3}")) {
+                                    scaling_block = Math.min(Float.parseFloat(text), Short.MAX_VALUE);
+                                    updateText();
+                                    scalingBlockButton.text(Messages.get(SettingsWindow.class, "scaling_block_button", scaling_block));
+                                }
+                            }
+                        }));
                         super.onClick();
-                        DLY_swap = checked();
-                        setValue();
-                        updateText();
                     }
                 };
-                c_reverse.checked(DLY_swap);
-                c_reverse.setRect(0, dly2.bottom() + GAP, WIDTH, 18);
-                add(c_reverse);
+                scalingblock.setRect(0, GAP + baseblock.bottom(), WIDTH, 18);
+                add(scalingblock);
 
-                resize(WIDTH, (int) c_reverse.bottom() + GAP);
+                updateText();
+
+                resize(WIDTH, (int) scalingblock.bottom() + GAP);
             }
 
             private void updateText() {
-                t_dly.text(Messages.get(SettingsWindow.class, "delay_button", DLY, 1 / DLY));
-            }
-
-            private void setValue() {
-                DLY = dly1.getSelectedValue() * 0.5f + dly2.getSelectedValue() * 0.05f;
-                if (DLY > 0.01f && DLY_swap) DLY = 1f / DLY;
-                else handleZero();
-            }
-
-            private void handleZero() {
-                if (DLY < 0.01f) {
-                    dly1.setSelectedValue(0);
-                    dly2.setSelectedValue(1);
-                    setValue();
-                }
+                baseblock.text(Messages.get(SettingsWindow.class,"base_block_button",base_block));
+                scalingblock.text(Messages.get(SettingsWindow.class,"scaling_block_button",scaling_block));
             }
 
             @Override
             public void onBackPressed(){
-                adjustStatus();
-                updateAllButtonText();
-                super.onBackPressed();
-            }
-        }
-
-        private class ReachWindow extends Window {
-            OptionSlider reachSlider;
-
-            public ReachWindow() {
-                reachSlider = new OptionSlider("", "1", "+∞", 1, 10) {
-                    @Override
-                    protected void onChange() {
-                        RCH = (getSelectedValue() > 9 ? Integer.MAX_VALUE : getSelectedValue());
-                    }
-                };
-                reachSlider.setSelectedValue((RCH > 9 ? 10 : RCH));
-                reachSlider.setRect(0, GAP, WIDTH, SLIDER_HEIGHT);
-                add(reachSlider);
-                resize(WIDTH, (int) reachSlider.bottom() + GAP);
-            }
-
-            @Override
-            public void onBackPressed(){
-                adjustStatus();
                 updateAllButtonText();
                 super.onBackPressed();
             }
         }
 
         private class EnchantWindow extends Window {
-            private ArrayList<CanScrollCheckBox> checkBoxes = new ArrayList<>();
+            private final ArrayList<CanScrollCheckBox> checkBoxes = new ArrayList<>();
             public EnchantWindow(){
 
                 super();
@@ -1046,7 +1038,6 @@ public class BladeOfMimic extends MeleeWeapon { //copied from Magic Ling Pixel D
             }
 
             private void allEnchOn(){
-                enchOn = 0L;
                 int len = enchPrio.size();
                 enchOn = (1L<<len) - 1L;
                 updateCheckBox();
