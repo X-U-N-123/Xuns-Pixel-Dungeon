@@ -38,7 +38,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ArcaneArmor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ArtifactRecharge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barkskin;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Berserk;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bless;
@@ -353,13 +352,12 @@ public abstract class Char extends Actor {
 		
 		if (sprite.isVisible() && sprite.parent != null && (Dungeon.level.heroFOV[from] || Dungeon.level.heroFOV[to])) {
 			sprite.move( from, to );
-			return true;
-		} else {
+        } else {
 			sprite.turnTo(from, to);
 			sprite.place( to );
-			return true;
-		}
-	}
+        }
+        return true;
+    }
 
 	public void hitSound( float pitch ){
 		Sample.INSTANCE.play(Assets.Sounds.HIT, 1, pitch);
@@ -895,13 +893,6 @@ public abstract class Char extends Actor {
 			return;
 		}
 
-		if (this instanceof Hero && hero.hasTalent(Talent.EMERGENCY_SHIELD) && dmg > 1
-		&& !(src instanceof Buff) && !(src instanceof Chasm)){
-			int shield = (int)(Math.log(dmg)/Math.log(Math.pow(6 - hero.pointsInTalent(Talent.EMERGENCY_SHIELD), 0.5)));
-			Buff.affect(this, Barrier.class).incShield(shield);
-			sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(shield), FloatingText.SHIELDING);
-		}
-
 		if (!(src instanceof LifeLink || src instanceof Hunger) && buff(LifeLink.class) != null){
 			HashSet<LifeLink> links = buffs(LifeLink.class);
 			for (LifeLink link : links.toArray(new LifeLink[0])){
@@ -1015,9 +1006,6 @@ public abstract class Char extends Actor {
 		//TODO improve this when I have proper damage source logic
 		if (AntiMagic.RESISTS.contains(src.getClass())){
 			dmg -= AntiMagic.drRoll(this, glyphLevel(AntiMagic.class));
-			if (hero.hasTalent(Talent.ARCANE_ARMOR) && this instanceof Hero){
-				dmg -= Random.NormalIntRange(0, Math.round(0.2f*hero.pointsInTalent(Talent.ARCANE_ARMOR)*((Hero)this).lvl ));
-			}
 			if (buff(ArcaneArmor.class) != null) {
 				dmg -= Random.NormalIntRange(0, buff(ArcaneArmor.class).level());
 			}
@@ -1174,7 +1162,7 @@ public abstract class Char extends Actor {
 	}
 
 	//these are misc. sources of physical damage which do not apply armor, they get a different icon
-	private static HashSet<Class> NO_ARMOR_PHYSICAL_SOURCES = new HashSet<>();
+	private final static HashSet<Class> NO_ARMOR_PHYSICAL_SOURCES = new HashSet<>();
 	{
 		NO_ARMOR_PHYSICAL_SOURCES.add(CrystalSpire.SpireSpike.class);
 		NO_ARMOR_PHYSICAL_SOURCES.add(GnollGeomancer.Boulder.class);

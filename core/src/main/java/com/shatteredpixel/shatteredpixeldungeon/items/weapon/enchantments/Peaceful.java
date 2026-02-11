@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments;
 
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
@@ -36,17 +37,27 @@ public class Peaceful extends Weapon.Enchantment {
     public int proc(Weapon weapon, Char attacker, Char defender, int damage ) {
 
         if (!defender.isImmune(Peaceful.class)) {
+            int level = Math.max( 0, weapon.buffedLvl() );
 
-            if (Random.Float() < procChanceMultiplier(attacker) / (procChanceMultiplier(attacker)+2)
-                && defender instanceof Mob){
-                if (((Mob)defender).state == ((Mob)defender).SLEEPING) {
-                    Buff.affect(defender, MagicalSleep.class);
-                }
-                if (((Mob)defender).state == ((Mob)defender).WANDERING) {
-                    ((Mob) defender).state = ((Mob) defender).SLEEPING;
-                }
-                if (((Mob)defender).state == ((Mob)defender).HUNTING){
+            // lvl 0 - 20%
+            // lvl 1 ~ 27.2%
+            // lvl 2 ~ 33.3%
+            float procChance = (level+2f)/(level+10f) * procChanceMultiplier(attacker);
+
+            if (defender instanceof Mob){
+
+                if (((Mob)defender).state == ((Mob)defender).HUNTING && Random.Float() < procChance){
                     ((Mob) defender).clearEnemy();
+                    ((Mob) defender).beckon(Dungeon.level.randomDestination(defender));
+                    defender.sprite.showLost(); //for unknown reason, it cannot show lost emoicon correctly
+                    procChance --;
+                }
+                if (((Mob)defender).state == ((Mob)defender).WANDERING && Random.Float() < procChance) {
+                    ((Mob) defender).state = ((Mob) defender).SLEEPING;
+                    procChance --;
+                }
+                if (((Mob)defender).state == ((Mob)defender).SLEEPING && Random.Float() < procChance) {
+                    Buff.affect(defender, MagicalSleep.class);
                 }
                 Buff.affect(defender, PeacefulTracker.class);
             }

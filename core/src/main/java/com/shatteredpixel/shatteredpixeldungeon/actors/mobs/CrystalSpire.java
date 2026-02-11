@@ -133,7 +133,7 @@ public class CrystalSpire extends Mob {
 					} else if (ch == Dungeon.hero){
 						Statistics.questScores[2] -= 100;
 					}
-					ch.damage(dmg, new SpireSpike());
+					ch.damage(dmg, new SpireSpike().spire = this);
 
 					int movePos = i;
 					//crystal guardians get knocked away from the hero, others get knocked away from the spire
@@ -208,7 +208,9 @@ public class CrystalSpire extends Mob {
 		return true;
 	}
 
-	public static class SpireSpike{}
+	public static class SpireSpike{
+        public CrystalSpire spire;
+    }
 
 	private void diamondAOEAttack(){
 		targetedCells.clear();
@@ -258,7 +260,7 @@ public class CrystalSpire extends Mob {
 		if (HP < 2*HT/3f){
 			lineCells.addAll(spreadDiamondAOE(lineCells));
 			targetedCells.add(new ArrayList<>(lineCells));
-			if (HP < HT/3f) {;
+			if (HP < HT/3f) {
 				lineCells.addAll(spreadDiamondAOE(lineCells));
 				targetedCells.add(lineCells);
 			}
@@ -360,7 +362,7 @@ public class CrystalSpire extends Mob {
 						for (Char ch : Actor.chars()){
 							if (fieldOfView[ch.pos]) {
 								if (ch instanceof CrystalGuardian) {
-									ch.damage(ch.HT, new SpireSpike());
+									ch.damage(ch.HT, new SpireSpike().spire = CrystalSpire.this);
 								}
 								if (ch instanceof CrystalWisp) {
 									Buff.affect(ch, Blindness.class, 5f);

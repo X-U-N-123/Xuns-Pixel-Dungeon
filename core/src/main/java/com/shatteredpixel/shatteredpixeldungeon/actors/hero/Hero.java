@@ -105,6 +105,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.KindOfWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClassArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.AntiMagic;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Swiftness;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Viscosity;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.AlchemistsToolkit;
@@ -1831,6 +1832,16 @@ public class Hero extends Char {
 			Buff.detach(this, Drowsy.class);
 			GLog.w( Messages.get(this, "pain_resist") );
 		}
+
+        if (hasTalent(Talent.EMERGENCY_SHIELD) && dmg > 1 && !(src instanceof Buff) && !(src instanceof Chasm)){
+            int shield = (int)(Math.log(dmg)/Math.log(Math.pow(6 - pointsInTalent(Talent.EMERGENCY_SHIELD), 0.5)));
+            Buff.affect(this, Barrier.class).incShield(shield);
+            sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(shield), FloatingText.SHIELDING);
+        }
+
+        if (hasTalent(Talent.ARCANE_ARMOR) && AntiMagic.RESISTS.contains(src.getClass())){
+            dmg -= Random.NormalIntRange(0, Math.round(0.2f * pointsInTalent(Talent.ARCANE_ARMOR) * lvl ));
+        }
 
 		//temporarily assign to a float to avoid rounding a bunch
 		float damage = dmg;

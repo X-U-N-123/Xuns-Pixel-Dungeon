@@ -80,7 +80,9 @@ public class DM100 extends Mob implements Callback {
 	}
 	
 	//used so resistances can differentiate between melee and magical attacks
-	public static class LightningBolt{}
+	public static class LightningBolt{
+        public DM100 dm100;
+    }
 	
 	@Override
 	protected boolean doAttack( Char enemy ) {
@@ -98,7 +100,7 @@ public class DM100 extends Mob implements Callback {
 			if (hit( this, enemy, true )) {
 				int dmg = Random.NormalIntRange(3, 10);
 				dmg = Math.round(dmg * AscensionChallenge.statModifier(this));
-				enemy.damage( dmg, new LightningBolt() );
+				enemy.damage( dmg, new LightningBolt().dm100 = this );
 
 				if (enemy.sprite.visible) {
 					enemy.sprite.centerEmitter().burst(SparkParticle.FACTORY, 3);
