@@ -43,8 +43,6 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeType;
 import com.badlogic.gdx.utils.GdxNativesLoader;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
-import com.shatteredpixel.shatteredpixeldungeon.services.news.News;
-import com.shatteredpixel.shatteredpixeldungeon.services.news.NewsImpl;
 import com.shatteredpixel.shatteredpixeldungeon.services.updates.UpdateImpl;
 import com.shatteredpixel.shatteredpixeldungeon.services.updates.Updates;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Button;
@@ -93,9 +91,6 @@ public class AndroidLauncher extends AndroidApplication {
 			Gdx.app = this;
 			if (UpdateImpl.supportsUpdates()) {
 				Updates.service = UpdateImpl.getUpdateService();
-			}
-			if (NewsImpl.supportsNews()) {
-				News.service = NewsImpl.getNewsService();
 			}
 
 			FileUtils.setDefaultFileProperties(Files.FileType.Local, "");

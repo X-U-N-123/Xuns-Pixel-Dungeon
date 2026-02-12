@@ -27,7 +27,6 @@ android {
             versionNameSuffix ''
             dependencies {
                 debugImplementation project(':services:updates:debugUpdates')
-                debugImplementation project(':services:news:debugNews')
             }
         }
         release {
@@ -42,7 +41,6 @@ android {
 
             dependencies {
                 releaseImplementation project(':services:updates:githubUpdates')
-                releaseImplementation project(':services:news:shatteredNews')
             }
         }
     }

@@ -29,7 +29,6 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Languages;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
-import com.shatteredpixel.shatteredpixeldungeon.services.news.News;
 import com.shatteredpixel.shatteredpixeldungeon.services.updates.Updates;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.CheckBox;
@@ -828,7 +827,6 @@ public class WndSettings extends WndTabbed {
 
 		RenderedTextBlock title;
 		ColorBlock sep1;
-		CheckBox chkNews;
 		CheckBox chkUpdates;
 		CheckBox chkBetas;
 		CheckBox chkWifi;
@@ -841,17 +839,6 @@ public class WndSettings extends WndTabbed {
 
 			sep1 = new ColorBlock(1, 1, 0xFF000000);
 			add(sep1);
-
-			chkNews = new CheckBox(Messages.get(this, "news")){
-				@Override
-				protected void onClick() {
-					super.onClick();
-					SPDSettings.news(checked());
-					News.clearArticles();
-				}
-			};
-			chkNews.checked(SPDSettings.news());
-			add(chkNews);
 
 			if (Updates.supportsUpdates() && Updates.supportsUpdatePrompts()) {
 				chkUpdates = new CheckBox(Messages.get(this, "updates")) {
@@ -879,17 +866,15 @@ public class WndSettings extends WndTabbed {
 				}
 			}
 
-			if (!DeviceCompat.isDesktop()){
-				chkWifi = new CheckBox(Messages.get(this, "wifi")){
-					@Override
-					protected void onClick() {
-						super.onClick();
-						SPDSettings.WiFi(checked());
-					}
-				};
-				chkWifi.checked(SPDSettings.WiFi());
-				add(chkWifi);
-			}
+			chkWifi = new CheckBox(Messages.get(this, "wifi")){
+                @Override
+                protected void onClick() {
+                    super.onClick();
+                    SPDSettings.WiFi(checked());
+                }
+            };
+            chkWifi.checked(SPDSettings.WiFi());
+            add(chkWifi);
 		}
 
 		@Override
@@ -898,29 +883,19 @@ public class WndSettings extends WndTabbed {
 			sep1.size(width, 1);
 			sep1.y = title.bottom() + 3*GAP;
 
-			float pos;
-			if (width > 200 && chkUpdates != null){
-				chkNews.setRect(0, sep1.y + 1 + GAP, width/2-1, BTN_HEIGHT);
-				chkUpdates.setRect(chkNews.right() + GAP, chkNews.top(), width/2-1, BTN_HEIGHT);
-				pos = chkUpdates.bottom();
-			} else {
-				chkNews.setRect(0, sep1.y + 1 + GAP, width, BTN_HEIGHT);
-				pos = chkNews.bottom();
-				if (chkUpdates != null) {
-					chkUpdates.setRect(0, chkNews.bottom() + GAP, width, BTN_HEIGHT);
-					pos = chkUpdates.bottom();
-				}
-			}
+			float pos = sep1.y + 1;
+            if (chkUpdates != null) {
+                chkUpdates.setRect(0, pos + GAP, width, BTN_HEIGHT);
+                pos = chkUpdates.bottom();
+            }
 
 			if (chkBetas != null){
 				chkBetas.setRect(0, pos + GAP, width, BTN_HEIGHT);
 				pos = chkBetas.bottom();
 			}
 
-			if (chkWifi != null){
-				chkWifi.setRect(0, pos + GAP, width, BTN_HEIGHT);
-				pos = chkWifi.bottom();
-			}
+			chkWifi.setRect(0, pos + GAP, width, BTN_HEIGHT);
+            pos = chkWifi.bottom();
 
 			height = pos;
 
