@@ -23,6 +23,7 @@ package com.shatteredpixel.shatteredpixeldungeon.levels;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Imp;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ElmoParticle;
@@ -68,7 +69,9 @@ public class CityLevel extends RegularLevel {
 
 	@Override
 	public void playLevelMusic() {
-		if (Statistics.amuletObtained){
+        if (SPDSettings.useOldMusic()){
+            Music.INSTANCE.play(Assets.Music.GAME, true);
+        } else if (Statistics.amuletObtained){
 			Music.INSTANCE.play(Assets.Music.CITY_TENSE, true);
 		} else {
 			Music.INSTANCE.playTracks(CITY_TRACK_LIST, CITY_TRACK_CHANCES, false);

@@ -26,6 +26,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Chrome;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BadgeBanner;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
@@ -98,7 +99,10 @@ public class AmuletScene extends PixelScene {
 						}
 					}
 				});
-				Music.INSTANCE.playTracks(
+                if (SPDSettings.useOldMusic())
+                    Music.INSTANCE.play(Assets.Music.SURFACE, true);
+				else
+                    Music.INSTANCE.playTracks(
 						new String[]{Assets.Music.THEME_2, Assets.Music.THEME_1},
 						new float[]{1, 1},
 						false);

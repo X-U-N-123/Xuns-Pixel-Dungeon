@@ -25,6 +25,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Bones;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -79,7 +80,9 @@ public class CavesBossLevel extends Level {
 
 	@Override
 	public void playLevelMusic() {
-		if (locked){
+        if (SPDSettings.useOldMusic()){
+            Music.INSTANCE.play(Assets.Music.GAME, true);
+        } else if (locked){
 			if (BossHealthBar.isBleeding()){
 				Music.INSTANCE.play(Assets.Music.CAVES_BOSS_FINALE, true);
 			} else {
@@ -332,13 +335,13 @@ public class CavesBossLevel extends Level {
 		} while (!openSpace[boss.pos] || map[boss.pos] == Terrain.EMPTY_SP || Actor.findChar(boss.pos) != null);
 		GameScene.add( boss );
 
-		Game.runOnRenderThread(new Callback() {
-			@Override
-			public void call() {
-				Music.INSTANCE.play(Assets.Music.CAVES_BOSS, true);
-			}
-		});
-
+		if (!SPDSettings.useOldMusic())
+            Game.runOnRenderThread(new Callback() {
+    			@Override
+	    		public void call() {
+		    		Music.INSTANCE.play(Assets.Music.CAVES_BOSS, true);
+			    }
+		    });
 	}
 
 	@Override
@@ -364,12 +367,13 @@ public class CavesBossLevel extends Level {
 		Game.runOnRenderThread(new Callback() {
 			@Override
 			public void call() {
-				Music.INSTANCE.fadeOut(5f, new Callback() {
-					@Override
-					public void call() {
+                if (!SPDSettings.useOldMusic())
+    				Music.INSTANCE.fadeOut(5f, new Callback() {
+	    				@Override
+		    			public void call() {
 						Music.INSTANCE.end();
 					}
-				});
+			    	});
 			}
 		});
 

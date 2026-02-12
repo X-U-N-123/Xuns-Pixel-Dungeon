@@ -25,6 +25,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -524,12 +525,13 @@ public class DwarfKing extends Mob {
 			Game.runOnRenderThread(new Callback() {
 				@Override
 				public void call() {
-					Music.INSTANCE.fadeOut(0.5f, new Callback() {
-						@Override
-						public void call() {
-							Music.INSTANCE.play(Assets.Music.CITY_BOSS_FINALE, true);
-						}
-					});
+                    if (!SPDSettings.useOldMusic())
+    					Music.INSTANCE.fadeOut(0.5f, new Callback() {
+	    					@Override
+		    				public void call() {
+			    				Music.INSTANCE.play(Assets.Music.CITY_BOSS_FINALE, true);
+				    		}
+					    });
 				}
 			});
 		} else if (phase == 3 && preHP > 20 && HP < 20 && isAlive()){

@@ -23,6 +23,7 @@ package com.shatteredpixel.shatteredpixeldungeon.levels;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Wandmaker;
@@ -72,7 +73,9 @@ public class PrisonLevel extends RegularLevel {
 
 	@Override
 	public void playLevelMusic() {
-		if (Wandmaker.Quest.active() || Statistics.amuletObtained){
+        if (SPDSettings.useOldMusic()){
+            Music.INSTANCE.play(Assets.Music.GAME, true);
+        } else if (Wandmaker.Quest.active() || Statistics.amuletObtained){
 			Music.INSTANCE.play(Assets.Music.PRISON_TENSE, true);
 		} else {
 			Music.INSTANCE.playTracks(PRISON_TRACK_LIST, PRISON_TRACK_CHANCES, false);
@@ -160,15 +163,16 @@ public class PrisonLevel extends RegularLevel {
 			Game.runOnRenderThread(new Callback() {
 				@Override
 				public void call() {
-					Music.INSTANCE.fadeOut(1f, new Callback() {
-						@Override
-						public void call() {
-							if (Dungeon.level != null) {
-								Dungeon.level.playLevelMusic();
-							}
-						}
-					});
-				}
+                    if (!SPDSettings.useOldMusic())
+    					Music.INSTANCE.fadeOut(1f, new Callback() {
+	    					@Override
+		    				public void call() {
+			    				if (Dungeon.level != null) {
+				    				Dungeon.level.playLevelMusic();
+					    		}
+						    }
+    					});
+                }
 			});
 		}
 	}

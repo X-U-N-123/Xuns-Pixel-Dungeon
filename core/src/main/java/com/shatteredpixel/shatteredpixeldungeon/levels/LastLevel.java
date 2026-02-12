@@ -24,6 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon.levels;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -55,7 +56,9 @@ public class LastLevel extends Level {
 
 	@Override
 	public void playLevelMusic() {
-		if (Statistics.amuletObtained) {
+        if (SPDSettings.useOldMusic()){
+            Music.INSTANCE.play(Assets.Music.SURFACE, true);
+        } else if (Statistics.amuletObtained) {
 			Music.INSTANCE.end();
 		} else {
 			Music.INSTANCE.play(Assets.Music.THEME_FINALE, true);

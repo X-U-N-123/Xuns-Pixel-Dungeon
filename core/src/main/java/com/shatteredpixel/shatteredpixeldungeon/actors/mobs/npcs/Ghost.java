@@ -23,6 +23,7 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
@@ -196,6 +197,7 @@ public class Ghost extends NPC {
 							@Override
 							public void hide() {
 								super.hide();
+                                if (SPDSettings.useOldMusic()) return;
 								Music.INSTANCE.fadeOut(1f, new Callback() {
 									@Override
 									public void call() {
@@ -377,19 +379,20 @@ public class Ghost extends NPC {
 				processed = true;
 				Statistics.questScores[0] += 1000;
 
-				Game.runOnRenderThread(new Callback() {
-					@Override
-					public void call() {
-						Music.INSTANCE.fadeOut(1f, new Callback() {
-							@Override
-							public void call() {
-								if (Dungeon.level != null) {
-									Dungeon.level.playLevelMusic();
-								}
-							}
-						});
-					}
-				});
+                if (!SPDSettings.useOldMusic())
+    				Game.runOnRenderThread(new Callback() {
+	    				@Override
+		    			public void call() {
+			    			Music.INSTANCE.fadeOut(1f, new Callback() {
+				    			@Override
+					    		public void call() {
+						    		if (Dungeon.level != null) {
+							    		Dungeon.level.playLevelMusic();
+								    }
+    							}
+	    					});
+                        }
+				    });
 			}
 		}
 

@@ -937,8 +937,8 @@ public class WndSettings extends WndTabbed {
 		OptionSlider optSFX;
 		CheckBox chkMuteSFX;
 		ColorBlock sep3;
-		CheckBox chkIgnoreSilent;
 		CheckBox chkMusicBG;
+        CheckBox chkUseOldMusic;
 
 		@Override
 		protected void createChildren() {
@@ -1001,25 +1001,10 @@ public class WndSettings extends WndTabbed {
 			chkMuteSFX.checked(!SPDSettings.soundFx());
 			add( chkMuteSFX );
 
-			if (DeviceCompat.isiOS()){
+            sep3 = new ColorBlock(1, 1, 0xFF000000);
+            add(sep3);
 
-				sep3 = new ColorBlock(1, 1, 0xFF000000);
-				add(sep3);
-
-				chkIgnoreSilent = new CheckBox( Messages.get(this, "ignore_silent") ){
-					@Override
-					protected void onClick() {
-						super.onClick();
-						SPDSettings.ignoreSilentMode(checked());
-					}
-				};
-				chkIgnoreSilent.checked(SPDSettings.ignoreSilentMode());
-				add(chkIgnoreSilent);
-
-			} else if (DeviceCompat.isDesktop()){
-
-				sep3 = new ColorBlock(1, 1, 0xFF000000);
-				add(sep3);
+			if (DeviceCompat.isDesktop()){
 
 				chkMusicBG = new CheckBox( Messages.get(this, "music_bg") ){
 					@Override
@@ -1031,6 +1016,21 @@ public class WndSettings extends WndTabbed {
 				chkMusicBG.checked(SPDSettings.playMusicInBackground());
 				add(chkMusicBG);
 			}
+
+            chkUseOldMusic = new CheckBox( Messages.get(this, "use_old_music") ){
+                @Override
+                protected void onClick() {
+                    super.onClick();
+                    SPDSettings.useOldMusic(checked());
+                    if (ShatteredPixelDungeon.scene() instanceof GameScene)
+                        GameScene.show(new WndMessage( Messages.get(AudioTab.class, "exit")));
+                    else ShatteredPixelDungeon.scene().addToFront(
+                        new WndMessage( Messages.get(AudioTab.class, "exit"))
+                    );
+                }
+            };
+            chkUseOldMusic.checked(SPDSettings.useOldMusic());
+            add(chkUseOldMusic);
 		}
 
 		@Override
@@ -1060,23 +1060,23 @@ public class WndSettings extends WndTabbed {
 				chkMuteSFX.setRect(0, optSFX.bottom() + GAP, width, BTN_HEIGHT);
 			}
 
-			height = chkMuteSFX.bottom();
+            sep3.size(width, 1);
+            sep3.y = chkMuteSFX.bottom() + GAP;
+            height = sep3.y + 1;
 
-			if (chkIgnoreSilent != null){
-				sep3.size(width, 1);
-				sep3.y = chkMuteSFX.bottom() + GAP;
+            float btnWidth = width > 200 ? width/2-1 : width;
 
-				chkIgnoreSilent.setRect(0, sep3.y + 1 + GAP, width, BTN_HEIGHT);
-				height = chkIgnoreSilent.bottom();
-			} else if (chkMusicBG != null){
-				sep3.size(width, 1);
-				sep3.y = chkMuteSFX.bottom() + GAP;
+            chkUseOldMusic.setRect(0, sep3.y + 1 + GAP, btnWidth, BTN_HEIGHT);
+            height = chkMusicBG.bottom();
 
-				chkMusicBG.setRect(0, sep3.y + 1 + GAP, width, BTN_HEIGHT);
+			if (chkMusicBG != null){
+
+				chkMusicBG.setRect(width > 200 ? chkUseOldMusic.right() + 2 : 0,
+                    width > 200 ? chkUseOldMusic.top() : chkUseOldMusic.bottom() + GAP, btnWidth, BTN_HEIGHT);
 				height = chkMusicBG.bottom();
-			}
-		}
 
+			} else chkUseOldMusic.setSize(width, BTN_HEIGHT);
+        }
 	}
 
 	private static class LangsTab extends Component{

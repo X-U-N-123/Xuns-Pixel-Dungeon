@@ -25,6 +25,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Bones;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Bat;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.CrystalWisp;
@@ -85,7 +86,8 @@ public class MiningLevel extends CavesLevel {
 
 	@Override
 	public void playLevelMusic() {
-		Music.INSTANCE.play(Assets.Music.CAVES_TENSE, true);
+        if (SPDSettings.useOldMusic()) Music.INSTANCE.play(Assets.Music.GAME, true);
+        else Music.INSTANCE.play(Assets.Music.CAVES_TENSE, true);
 	}
 
 	@Override

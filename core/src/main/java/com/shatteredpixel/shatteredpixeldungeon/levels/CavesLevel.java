@@ -23,6 +23,7 @@ package com.shatteredpixel.shatteredpixeldungeon.levels;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -79,7 +80,9 @@ public class CavesLevel extends RegularLevel {
 
 	@Override
 	public void playLevelMusic() {
-		if (Statistics.amuletObtained){
+        if (SPDSettings.useOldMusic()){
+            Music.INSTANCE.play(Assets.Music.GAME, true);
+        } else if (Statistics.amuletObtained){
 			Music.INSTANCE.play(Assets.Music.CAVES_TENSE, true);
 		} else {
 			Music.INSTANCE.playTracks(CAVES_TRACK_LIST, CAVES_TRACK_CHANCES, false);

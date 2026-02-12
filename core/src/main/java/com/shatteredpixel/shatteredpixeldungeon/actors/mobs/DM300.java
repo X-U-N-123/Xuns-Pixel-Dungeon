@@ -25,6 +25,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -551,17 +552,18 @@ public class DM300 extends Mob {
 		} else {
 			yell(Messages.get(this, "pylons_destroyed"));
 			BossHealthBar.bleed(true);
-			Game.runOnRenderThread(new Callback() {
-				@Override
-				public void call() {
-					Music.INSTANCE.fadeOut(0.5f, new Callback() {
-						@Override
-						public void call() {
-							Music.INSTANCE.play(Assets.Music.CAVES_BOSS_FINALE, true);
-						}
-					});
-				}
-			});
+            if (!SPDSettings.useOldMusic())
+    			Game.runOnRenderThread(new Callback() {
+	    			@Override
+		    		public void call() {
+			    		Music.INSTANCE.fadeOut(0.5f, new Callback() {
+				    		@Override
+					    	public void call() {
+                                Music.INSTANCE.play(Assets.Music.CAVES_BOSS_FINALE, true);
+    						}
+	    				});
+		    		}
+			    });
 		}
 	}
 

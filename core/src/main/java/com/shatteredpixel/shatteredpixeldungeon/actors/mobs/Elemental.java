@@ -23,6 +23,7 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -419,15 +420,16 @@ public abstract class Elemental extends Mob {
 				Game.runOnRenderThread(new Callback() {
 					@Override
 					public void call() {
-						Music.INSTANCE.fadeOut(1f, new Callback() {
-							@Override
-							public void call() {
-								if (Dungeon.level != null) {
-									Dungeon.level.playLevelMusic();
-								}
-							}
-						});
-					}
+                        if (!SPDSettings.useOldMusic())
+    						Music.INSTANCE.fadeOut(1f, new Callback() {
+	    						@Override
+		    					public void call() {
+			    					if (Dungeon.level != null) {
+				    					Dungeon.level.playLevelMusic();
+					    			}
+						    	}
+						    });
+                    }
 				});
 			}
 		}

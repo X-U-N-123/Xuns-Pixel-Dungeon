@@ -24,6 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon.levels;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Bones;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -78,7 +79,9 @@ public class HallsBossLevel extends Level {
 
 	@Override
 	public void playLevelMusic() {
-		if (locked && BossHealthBar.isAssigned()){
+        if (SPDSettings.useOldMusic()){
+            Music.INSTANCE.play(Assets.Music.GAME, true);
+        } else if (locked && BossHealthBar.isAssigned()){
 			if (BossHealthBar.isBleeding()){
 				Music.INSTANCE.play(Assets.Music.HALLS_BOSS_FINALE, true);
 			} else {
@@ -314,7 +317,8 @@ public class HallsBossLevel extends Level {
 				Music.INSTANCE.fadeOut(5f, new Callback() {
 					@Override
 					public void call() {
-						Music.INSTANCE.play(Assets.Music.THEME_FINALE, true);
+						if (SPDSettings.useOldMusic()) Music.INSTANCE.play(Assets.Music.SURFACE, true);
+                        else Music.INSTANCE.play(Assets.Music.THEME_FINALE, true);
 					}
 				});
 			}

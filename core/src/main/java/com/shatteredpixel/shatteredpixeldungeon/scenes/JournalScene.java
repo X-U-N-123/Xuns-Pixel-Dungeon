@@ -25,6 +25,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Chrome;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
@@ -69,10 +70,13 @@ public class JournalScene extends PixelScene {
 		//need to re-initialize the texture here, as it may be invalid
 		new TerrainFeaturesTilemap(new SparseArray<>(), new SparseArray<>());
 
-		Music.INSTANCE.playTracks(
-				new String[]{Assets.Music.THEME_1, Assets.Music.THEME_2},
-				new float[]{1, 1},
-				false);
+        if (SPDSettings.useOldMusic())
+            Music.INSTANCE.play(Assets.Music.THEME_OLD, true);
+        else
+            Music.INSTANCE.playTracks(
+                new String[]{Assets.Music.THEME_1, Assets.Music.THEME_2},
+                new float[]{1, 1},
+                false);
 
 		uiCamera.visible = false;
 

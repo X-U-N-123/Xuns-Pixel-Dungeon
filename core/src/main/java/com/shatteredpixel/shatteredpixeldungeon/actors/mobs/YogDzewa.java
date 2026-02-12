@@ -25,6 +25,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -360,17 +361,19 @@ public class YogDzewa extends Mob {
 			summonCooldown = -15; //summon a burst of minions!
 			phase = 5;
 			BossHealthBar.bleed(true);
-			Game.runOnRenderThread(new Callback() {
-				@Override
-				public void call() {
-					Music.INSTANCE.fadeOut(0.5f, new Callback() {
-						@Override
-						public void call() {
-							Music.INSTANCE.play(Assets.Music.HALLS_BOSS_FINALE, true);
-						}
-					});
-				}
-			});
+            if (!SPDSettings.useOldMusic())
+    			Game.runOnRenderThread(new Callback() {
+	    			@Override
+		    		public void call() {
+                        if (!SPDSettings.useOldMusic())
+    			    		Music.INSTANCE.fadeOut(0.5f, new Callback() {
+	    			    		@Override
+		    			    	public void call() {
+			    			    	Music.INSTANCE.play(Assets.Music.HALLS_BOSS_FINALE, true);
+    			    			}
+	    			    	});
+		    		}
+			    });
 		}
 	}
 
@@ -555,12 +558,13 @@ public class YogDzewa extends Mob {
 					((DriedRose.GhostHero) ch).sayBoss();
 				}
 			}
-			Game.runOnRenderThread(new Callback() {
-				@Override
-				public void call() {
-					Music.INSTANCE.play(Assets.Music.HALLS_BOSS, true);
-				}
-			});
+            if (!SPDSettings.useOldMusic())
+    			Game.runOnRenderThread(new Callback() {
+	    			@Override
+		    		public void call() {
+			    		Music.INSTANCE.play(Assets.Music.HALLS_BOSS, true);
+				    }
+    			});
 			if (phase == 0) {
 				phase = 1;
 				summonCooldown = Random.NormalFloat(MIN_SUMMON_CD, MAX_SUMMON_CD);
