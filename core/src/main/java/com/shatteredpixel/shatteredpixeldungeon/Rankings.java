@@ -169,10 +169,6 @@ public enum Rankings {
 		save();
 	}
 
-	private int score( boolean win ) {
-		return (Statistics.goldCollected + Dungeon.hero.lvl * (win ? 26 : Dungeon.depth ) * 100) * (win ? 2 : 1);
-	}
-
 	//assumes a ranking is loaded, or game is ending
     public int calculateScore(){
 
@@ -215,17 +211,6 @@ public enum Rankings {
             if (Dungeon.isChallenged(Challenges.NO_RETURN) && Statistics.highestAscent > 0){
                 Statistics.winMultiplier += Math.min(0.5f, (25 - Statistics.highestAscent) * 0.1f);
             } else if (Statistics.ascended) Statistics.winMultiplier += 0.5f;
-
-		//pre v1.3.0 runs have different score calculations
-		//only progress and treasure score, and they are each up to 50% bigger
-		//win multiplier is a simple 2x if run was a win, challenge multi is the same as 1.3.0
-		} else {
-			Statistics.progressScore = Dungeon.hero.lvl * Statistics.deepestFloor * 100;
-			Statistics.treasureScore = Math.min(Statistics.goldCollected, 30_000);
-
-			Statistics.exploreScore = Statistics.totalBossScore = Statistics.totalQuestScore = 0;
-
-			Statistics.winMultiplier = Statistics.gameWon ? 2 : 1;
 
 		}
 
@@ -353,9 +338,6 @@ public enum Rankings {
 
 		Dungeon.initialVersion = data.getInt(GAME_VERSION);
 
-		if (Dungeon.initialVersion <= ShatteredPixelDungeon.v1_2_3){
-			Statistics.gameWon = rec.win;
-		}
 		rec.score = calculateScore();
 
 		if (rec.gameData.contains(SEED)){

@@ -38,10 +38,6 @@ public class DeviceCompat {
 		return SharedLibraryLoader.isAndroid;
 	}
 
-	public static boolean isiOS(){
-		return SharedLibraryLoader.isIos;
-	}
-
 	public static boolean isDesktop(){
 		return SharedLibraryLoader.isWindows || SharedLibraryLoader.isMac || SharedLibraryLoader.isLinux;
 	}

@@ -91,11 +91,6 @@ public class GitHubUpdates extends UpdateService {
 								if (minAndroid.find() && DeviceCompat.getPlatformVersion() < Integer.parseInt(minAndroid.group(1))){
 									continue;
 								}
-							} else if (DeviceCompat.isiOS()){
-								Matcher minIOS = minIOSPattern.matcher(b.getString("body"));
-								if (minIOS.find() && DeviceCompat.getPlatformVersion() < Integer.parseInt(minIOS.group(1))){
-									continue;
-								}
 							}
 
 							latestRelease = b;

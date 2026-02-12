@@ -53,11 +53,6 @@ public enum Music {
 	
 	public synchronized void play( String assetName, boolean looping ) {
 
-		//iOS cannot play ogg, so we use an mp3 alternative instead
-		if (assetName != null && DeviceCompat.isiOS()){
-			assetName = assetName.replace(".ogg", ".mp3");
-		}
-		
 		if (isPlaying() && lastPlayed != null && lastPlayed.equals( assetName )) {
 			player.setVolume(volumeWithFade());
 			return;
@@ -83,13 +78,6 @@ public enum Music {
 		if (tracks == null || tracks.length == 0 || tracks.length != chances.length){
 			stop();
 			return;
-		}
-
-		//iOS cannot play ogg, so we use an mp3 alternative instead
-		if (tracks != null && DeviceCompat.isiOS()){
-			for (int i = 0; i < tracks.length; i ++){
-				tracks[i] = tracks[i].replace(".ogg", ".mp3");
-			}
 		}
 
 		if (isPlaying() && this.trackList != null && tracks.length == trackList.length){
