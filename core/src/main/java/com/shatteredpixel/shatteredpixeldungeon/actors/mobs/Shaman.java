@@ -110,7 +110,10 @@ public abstract class Shaman extends Mob {
 	
 	//used so resistances can differentiate between melee and magical attacks
 	public static class EarthenBolt{
-        public Shaman shaman;
+        public Shaman src;
+        public EarthenBolt(Shaman shaman){
+            src = shaman;
+        }
     }
 	
 	private void zap() {
@@ -127,7 +130,7 @@ public abstract class Shaman extends Mob {
 			
 			int dmg = Random.NormalIntRange( 6, 15 );
 			dmg = Math.round(dmg * AscensionChallenge.statModifier(this));
-			enemy.damage( dmg, new EarthenBolt().shaman = this );
+			enemy.damage( dmg, new EarthenBolt(this) );
 			
 			if (!enemy.isAlive() && enemy == Dungeon.hero) {
 				Badges.validateDeathFromEnemyMagic();

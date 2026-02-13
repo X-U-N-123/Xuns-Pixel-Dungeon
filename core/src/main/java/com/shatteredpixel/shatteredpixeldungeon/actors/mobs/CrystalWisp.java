@@ -124,7 +124,10 @@ public class CrystalWisp extends Mob{
 
 	//used so resistances can differentiate between melee and magical attacks
 	public static class LightBeam {
-        public CrystalWisp wisp;
+        public CrystalWisp src;
+        public LightBeam(CrystalWisp wisp){
+            src = wisp;
+        }
     }
 
 	private void zap() {
@@ -135,7 +138,8 @@ public class CrystalWisp extends Mob{
 		if (hit( this, enemy, true )) {
 
 			int dmg = Random.NormalIntRange( 5, 10 );
-			enemy.damage( dmg, new LightBeam().wisp = this );
+
+			enemy.damage( dmg, new LightBeam(this) );
 
 			if (!enemy.isAlive() && enemy == Dungeon.hero) {
 				Badges.validateDeathFromEnemyMagic();

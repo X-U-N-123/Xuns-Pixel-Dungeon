@@ -60,7 +60,7 @@ public class BladeOfUnreal extends MeleeWeapon {
     @Override
     public int max(int lvl) {
         return  4*(tier+1) +    //24 base, down from 30
-                lvl*(tier);   //+5 scaling, down from +6
+                lvl*(tier - 1); //+4 scaling, down from +6
     }
 
     @Override
@@ -75,7 +75,7 @@ public class BladeOfUnreal extends MeleeWeapon {
         if (isReal){
             if (attacker == Dungeon.hero){
                 if (((Hero) attacker).pointsInTalent(Talent.BLADE_OF_UNREAL) > 1 && attacker.HP < attacker.HT) {
-                    attacker.HP += 1;
+                    attacker.HP ++;
                     attacker.sprite.showStatusWithIcon(CharSprite.POSITIVE, "1", FloatingText.HEALING);
                 }
                 Buff.affect(defender, UnRealTracker.class).damage = damage;
@@ -86,7 +86,6 @@ public class BladeOfUnreal extends MeleeWeapon {
 
     @Override
     public int reachFactor(Char owner) {
-        if (!Dungeon.hero.hasTalent(Talent.BLADE_OF_UNREAL)) return 0;
         int reach = super.reachFactor(owner);
         if (!isReal) reach ++;
         return reach;

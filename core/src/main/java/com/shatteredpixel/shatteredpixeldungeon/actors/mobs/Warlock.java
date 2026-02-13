@@ -104,7 +104,10 @@ public class Warlock extends Mob implements Callback {
 	
 	//used so resistances can differentiate between melee and magical attacks
 	public static class DarkBolt{
-        public Warlock warlock;
+        public Warlock src;
+        public DarkBolt(Warlock warlock){
+            src = warlock;
+        }
     }
 	
 	protected void zap() {
@@ -129,7 +132,7 @@ public class Warlock extends Mob implements Callback {
 				dmg *= 0.5f;
 			}
 
-			if (buff(MagicImmune.class) == null) enemy.damage( dmg, new DarkBolt().warlock = this );
+			if (buff(MagicImmune.class) == null) enemy.damage( dmg, new DarkBolt(this) );
 			
 			if (enemy == Dungeon.hero && !enemy.isAlive()) {
 				Badges.validateDeathFromEnemyMagic();

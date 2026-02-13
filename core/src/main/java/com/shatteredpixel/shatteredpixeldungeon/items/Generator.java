@@ -187,6 +187,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Halberd;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.HandAxe;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Havoc;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.HeavyFlail;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.HiddenBlade;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Hoe;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Ironbar;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Jieniu;
@@ -504,7 +505,7 @@ public class Generator {
 			WEP_T1.defaultProbs = new float[]{ 2, 0, 2, 2, 2, 2, 2, 2, 2, 0};
 			WEP_T1.probs = WEP_T1.defaultProbs.clone();
 			
-			WEP_T2.classes = new Class<?>[]{//15 Weapons
+			WEP_T2.classes = new Class<?>[]{//16 Weapons
 					Shortsword.class,
 					HandAxe.class,
 					Spear.class,
@@ -519,9 +520,10 @@ public class Generator {
 					Smallrunicblade.class,
 					Havoc.class,
 					StoneHammer.class,
+                    HiddenBlade.class,
 					Pickaxe.class,
 			};
-			WEP_T2.defaultProbs = new float[]{ 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0 };
+			WEP_T2.defaultProbs = new float[]{ 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0 };
 			WEP_T2.probs = WEP_T2.defaultProbs.clone();
 			
 			WEP_T3.classes = new Class<?>[]{//14 Weapons

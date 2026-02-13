@@ -80,7 +80,7 @@ public class HolyChampion extends ClericSpell {
         }
 
         ChampionEnemy.GiveChampion((Mob)ally);
-        Buff.affect(ally, HolyChampionTracker.class, 20*(hero.pointsInTalent(Talent.HOLY_CHAMPION)+1));
+        Buff.prolong(ally, HolyChampionTracker.class, 20*(hero.pointsInTalent(Talent.HOLY_CHAMPION)+1));
 
         onSpellCast(tome, hero);
 

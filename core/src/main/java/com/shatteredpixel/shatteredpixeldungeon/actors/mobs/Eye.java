@@ -166,6 +166,9 @@ public class Eye extends Mob {
 	//used so resistances can differentiate between melee and magical attacks
 	public static class DeathGaze{
         public Mob src;
+        public DeathGaze(Mob mob){
+            src = mob;
+        }
     }
 
 	public void deathGaze(){
@@ -211,7 +214,7 @@ public class Eye extends Mob {
 					dmg *= 0.5f;
 				}
 
-				ch.damage( dmg, new DeathGaze().src = this );
+				ch.damage( dmg, new DeathGaze(this) );
 
 				if (Dungeon.level.heroFOV[pos]) {
 					ch.sprite.flash();

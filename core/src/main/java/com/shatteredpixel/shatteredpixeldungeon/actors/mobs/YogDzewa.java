@@ -223,9 +223,9 @@ public class YogDzewa extends Mob {
 
 					if (hit( this, ch, true )) {
 						if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES)) {
-							ch.damage(Random.NormalIntRange(30, 50), new Eye.DeathGaze().src = this);
+							ch.damage(Random.NormalIntRange(30, 50), new Eye.DeathGaze(this));
 						} else {
-							ch.damage(Random.NormalIntRange(20, 30), new Eye.DeathGaze().src = this);
+							ch.damage(Random.NormalIntRange(20, 30), new Eye.DeathGaze(this));
 						}
 						if (Dungeon.level.heroFOV[pos]) {
 							ch.sprite.flash();

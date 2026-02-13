@@ -261,7 +261,9 @@ public class ItemSpriteSheet {
 	public static final int Stonehammer     = WEP_TIER2+10;
 	public static final int Smallrunicblade = WEP_TIER2+11;
 	public static final int Jiewan          = WEP_TIER2+12;
-	public static final int Havoc           = WEP_TIER2+14;
+	public static final int Havoc           = WEP_TIER2+13;
+    public static final int HIDDEN_BLADE    = WEP_TIER2+14;
+    public static final int HIDDEN_BLADE_LOCKED= WEP_TIER2+15;
 	static{
 		assignItemRect(SHORTSWORD,      13, 13);
 		assignItemRect(HAND_AXE,        12, 14);
@@ -277,6 +279,8 @@ public class ItemSpriteSheet {
 		assignItemRect(Smallrunicblade, 12, 12);
 		assignItemRect(Havoc,           14, 14);
 		assignItemRect(Stonehammer,     15, 15);
+        assignItemRect(HIDDEN_BLADE,    16, 16);
+        assignItemRect(HIDDEN_BLADE_LOCKED,16, 16);
 	}
 
 	private static final int WEP_TIER3      = xy(1, 6);   //16 slots

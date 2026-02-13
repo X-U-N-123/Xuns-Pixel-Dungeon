@@ -153,6 +153,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Crossbow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Fetter;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Flail;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.HeavyFlail;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.HiddenBlade;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.LightFlail;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
@@ -1685,6 +1686,13 @@ public class Hero extends Char {
 			Buff.affect(Dungeon.hero, Talent.PatientStrikeTracker.class).pos = Dungeon.hero.pos;
 		}
 		Talent.waitForShield(this);
+
+        //lock the hidden blade if hero is equipping one
+        KindOfWeapon wep = belongings.weapon();
+        if (wep instanceof HiddenBlade) ((HiddenBlade) wep).lock(true);
+        wep = belongings.secondWep();
+        if (wep instanceof HiddenBlade) ((HiddenBlade) wep).lock(true);
+
 		if (!fullRest) {
 			if (sprite != null) {
 				sprite.showStatus(CharSprite.DEFAULT, Messages.get(this, "wait"));

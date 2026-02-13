@@ -32,7 +32,9 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Belongings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.KindOfWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.HiddenBlade;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -263,6 +265,13 @@ public class Toolbar extends Component {
 							Buff.affect(Dungeon.hero, Talent.PatientStrikeTracker.class).pos = Dungeon.hero.pos;
 						}
 						Talent.waitForShield(Dungeon.hero);
+
+                        //lock the hidden blade if hero is equipping one
+                        KindOfWeapon wep = Dungeon.hero.belongings.weapon();
+                        if (wep instanceof HiddenBlade) ((HiddenBlade) wep).lock(true);
+                        wep = Dungeon.hero.belongings.secondWep();
+                        if (wep instanceof HiddenBlade) ((HiddenBlade) wep).lock(true);
+
 						Dungeon.hero.next();
 					} else {
 						examining = false;
