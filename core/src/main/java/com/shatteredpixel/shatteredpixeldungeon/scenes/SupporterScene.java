@@ -33,6 +33,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.TitleBackground;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.windows.IconTitle;
 import com.watabou.noosa.Camera;
+import com.watabou.noosa.Image;
 import com.watabou.noosa.NinePatch;
 import com.watabou.noosa.ui.Component;
 import com.watabou.utils.RectF;
@@ -111,6 +112,7 @@ public class SupporterScene extends PixelScene {
 
 		NinePatch bg;
 		RenderedTextBlock text;
+		Image icon;
 
 		@Override
 		protected void createChildren() {
@@ -126,6 +128,10 @@ public class SupporterScene extends PixelScene {
 
 			text = PixelScene.renderTextBlock(message, 6);
 			add(text);
+
+			icon = Icons.get(Icons.X_U_N);
+            add(icon);
+
 		}
 
 		@Override
@@ -135,6 +141,9 @@ public class SupporterScene extends PixelScene {
 
 			text.maxWidth((int)width - bg.marginHor());
 			text.setPos(x + bg.marginLeft(), y + bg.marginTop() + 1);
+
+			icon.y = text.bottom() - icon.height() + 4;
+			icon.x = x + 25;
 
 			height = (text.bottom() + 3) - y;
 

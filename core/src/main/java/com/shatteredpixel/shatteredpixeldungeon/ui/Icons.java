@@ -45,6 +45,7 @@ public enum Icons {
 	SHPX,
 	JOURNAL,
 	QQ,
+    X_U_N,
 
 	//grey icons, mainly used for buttons, spacing for 16x16
 	EXIT,
@@ -138,7 +139,8 @@ public enum Icons {
 	KRISTJAN,
 	CUBE_CODE,
 	PURIGRO,
-	ARCNOR;
+	ARCNOR,
+    ODG;
 
 	public Image get() {
 		return get( this );
@@ -178,6 +180,9 @@ public enum Icons {
 			case QQ:
 				icon.frame( icon.texture.uvRectBySize( 153, 0, 14, 15 ) );
 				break;
+            case X_U_N:
+                icon.frame( icon.texture.uvRectBySize( 167, 0, 12, 16 ) );
+                break;
 
 			case EXIT:
 				icon.frame( icon.texture.uvRectBySize( 0, 16, 15, 11 ) );
@@ -448,6 +453,10 @@ public enum Icons {
 				icon.frame( icon.texture.uvRectBySize( 160, 96, 27, 30 ) );
 				icon.scale.set(PixelScene.align(0.49f));
 				break;
+            case ODG:
+                icon.frame( icon.texture.uvRectBySize( 187, 96, 32, 32 ) );
+                icon.scale.set(PixelScene.align(0.49f));
+                break;
 
 		}
 		return icon;

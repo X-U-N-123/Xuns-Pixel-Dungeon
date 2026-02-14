@@ -64,6 +64,32 @@ public class AboutScene extends PixelScene {
 		Component content = list.content();
 		content.clear();
 
+        //*** Xun's Pixel Dungeon Credits ***
+
+        CreditsBlock xun = new CreditsBlock(true, Window.XUN_COLOR,
+        "Xun's Pixel Dungeon",
+        Icons.X_U_N.get(),
+        "Developed by: _迅_\nBased on Shattered Pixel Dungeon's open source",
+        "space.bilibili.com/501176938",
+        "https://space.bilibili.com/501176938");
+        xun.setRect((w - fullWidth)/2f, insets.top + 2, colWidth, 0);
+        if (landscape()) xun.setPos(xun.left() - 6, xun.top());
+        content.add(xun);
+
+        CreditsBlock odg = new CreditsBlock(false, Window.XUN_COLOR,
+        "Sprite Design:",
+        Icons.ODG.get(),
+        "odg",
+        "No link as he requests",
+        "");
+        odg.setSize(colWidth/2f, 0);
+        if (landscape()){
+            odg.setPos(xun.right() + colWidth/4f, xun.top() + (xun.height() - odg.height())/2f);
+        } else {
+            odg.setPos(xun.left() + colWidth/4f, xun.bottom()+5);
+        }
+        content.add(odg);
+
 		//*** Shattered Pixel Dungeon Credits ***
 
 		CreditsBlock shpx = new CreditsBlock(true, Window.SHPX_COLOR,
@@ -73,11 +99,13 @@ public class AboutScene extends PixelScene {
 				"ShatteredPixel.com",
 				"https://ShatteredPixel.com");
 		if (landscape()){
-			shpx.setRect((w - fullWidth)/2f - 6, insets.top + 10, 120, 0);
+			shpx.setRect(xun.left(), xun.bottom() + 12, 120, 0);
 		} else {
-			shpx.setRect((w - fullWidth)/2f, insets.top + 6, 120, 0);
+			shpx.setRect(xun.left(), odg.bottom() + 8, 120, 0);
 		}
 		content.add(shpx);
+
+        addLine(shpx.top() - (landscape() ? 8 : 4), content);
 
 		CreditsBlock alex = new CreditsBlock(false, Window.SHPX_COLOR,
 				"Splash Art & Design:",
@@ -207,7 +235,7 @@ public class AboutScene extends PixelScene {
 				Window.TITLE_COLOR,
 				null,
 				null,
-				"Shattered Pixel Dungeon uses the following sound samples from _freesound.org_:\n\n" +
+				"Xun's Pixel Dungeon uses the following sound samples from _freesound.org_:\n\n" +
 
 				"Creative Commons Attribution License:\n" +
 				"_SFX ATTACK SWORD 001.wav_ by _JoelAudio_\n" +
@@ -228,7 +256,8 @@ public class AboutScene extends PixelScene {
 				"_Pack: Stabbing Stomachs & Crushing Skulls_ by _TheFilmLook_\n" +
 				"_Sheep bleating_ by _zachrau_\n" +
 				"_Lemon,Juicy,Squeeze,Fruit.wav_ by _Filipe Chagas_\n" +
-				"_Lemon,Squeeze,Squishy,Fruit.wav_ by _Filipe Chagas_",
+				"_Lemon,Squeeze,Squishy,Fruit.wav_ by _Filipe Chagas_\n" +
+                "_Hammer on Wood.wav_ by _L.i.Z.e.L.l.E-+_",
 				"www.freesound.org",
 				"https://www.freesound.org");
 		freesound.setRect(transifex.left()-10, transifex.bottom() + 8, colWidth+20, 0);

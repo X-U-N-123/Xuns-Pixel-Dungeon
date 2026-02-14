@@ -48,7 +48,7 @@ public class RenderedTextBlock extends Component {
 	private int color = -1;
 	
 	private int hightlightColor1 = Window.TITLE_COLOR;
-    private int hightlightColor2 = 0x44FFFF;
+    private int hightlightColor2 = Window.XUN_COLOR;
 	private boolean highlightingEnabled = true;
 
 	public static final int LEFT_ALIGN = 1;
@@ -180,7 +180,7 @@ public class RenderedTextBlock extends Component {
 	}
 	
 	public synchronized void setHightlighting(boolean enabled, int color1){
-		setHightlighting(enabled, color1, Window.SHPX_COLOR);
+		setHightlighting(enabled, color1, Window.XUN_COLOR);
 	}
 
     public synchronized void setHightlighting(boolean enabled, int color1, int color2){
