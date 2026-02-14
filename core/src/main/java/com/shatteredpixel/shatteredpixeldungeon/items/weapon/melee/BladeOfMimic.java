@@ -1009,12 +1009,13 @@ public class BladeOfMimic extends MeleeWeapon { //copied from Magic Ling Pixel D
 
         private class EnchantWindow extends Window {
             private final ArrayList<CanScrollCheckBox> checkBoxes = new ArrayList<>();
+            private final ScrollPane list;
             public EnchantWindow(){
 
                 super();
                 resize(WIDTH, 108 + 36);
                 int placed = 0;
-                ScrollPane list = new ScrollPane(new Component()) {
+                list = new ScrollPane(new Component()) {
 
                     @Override
                     public void onClick(float x, float y) {
@@ -1121,6 +1122,13 @@ public class BladeOfMimic extends MeleeWeapon { //copied from Magic Ling Pixel D
                 }
                 setEnchant(ench);
                 super.onBackPressed();
+            }
+
+            @Override
+            public void offset(int xOffset, int yOffset) {
+                super.offset(xOffset, yOffset);
+                // refresh the scrollbar pane
+                list.setPos(list.left(), list.top());
             }
         }
 
