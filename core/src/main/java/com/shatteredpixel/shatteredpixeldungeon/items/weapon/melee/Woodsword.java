@@ -47,17 +47,17 @@ public class Woodsword extends MeleeWeapon {
 
     @Override
     public int max(int lvl){
-        return 3*(tier+1) +
+        return Math.round(3.5f * (tier+1)) +
                 lvl*tier;
     }
 
     @Override
     public int proc(Char attacker, Char defender, int damage) {
-        if (damage >= 3+buffedLvl()){
-            attacker.HP += 1+buffedLvl();
-            attacker.sprite.emitter().start( Speck.factory( Speck.HEALING ), 0.33f, 2+buffedLvl() );
+        if (damage > 3){
+            attacker.HP ++;
+            attacker.sprite.emitter().start( Speck.factory( Speck.HEALING ), 0.33f, 2 );
         }
-        if (attacker.HP > attacker.HT){attacker.HP = attacker.HT;}
+        if (attacker.HP > attacker.HT) attacker.HP = attacker.HT;
         return super.proc( attacker, defender, damage );
     }
 
@@ -105,11 +105,6 @@ public class Woodsword extends MeleeWeapon {
         });
     }
 
-    @Override public String statsInfo () {
-        int Healing = levelKnown ? 1 +buffedLvl() : 1;
-        return Messages.get(this, "stats_desc", Healing);
-    }
-
     @Override
     public String abilityInfo() {
         int dmgBoost = levelKnown ? 1 + buffedLvl() : 1;
@@ -123,7 +118,6 @@ public class Woodsword extends MeleeWeapon {
 
     public String upgradeAbilityStat(int level){
         int dmgBoost = 1 + level;
-        int Healingboost = buffedLvl();
         return augment.damageFactor(min(level)+dmgBoost) + "-" + augment.damageFactor(max(level)+dmgBoost);
     }
 

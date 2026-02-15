@@ -94,15 +94,7 @@ public class Blacksmith extends NPC {
 			String msg2 = "";
 
 			if (Dungeon.hero.buff(HeroDisguise.class) != null) msg1 += Messages.get(this, "intro_quest_mita");
-			else switch (Dungeon.hero.heroClass){
-				case WARRIOR:   msg1 += Messages.get(Blacksmith.this, "intro_quest_warrior"); break;
-				case MAGE:      msg1 += Messages.get(Blacksmith.this, "intro_quest_mage"); break;
-				case ROGUE:     msg1 += Messages.get(Blacksmith.this, "intro_quest_rogue"); break;
-				case HUNTRESS:  msg1 += Messages.get(Blacksmith.this, "intro_quest_huntress"); break;
-				case DUELIST:   msg1 += Messages.get(Blacksmith.this, "intro_quest_duelist"); break;
-				case CLERIC:    msg1 += Messages.get(Blacksmith.this, "intro_quest_cleric"); break;
-				case EXPLORER:  msg1 += Messages.get(Blacksmith.this, "intro_quest_explorer"); break;
-			}
+			else msg1 += Messages.get(Blacksmith.class, "intro_quest_" + Dungeon.hero.heroClass.name());
 
 			msg1 += "\n\n" + Messages.get(Blacksmith.this, "intro_quest_start");
 
