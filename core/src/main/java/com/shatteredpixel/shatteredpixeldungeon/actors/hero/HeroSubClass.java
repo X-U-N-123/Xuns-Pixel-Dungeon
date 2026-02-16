@@ -58,7 +58,9 @@ public enum HeroSubClass {
 
 	WAVECHASER(HeroIcon.WAVECHASER),
 	TRAPPER(HeroIcon.TRAPPER),
-	ROCKSY(HeroIcon.ROCKSY);
+	ROCKSY(HeroIcon.ROCKSY),
+
+    INCUBUS(HeroIcon.INCUBUS);
 
 	int icon;
 

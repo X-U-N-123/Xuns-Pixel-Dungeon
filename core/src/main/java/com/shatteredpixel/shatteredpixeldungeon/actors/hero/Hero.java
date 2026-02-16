@@ -53,6 +53,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Foresight;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.GreaterHaste;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HeroDisguise;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hex;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HoldFast;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
@@ -1724,6 +1725,10 @@ public class Hero extends Char {
 			Buff.affect(this, NinjaInvisCooldown.class, 25f);
 		}
 
+        if (Random.Float() <= 0.25f && heroClass == HeroClass.WRAITH){
+            Buff.prolong(enemy, Hex.class, 3f);
+        }
+
 		if (wep != null) {
 			damage = wep.proc( this, enemy, damage );
 		} else {
@@ -1870,6 +1875,11 @@ public class Hero extends Char {
 			}
 		}
 
+        //wraith ability
+        if (!(src instanceof Hunger) && !(src instanceof Viscosity.DeferedDamage)){
+            if (heroClass == HeroClass.WRAITH) damage --;
+        }
+
 		//unused, could be removed
 		CapeOfThorns.Thorns thorns = buff( CapeOfThorns.Thorns.class );
 		if (thorns != null) {
@@ -1900,6 +1910,9 @@ public class Hero extends Char {
 		if (buff(Challenge.DuelParticipant.class) != null){
 			buff(Challenge.DuelParticipant.class).addDamage(effectiveDamage);
 		}
+
+        if (HP <= HT / 5f) Badges.validateWraithUnlock();
+
 
 		//flash red when hit for serious damage.
 		float percentDMG = effectiveDamage / (float)preHP; //percent of current HP that was taken

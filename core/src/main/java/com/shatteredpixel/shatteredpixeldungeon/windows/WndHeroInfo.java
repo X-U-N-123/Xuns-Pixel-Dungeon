@@ -30,10 +30,13 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIcon;
+import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.IconButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.TalentButton;
+import com.shatteredpixel.shatteredpixeldungeon.ui.TalentIcon;
 import com.shatteredpixel.shatteredpixeldungeon.ui.TalentsPane;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Image;
@@ -79,6 +82,9 @@ public class WndHeroInfo extends WndTabbed {
 			case EXPLORER:
 				tabIcon = new ItemSprite(ItemSpriteSheet.SHOVEL, null);
 				break;
+            case WRAITH:
+                tabIcon = new ItemSprite(ItemSpriteSheet.Woodsword, null);
+                break;
 		}
 
 		int finalHeight = MIN_HEIGHT;
@@ -216,6 +222,12 @@ public class WndHeroInfo extends WndTabbed {
 							new ItemSprite(ItemSpriteSheet.CLAY),
 							new ItemSprite(ItemSpriteSheet.SCROLL_ISAZ)};
 					break;
+                case WRAITH:
+                    icons = new Image[]{ new TalentIcon(Talent.BLURRING_BODY),
+                            new BuffIcon(BuffIndicator.HEX, true),
+                            new ItemSprite(ItemSpriteSheet.Woodsword),
+                            new ItemSprite(ItemSpriteSheet.SCROLL_ISAZ)};
+                    break;
 			}
 			for (Image im : icons) {
 				add(im);

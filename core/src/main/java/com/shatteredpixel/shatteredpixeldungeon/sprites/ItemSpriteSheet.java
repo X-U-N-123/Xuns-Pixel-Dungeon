@@ -159,6 +159,7 @@ public class ItemSpriteSheet {
 	public static final int POT                 = MISC_CONSUMABLE +26;
 	public static final int SHOVEL_SCRAP        = MISC_CONSUMABLE +27;
     public static final int DOOR_PLANK          = MISC_CONSUMABLE +28;
+    public static final int RESIDUE             = MISC_CONSUMABLE +29;
 	static{
 		assignItemRect(ANKH,            10, 16);
 		assignItemRect(STYLUS,          12, 13);
@@ -189,6 +190,7 @@ public class ItemSpriteSheet {
 		assignItemRect(BROKEN_HILT,      9,  9);
 		assignItemRect(TORN_PAGE,       11, 13);
 		assignItemRect(SHOVEL_SCRAP,    10, 11);
+        assignItemRect(RESIDUE,         13,  8);
 
 		assignItemRect(TRINKET_CATA,    12, 11);
 
@@ -428,6 +430,7 @@ public class ItemSpriteSheet {
 	public static final int THROWING_KNIFE  = MISSILE_WEP+2;
 	public static final int THROWING_STONE  = MISSILE_WEP+3;
 	public static final int CLAY            = MISSILE_WEP+4;
+    public static final int BONE_FRAGMENT   = MISSILE_WEP+5;
 	
 	public static final int FISHING_SPEAR   = MISSILE_WEP+7;
 	public static final int SHURIKEN        = MISSILE_WEP+8;
@@ -461,6 +464,7 @@ public class ItemSpriteSheet {
 		assignItemRect(THROWING_KNIFE,  12, 13);
 		assignItemRect(THROWING_STONE,  12, 10);
 		assignItemRect(CLAY,            12, 10);
+        assignItemRect(BONE_FRAGMENT,   10, 10);
 		
 		assignItemRect(FISHING_SPEAR,   11, 11);
 		assignItemRect(SHURIKEN,        12, 12);

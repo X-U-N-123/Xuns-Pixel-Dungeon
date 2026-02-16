@@ -496,6 +496,8 @@ public enum Icons {
 				return new ItemSprite(ItemSpriteSheet.ARTIFACT_TOME);
 			case EXPLORER:
 				return new ItemSprite(ItemSpriteSheet.SHOVEL);
+            case WRAITH:
+                return new ItemSprite(ItemSpriteSheet.Woodsword);
 			default:
 				return null;
 		}

@@ -59,8 +59,9 @@ public class HeroIcon extends Image {
 	public static final int WAVECHASER  = 24;
 	public static final int TRAPPER     = 25;
 	public static final int ROCKSY      = 26;
+    public static final int INCUBUS     = 28;
 
-	//abilities
+    //abilities
 	public static final int HEROIC_LEAP     = 48;
 	public static final int SHOCKWAVE       = 49;
 	public static final int ENDURE          = 50;

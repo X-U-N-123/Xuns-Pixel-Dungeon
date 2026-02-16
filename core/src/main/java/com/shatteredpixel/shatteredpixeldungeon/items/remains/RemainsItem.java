@@ -94,6 +94,8 @@ public abstract class RemainsItem extends Item {
 				return new TornPage();
 			case EXPLORER:
 				return new ShovelScrap();
+            case WRAITH:
+                return new ResidualRemain();
 		}
 	}
 

@@ -122,6 +122,9 @@ abstract public class ClassArmor extends Armor {
 			case EXPLORER:
 				classArmor = new ExplorerArmor();
 				break;
+            case WRAITH:
+                classArmor = new WraithArmor();
+                break;
 		}
 		
 		classArmor.level(armor.trueLevel());

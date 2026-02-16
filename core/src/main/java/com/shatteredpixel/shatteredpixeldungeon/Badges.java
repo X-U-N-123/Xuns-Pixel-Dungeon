@@ -74,6 +74,7 @@ public class Badges {
 		MASTERY_DUELIST,
 		MASTERY_CLERIC,
 		MASTERY_EXPLORER,
+        MASTERY_WRAITH,
 		FOUND_RATMOGRIFY,
 
 		//bronze
@@ -83,6 +84,7 @@ public class Badges {
 		UNLOCK_DUELIST              ( 4 ),
 		UNLOCK_CLERIC               ( 5 ),
 		UNLOCK_EXPLORER             ( 27 ),
+        UNLOCK_WRAITH               ( 28 ),
 		MONSTERS_SLAIN_1            ( 6 ),
 		MONSTERS_SLAIN_2            ( 7 ),
 		GOLD_COLLECTED_1            ( 8 ),
@@ -137,6 +139,7 @@ public class Badges {
 		BOSS_SLAIN_1_DUELIST,
 		BOSS_SLAIN_1_CLERIC,
 		BOSS_SLAIN_1_EXPLORER,
+        BOSS_SLAIN_1_WRAITH,
 		BOSS_SLAIN_1_ALL_CLASSES    ( 54, BadgeType.GLOBAL ),
 		RESEARCHER_2                ( 55, BadgeType.JOURNAL ),
 		GAMES_PLAYED_2              ( 56, BadgeType.GLOBAL ),
@@ -196,6 +199,7 @@ public class Badges {
 		VICTORY_DUELIST,
 		VICTORY_CLERIC,
 		VICTORY_EXPLORER,
+        VICTORY_WRAITH,
 		VICTORY_ALL_CLASSES         ( 102, BadgeType.GLOBAL ),
 		DEATH_FROM_ALL              ( 103, BadgeType.GLOBAL ),
 		BOSS_SLAIN_3_GLADIATOR,
@@ -219,6 +223,7 @@ public class Badges {
         BOSS_SLAIN_3_WAVECHASER,
 		BOSS_SLAIN_3_TRAPPER,
 		BOSS_SLAIN_3_ROCKSY,
+        BOSS_SLAIN_3_INCUBUS,
 		BOSS_SLAIN_3_ALL_SUBCLASSES ( 104, BadgeType.GLOBAL ),
 		BOSS_CHALLENGE_3            ( 105 ),
 		BOSS_CHALLENGE_4            ( 106 ),
@@ -844,6 +849,7 @@ public class Badges {
 		firstBossClassBadges.put(HeroClass.DUELIST, Badge.BOSS_SLAIN_1_DUELIST);
 		firstBossClassBadges.put(HeroClass.CLERIC, Badge.BOSS_SLAIN_1_CLERIC);
 		firstBossClassBadges.put(HeroClass.EXPLORER, Badge.BOSS_SLAIN_1_EXPLORER);
+        firstBossClassBadges.put(HeroClass.WRAITH, Badge.BOSS_SLAIN_1_WRAITH);
 	}
 
 	private static LinkedHashMap<HeroClass, Badge> victoryClassBadges = new LinkedHashMap<>();
@@ -855,6 +861,7 @@ public class Badges {
 		victoryClassBadges.put(HeroClass.DUELIST, Badge.VICTORY_DUELIST);
 		victoryClassBadges.put(HeroClass.CLERIC, Badge.VICTORY_CLERIC);
 		victoryClassBadges.put(HeroClass.EXPLORER, Badge.VICTORY_EXPLORER);
+        victoryClassBadges.put(HeroClass.WRAITH, Badge.VICTORY_WRAITH);
 	}
 
 	private static LinkedHashMap<HeroSubClass, Badge> thirdBossSubclassBadges = new LinkedHashMap<>();
@@ -880,6 +887,7 @@ public class Badges {
 		thirdBossSubclassBadges.put(HeroSubClass.WAVECHASER, Badge.BOSS_SLAIN_3_WAVECHASER);
 		thirdBossSubclassBadges.put(HeroSubClass.TRAPPER, Badge.BOSS_SLAIN_3_TRAPPER);
 		thirdBossSubclassBadges.put(HeroSubClass.ROCKSY, Badge.BOSS_SLAIN_3_ROCKSY);
+        thirdBossSubclassBadges.put(HeroSubClass.INCUBUS, Badge.BOSS_SLAIN_3_INCUBUS);
 	}
 	
 	public static void validateBossSlain() {
@@ -1005,6 +1013,9 @@ public class Badges {
 			case EXPLORER:
 				badge = Badge.MASTERY_EXPLORER;
 				break;
+            case WRAITH:
+                badge = Badge.MASTERY_WRAITH;
+                break;
 		}
 		
 		unlock(badge);
@@ -1060,6 +1071,12 @@ public class Badges {
 			displayBadge( Badge.UNLOCK_EXPLORER);
 		}
 	}
+
+    public static void validateWraithUnlock(){
+        if (!isUnlocked(Badge.UNLOCK_WRAITH)){
+            displayBadge( Badge.UNLOCK_WRAITH);
+        }
+    }
 	
 	public static void validateMasteryCombo( int n ) {
 		if (!local.contains( Badge.MASTERY_COMBO ) && n >= 10) {

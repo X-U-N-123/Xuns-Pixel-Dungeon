@@ -36,6 +36,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.armor.PlateArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.RogueArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ScaleArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.WarriorArmor;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.WraithArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.AlchemistsToolkit;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ChaliceOfBlood;
@@ -240,6 +241,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WornShortswor
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Zhouyi;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Antimatter;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Bolas;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.BoneFragment;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Boomerang;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Clay;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.CoinDart;
@@ -620,9 +622,10 @@ public class Generator {
 					HuntressArmor.class,
 					DuelistArmor.class,
 					ClericArmor.class,
-					ExplorerArmor.class
+					ExplorerArmor.class,
+                    WraithArmor.class
 			};
-			ARMOR.probs = new float[]{ 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0};
+			ARMOR.probs = new float[]{ 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0};
 			
 			//see Generator.randomMissile
 			MISSILE.classes = new Class<?>[]{};
@@ -633,9 +636,10 @@ public class Generator {
 					ThrowingKnife.class,
 					ThrowingSpike.class,
 					Clay.class,
+                    BoneFragment.class,
 					Dart.class
 			};
-			MIS_T1.defaultProbs = new float[]{ 3, 3, 3, 3, 0 };
+			MIS_T1.defaultProbs = new float[]{ 3, 3, 3, 3, 3, 0 };
 			MIS_T1.probs = MIS_T1.defaultProbs.clone();
 			
 			MIS_T2.classes = new Class<?>[]{

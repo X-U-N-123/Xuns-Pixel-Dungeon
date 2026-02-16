@@ -50,6 +50,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.rogue.Smok
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.Endure;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.HeroicLeap;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.Shockwave;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.wraith.GhostWander;
 import com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal;
 import com.shatteredpixel.shatteredpixeldungeon.items.Goldarrow;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
@@ -75,6 +76,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLiquidFlam
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfMindVision;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfPurity;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfStrength;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfToxicGas;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfEnergy;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfIdentify;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfLullaby;
@@ -82,6 +84,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMagicMappi
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMirrorImage;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRage;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRemoveCurse;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRetribution;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile;
@@ -94,7 +97,9 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Havoc;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Rapier;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Shovel;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Woodsword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WornShortsword;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.BoneFragment;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Clay;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingKnife;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingSpike;
@@ -112,7 +117,8 @@ public enum HeroClass {
 	HUNTRESS( HeroSubClass.SNIPER, HeroSubClass.WARDEN, HeroSubClass.SCOUT),
 	DUELIST( HeroSubClass.CHAMPION, HeroSubClass.MONK, HeroSubClass.PHANTOM),
 	CLERIC( HeroSubClass.PRIEST, HeroSubClass.PALADIN, HeroSubClass.PREACHER),
-	EXPLORER( HeroSubClass.WAVECHASER, HeroSubClass.TRAPPER, HeroSubClass.ROCKSY);
+	EXPLORER( HeroSubClass.WAVECHASER, HeroSubClass.TRAPPER, HeroSubClass.ROCKSY),
+    WRAITH( HeroSubClass.INCUBUS );
 
 	private HeroSubClass[] subClasses;
 
@@ -166,6 +172,10 @@ public enum HeroClass {
 			case EXPLORER:
 				initExplorer( hero );
 				break;
+
+            case WRAITH:
+                initWraith( hero );
+                break;
 		}
 
 		if (Dungeon.isChallenged(Challenges.X_U_NS_POWER)){
@@ -233,6 +243,8 @@ public enum HeroClass {
 				return Badges.Badge.MASTERY_CLERIC;
 			case EXPLORER:
 				return Badges.Badge.MASTERY_EXPLORER;
+            case WRAITH:
+                return Badges.Badge.MASTERY_WRAITH;
 		}
 		return null;
 	}
@@ -340,6 +352,20 @@ public enum HeroClass {
 		new ScrollOfTeleportation().identify();
 	}
 
+    private static void initWraith(Hero hero ) {
+
+        (hero.belongings.weapon = new Woodsword()).identify();
+        hero.belongings.weapon.activate(hero);
+
+        BoneFragment bone = new BoneFragment();
+        bone.quantity(3).collect();
+
+        Dungeon.quickslot.setSlot(0, bone);
+
+        new PotionOfToxicGas().identify();
+        new ScrollOfRetribution().identify();
+    }
+
 	public String title() {
 		return Messages.get(HeroClass.class, name());
 	}
@@ -372,6 +398,8 @@ public enum HeroClass {
 				return new ArmorAbility[]{new AscendedForm(), new Trinity(), new PowerOfMany()};
 			case EXPLORER:
 				return new ArmorAbility[]{new OpticalCamou(), new Sandstorm(), new Underpass()};
+            case WRAITH:
+                return new ArmorAbility[]{new GhostWander()};
 		}
 	}
 
@@ -391,6 +419,8 @@ public enum HeroClass {
 				return Assets.Sprites.CLERIC;
 			case EXPLORER:
 				return Assets.Sprites.EXPLORER;
+            case WRAITH:
+                return Assets.Sprites.MITA;
 		}
 	}
 
@@ -414,6 +444,8 @@ public enum HeroClass {
 				return Assets.Splashes.CLERIC;
 			case EXPLORER:
 				return Assets.Splashes.EXPLORER;
+            case WRAITH:
+                return Assets.Splashes.EXPLORER;
 		}
 	}
 	
@@ -436,6 +468,8 @@ public enum HeroClass {
 				return Badges.isUnlocked(Badges.Badge.UNLOCK_CLERIC);
 			case EXPLORER:
 				return Badges.isUnlocked(Badges.Badge.UNLOCK_EXPLORER);
+            case WRAITH:
+                return Badges.isUnlocked(Badges.Badge.UNLOCK_WRAITH);
 		}
 	}
 	
