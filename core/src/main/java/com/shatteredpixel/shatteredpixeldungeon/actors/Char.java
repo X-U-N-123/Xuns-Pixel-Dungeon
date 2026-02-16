@@ -38,6 +38,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ArcaneArmor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ArtifactRecharge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barkskin;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Berserk;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bless;
@@ -671,6 +672,10 @@ public abstract class Char extends Actor {
 					p.summon();
 					p.reduceCD(5*hero.pointsInTalent(Talent.FLEXIBLE_FOOTWORK));
 				}
+
+                if (hero.hasTalent(Talent.FLEET_BARRIER)){
+                    Buff.affect(hero, Barrier.class).incShield(1 + hero.pointsInTalent(Talent.FLEET_BARRIER));
+                }
 			}
 
             if (this instanceof Hero){

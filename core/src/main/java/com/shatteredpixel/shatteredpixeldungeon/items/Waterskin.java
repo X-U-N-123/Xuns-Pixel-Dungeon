@@ -22,12 +22,20 @@
 package com.shatteredpixel.shatteredpixeldungeon.items;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfIdentify;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.VialOfBlood;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.BladeOfUnreal;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndBag;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.GameMath;
@@ -44,7 +52,9 @@ public class Waterskin extends Item {
 
 	private static final String TXT_STATUS	= "%d/%d";
 
-	{
+    private static final String AC_ID = "IDENTIFY";
+
+    {
 		image = ItemSpriteSheet.WATERSKIN;
 
 		defaultAction = AC_DRINK;
@@ -74,8 +84,18 @@ public class Waterskin extends Item {
 		if (volume > 0) {
 			actions.add( AC_DRINK );
 		}
+        if (hero.hasTalent(Talent.BLOOD_INTUITION)){
+            actions.add( AC_ID );
+        }
 		return actions;
 	}
+
+    //can be overridden if default action is variable
+    @Override
+    public String defaultAction(){
+        if (volume > 0) return defaultAction;
+        else            return AC_ID;
+    }
 
 	@Override
 	public void execute( final Hero hero, String action ) {
@@ -118,8 +138,40 @@ public class Waterskin extends Item {
 				GLog.w( Messages.get(this, "empty") );
 			}
 
-		}
-	}
+		} else if (action.equals( AC_ID )) {
+            int dmg = 11 - 3 * hero.pointsInTalent(Talent.BLOOD_INTUITION);
+
+            if (hero.HP + hero.shielding() <= dmg){
+                GLog.w(Messages.get(this, "no_enough_hp"));
+                return;
+            }
+
+            GameScene.selectItem(new WndBag.ItemSelector() {
+                @Override
+                public String textPrompt() {
+                    return Messages.get(this, "prompt");
+                }
+
+                @Override
+                public boolean itemSelectable(Item item) {
+                    return item instanceof EquipableItem && !item.isIdentified();
+                }
+
+                @Override
+                public void onSelect(Item item) {
+                    if (item == null) return;
+
+                    ScrollOfIdentify.IDItem(item);
+                    Buff.affect(hero, BladeOfUnreal.UnRealTracker.class).damage = dmg;
+                    hero.damage(dmg, this);
+                    Sample.INSTANCE.play(Assets.Sounds.CURSED);
+                    hero.sprite.operate(hero.pos);
+                    hero.sprite.emitter().burst( ShadowParticle.CURSE, 6 - hero.pointsInTalent(Talent.BLOOD_INTUITION) );
+                    hero.spendAndNext(Actor.TICK);
+                }
+            });
+        }
+    }
 
 	@Override
 	public String info() {

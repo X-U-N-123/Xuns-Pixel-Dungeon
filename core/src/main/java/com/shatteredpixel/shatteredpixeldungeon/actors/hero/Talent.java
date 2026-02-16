@@ -27,6 +27,7 @@ import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Adrenaline;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ArtifactRecharge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
@@ -41,6 +42,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LostInventory;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicalSight;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MonkEnergy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.PhysicalEmpower;
@@ -253,7 +255,10 @@ public enum Talent {
 	//Underpass T4
 	EXPRESS_UNDERWAY(325, 4), MONITOR_BENEATH(326, 4), SLY_RABBIT(327, 4), GRENADE_COVER(328, 4),
 
-	//universal T4
+    //Wraith T1
+    ANCESTRAL_TRIBUTE(336), BLOOD_INTUITION(337), TESTED_ANTIMAGIC(338), BURIAL_CEREMONY(339), FLEET_BARRIER(340),
+
+    //universal T4
 	HEROIC_ENERGY(41, 4), //See icon() and title() for special logic for this one
 	//Ratmogrify T4
 	RATSISTANCE(507, 4), RATLOMACY(508, 4), RATFORCEMENTS(509, 4), ENRATGEMENT(510, 4);
@@ -829,6 +834,9 @@ public enum Talent {
             Dungeon.observe();
             Dungeon.hero.checkVisibleMobs();
 		}
+        if (hero.hasTalent(TESTED_ANTIMAGIC)){
+            Buff.affect(hero, MagicImmune.class, 1 + hero.pointsInTalent(TESTED_ANTIMAGIC));
+        }
 	}
 
 	public static void onTalentUpgraded( Hero hero, Talent talent ){
@@ -1117,6 +1125,11 @@ public enum Talent {
             } else Buff.affect(Dungeon.hero, Swiftthistle.TimeBubble.class)
                     .reset(hero.pointsInTalent(PREPARING_MEAL) - 1); // effectively 2/3 turn of time bubble
 		}
+
+        if (hero.hasTalent(ANCESTRAL_TRIBUTE))
+            Buff.affect(hero, Adrenaline.class, 2 * hero.pointsInTalent(ANCESTRAL_TRIBUTE) + hero.cooldown());
+
+        if (hero.hasTalent(TEARING_MEAL)) Buff.affect(hero, TearingMealTracker.class);
 	}
 
 	public static class WarriorFoodImmunity extends FlavourBuff{
@@ -1440,7 +1453,12 @@ public enum Talent {
 
 		if (Dungeon.level.map[hero.pos] == Terrain.EMBERS && hero.pointsInTalent(REKINDLED_EMBER) >= 2){
 			Buff.affect( enemy, Burning.class ).reignite( enemy, 5);
-			enemy.sprite.emitter().burst( FlameParticle.FACTORY, 2 );}
+			enemy.sprite.emitter().burst( FlameParticle.FACTORY, 2 );
+        }
+
+        if (enemy.HP <= enemy.HT * 0.3f * (1 + hero.pointsInTalent(BURIAL_CEREMONY)) && hero.hasTalent(BURIAL_CEREMONY)){
+            dmg ++;
+        }
 
 		return dmg;
 	}
@@ -1518,6 +1536,9 @@ public enum Talent {
 			case EXPLORER:
 				Collections.addAll(tierTalents, KEEN_MEAL, SECRET_FORESIGHT, TESTED_AWARENESS, HOME_ADVANTAGE, SAFE_SURVEY);
 				break;
+            case WRAITH:
+                Collections.addAll(tierTalents, ANCESTRAL_TRIBUTE, BLOOD_INTUITION, TESTED_ANTIMAGIC, BURIAL_CEREMONY, FLEET_BARRIER);
+                break;
 		}
 		for (Talent talent : tierTalents){
 			if (replacements.containsKey(talent)){
