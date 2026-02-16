@@ -113,7 +113,10 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Necromancer;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Tengu;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.MirrorImage;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.PrismaticImage;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Sheep;
+import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.LeafParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal;
@@ -988,7 +991,7 @@ public abstract class Char extends Actor {
 				b.announced = false;
 				b.set(dmg, Sickle.HarvestBleedTracker.class);
 				b.attachTo(this);
-				sprite.showStatus(CharSprite.WARNING, Messages.titleCase(b.name()) + " " + (int)b.level());
+				sprite.showStatusWithIcon(CharSprite.WARNING, "+" + (int)b.level(), FloatingText.BLEEDING);
 				return;
 			}
 		}
@@ -1221,7 +1224,29 @@ public abstract class Char extends Actor {
 	}
 	
 	public void die( Object src ) {
-		destroy();
+        BarricadeCurse.BarricadeTracker tracker = buff(BarricadeCurse.BarricadeTracker.class);
+        Barricade barricade = null;
+        if (tracker != null && !(this instanceof Barricade)){
+            tracker.detach();
+            barricade = Barricade.buildBarricade(pos, (int)((hero.lvl * 2 + 5) * tracker.strength), Alignment.ENEMY, 6f);
+            ScrollOfTeleportation.appear(barricade, barricade.pos);
+        }
+        if (alignment == Alignment.ENEMY && !Dungeon.level.pit[pos] && barricade == null
+                && Dungeon.level.heroFOV[pos] && hero.hasTalent(Talent.SCAPEGOAT)){
+            for (Buff buff : buffs){
+                if (buff.type == Buff.buffType.NEGATIVE){
+                    Sheep sheep = new Sheep();
+                    sheep.initialize(1 + 2 * hero.pointsInTalent(Talent.SCAPEGOAT), true, false);
+                    sheep.pos = pos;
+                    GameScene.add(sheep);
+                    Dungeon.level.occupyCell(sheep);
+                    CellEmitter.get(pos).burst(Speck.factory(Speck.WOOL), 4);
+                    break;
+                }
+            }
+        }
+		destroy(); //here's where all the buffs were detached
+
 		if (src != Chasm.class) {
 			sprite.die();
 			if (!isFlying() && Dungeon.level != null && sprite instanceof MobSprite && Dungeon.level.map[pos] == Terrain.CHASM){
@@ -1270,16 +1295,6 @@ public abstract class Char extends Actor {
 			&& hero.buff(EnergyRecyclingCooldown.class) == null){
 			((Wand)src).gainCharge(hero.pointsInTalent(Talent.ENERGY_RECYCLING) *0.3f);
 			Buff.affect(hero, EnergyRecyclingCooldown.class, 3f);
-		}
-
-		if (src instanceof Char && ((Char) src).buff(BarricadeCurse.BarricadeTracker.class) != null && !(this instanceof Barricade)){
-			BarricadeCurse.BarricadeTracker tracker = ((Char) src).buff(BarricadeCurse.BarricadeTracker.class);
-			tracker.detach();
-
-			Barricade barricade =
-				Barricade.buildBarricade(pos, (int)((hero.lvl * 2 + 5) * tracker.strength), Alignment.ENEMY, 6f);
-
-			ScrollOfTeleportation.appear(barricade, barricade.pos);
 		}
 	}
 

@@ -30,6 +30,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Adrenaline;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ArtifactRecharge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.BrokenArmor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
@@ -257,6 +258,8 @@ public enum Talent {
 
     //Wraith T1
     ANCESTRAL_TRIBUTE(336), BLOOD_INTUITION(337), TESTED_ANTIMAGIC(338), BURIAL_CEREMONY(339), FLEET_BARRIER(340),
+    //Wraith T2
+    TEARING_MEAL(341), INSCRIBED_REGENERATION(342), BLURRING_BODY(343), SCAPEGOAT(345), THROWN_EVIL(346),
 
     //universal T4
 	HEROIC_ENERGY(41, 4), //See icon() and title() for special logic for this one
@@ -1136,6 +1139,10 @@ public enum Talent {
 		{ actPriority = HERO_PRIO+1; }
 	}
 
+    public static class TearingMealTracker extends Buff {
+        @Override public int icon() {return BuffIndicator.AMOK;}
+    }
+
 	public static float itemIDSpeedFactor( Hero hero, Item item ){
 		// 1.75x/2.5x speed with Huntress talent
 		float factor = 1f + 0.75f*hero.pointsInTalent(SURVIVALISTS_INTUITION);
@@ -1283,6 +1290,13 @@ public enum Talent {
 				}
 			}
 		}
+        if (hero.hasTalent(INSCRIBED_REGENERATION)){
+            // 25/40% of level
+            int toHeal = Math.round( factor * hero.lvl * (0.1f + 0.15f*hero.pointsInTalent(INSCRIBED_REGENERATION)));
+            toHeal = Math.min(hero.HT - hero.HP, toHeal);
+            hero.HP += toHeal;
+            hero.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(toHeal), FloatingText.HEALING);
+        }
 	}
 
 	public static void onRunestoneUsed( Hero hero, int pos, Class<?extends Item> cls ){
@@ -1448,7 +1462,7 @@ public enum Talent {
 		}
 		
 		if (Dungeon.level.map[hero.pos] != Dungeon.level.map[enemy.pos] && hero.hasTalent(HOME_ADVANTAGE)){
-			dmg += Random.IntRange(1 , hero.pointsInTalent(HOME_ADVANTAGE));
+			dmg += Random.IntRange(1, hero.pointsInTalent(HOME_ADVANTAGE));
 		}
 
 		if (Dungeon.level.map[hero.pos] == Terrain.EMBERS && hero.pointsInTalent(REKINDLED_EMBER) >= 2){
@@ -1460,6 +1474,21 @@ public enum Talent {
             dmg ++;
         }
 
+        TearingMealTracker tear = hero.buff(TearingMealTracker.class);
+        if (tear != null){
+            tear.detach();
+
+            if (!enemy.isImmune(Bleeding.class)){
+                Bleeding b = enemy.buff(Bleeding.class);
+                if (b == null) b = new Bleeding();
+
+                b.announced = false;
+                b.set(dmg * (0.65f + 0.25f * hero.pointsInTalent(TEARING_MEAL)), TearingMealTracker.class);
+                b.attachTo(enemy);
+                enemy.sprite.showStatusWithIcon(CharSprite.WARNING, "+" + (int)b.level(), FloatingText.BLEEDING);
+                dmg = 0;
+            }
+        }
 		return dmg;
 	}
 
@@ -1571,6 +1600,9 @@ public enum Talent {
 			case EXPLORER:
 				Collections.addAll(tierTalents, PREPARING_MEAL, LIQUID_CLAIRVOYANCE, ARCANE_BARRICADE, WINDING_PORCH, REKINDLED_EMBER, AGGRESSIVE_ROADBLOCK);
 				break;
+            case WRAITH:
+                Collections.addAll(tierTalents, TEARING_MEAL, INSCRIBED_REGENERATION, BLURRING_BODY, SCAPEGOAT, THROWN_EVIL);
+                break;
 		}
 		for (Talent talent : tierTalents){
 			if (replacements.containsKey(talent)){

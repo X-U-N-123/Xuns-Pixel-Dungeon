@@ -1878,6 +1878,7 @@ public class Hero extends Char {
         //wraith ability
         if (!(src instanceof Hunger) && !(src instanceof Viscosity.DeferedDamage)){
             if (heroClass == HeroClass.WRAITH) damage --;
+            damage = Math.max(damage - pointsInTalent(Talent.BLURRING_BODY), 0);
         }
 
 		//unused, could be removed

@@ -35,7 +35,7 @@ public class BarricadeCurse extends Weapon.Enchantment {
 
     @Override
     public int proc(Weapon weapon, Char attacker, Char defender, int damage ) {
-        Buff.affect(attacker, BarricadeTracker.class, 0f).strength = procChanceMultiplier(attacker);
+        Buff.affect(defender, BarricadeTracker.class, 0f).strength = procChanceMultiplier(attacker);
         return damage;
     }
 

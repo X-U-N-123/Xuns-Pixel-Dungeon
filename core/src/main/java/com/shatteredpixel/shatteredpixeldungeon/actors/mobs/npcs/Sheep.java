@@ -36,8 +36,9 @@ import com.watabou.utils.Random;
 public class Sheep extends NPC {
 
 	private static final String[] LINE_KEYS = {"Baa!", "Baa?", "Baa.", "Baa..."};
+    private boolean canDispelByInteract = false;
 
-	{
+    {
 		spriteClass = SheepSprite.class;
 
 		useParry = true;
@@ -58,9 +59,14 @@ public class Sheep extends NPC {
 	}
 
 	public void initialize(float lifespan){
-		this.lifespan = lifespan;
-		spend( lifespan + Random.Float(-2, 2) );
+		initialize(lifespan, false, true);
 	}
+
+    public void initialize(float lifespan, boolean canDispel, boolean random){
+        this.lifespan = lifespan;
+        spend( lifespan + (random ? Random.Float(-2, 2) : 0) );
+        canDispelByInteract = canDispel;
+    }
 
 	@Override
 	public int defenseSkill(Char enemy) {
@@ -84,25 +90,26 @@ public class Sheep extends NPC {
 		if (c == Dungeon.hero) {
 			Dungeon.hero.spendAndNext(1f);
 			Sample.INSTANCE.play(Assets.Sounds.SHEEP, 1, Random.Float(0.91f, 1.1f));
-			//sheep summoned by woolly bomb can be dispelled by interacting
-			if (lifespan >= 20){
-				spend(-cooldown());
-			}
+			//sheep summoned by woolly bomb and scapegoat talent can be dispelled by interacting
+			if (canDispelByInteract) spend(-cooldown());
 		}
 		return true;
 	}
 
-	private static final String LIFESPAN = "lifespan";
+	private static final String LIFESPAN   = "lifespan";
+    private static final String CAN_DISPEL = "can_dispel";
 
 	@Override
 	public void storeInBundle(Bundle bundle) {
 		super.storeInBundle(bundle);
-		bundle.put(LIFESPAN, lifespan);
+		bundle.put(LIFESPAN,   lifespan);
+        bundle.put(CAN_DISPEL, canDispelByInteract);
 	}
 
 	@Override
 	public void restoreFromBundle(Bundle bundle) {
 		super.restoreFromBundle(bundle);
 		lifespan = bundle.getInt(LIFESPAN);
+        if (bundle.contains(CAN_DISPEL)) canDispelByInteract = bundle.getBoolean(CAN_DISPEL);
 	}
 }

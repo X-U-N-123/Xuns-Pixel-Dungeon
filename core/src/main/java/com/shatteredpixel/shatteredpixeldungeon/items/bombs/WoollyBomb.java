@@ -29,8 +29,8 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
-import com.watabou.utils.BArray;
 import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.BArray;
 import com.watabou.utils.PathFinder;
 
 import java.util.ArrayList;
@@ -63,7 +63,7 @@ public class WoollyBomb extends Bomb {
 					&& Actor.findChar(i) == null
 					&& !(Dungeon.level.pit[i])) {
 				Sheep sheep = new Sheep();
-				sheep.initialize(Dungeon.bossLevel() ? 20 : 200);
+				sheep.initialize(Dungeon.bossLevel() ? 20 : 200, true, true);
 				sheep.pos = i;
 				GameScene.add(sheep);
 				Dungeon.level.occupyCell(sheep);
