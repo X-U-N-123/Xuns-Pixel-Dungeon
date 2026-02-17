@@ -224,7 +224,7 @@ public class WndHeroInfo extends WndTabbed {
 					break;
                 case WRAITH:
                     icons = new Image[]{ new TalentIcon(Talent.BLURRING_BODY),
-                            new BuffIcon(BuffIndicator.HEX, true),
+                            new BuffIcon(BuffIndicator.WEAKNESS, true),
                             new ItemSprite(ItemSpriteSheet.Woodsword),
                             new ItemSprite(ItemSpriteSheet.SCROLL_ISAZ)};
                     break;

@@ -86,15 +86,14 @@ public class ForceCube extends MissileWeapon {
 				GLog.n(Messages.get(this, "ondeath"));
 			}
 		}
+        thrownEvilProc(cell);
 		
 		//if we're applying sniper's mark, prioritize giving it to the primary target of the attack
 		if (curUser.subClass == HeroSubClass.SNIPER && primaryTarget != null && primaryTarget.isActive()){
 			Actor.add(new Actor() {
-
 				{
 					actPriority = VFX_PRIO-1;
 				}
-
 				@Override
 				protected boolean act() {
 					SnipersMark mark = Dungeon.hero.buff(SnipersMark.class);
@@ -106,7 +105,6 @@ public class ForceCube extends MissileWeapon {
 				}
 			});
 		}
-
 		WandOfBlastWave.BlastWave.blast(cell);
 		Sample.INSTANCE.play( Assets.Sounds.BLAST );
 	}

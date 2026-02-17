@@ -1704,11 +1704,6 @@ public class Hero extends Char {
 	
 	@Override
 	public int attackProc( final Char enemy, int damage ) {
-
-		if (damage > 0 && subClass == HeroSubClass.BERSERKER && hasTalent(Talent.BLADE_OF_ANGER)){
-			Berserk berserk = Buff.affect(this, Berserk.class);
-			berserk.damage((int)(damage*pointsInTalent(Talent.BLADE_OF_ANGER)*0.3f));
-		}
 		damage = super.attackProc( enemy, damage );
 
 		KindOfWeapon wep;
@@ -1720,13 +1715,8 @@ public class Hero extends Char {
 
 		damage = Talent.onAttackProc( this, enemy, damage );
 
-		if (enemy instanceof Mob && ((Mob) enemy).surprisedBy(this)
-		&& subClass == HeroSubClass.NINJA && buff(NinjaInvisCooldown.class) == null){
-			Buff.affect(this, NinjaInvisCooldown.class, 25f);
-		}
-
         if (Random.Float() <= 0.25f && heroClass == HeroClass.WRAITH){
-            Buff.prolong(enemy, Hex.class, 3f);
+            Buff.prolong(enemy, Weakness.class, 3f);
         }
 
 		if (wep != null) {
@@ -1749,6 +1739,16 @@ public class Hero extends Char {
 		}
 		
 		switch (subClass) {
+        case BERSERKER:
+            if (damage > 0 && hasTalent(Talent.BLADE_OF_ANGER)){
+                Berserk berserk = Buff.affect(this, Berserk.class);
+                berserk.damage((int)(damage*pointsInTalent(Talent.BLADE_OF_ANGER)*0.3f));
+            }
+            break;
+        case NINJA:
+            if (enemy instanceof Mob && ((Mob) enemy).surprisedBy(this) && buff(NinjaInvisCooldown.class) == null)
+                Buff.affect(this, NinjaInvisCooldown.class, 25f);
+            break;
 		case SNIPER:
 			if (wep instanceof MissileWeapon && !(wep instanceof SpiritBow.SpiritArrow) && enemy != this) {
 				Actor.add(new Actor() {
@@ -1780,7 +1780,7 @@ public class Hero extends Char {
 				});
 			}
 			break;
-		default:
+		default: break;
 		}
 
 		return damage;

@@ -39,10 +39,12 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.MagicalHolster;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfSharpshooting;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.CursedWand;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Projecting;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
+import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
@@ -250,7 +252,25 @@ abstract public class MissileWeapon extends Weapon {
 
 			}
 		}
+        thrownEvilProc(cell);
 	}
+
+    public static void thrownEvilProc(int cell){
+        if (Random.Float() < 0.1f * curUser.pointsInTalent(Talent.THROWN_EVIL)){
+            Actor.add(new Actor() {
+                {
+                    actPriority = VFX_PRIO;
+                }
+                @Override
+                protected boolean act() {
+                    Actor.remove(this);
+                    CursedWand.cursedZap(null, curUser, new Ballistica(curUser.pos, cell, Ballistica.MAGIC_BOLT), this::next);
+                    return false;
+                }
+            });
+        }
+
+    }
 
 	@Override
 	public int proc(Char attacker, Char defender, int damage) {

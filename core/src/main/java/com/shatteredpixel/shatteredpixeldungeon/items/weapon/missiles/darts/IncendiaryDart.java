@@ -47,8 +47,9 @@ public class IncendiaryDart extends TippedDart {
 				super.onThrow(cell);
 			} else {
 				Dungeon.level.drop(new Dart(), cell).sprite.drop();
+                thrownEvilProc(cell);
 			}
-		} else{
+		} else {
 			super.onThrow(cell);
 		}
 	}
