@@ -118,7 +118,7 @@ public class DriedRose extends Artifact {
 		}
 		if (isEquipped( hero )
 				&& charge == chargeCap
-				&& !cursed
+				&& (!cursed || hero.pointsInTalent(Talent.CURSED_POWER) >= 3)
 				&& hero.buff(MagicImmune.class) == null
 				&& ghostID == 0) {
 			actions.add(AC_SUMMON);
@@ -126,7 +126,7 @@ public class DriedRose extends Artifact {
 		if (ghostID != 0){
 			actions.add(AC_DIRECT);
 		}
-		if (isIdentified() && !cursed){
+		if (isIdentified() && (!cursed || hero.pointsInTalent(Talent.CURSED_POWER) >= 3)){
 			actions.add(AC_OUTFIT);
 		}
 		
@@ -151,11 +151,11 @@ public class DriedRose extends Artifact {
 
 			if (hero.buff(MagicImmune.class) != null) return;
 
-			if (!Ghost.Quest.completed())   GameScene.show(new WndUseItem(null, this));
-			else if (ghost != null)         GLog.i( Messages.get(this, "spawned") );
-			else if (!isEquipped( hero ))   GLog.i( Messages.get(Artifact.class, "need_to_equip") );
-			else if (charge != chargeCap)   GLog.i( Messages.get(this, "no_charge") );
-			else if (cursed)                GLog.i( Messages.get(this, "cursed") );
+			if (!Ghost.Quest.completed())                                    GameScene.show(new WndUseItem(null, this));
+			else if (ghost != null)                                          GLog.i( Messages.get(this, "spawned") );
+			else if (!isEquipped( hero ))                                    GLog.i( Messages.get(Artifact.class, "need_to_equip") );
+			else if (charge != chargeCap)                                    GLog.i( Messages.get(this, "no_charge") );
+			else if (cursed && hero.pointsInTalent(Talent.CURSED_POWER) < 3) GLog.i( Messages.get(this, "cursed") );
 			else {
 				ArrayList<Integer> spawnPoints = new ArrayList<>();
 				for (int i = 0; i < PathFinder.NEIGHBOURS8.length; i++) {
@@ -244,7 +244,7 @@ public class DriedRose extends Artifact {
 		String desc = super.desc();
 
 		if (isEquipped( Dungeon.hero )){
-			if (!cursed){
+			if (!cursed || Dungeon.hero.pointsInTalent(Talent.CURSED_POWER) >= 3){
 
 				if (level() < levelCap)
 					desc+= "\n\n" + Messages.get(this, "desc_hint");
@@ -307,7 +307,7 @@ public class DriedRose extends Artifact {
 	
 	@Override
 	public void charge(Hero target, float amount) {
-		if (cursed || target.buff(MagicImmune.class) != null) return;
+        if ((cursed && target.pointsInTalent(Talent.CURSED_POWER) < 3) || target.buff(MagicImmune.class) != null) return;
 
 		if (ghost == null){
 			if (charge < chargeCap) {
@@ -409,11 +409,12 @@ public class DriedRose extends Artifact {
 			}
 			
 			//rose does not charge while ghost hero is alive
-			if (ghost != null && !cursed && target.buff(MagicImmune.class) == null){
+			if (ghost != null && target.buff(MagicImmune.class) == null
+                    && (!cursed || Dungeon.hero.pointsInTalent(Talent.CURSED_POWER) > 3)){
 				
 				//heals to full over 500 turns
 				if (ghost.HP < ghost.HT && Regeneration.regenOn()) {
-					partialCharge += (ghost.HT / 500f) * RingOfEnergy.artifactChargeMultiplier(target);
+					partialCharge += (ghost.HT / 500f) * RingOfEnergy.artifactChargeMultiplier(target, this);
 					updateQuickslot();
 					
 					while (partialCharge > 1) {
@@ -431,11 +432,11 @@ public class DriedRose extends Artifact {
 			}
 			
 			if (charge < chargeCap
-					&& !cursed
+					&& (!cursed || Dungeon.hero.pointsInTalent(Talent.CURSED_POWER) >= 3)
 					&& target.buff(MagicImmune.class) == null
 					&& Regeneration.regenOn()) {
 				//500 turns to a full charge
-				partialCharge += (1/5f * RingOfEnergy.artifactChargeMultiplier(target));
+				partialCharge += (1/5f * RingOfEnergy.artifactChargeMultiplier(target, this));
 				while (partialCharge > 1){
 					charge++;
 					partialCharge--;
@@ -444,7 +445,7 @@ public class DriedRose extends Artifact {
 						GLog.p( Messages.get(DriedRose.class, "charged") );
 					}
 				}
-			} else if (cursed && Random.Int(100) == 0) {
+			} else if (isCursed() && Random.Int(100) == 0) {
 
 				ArrayList<Integer> spawnPoints = new ArrayList<>();
 

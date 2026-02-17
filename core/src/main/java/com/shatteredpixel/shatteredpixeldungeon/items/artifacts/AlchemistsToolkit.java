@@ -62,7 +62,8 @@ public class AlchemistsToolkit extends Artifact {
 	@Override
 	public ArrayList<String> actions( Hero hero ) {
 		ArrayList<String> actions = super.actions( hero );
-		if (isEquipped( hero ) && !cursed && hero.buff(MagicImmune.class) == null) {
+		if (isEquipped( hero )&& hero.buff(MagicImmune.class) == null
+                && (!cursed || hero.pointsInTalent(Talent.CURSED_POWER) >= 3) ) {
 			actions.add(AC_BREW);
 			if (level() < levelCap) {
 				actions.add(AC_ENERGIZE);
@@ -79,18 +80,18 @@ public class AlchemistsToolkit extends Artifact {
 		if (hero.buff(MagicImmune.class) != null) return;
 
 		if (action.equals(AC_BREW)){
-			if (!isEquipped(hero))              GLog.i( Messages.get(this, "need_to_equip") );
-			else if (cursed)                    GLog.w( Messages.get(this, "cursed") );
-			else if (warmUpDelay > 0)           GLog.w( Messages.get(this, "not_ready") );
+			if (!isEquipped(hero))                                           GLog.i( Messages.get(this, "need_to_equip") );
+			else if (cursed && hero.pointsInTalent(Talent.CURSED_POWER) < 3) GLog.w( Messages.get(this, "cursed") );
+			else if (warmUpDelay > 0)                                        GLog.w( Messages.get(this, "not_ready") );
 			else {
 				AlchemyScene.assignToolkit(this);
 				Game.switchScene(AlchemyScene.class);
 			}
 			
 		} else if (action.equals(AC_ENERGIZE)){
-			if (!isEquipped(hero))              GLog.i( Messages.get(this, "need_to_equip") );
-			else if (cursed)                    GLog.w( Messages.get(this, "cursed") );
-			else if (Dungeon.energy < 6)        GLog.w( Messages.get(this, "need_energy") );
+			if (!isEquipped(hero))                                           GLog.i( Messages.get(this, "need_to_equip") );
+			else if (cursed && hero.pointsInTalent(Talent.CURSED_POWER) < 3) GLog.w( Messages.get(this, "cursed") );
+			else if (Dungeon.energy < 6)                                     GLog.w( Messages.get(this, "need_energy") );
 			else {
 
 				final int maxLevels = Math.min(levelCap - level(), Dungeon.energy/6);
@@ -146,7 +147,8 @@ public class AlchemistsToolkit extends Artifact {
 
 	@Override
 	public String status() {
-		if (isEquipped(Dungeon.hero) && warmUpDelay > 0 && !cursed){
+		if (isEquipped(Dungeon.hero) && warmUpDelay > 0
+                && (!cursed || Dungeon.hero.pointsInTalent(Talent.CURSED_POWER) >= 3)){
 			return Messages.format( "%d%%", Math.max(0, 100 - (int)warmUpDelay) );
 		} else {
 			return super.status();
@@ -193,9 +195,9 @@ public class AlchemistsToolkit extends Artifact {
 		String result = Messages.get(this, "desc");
 
 		if (isEquipped(Dungeon.hero)) {
-			if (cursed)                 result += "\n\n" + Messages.get(this, "desc_cursed");
-			else if (warmUpDelay > 0)   result += "\n\n" + Messages.get(this, "desc_warming");
-			else                        result += "\n\n" + Messages.get(this, "desc_hint");
+			if (cursed && Dungeon.hero.pointsInTalent(Talent.CURSED_POWER) < 3) result += "\n\n" + Messages.get(this, "desc_cursed");
+			else if (warmUpDelay > 0)                                           result += "\n\n" + Messages.get(this, "desc_warming");
+			else                                                                result += "\n\n" + Messages.get(this, "desc_hint");
 		}
 		
 		return result;
@@ -238,7 +240,8 @@ public class AlchemistsToolkit extends Artifact {
 					warmUpDelay = 0;
 				} else if (warmUpDelay == 101){
 					warmUpDelay = 100f;
-				} else if (!cursed && target.buff(MagicImmune.class) == null) {
+				} else if ((!cursed || Dungeon.hero.pointsInTalent(Talent.CURSED_POWER) >= 3)
+                        && target.buff(MagicImmune.class) == null) {
 					float turnsToWarmUp = (int) Math.pow(10 - level(), 2);
 					warmUpDelay -= 100 / turnsToWarmUp;
 				}
@@ -250,13 +253,15 @@ public class AlchemistsToolkit extends Artifact {
 		}
 
 		public void gainCharge(float levelPortion) {
-			if (cursed || target.buff(MagicImmune.class) != null) return;
+			if ((cursed && Dungeon.hero.pointsInTalent(Talent.CURSED_POWER) < 3)
+                    || target.buff(MagicImmune.class) != null)
+                return;
 
 			//generates 2 energy every hero level, +1 energy per toolkit level
 			//to a max of 12 energy per hero level
 			//This means that energy absorbed into the kit is recovered in 5 hero levels
 			float chargeGain = (2 + level()) * levelPortion;
-			chargeGain *= RingOfEnergy.artifactChargeMultiplier(target);
+			chargeGain *= RingOfEnergy.artifactChargeMultiplier(target, this);
 			partialCharge += chargeGain;
 
 			//charge is in increments of 1 energy.

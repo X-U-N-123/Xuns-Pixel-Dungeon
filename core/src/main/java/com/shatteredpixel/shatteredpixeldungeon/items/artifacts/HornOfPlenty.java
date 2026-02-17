@@ -81,7 +81,7 @@ public class HornOfPlenty extends Artifact {
 			actions.add(AC_SNACK);
 			actions.add(AC_EAT);
 		}
-		if (isEquipped( hero ) && level() < levelCap && !cursed) {
+		if (isEquipped( hero ) && level() < levelCap && (!cursed || hero.pointsInTalent(Talent.CURSED_POWER) >= 3)) {
 			actions.add(AC_STORE);
 		}
 		return actions;
@@ -174,7 +174,8 @@ public class HornOfPlenty extends Artifact {
 	
 	@Override
 	public void charge(Hero target, float amount) {
-		if (charge < chargeCap && !cursed && target.buff(MagicImmune.class) == null){
+		if (charge < chargeCap && target.buff(MagicImmune.class) == null
+                && (!cursed || target.pointsInTalent(Talent.CURSED_POWER) >= 3)){
 			partialCharge += 0.25f*amount;
 			while (partialCharge >= 1){
 				partialCharge--;
@@ -200,7 +201,7 @@ public class HornOfPlenty extends Artifact {
 		String desc = super.desc();
 
 		if ( isEquipped( Dungeon.hero ) ){
-			if (!cursed) {
+			if (!cursed || Dungeon.hero.pointsInTalent(Talent.CURSED_POWER) >= 3) {
 				if (level() < levelCap)
 					desc += "\n\n" +Messages.get(this, "desc_hint");
 			} else {
@@ -273,7 +274,7 @@ public class HornOfPlenty extends Artifact {
 	public class hornRecharge extends ArtifactBuff{
 
 		public void gainCharge(float levelPortion) {
-			if (cursed || target.buff(MagicImmune.class) != null) return;
+			if ((cursed && Dungeon.hero.pointsInTalent(Talent.CURSED_POWER) < 3) || target.buff(MagicImmune.class) != null) return;
 			
 			if (charge < chargeCap) {
 
@@ -281,7 +282,7 @@ public class HornOfPlenty extends Artifact {
 				//to a max of 1.5x max hunger value per hero level
 				//This means that a standard ration will be recovered in ~5.333 hero levels
 				float chargeGain = Hunger.STARVING * levelPortion * (0.25f + (0.125f*level()));
-				chargeGain *= RingOfEnergy.artifactChargeMultiplier(target);
+				chargeGain *= RingOfEnergy.artifactChargeMultiplier(target, this);
 
 				//each charge is equal to 1/5 the max hunger value
 				chargeGain /= Hunger.STARVING/5;

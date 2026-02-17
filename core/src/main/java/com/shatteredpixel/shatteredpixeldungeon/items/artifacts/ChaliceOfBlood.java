@@ -28,6 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.HolyWard;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
@@ -63,7 +64,7 @@ public class ChaliceOfBlood extends Artifact {
 		ArrayList<String> actions = super.actions( hero );
 		if (isEquipped( hero )
 				&& level() < levelCap
-				&& !cursed
+				&& (!cursed || hero.pointsInTalent(Talent.CURSED_POWER) >= 3)
 				&& !hero.isInvulnerable(getClass())
 				&& hero.buff(MagicImmune.class) == null)
 			actions.add(AC_PRICK);
@@ -165,7 +166,7 @@ public class ChaliceOfBlood extends Artifact {
 	
 	@Override
 	public void charge(Hero target, float amount) {
-		if (cursed || target.buff(MagicImmune.class) != null) return;
+		if ((cursed && target.pointsInTalent(Talent.CURSED_POWER) < 3) || target.buff(MagicImmune.class) != null) return;
 
 		//grants 5 turns of healing up-front, if hero isn't starving
 		if (target.isStarving()) return;
@@ -193,7 +194,7 @@ public class ChaliceOfBlood extends Artifact {
 
 		if (isEquipped (Dungeon.hero)){
 			desc += "\n\n";
-			if (cursed)
+			if (cursed && Dungeon.hero.pointsInTalent(Talent.CURSED_POWER) < 3)
 				desc += Messages.get(this, "desc_cursed");
 			else if (level() == 0)
 				desc += Messages.get(this, "desc_1");

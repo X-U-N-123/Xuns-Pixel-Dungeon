@@ -105,11 +105,14 @@ public class UnstableSpellbook extends Artifact {
 	@Override
 	public ArrayList<String> actions( Hero hero ) {
 		ArrayList<String> actions = super.actions( hero );
-		if (isEquipped( hero ) && charge > 0 && !cursed && hero.buff(MagicImmune.class) == null) {
-			actions.add(AC_READ);
-		}
-		if (isEquipped( hero ) && level() < levelCap && !cursed && hero.buff(MagicImmune.class) == null) {
-			actions.add(AC_ADD);
+		if (isEquipped( hero ) && hero.buff(MagicImmune.class) == null
+                && (!cursed || hero.pointsInTalent(Talent.CURSED_POWER) >= 3)) {
+            if (charge > 0){
+                actions.add(AC_READ);
+            }
+            if (level() < levelCap){
+                actions.add(AC_ADD);
+            }
 		}
 		return actions;
 	}
@@ -126,7 +129,7 @@ public class UnstableSpellbook extends Artifact {
 			if (hero.buff( Blindness.class ) != null) GLog.w( Messages.get(this, "blinded") );
 			else if (!isEquipped( hero ))             GLog.i( Messages.get(Artifact.class, "need_to_equip") );
 			else if (charge <= 0)                     GLog.i( Messages.get(this, "no_charge") );
-			else if (cursed)                          GLog.i( Messages.get(this, "cursed") );
+			else if (cursed && hero.pointsInTalent(Talent.CURSED_POWER) < 3) GLog.i( Messages.get(this, "cursed") );
 			else {
 				doReadEffect(hero);
 			}
@@ -265,7 +268,7 @@ public class UnstableSpellbook extends Artifact {
 	
 	@Override
 	public void charge(Hero target, float amount) {
-		if (charge < chargeCap && !cursed && target.buff(MagicImmune.class) == null){
+		if (charge < chargeCap && (!cursed || target.pointsInTalent(Talent.CURSED_POWER) >= 3) && target.buff(MagicImmune.class) == null){
 			partialCharge += 0.1f*amount;
 			while (partialCharge >= 1){
 				partialCharge--;
@@ -304,7 +307,7 @@ public class UnstableSpellbook extends Artifact {
 		String desc = super.desc();
 
 		if (isEquipped(Dungeon.hero)) {
-			if (cursed) {
+			if (cursed && Dungeon.hero.pointsInTalent(Talent.CURSED_POWER) < 3) {
 				desc += "\n\n" + Messages.get(this, "desc_cursed");
 			}
 			
@@ -346,12 +349,12 @@ public class UnstableSpellbook extends Artifact {
 		@Override
 		public boolean act() {
 			if (charge < chargeCap
-					&& !cursed
+					&& (!cursed || Dungeon.hero.pointsInTalent(Talent.CURSED_POWER) >= 3)
 					&& target.buff(MagicImmune.class) == null
 					&& Regeneration.regenOn()) {
 				//120 turns to charge at full, 80 turns to charge at 0/8
 				float chargeGain = 1 / (120f - (chargeCap - charge)*5f);
-				chargeGain *= RingOfEnergy.artifactChargeMultiplier(target);
+				chargeGain *= RingOfEnergy.artifactChargeMultiplier(target, this);
 				partialCharge += chargeGain;
 
 				while (partialCharge >= 1) {

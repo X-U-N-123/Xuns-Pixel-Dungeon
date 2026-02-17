@@ -413,7 +413,9 @@ public class Ring extends KindofMisc {
 
 	//just used for ring descriptions
 	public int soloBonus(){
-		if (cursed){
+        if (cursed && Dungeon.hero.pointsInTalent(Talent.CURSED_POWER) >= 2){
+            return Ring.this.level()+2;
+        } else if (cursed){
 			return Math.min( 0, Ring.this.level()-2 );
 		} else {
 			return Ring.this.level()+1;
@@ -422,7 +424,9 @@ public class Ring extends KindofMisc {
 
 	//just used for ring descriptions
 	public int soloBuffedBonus(){
-		if (cursed){
+        if (cursed && Dungeon.hero.pointsInTalent(Talent.CURSED_POWER) >= 2){
+            return Ring.this.buffedLvl()+2;
+        } else if (cursed){
 			return Math.min( 0, Ring.this.buffedLvl()-2 );
 		} else {
 			return Ring.this.buffedLvl()+1;

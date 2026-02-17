@@ -81,7 +81,7 @@ public class CloakOfShadows extends Artifact {
 	public ArrayList<String> actions( Hero hero ) {
 		ArrayList<String> actions = super.actions( hero );
 		if ((isEquipped( hero ) || hero.hasTalent(Talent.LIGHT_CLOAK))
-				&& !cursed
+				&& (!cursed ||  hero.pointsInTalent(Talent.CURSED_POWER) >= 3)
 				&& hero.buff(MagicImmune.class) == null
 				&& (charge > 0 || activeBuff != null)) {
 			actions.add(AC_STEALTH);
@@ -186,7 +186,7 @@ public class CloakOfShadows extends Artifact {
 	
 	@Override
 	public void charge(Hero target, float amount) {
-		if (cursed || target.buff(MagicImmune.class) != null) return;
+        if ((cursed && target.pointsInTalent(Talent.CURSED_POWER) < 3) || target.buff(MagicImmune.class) != null) return;
 
 		if (charge < chargeCap) {
 			if (!isEquipped(target)) amount *= 0.75f*target.pointsInTalent(Talent.LIGHT_CLOAK)/3f;
@@ -240,12 +240,12 @@ public class CloakOfShadows extends Artifact {
 	public class cloakRecharge extends ArtifactBuff implements ActionIndicator.Action {
 		@Override
 		public boolean act() {
-			if (charge < chargeCap && !cursed && target.buff(MagicImmune.class) == null) {
+			if (charge < chargeCap && !isCursed()) {
 				if (activeBuff == null && Regeneration.regenOn()) {
 					float missing = (chargeCap - charge);
 					if (level() > 7) missing += 5*(level() - 7)/3f;
 					float turnsToCharge = (45 - missing);
-					turnsToCharge /= RingOfEnergy.artifactChargeMultiplier(target);
+					turnsToCharge /= RingOfEnergy.artifactChargeMultiplier(target, this);
 					if (Dungeon.hero.hasTalent(Talent.EMERGENCY_CHARGE)){
 						turnsToCharge /= 1f + ((float)Dungeon.hero.HP / Dungeon.hero.HT)
 						* Dungeon.hero.pointsInTalent(Talent.EMERGENCY_CHARGE) * 0.12f;

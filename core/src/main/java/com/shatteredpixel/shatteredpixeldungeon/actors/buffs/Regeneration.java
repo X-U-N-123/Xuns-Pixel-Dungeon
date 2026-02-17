@@ -110,10 +110,11 @@ public class Regeneration extends Buff {
 
 		boolean chaliceCursed = false;
 		int chaliceLevel = -1;
+        ChaliceOfBlood.chaliceRegen regen = Dungeon.hero.buff(ChaliceOfBlood.chaliceRegen.class);
 		if (target.buff(MagicImmune.class) == null) {
-			if (Dungeon.hero.buff(ChaliceOfBlood.chaliceRegen.class) != null) {
-				chaliceCursed = Dungeon.hero.buff(ChaliceOfBlood.chaliceRegen.class).isCursed();
-				chaliceLevel = Dungeon.hero.buff(ChaliceOfBlood.chaliceRegen.class).itemLevel();
+			if (regen != null) {
+				chaliceCursed = regen.isCursed();
+				chaliceLevel = regen.itemLevel();
 			} else if (Dungeon.hero.buff(SpiritForm.SpiritFormBuff.class) != null
 			&& Dungeon.hero.buff(SpiritForm.SpiritFormBuff.class).artifact() instanceof ChaliceOfBlood) {
 				chaliceLevel = SpiritForm.artifactLevel();
@@ -127,7 +128,7 @@ public class Regeneration extends Buff {
 			} else {
 				//15% boost at +0, scaling to a 500% boost at +10
 				delay -= 1.33f + chaliceLevel*0.667f;
-				delay /= RingOfEnergy.artifactChargeMultiplier(target);
+                delay /= RingOfEnergy.artifactChargeMultiplier(target, regen);
 			}
 		}
 

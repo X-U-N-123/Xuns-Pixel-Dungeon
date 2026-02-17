@@ -189,7 +189,7 @@ public class Artifact extends KindofMisc {
 	public String status() {
 		
 		//if the artifact isn't IDed, or is cursed, don't display anything
-		if (!isIdentified() || cursed){
+		if (!isIdentified() || (cursed && Dungeon.hero.pointsInTalent(Talent.CURSED_POWER) < 3)){
 			return null;
 		}
 
@@ -252,6 +252,10 @@ public class Artifact extends KindofMisc {
 
 	public class ArtifactBuff extends Buff {
 
+        public Artifact artifact() {
+            return Artifact.this;
+        }
+
 		@Override
 		public boolean attachTo( Char target ) {
 			if (super.attachTo( target )) {
@@ -269,7 +273,8 @@ public class Artifact extends KindofMisc {
 		}
 
 		public boolean isCursed() {
-			return target.buff(MagicImmune.class) == null && cursed;
+			return target.buff(MagicImmune.class) == null && cursed
+                    && Dungeon.hero.pointsInTalent(Talent.CURSED_POWER) < 3;
 		}
 
 		public void charge(Hero target, float amount){

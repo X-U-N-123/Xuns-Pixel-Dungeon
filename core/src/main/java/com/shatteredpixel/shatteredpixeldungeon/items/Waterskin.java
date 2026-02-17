@@ -24,6 +24,9 @@ package com.shatteredpixel.shatteredpixeldungeon.items;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invulnerability;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
@@ -34,8 +37,10 @@ import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndBag;
+import com.watabou.noosa.Image;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.GameMath;
@@ -46,13 +51,13 @@ public class Waterskin extends Item {
 
 	private static final int MAX_VOLUME	= 20;
 
-	private static final String AC_DRINK	= "DRINK";
+	private static final String AC_DRINK = "DRINK";
+    private static final String AC_ID    = "IDENTIFY";
+    private static final String AC_BLOOD = "BLOOD";
 
 	private static final float TIME_TO_DRINK = 1f;
 
 	private static final String TXT_STATUS	= "%d/%d";
-
-    private static final String AC_ID = "IDENTIFY";
 
     {
 		image = ItemSpriteSheet.WATERSKIN;
@@ -84,92 +89,115 @@ public class Waterskin extends Item {
 		if (volume > 0) {
 			actions.add( AC_DRINK );
 		}
-        if (hero.hasTalent(Talent.BLOOD_INTUITION)){
+        if (hero.hasTalent(Talent.BLOOD_INTUITION) && hero.buff(Invulnerability.class) == null){
             actions.add( AC_ID );
+        }
+        if (hero.hasTalent(Talent.BLOODLETTING) && hero.buff(Invulnerability.class) == null
+                && hero.buff(BloodLettingCooldown.class) == null){
+            actions.add( AC_BLOOD );
         }
 		return actions;
 	}
-
-    //can be overridden if default action is variable
-    @Override
-    public String defaultAction(){
-        if (volume > 0) return defaultAction;
-        else            return AC_ID;
-    }
 
 	@Override
 	public void execute( final Hero hero, String action ) {
 
 		super.execute( hero, action );
 
-		if (action.equals( AC_DRINK )) {
+        int dmg;
+        switch (action) {
+            case AC_DRINK:
 
-			if (volume > 0) {
-				
-				float missingHealthPercent = 1f - (hero.HP / (float)hero.HT);
+                if (volume > 0) {
 
-				//each drop is worth 5% of total health
-				float dropsNeeded = missingHealthPercent / 0.05f;
+                    float missingHealthPercent = 1f - (hero.HP / (float) hero.HT);
 
-				//we are getting extra heal value, scale back drops needed accordingly
-				if (dropsNeeded > 1.01f && VialOfBlood.delayBurstHealing()){
-					dropsNeeded /= VialOfBlood.totalHealMultiplier();
-				}
+                    //each drop is worth 5% of total health
+                    float dropsNeeded = missingHealthPercent / 0.05f;
 
-				//trimming off 0.01 drops helps with floating point errors
-				int dropsToConsume = (int)Math.ceil(dropsNeeded - 0.01f);
-				dropsToConsume = (int)GameMath.gate(1, dropsToConsume, volume);
+                    //we are getting extra heal value, scale back drops needed accordingly
+                    if (dropsNeeded > 1.01f && VialOfBlood.delayBurstHealing()) {
+                        dropsNeeded /= VialOfBlood.totalHealMultiplier();
+                    }
 
-				if (Dewdrop.consumeDew(dropsToConsume, hero, true)){
-					volume -= dropsToConsume;
-					Catalog.countUses(Dewdrop.class, dropsToConsume);
+                    //trimming off 0.01 drops helps with floating point errors
+                    int dropsToConsume = (int) Math.ceil(dropsNeeded - 0.01f);
+                    dropsToConsume = (int) GameMath.gate(1, dropsToConsume, volume);
 
-					hero.spend(TIME_TO_DRINK);
-					hero.busy();
+                    if (Dewdrop.consumeDew(dropsToConsume, hero, true)) {
+                        volume -= dropsToConsume;
+                        Catalog.countUses(Dewdrop.class, dropsToConsume);
 
-					Sample.INSTANCE.play(Assets.Sounds.DRINK);
-					hero.sprite.operate(hero.pos);
+                        hero.spend(TIME_TO_DRINK);
+                        hero.busy();
 
-					updateQuickslot();
-				}
+                        Sample.INSTANCE.play(Assets.Sounds.DRINK);
+                        hero.sprite.operate(hero.pos);
 
+                        updateQuickslot();
+                    }
 
-			} else {
-				GLog.w( Messages.get(this, "empty") );
-			}
-
-		} else if (action.equals( AC_ID )) {
-            int dmg = 11 - 3 * hero.pointsInTalent(Talent.BLOOD_INTUITION);
-
-            if (hero.HP + hero.shielding() <= dmg){
-                GLog.w(Messages.get(this, "no_enough_hp"));
-                return;
-            }
-
-            GameScene.selectItem(new WndBag.ItemSelector() {
-                @Override
-                public String textPrompt() {
-                    return Messages.get(this, "prompt");
+                } else {
+                    GLog.w(Messages.get(this, "empty"));
                 }
 
-                @Override
-                public boolean itemSelectable(Item item) {
-                    return item instanceof EquipableItem && !item.isIdentified();
+                break;
+            case AC_ID:
+                dmg = 11 - 3 * hero.pointsInTalent(Talent.BLOOD_INTUITION);
+
+                if (hero.HP + hero.shielding() <= dmg || hero.buff(Invulnerability.class) != null) {
+                    GLog.w(Messages.get(this, "no_enough_hp"));
+                    return;
                 }
 
-                @Override
-                public void onSelect(Item item) {
-                    if (item == null) return;
+                GameScene.selectItem(new WndBag.ItemSelector() {
+                    @Override
+                    public String textPrompt() {
+                        return Messages.get(this, "prompt");
+                    }
 
-                    ScrollOfIdentify.IDItem(item);
-                    Buff.affect(hero, BladeOfUnreal.UnRealTracker.class).damage = dmg;
-                    hero.damage(dmg, this);
-                    Sample.INSTANCE.play(Assets.Sounds.CURSED);
-                    hero.sprite.operate(hero.pos);
-                    hero.sprite.emitter().burst( ShadowParticle.CURSE, 6 - hero.pointsInTalent(Talent.BLOOD_INTUITION) );
-                    hero.spendAndNext(Actor.TICK);
+                    @Override
+                    public boolean itemSelectable(Item item) {
+                        return item instanceof EquipableItem && !item.isIdentified();
+                    }
+
+                    @Override
+                    public void onSelect(Item item) {
+                        if (item == null) return;
+
+                        ScrollOfIdentify.IDItem(item);
+                        Buff.affect(hero, BladeOfUnreal.UnRealTracker.class).damage = dmg;
+                        hero.damage(dmg, this);
+                        Sample.INSTANCE.play(Assets.Sounds.CURSED);
+                        hero.sprite.operate(hero.pos);
+                        hero.sprite.emitter().burst(ShadowParticle.CURSE, 6 - hero.pointsInTalent(Talent.BLOOD_INTUITION));
+                        hero.spendAndNext(Actor.TICK);
+                    }
+                });
+                break;
+            case AC_BLOOD:
+                dmg = 2 + hero.pointsInTalent(Talent.BLOODLETTING);
+
+                if (hero.HP + hero.shielding() <= dmg || hero.buff(Invulnerability.class) != null) {
+                    GLog.w(Messages.get(this, "no_enough_hp"));
+                    return;
                 }
-            });
+
+                if (hero.buff(BloodLettingCooldown.class) != null) {
+                    GLog.w(Messages.get(this, "cd"));
+                    return;
+                }
+
+                Buff.affect(hero, BladeOfUnreal.UnRealTracker.class).damage = dmg;
+                hero.damage(dmg, this);
+                hero.buff(Hunger.class).satisfy(10 * dmg + 1); //1 more point because this takes a turn
+                Sample.INSTANCE.play(Assets.Sounds.CURSED);
+                hero.sprite.operate(hero.pos);
+                hero.sprite.emitter().burst(ShadowParticle.CURSE, dmg);
+                hero.spendAndNext(Actor.TICK);
+                Buff.affect(hero, BloodLettingCooldown.class, 150);
+
+                break;
         }
     }
 
@@ -230,5 +258,11 @@ public class Waterskin extends Item {
 	public String status() {
 		return Messages.format( TXT_STATUS, volume, MAX_VOLUME );
 	}
+
+    public static class BloodLettingCooldown extends FlavourBuff {
+        public int icon() { return BuffIndicator.TIME; }
+        public void tintIcon(Image icon) { icon.hardlight(0.6f, 0f, 0.6f); }
+        public float iconFadePercent() { return Math.max(0, visualcooldown() / 150); }
+    }
 
 }

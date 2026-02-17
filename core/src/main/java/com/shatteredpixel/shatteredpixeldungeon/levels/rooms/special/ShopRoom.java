@@ -25,6 +25,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Belongings;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Shopkeeper;
 import com.shatteredpixel.shatteredpixeldungeon.items.Ankh;
@@ -342,7 +343,8 @@ public class ShopRoom extends SpecialRoom {
 		itemsToSpawn.add( new StoneOfAugmentation() );
 
 		TimekeepersHourglass hourglass = Dungeon.hero.belongings.getItem(TimekeepersHourglass.class);
-		if (hourglass != null && hourglass.isIdentified() && !hourglass.cursed){
+		if (hourglass != null && hourglass.isIdentified()
+                && (!hourglass.cursed || Dungeon.hero.pointsInTalent(Talent.CURSED_POWER) >= 3)){
 			int bags = 0;
 			//creates the given float percent of the remaining bags to be dropped.
 			//this way players who get the hourglass late can still max it, usually.

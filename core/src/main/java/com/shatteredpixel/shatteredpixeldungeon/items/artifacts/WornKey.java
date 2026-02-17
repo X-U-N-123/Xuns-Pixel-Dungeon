@@ -82,7 +82,7 @@ public class WornKey extends Artifact {
         ArrayList<String> actions = super.actions(hero);
         if (isEquipped(hero)
         && hero.buff(MagicImmune.class) == null
-        && !cursed) {
+        && (!cursed || hero.pointsInTalent(Talent.CURSED_POWER) >= 3)) {
             actions.add(AC_INSERT);
         }
         return actions;
@@ -101,7 +101,7 @@ public class WornKey extends Artifact {
             if (!isEquipped( hero )) {
                 GLog.i( Messages.get(Artifact.class, "need_to_equip") );
 
-            } else if (cursed) {
+            } else if (cursed && hero.pointsInTalent(Talent.CURSED_POWER) < 3) {
                 GLog.w( Messages.get(this, "cursed") );
 
             } else {
@@ -392,7 +392,7 @@ public class WornKey extends Artifact {
 
     @Override
     public void charge(Hero target, float amount) {
-        if (charge < chargeCap && !cursed && target.buff(MagicImmune.class) == null){
+        if (charge < chargeCap && (!cursed || target.pointsInTalent(Talent.CURSED_POWER) >= 3) && target.buff(MagicImmune.class) == null){
             partialCharge += 0.133f*amount;
             while (partialCharge >= 1){
                 partialCharge--;
@@ -410,7 +410,7 @@ public class WornKey extends Artifact {
         String desc = super.desc();
 
         if ( isEquipped (Dungeon.hero) ){
-            if (cursed){
+            if (cursed && Dungeon.hero.pointsInTalent(Talent.CURSED_POWER) < 3){
                 desc += "\n\n" + Messages.get(this, "desc_cursed");
             } else {
                 desc += "\n\n" + Messages.get(this, "desc_worn");
@@ -424,12 +424,12 @@ public class WornKey extends Artifact {
         @Override
         public boolean act() {
             if (charge < chargeCap
-            && !cursed
+            && (!cursed || Dungeon.hero.pointsInTalent(Talent.CURSED_POWER) >= 3)
             && target.buff(MagicImmune.class) == null
             && Regeneration.regenOn()) {
                 //120 turns to charge at full, 60 turns to charge at 0/8
                 float chargeGain = 1 / (120f - (chargeCap - charge)*7.5f);
-                chargeGain *= RingOfEnergy.artifactChargeMultiplier(target);
+                chargeGain *= RingOfEnergy.artifactChargeMultiplier(target, this);
                 partialCharge += chargeGain;
 
                 while (partialCharge >= 1) {

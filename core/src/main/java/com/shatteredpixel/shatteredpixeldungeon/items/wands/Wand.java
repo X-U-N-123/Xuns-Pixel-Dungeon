@@ -945,6 +945,8 @@ public abstract class Wand extends Item {
 				turnsToCharge /= 1f + 0.1f*((Hero)charger.target).pointsInTalent(Talent.ARCANE_STEP);
 			}
 
+            if (cursed && Dungeon.hero.hasTalent(Talent.CURSED_POWER)) turnsToCharge /= 1.1f;
+
 			if (Regeneration.regenOn())
 				partialCharge += (1f/turnsToCharge) * RingOfEnergy.wandChargeMultiplier(target);
 

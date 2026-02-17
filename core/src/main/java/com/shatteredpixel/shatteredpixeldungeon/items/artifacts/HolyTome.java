@@ -71,7 +71,7 @@ public class HolyTome extends Artifact {
 	public ArrayList<String> actions( Hero hero ) {
 		ArrayList<String> actions = super.actions( hero );
 		if ((isEquipped( hero ) || hero.hasTalent(Talent.LIGHT_READING))
-				&& !cursed
+				&& (!cursed || hero.pointsInTalent(Talent.CURSED_POWER) >= 3)
 				&& hero.buff(MagicImmune.class) == null) {
 			actions.add(AC_CAST);
 		}
@@ -88,7 +88,7 @@ public class HolyTome extends Artifact {
 		if (action.equals(AC_CAST)) {
 
 			if (!isEquipped(hero) && !hero.hasTalent(Talent.LIGHT_READING)) GLog.i(Messages.get(Artifact.class, "need_to_equip"));
-			else if (cursed)       GLog.i( Messages.get(this, "cursed") );
+			else if (cursed && hero.pointsInTalent(Talent.CURSED_POWER) < 3)       GLog.i( Messages.get(this, "cursed") );
 			else {
 
 				GameScene.show(new WndClericSpells(this, hero, false));
@@ -210,7 +210,7 @@ public class HolyTome extends Artifact {
 
 	@Override
 	public void charge(Hero target, float amount) {
-		if (cursed || target.buff(MagicImmune.class) != null) return;
+		if ((cursed && target.pointsInTalent(Talent.CURSED_POWER) < 3) || target.buff(MagicImmune.class) != null) return;
 
 		if (charge < chargeCap) {
 			if (!isEquipped(target)) amount *= 0.75f*target.pointsInTalent(Talent.LIGHT_READING)/3f;
@@ -286,15 +286,16 @@ public class HolyTome extends Artifact {
 
 		@Override
 		public boolean act() {
-			if (charge < chargeCap && !cursed && target.buff(MagicImmune.class) == null) {
+			if (charge < chargeCap && target.buff(MagicImmune.class) == null
+                    && (!cursed || Dungeon.hero.pointsInTalent(Talent.CURSED_POWER) >= 3)) {
 				if (Regeneration.regenOn()) {
 					float missing = (chargeCap - charge);
 					if (level() > 7) missing += 5*(level() - 7)/3f;
 					float turnsToCharge = (45 - missing);
-					turnsToCharge /= RingOfEnergy.artifactChargeMultiplier(target);
+					turnsToCharge /= RingOfEnergy.artifactChargeMultiplier(target, this);
 					if (Dungeon.hero.hasTalent(Talent.ASCETICISM)){
-					turnsToCharge /= 1f + (Dungeon.hero.buff(Hunger.class).level / Hunger.STARVING)
-						* Dungeon.hero.pointsInTalent(Talent.ASCETICISM) * 0.12f;
+					    turnsToCharge /= 1f + (Dungeon.hero.buff(Hunger.class).level / Hunger.STARVING)
+						    * Dungeon.hero.pointsInTalent(Talent.ASCETICISM) * 0.12f;
 					}
 					float chargeToGain = (1f / turnsToCharge);
 					if (!isEquipped(Dungeon.hero)){
@@ -343,7 +344,7 @@ public class HolyTome extends Artifact {
 
 		@Override
 		public void doAction() {
-			if (cursed){
+			if (cursed && Dungeon.hero.pointsInTalent(Talent.CURSED_POWER) < 3){
 				GLog.w(Messages.get(HolyTome.this, "cursed"));
 				return;
 			}

@@ -153,7 +153,7 @@ public class ElementalMask extends Artifact {//will replace Ring of Elements
     }
 
     public float resist(Class effect, int level){
-        if (this.cursed) return 1.3f;
+        if (this.cursed && Dungeon.hero.pointsInTalent(Talent.CURSED_POWER) < 3) return 1.3f;
 
         for (Class c : RESISTS){
             if (c.isAssignableFrom(effect)){
@@ -167,11 +167,10 @@ public class ElementalMask extends Artifact {//will replace Ring of Elements
     @Override
     public ArrayList<String> actions( Hero hero ) {
         ArrayList<String> actions = super.actions( hero );
-        if (isEquipped( hero ) && charge > 0 && !cursed && hero.buff(MagicImmune.class) == null) {
-            actions.add(AC_RELEASE);
-        }
-        if (isEquipped( hero ) && level() < levelCap && !cursed && hero.buff(MagicImmune.class) == null) {
-            actions.add(AC_ADD);
+        if (isEquipped( hero ) && hero.buff(MagicImmune.class) == null
+                && (!cursed || hero.pointsInTalent(Talent.CURSED_POWER) >= 3)) {
+            if (charge > 0)         actions.add(AC_RELEASE);
+            if (level() < levelCap) actions.add(AC_ADD);
         }
         return actions;
     }
@@ -185,9 +184,9 @@ public class ElementalMask extends Artifact {//will replace Ring of Elements
 
         if (action.equals( AC_RELEASE )) {
 
-            if (!isEquipped( hero ))             GLog.i( Messages.get(Artifact.class, "need_to_equip") );
-            else if (charge <= 0)                     GLog.i( Messages.get(this, "no_charge") );
-            else if (cursed)                          GLog.i( Messages.get(this, "cursed") );
+            if (!isEquipped( hero ))                                      GLog.i( Messages.get(Artifact.class, "need_to_equip") );
+            else if (charge <= 0)                                             GLog.i( Messages.get(this, "no_charge") );
+            else if (cursed && hero.pointsInTalent(Talent.CURSED_POWER) <= 3) GLog.i( Messages.get(this, "cursed") );
             else {
                 doReleaseEffect(hero);
             }
@@ -309,7 +308,8 @@ public class ElementalMask extends Artifact {//will replace Ring of Elements
 
     @Override
     public void charge(Hero target, float amount) {
-        if (charge < chargeCap && !cursed && target.buff(MagicImmune.class) == null){
+        if (charge < chargeCap && target.buff(MagicImmune.class) == null
+                && (!cursed || Dungeon.hero.pointsInTalent(Talent.CURSED_POWER) >= 3)){
             partialCharge += 0.1f*amount;
             while (partialCharge >= 1){
                 partialCharge--;
@@ -349,7 +349,7 @@ public class ElementalMask extends Artifact {//will replace Ring of Elements
         String desc = super.desc();
 
         if (isEquipped(Dungeon.hero)) {
-            if (cursed) {
+            if (cursed && Dungeon.hero.pointsInTalent(Talent.CURSED_POWER) < 3) {
                 desc += "\n\n" + Messages.get(this, "desc_cursed");
             }
 
@@ -450,12 +450,12 @@ public class ElementalMask extends Artifact {//will replace Ring of Elements
         @Override
         public boolean act() {
             if (charge < chargeCap
-            && !cursed
+            && (!cursed || Dungeon.hero.pointsInTalent(Talent.CURSED_POWER) > 3)
             && target.buff(MagicImmune.class) == null
             && Regeneration.regenOn()) {
                 //120 turns to charge at full, 80 turns to charge at 0/7
                 float chargeGain = 1 / (120f - (chargeCap - charge)*5f);
-                chargeGain *= RingOfEnergy.artifactChargeMultiplier(target);
+                chargeGain *= RingOfEnergy.artifactChargeMultiplier(target, this);
                 partialCharge += chargeGain;
 
                 while (partialCharge >= 1) {

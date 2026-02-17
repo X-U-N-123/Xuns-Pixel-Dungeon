@@ -53,7 +53,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Foresight;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.GreaterHaste;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HeroDisguise;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hex;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HoldFast;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
@@ -71,6 +70,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Regeneration;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.SnipersMark;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.TimeStasis;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Weakness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.ArmorAbility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.Ratmogrify;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.cleric.AscendedForm;
@@ -598,6 +598,15 @@ public class Hero extends Char {
 		if (buff(Scimitar.SwordDance.class) != null){
 			accuracy *= 1.50f;
 		}
+
+        if (target.properties().contains(Property.UNDEAD) || target.properties().contains(Property.DEMONIC)){
+            switch (pointsInTalent(Talent.VICIOUS_BETRAYAL)){
+                case 1: accuracy *= 1.2f; break;
+                case 2: accuracy *= 1.5f; break;
+                case 3: accuracy *= 2f;   break;
+                default:                  break;
+            }
+        }
 
 		if ((Dungeon.level.map[pos] == Terrain.EMPTY || Dungeon.level.map[pos] == Terrain.EMPTY_DECO)
 		&& heroClass == HeroClass.EXPLORER)
@@ -1392,7 +1401,7 @@ public class Hero extends Char {
 			} else if (door == Terrain.HERO_LKD_DR){
 
 				if (belongings.getItem(WornKey.class) != null
-						&& !belongings.getItem(WornKey.class).cursed){
+						&& (!belongings.getItem(WornKey.class).cursed || pointsInTalent(Talent.CURSED_POWER) >= 3)){
 					GLog.i(Messages.get(WornKey.class, "locked_with_key"));
 					ready();
 					return false;

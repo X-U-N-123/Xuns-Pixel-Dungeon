@@ -260,6 +260,8 @@ public enum Talent {
     ANCESTRAL_TRIBUTE(336), BLOOD_INTUITION(337), TESTED_ANTIMAGIC(338), BURIAL_CEREMONY(339), FLEET_BARRIER(340),
     //Wraith T2
     TEARING_MEAL(341), INSCRIBED_REGENERATION(342), BLURRING_BODY(343), SCAPEGOAT(345), THROWN_EVIL(346),
+    //Wraith T3
+    VICIOUS_BETRAYAL(347, 3), CURSED_POWER(348, 3), BLOODLETTING(349, 3),
 
     //universal T4
 	HEROIC_ENERGY(41, 4), //See icon() and title() for special logic for this one
@@ -1635,6 +1637,9 @@ public enum Talent {
 			case EXPLORER:
 				Collections.addAll(tierTalents, DEMOLITION, DIG_THE_WELL, CONVENIENT_SHOVEL);
 				break;
+            case WRAITH:
+                Collections.addAll(tierTalents, VICIOUS_BETRAYAL, CURSED_POWER, BLOODLETTING);
+                break;
 		}
 		for (Talent talent : tierTalents){
 			if (replacements.containsKey(talent)){
@@ -1726,6 +1731,9 @@ public enum Talent {
 			case ROCKSY:
 				Collections.addAll(tierTalents, METEROIC_IRON, ROCK_PROTECTOR, MIND_CONTROL, DESTRUCTIVE_STRIKE, METEOR_CRATER);
 				break;
+            case INCUBUS:
+                Collections.addAll(tierTalents);
+                break;
 		}
 		for (Talent talent : tierTalents){
 			if (corroTalent != talent) talents.get(2).put(talent, 0);

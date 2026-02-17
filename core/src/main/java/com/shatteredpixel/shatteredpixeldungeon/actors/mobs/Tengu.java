@@ -54,7 +54,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.TengusMask;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
-import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.LloydsBeacon;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.PrisonBossLevel;
@@ -222,11 +221,6 @@ public class Tengu extends Mob {
 			Badges.validateBossChallengeCompleted();
 		}
 		Statistics.bossScores[1] += 2000;
-		
-		LloydsBeacon beacon = Dungeon.hero.belongings.getItem(LloydsBeacon.class);
-		if (beacon != null) {
-			beacon.upgrade();
-		}
 		
 		yell( Messages.get(this, "defeated") );
 	}
