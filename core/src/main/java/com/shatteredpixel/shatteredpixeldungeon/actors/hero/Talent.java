@@ -264,6 +264,8 @@ public enum Talent {
     VICIOUS_BETRAYAL(347, 3), CURSED_POWER(348, 3), BLOODLETTING(349, 3),
     //Incubus T3
     LULLABY(350, 3), SLEEPWALKING(351, 3), SLEEPING_IN(352, 3), WRONG_SIDE_OF_THE_BED(353, 3), NIGHTMARE_HAUNTING(354, 3),
+    //GhostWander T4
+    FACE_TO_FACE_FRIGHT(373, 4), SOUL_VANISHING(374, 4), FEAR_SPREADING(375, 4), SOULFREE_GHOST(376, 4),
 
     //universal T4
 	HEROIC_ENERGY(41, 4), //See icon() and title() for special logic for this one

@@ -116,8 +116,9 @@ public class WandOfBlastWave extends DamageWand {
 		
 	}
 
-	public static void throwChar(final Char ch, final Ballistica trajectory, int power,
+	public static boolean throwChar(final Char ch, final Ballistica trajectory, int power,
 	                             boolean closeDoors, boolean collideDmg, Object cause){
+
 		if (ch.properties().contains(Char.Property.BOSS)) {
 			power = (power+1)/2;
 		}
@@ -128,7 +129,7 @@ public class WandOfBlastWave extends DamageWand {
 
 		if (dist <= 0
 				|| ch.rooted
-				|| ch.properties().contains(Char.Property.IMMOVABLE)) return;
+				|| ch.properties().contains(Char.Property.IMMOVABLE)) return false;
 
 		//large characters cannot be moved into non-open space
 		if (Char.hasProp(ch, Char.Property.LARGE)) {
@@ -146,11 +147,11 @@ public class WandOfBlastWave extends DamageWand {
 			collided = true;
 		}
 
-		if (dist < 0) return;
+		if (dist < 0) return false;
 
 		final int newPos = trajectory.path.get(dist);
 
-		if (newPos == ch.pos) return;
+		if (newPos == ch.pos) return false;
 
 		final int finalDist = dist;
 		final boolean finalCollided = collided && collideDmg;
@@ -189,6 +190,7 @@ public class WandOfBlastWave extends DamageWand {
 				}
 			}
 		}));
+        return ch.pos == newPos;
 	}
 
 	public static class Knockback{}

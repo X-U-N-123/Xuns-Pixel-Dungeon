@@ -85,6 +85,9 @@ public class HeroIcon extends Image {
 	public static final int SANDSTORM       = 68;
 	public static final int UNDERPASS       = 69;
 
+
+    public static final int GHOSTWANDER     = 72;
+
 	//cleric spells
 	public static final int GUIDING_LIGHT   = 80;
 	public static final int HOLY_WEAPON     = 81;
