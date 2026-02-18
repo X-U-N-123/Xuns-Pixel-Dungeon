@@ -590,7 +590,8 @@ public abstract class Level implements Bundlable {
 			InterlevelScene.mode = InterlevelScene.Mode.DESCEND;
 		} else {
             Collapse collapse = hero.buff(Collapse.class);
-            if (collapse != null && (!collapse.canReturnTo(Dungeon.depth - 1) || Dungeon.depth <= 21)){
+            if (collapse != null && Dungeon.branch == 0 &&
+                    (!collapse.canReturnTo(Dungeon.depth - 1) || Dungeon.depth <= 21)){
                 if (Statistics.highestAscent > 0){
 
                     Game.switchScene(SurfaceScene.class, new Game.SceneChangeCallback() {
@@ -789,6 +790,7 @@ public abstract class Level implements Bundlable {
 		Mob mob = createMob();
 		if (mob.state != mob.PASSIVE) {
 			mob.state = mob.WANDERING;
+            if (Random.Float() <= Dungeon.hero.pointsInTalent(Talent.LULLABY) / 3f) mob.state = mob.SLEEPING;
 		}
 		int tries = 30;
 		do {

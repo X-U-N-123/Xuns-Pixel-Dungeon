@@ -45,6 +45,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MindVision;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MonkEnergy;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.PhysicalEmpower;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Preparation;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Regeneration;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Sleep;
@@ -775,9 +776,23 @@ public abstract class Mob extends Char {
 			}
 		}
 
+        if (state == SLEEPING && hero.subClass == HeroSubClass.INCUBUS){
+            //proc effect for char src here(if src isn't char, we will proc it in damage)
+            damage = Math.round(damage * (1.4f + 0.2f * hero.pointsInTalent(Talent.NIGHTMARE_HAUNTING)));
+            switch (hero.pointsInTalent(Talent.WRONG_SIDE_OF_THE_BED)) {
+                case 3:
+                    Buff.affect(this, PhysicalEmpower.class).set(damage, 1);
+                case 2:
+                    Buff.affect(this, Adrenaline.class, 3f);
+                case 1:
+                    if (alignment == Alignment.ENEMY)
+                        Buff.affect(this, Amok.class, 3f);
+            }
+        }
+
 		//if attacked by something else than current target, and that thing is closer, switch targets
 		//or if attacked by target, simply update target position
-		if (state != FLEEING) {
+		if (state != FLEEING && buff(Peaceful.PeacefulTracker.class) == null) {
 			if (state != HUNTING) {
 				aggro(enemy);
 				target = enemy.pos;
@@ -849,7 +864,20 @@ public abstract class Mob extends Char {
 
 		if (!isInvulnerable(src.getClass())) {
 			if (state == SLEEPING && buff(Peaceful.PeacefulTracker.class) == null) {
-				state = WANDERING;
+                if (!(src instanceof Char)) { //proc effect for non-char src here(if src is char, we already proc it in defenseProc)
+                    if (hero.subClass == HeroSubClass.INCUBUS)
+                        dmg = Math.round(dmg * (1.4f + 0.2f * hero.pointsInTalent(Talent.NIGHTMARE_HAUNTING)));
+                    switch (hero.pointsInTalent(Talent.WRONG_SIDE_OF_THE_BED)) {
+                        case 3:
+                            Buff.affect(this, PhysicalEmpower.class).set(dmg, 1);
+                        case 2:
+                            Buff.affect(this, Adrenaline.class, 3f);
+                        case 1:
+                            if (alignment == Alignment.ENEMY)
+                                Buff.affect(this, Amok.class, 3f);
+                    }
+                }
+                state = WANDERING;
 			}
 			if (!(src instanceof Corruption) && state != FLEEING) {
 				if (state != HUNTING) {
@@ -1284,7 +1312,7 @@ public abstract class Mob extends Char {
 					}
 				}
 			}
-			spend(TIME_TO_WAKE_UP);
+			spend(TIME_TO_WAKE_UP * (1 + hero.pointsInTalent(Talent.SLEEPING_IN)));
 		}
 	}
 

@@ -26,6 +26,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicalSleep;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Sleep;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
@@ -52,11 +53,11 @@ public class Peaceful extends Weapon.Enchantment {
                     defender.sprite.showLost(); //for unknown reason, it cannot show lost emoicon correctly
                     procChance --;
                 }
-                if (((Mob)defender).state == ((Mob)defender).WANDERING && Random.Float() < procChance) {
+                if (((Mob)defender).state == ((Mob)defender).WANDERING && Random.Float() < procChance && !defender.isImmune(Sleep.class)){
                     ((Mob) defender).state = ((Mob) defender).SLEEPING;
                     procChance --;
                 }
-                if (((Mob)defender).state == ((Mob)defender).SLEEPING && Random.Float() < procChance) {
+                if (((Mob)defender).state == ((Mob)defender).SLEEPING && Random.Float() < procChance && !defender.isImmune(Sleep.class)){
                     Buff.affect(defender, MagicalSleep.class);
                 }
                 Buff.affect(defender, PeacefulTracker.class);

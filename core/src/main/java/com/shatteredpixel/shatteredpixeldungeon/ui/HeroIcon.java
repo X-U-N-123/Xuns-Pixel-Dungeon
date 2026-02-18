@@ -141,6 +141,7 @@ public class HeroIcon extends Image {
 	public static final int MIRROR_IMAGE    = 184;
 	public static final int WHIRLPOOL       = 185;
 	public static final int ROCK            = 186;
+    public static final int HYPNOSIS        = 187;
 
 	public HeroIcon(HeroSubClass subCls){
 		super( Assets.Interfaces.HERO_ICONS );

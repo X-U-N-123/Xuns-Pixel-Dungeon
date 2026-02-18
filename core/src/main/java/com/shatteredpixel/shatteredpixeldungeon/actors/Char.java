@@ -73,6 +73,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MonkEnergy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Ooze;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Phantom;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.PhysicalEmpower;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Poison;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Preparation;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Regeneration;
@@ -468,6 +469,16 @@ public abstract class Char extends Actor {
 			} else {
 				dmg = damageRoll();
 			}
+
+            PhysicalEmpower emp = buff(PhysicalEmpower.class);
+            if (emp != null){
+                dmg += emp.dmgBoost;
+                emp.left--;
+                if (emp.left <= 0) {
+                    emp.detach();
+                }
+                Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG, 0.75f, 1.2f);
+            }
 
 			dmg = dmg*dmgMulti;
 
@@ -958,22 +969,31 @@ public abstract class Char extends Actor {
 		if (c != null){
 			c.recover(src);
 		}
-		if (this.buff(Frost.class) != null){
+		if (buff(Frost.class) != null){
 			Buff.detach( this, Frost.class );
 		}
-		if (this.buff(MagicalSleep.class) != null && buff(Peaceful.PeacefulTracker.class) == null){
+		if (buff(MagicalSleep.class) != null && buff(Peaceful.PeacefulTracker.class) == null){
 			Buff.detach(this, MagicalSleep.class);
+            if (this instanceof Hero){//proc the effect only for hero here (if it isn't we already proc it in Mob.damage and Mob.defenseProc)
+                switch (((Hero) this).pointsInTalent(Talent.WRONG_SIDE_OF_THE_BED)){
+                    case 3:
+                        Buff.affect(this, PhysicalEmpower.class).set(dmg, 1);
+                    case 2:
+                        Buff.affect(this, Adrenaline.class, 3f);
+                    default: break;
+                }
+            }
 		}
 		if (buff(Peaceful.PeacefulTracker.class) != null) {
 			Buff.detach(this, Peaceful.PeacefulTracker.class);
 		}
-		if (this.buff(Doom.class) != null && !isImmune(Doom.class)){
+		if (buff(Doom.class) != null && !isImmune(Doom.class)){
 			damage *= 1.67f;
 		}
-		if (alignment != Alignment.ALLY && this.buff(DeathMark.DeathMarkTracker.class) != null){
+		if (alignment != Alignment.ALLY && buff(DeathMark.DeathMarkTracker.class) != null){
 			damage *= 1.25f + 0.35f*hero.pointsInTalent(Talent.STRONG_MARK)/4f;
 		}
-		if (this.buff(JusticeStrike.JusticeStrikeBuff.class) != null){
+		if (buff(JusticeStrike.JusticeStrikeBuff.class) != null){
 			damage *= 1f + 0.06f * (hero.pointsInTalent(Talent.JUSTICE_STRIKE) + 1);
 		}
 		if (alignment == Alignment.ALLY && this != hero && hero.heroClass != HeroClass.EXPLORER){
@@ -1461,6 +1481,8 @@ public abstract class Char extends Actor {
 		float stealth = 0;
 
 		stealth += Obfuscation.stealthBoost(this, glyphLevel(Obfuscation.class));
+
+        if (this instanceof Hero && ((Hero) this).subClass == HeroSubClass.INCUBUS) stealth += 2;
 
 		return stealth;
 	}

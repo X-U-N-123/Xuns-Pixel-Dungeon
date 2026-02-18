@@ -262,6 +262,8 @@ public enum Talent {
     TEARING_MEAL(341), INSCRIBED_REGENERATION(342), BLURRING_BODY(343), SCAPEGOAT(345), THROWN_EVIL(346),
     //Wraith T3
     VICIOUS_BETRAYAL(347, 3), CURSED_POWER(348, 3), BLOODLETTING(349, 3),
+    //Incubus T3
+    LULLABY(350, 3), SLEEPWALKING(351, 3), SLEEPING_IN(352, 3), WRONG_SIDE_OF_THE_BED(353, 3), NIGHTMARE_HAUNTING(354, 3),
 
     //universal T4
 	HEROIC_ENERGY(41, 4), //See icon() and title() for special logic for this one
@@ -1732,7 +1734,7 @@ public enum Talent {
 				Collections.addAll(tierTalents, METEROIC_IRON, ROCK_PROTECTOR, MIND_CONTROL, DESTRUCTIVE_STRIKE, METEOR_CRATER);
 				break;
             case INCUBUS:
-                Collections.addAll(tierTalents);
+                Collections.addAll(tierTalents, LULLABY, SLEEPWALKING, SLEEPING_IN, WRONG_SIDE_OF_THE_BED, NIGHTMARE_HAUNTING);
                 break;
 		}
 		for (Talent talent : tierTalents){

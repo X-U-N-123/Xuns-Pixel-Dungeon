@@ -113,8 +113,10 @@ public class SmokeBomb extends ArmorAbility {
 				for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
 					if (Dungeon.level.distance(mob.pos, hero.pos) <= 1+2*Math.min(point, 2) && mob.alignment != Char.Alignment.ALLY) {
 						Buff.prolong(mob, Blindness.class, Blindness.DURATION / 2f);
-						if (mob.state == mob.SLEEPING && point > 2) Buff.affect(mob, MagicalSleep.class);
-						if (mob.state == mob.WANDERING && point > 3) Buff.affect(mob, MagicalSleep.class);
+						if (mob.state == mob.SLEEPING && point >= 3 && !mob.isImmune(Sleep.class))
+                            Buff.affect(mob, MagicalSleep.class);
+						if (mob.state == mob.WANDERING && point >= 4 && !mob.isImmune(Sleep.class))
+                            Buff.affect(mob, MagicalSleep.class);
 						if (mob.state == mob.HUNTING) mob.state = mob.WANDERING;
 						mob.sprite.emitter().burst(Speck.factory(Speck.LIGHT), 4);
 					}

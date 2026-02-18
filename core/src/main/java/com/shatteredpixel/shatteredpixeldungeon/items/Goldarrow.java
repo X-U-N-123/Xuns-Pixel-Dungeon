@@ -27,6 +27,7 @@ package com.shatteredpixel.shatteredpixeldungeon.items;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Awareness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Foresight;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicalSight;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MindVision;
@@ -119,10 +120,11 @@ public class Goldarrow extends Item {
                 }
             }
 
-            Buff.prolong(curUser, Awareness.class, 100);
-            Buff.prolong(curUser, MindVision.class, 100);
-            Buff.prolong(curUser, MagicalSight.class, 100);
-            Buff.prolong(curUser, Foresight.class, 100);
+            Class<? extends FlavourBuff>[] buffs = new Class[]{Awareness.class, MindVision.class, MagicalSight.class, Foresight.class};
+            for (Class<? extends FlavourBuff> buffCls : buffs){
+                if (curUser.buff(buffCls) != null) curUser.buff(buffCls).detach();
+                else                               Buff.prolong(curUser, buffCls, 2e+9f);
+            }
             Dungeon.observe();
             Dungeon.hero.checkVisibleMobs();
             BuffIndicator.refreshHero();
@@ -135,7 +137,7 @@ public class Goldarrow extends Item {
                 }
                 @Override public void onSelect(Integer cell) {
                     if (cell == null) return;
-                    ScrollOfTeleportation.teleportToLocation(curUser, cell);
+                    ScrollOfTeleportation.appear(curUser, cell);
 
                     hero.next();
                 }

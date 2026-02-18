@@ -21,8 +21,10 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
@@ -32,24 +34,25 @@ import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 public class MagicalSleep extends Buff {
 
 	private static final float STEP = 1f;
+    private float partialHealing = 0f;
 
-	@Override
+    @Override
 	public boolean attachTo( Char target ) {
 		if (!target.isImmune(Sleep.class) && super.attachTo( target )) {
 			
-			target.paralysed++;
+			if (!Dungeon.hero.hasTalent(Talent.SLEEPWALKING) || target.alignment != Char.Alignment.ALLY) target.paralysed++;
 			
 			if (target.alignment == Char.Alignment.ALLY) {
 				if (target.HP == target.HT) {
-					if (target instanceof  Hero) GLog.i(Messages.get(this, "toohealthy"));
+					if (target instanceof Hero) GLog.i(Messages.get(this, "toohealthy"));
 					detach();
 					return true;
 				} else {
-					if (target instanceof  Hero) GLog.i(Messages.get(this, "fallasleep"));
+					if (target instanceof Hero) GLog.i(Messages.get(this, "fallasleep"));
 				}
 			}
 
-			if (target instanceof Mob) {
+			if (target instanceof Mob && (!Dungeon.hero.hasTalent(Talent.SLEEPWALKING) || target.alignment != Char.Alignment.ALLY)) {
 				((Mob) target).state = ((Mob) target).SLEEPING;
 			}
 
@@ -66,10 +69,16 @@ public class MagicalSleep extends Buff {
 			return true;
 		}
 		if (target.alignment == Char.Alignment.ALLY) {
-			target.HP = Math.min(target.HP+1, target.HT);
-			if (target instanceof  Hero) ((Hero) target).resting = true;
+			if (Dungeon.hero.hasTalent(Talent.SLEEPWALKING)){
+                partialHealing += 0.1f + 0.2f * Dungeon.hero.pointsInTalent(Talent.SLEEPWALKING);
+                while (partialHealing >= 1){
+                    target.HP = Math.min(target.HP+1, target.HT);
+                    partialHealing --;
+                }
+            } else target.HP = Math.min(target.HP+1, target.HT);
+			if (target instanceof Hero && !((Hero) target).hasTalent(Talent.SLEEPWALKING)) ((Hero) target).resting = true;
 			if (target.HP == target.HT) {
-				if (target instanceof  Hero) GLog.p(Messages.get(this, "wakeup"));
+				if (target instanceof Hero) GLog.p(Messages.get(this, "wakeup"));
 				detach();
 			}
 		}
