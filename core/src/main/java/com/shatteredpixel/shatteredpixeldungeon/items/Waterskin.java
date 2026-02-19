@@ -176,7 +176,7 @@ public class Waterskin extends Item {
                 });
                 break;
             case AC_BLOOD:
-                dmg = 2 + hero.pointsInTalent(Talent.BLOODLETTING);
+                dmg = 1 + 2 * hero.pointsInTalent(Talent.BLOODLETTING);
 
                 if (hero.HP + hero.shielding() <= dmg || hero.buff(Invulnerability.class) != null) {
                     GLog.w(Messages.get(this, "no_enough_hp"));

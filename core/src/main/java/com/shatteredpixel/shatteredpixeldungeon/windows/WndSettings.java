@@ -979,7 +979,7 @@ public class WndSettings extends WndTabbed {
             sep3 = new ColorBlock(1, 1, 0xFF000000);
             add(sep3);
 
-			if (DeviceCompat.isDesktop()){
+			if (DeviceCompat.isDesktop() && false){
 
 				chkMusicBG = new CheckBox( Messages.get(this, "music_bg") ){
 					@Override
@@ -1039,18 +1039,17 @@ public class WndSettings extends WndTabbed {
             sep3.y = chkMuteSFX.bottom() + GAP;
             height = sep3.y + 1;
 
-            float btnWidth = width > 200 ? width/2-1 : width;
+            chkUseOldMusic.setRect(0, sep3.y + 1 + GAP, width, BTN_HEIGHT);
+            height = chkUseOldMusic.bottom();
 
-            chkUseOldMusic.setRect(0, sep3.y + 1 + GAP, btnWidth, BTN_HEIGHT);
-            height = chkMusicBG.bottom();
-
-			if (chkMusicBG != null){
-
-				chkMusicBG.setRect(width > 200 ? chkUseOldMusic.right() + 2 : 0,
-                    width > 200 ? chkUseOldMusic.top() : chkUseOldMusic.bottom() + GAP, btnWidth, BTN_HEIGHT);
-				height = chkMusicBG.bottom();
-
-			} else chkUseOldMusic.setSize(width, BTN_HEIGHT);
+			if (chkMusicBG != null)
+				if (width > 200){
+                    chkUseOldMusic.setSize(width/2-1, BTN_HEIGHT);
+                    chkMusicBG.setRect(chkUseOldMusic.right() + 2, sep3.y + 1 + GAP, width/2-1, BTN_HEIGHT);
+                } else {
+                    chkMusicBG.setRect(0, chkUseOldMusic.bottom() + GAP, width, BTN_HEIGHT);
+                    height = chkMusicBG.bottom();
+                }
         }
 	}
 

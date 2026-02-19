@@ -240,8 +240,7 @@ public class HeroSelectScene extends PixelScene {
 			int btnWidth = HeroBtn.MIN_WIDTH;
 			int btnHeight = HeroBtn.HEIGHT;
 
-			int cols = (int)Math.ceil(heroBtns.size()/2f);
-			float curX = (leftArea - btnWidth * cols + (cols-1))/2f;
+			float curX = (leftArea - btnWidth * 4)/2f;
 			float curY = title.bottom() + uiSpacing;
 
 			int count = 0;
@@ -250,12 +249,9 @@ public class HeroSelectScene extends PixelScene {
 				align(button);
 				curX += btnWidth+1;
 				count++;
-				if (count >= (1+heroBtns.size())/2){
+				if (count >= 4){ //每 4 个按钮换一次行
 					curX -= btnWidth*count + count;
 					curY += btnHeight+1;
-					if (heroBtns.size()%2 != 0){
-						curX += btnWidth/2f;
-					}
 					count = 0;
 				}
 			}
@@ -306,21 +302,27 @@ public class HeroSelectScene extends PixelScene {
 
 			int btnWidth = HeroBtn.MIN_WIDTH;
 
-			float curX = (Camera.main.width - btnWidth * heroBtns.size()) / 2f;
+			float curX = (Camera.main.width - btnWidth * heroBtns.size() / 2f) / 2f;
 			if (curX > 0) {
 				btnWidth += Math.min(curX / (heroBtns.size() / 2f), 15);
-				curX = (Camera.main.width - btnWidth * heroBtns.size()) / 2f;
+				curX = (Camera.main.width - btnWidth * heroBtns.size() / 2f) / 2f;
 			}
 			float curY = Camera.main.height - HeroBtn.HEIGHT + 3;
 
+			int count = 0;
 			for (StyledButton button : heroBtns) {
 				button.setRect(curX, curY, btnWidth, HeroBtn.HEIGHT);
 				curX += btnWidth;
+				count++;
+				if (count >= (1+heroBtns.size())/2){
+					curX -= btnWidth*count;
+					curY -= HeroBtn.HEIGHT;
+					count = 0;
 			}
+			}
+			title.setPos((Camera.main.width - title.width()) / 2f, (Camera.main.height - HeroBtn.HEIGHT*2 - title.height() - 4));
 
-			title.setPos((Camera.main.width - title.width()) / 2f, (Camera.main.height - HeroBtn.HEIGHT - title.height() - 4));
-
-			btnOptions.setRect(heroBtns.get(0).left() + 16, Camera.main.height-HeroBtn.HEIGHT-16, 20, 21);
+			btnOptions.setRect(heroBtns.get(0).left() + 16, Camera.main.height-HeroBtn.HEIGHT*2-16, 20, 21);
 			optionsPane.setPos(heroBtns.get(0).left(), 0);
 		}
 
@@ -430,7 +432,7 @@ public class HeroSelectScene extends PixelScene {
 			startBtn.text(Messages.titleCase(cl.title()));
 			startBtn.setSize(startBtn.reqWidth() + 8, 21);
 
-			startBtn.setPos((Camera.main.width - startBtn.width())/2f, (Camera.main.height - HeroBtn.HEIGHT + 2 - startBtn.height()));
+			startBtn.setPos((Camera.main.width - startBtn.width())/2f, (Camera.main.height - HeroBtn.HEIGHT*2 + 2 - startBtn.height()));
 			PixelScene.align(startBtn);
 
 			infoButton.visible = infoButton.active = true;
@@ -531,8 +533,8 @@ public class HeroSelectScene extends PixelScene {
 
 		private HeroClass cl;
 
-		private static final int MIN_WIDTH = 22;
-		private static final int HEIGHT = 22;
+		private static final int MIN_WIDTH = 21;
+		private static final int HEIGHT = 21;
 
 		HeroBtn ( HeroClass cl ){
 			super(Chrome.Type.GREY_BUTTON_TR, "");

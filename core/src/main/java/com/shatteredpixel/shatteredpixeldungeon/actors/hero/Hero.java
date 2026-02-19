@@ -145,6 +145,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMagicMappi
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ThirteenLeafClover;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfLivingEarth;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
@@ -1873,10 +1874,21 @@ public class Hero extends Char {
 			}
 		}
 
+        if (hasTalent(Talent.PSIONIC_BLAST) && damage >= lvl * (1.25f - 0.25f * pointsInTalent(Talent.PSIONIC_BLAST))){
+            for (Mob m : Dungeon.level.mobs.toArray(new Mob[0])) {
+                if (Dungeon.level.heroFOV[m.pos] && m.alignment == Alignment.ENEMY){
+                    m.damage(Math.round(damage / 2), new PsionicBlastTalent(this));
+                }
+            }
+            Sample.INSTANCE.play( Assets.Sounds.BLAST );
+            WandOfBlastWave.BlastWave.blast(pos, 4);
+        }
+
         //wraith ability
         if (!(src instanceof Hunger) && !(src instanceof Viscosity.DeferedDamage)){
-            if (heroClass == HeroClass.WRAITH) damage --;
-            damage = Math.max(damage - pointsInTalent(Talent.BLURRING_BODY), 0);
+            int dmgDecrease = 2 * pointsInTalent(Talent.BLURRING_BODY);
+            if (heroClass == HeroClass.WRAITH) dmgDecrease ++;
+            damage = Math.max(0, damage - Random.NormalIntRange(0, dmgDecrease));
         }
 
 		//unused, could be removed
@@ -1934,6 +1946,13 @@ public class Hero extends Char {
 			}
 		}
 	}
+
+    public static class PsionicBlastTalent{
+        Hero src;
+        public PsionicBlastTalent(Hero hero){
+            src = hero;
+        }
+    }
 
 	public void checkVisibleMobs() {
 		ArrayList<Mob> visible = new ArrayList<>();

@@ -259,9 +259,9 @@ public enum Talent {
     //Wraith T1
     ANCESTRAL_TRIBUTE(336), BLOOD_INTUITION(337), TESTED_ANTIMAGIC(338), BURIAL_CEREMONY(339), FLEET_BARRIER(340),
     //Wraith T2
-    TEARING_MEAL(341), INSCRIBED_REGENERATION(342), BLURRING_BODY(343), SCAPEGOAT(345), THROWN_EVIL(346),
+    TEARING_MEAL(341), INSCRIBED_REGENERATION(342), BLOODLETTING(343), PSIONIC_BLAST(344), SCAPEGOAT(345), THROWN_EVIL(346),
     //Wraith T3
-    VICIOUS_BETRAYAL(347, 3), CURSED_POWER(348, 3), BLOODLETTING(349, 3),
+    VICIOUS_BETRAYAL(347, 3), CURSED_POWER(348, 3), BLURRING_BODY(349, 3),
     //Incubus T3
     LULLABY(350, 3), SLEEPWALKING(351, 3), SLEEPING_IN(352, 3), WRONG_SIDE_OF_THE_BED(353, 3), NIGHTMARE_HAUNTING(354, 3),
     //GhostWander T4
@@ -1607,7 +1607,7 @@ public enum Talent {
 				Collections.addAll(tierTalents, PREPARING_MEAL, LIQUID_CLAIRVOYANCE, ARCANE_BARRICADE, WINDING_PORCH, REKINDLED_EMBER, AGGRESSIVE_ROADBLOCK);
 				break;
             case WRAITH:
-                Collections.addAll(tierTalents, TEARING_MEAL, INSCRIBED_REGENERATION, BLURRING_BODY, SCAPEGOAT, THROWN_EVIL);
+                Collections.addAll(tierTalents, TEARING_MEAL, INSCRIBED_REGENERATION, BLOODLETTING, PSIONIC_BLAST, SCAPEGOAT, THROWN_EVIL);
                 break;
 		}
 		for (Talent talent : tierTalents){
@@ -1642,7 +1642,7 @@ public enum Talent {
 				Collections.addAll(tierTalents, DEMOLITION, DIG_THE_WELL, CONVENIENT_SHOVEL);
 				break;
             case WRAITH:
-                Collections.addAll(tierTalents, VICIOUS_BETRAYAL, CURSED_POWER, BLOODLETTING);
+                Collections.addAll(tierTalents, VICIOUS_BETRAYAL, CURSED_POWER, BLURRING_BODY);
                 break;
 		}
 		for (Talent talent : tierTalents){
