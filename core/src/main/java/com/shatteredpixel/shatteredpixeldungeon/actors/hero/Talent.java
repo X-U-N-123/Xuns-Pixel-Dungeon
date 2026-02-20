@@ -1476,7 +1476,7 @@ public enum Talent {
 			enemy.sprite.emitter().burst( FlameParticle.FACTORY, 2 );
         }
 
-        if (enemy.HP <= enemy.HT * 0.3f * (1 + hero.pointsInTalent(BURIAL_CEREMONY)) && hero.hasTalent(BURIAL_CEREMONY)){
+        if (enemy.HP <= enemy.HT * (0.2f + 0.3f * hero.pointsInTalent(BURIAL_CEREMONY)) && hero.hasTalent(BURIAL_CEREMONY)){
             dmg ++;
         }
 

@@ -256,11 +256,9 @@ abstract public class MissileWeapon extends Weapon {
 	}
 
     public static void thrownEvilProc(int cell){
-        if (Random.Float() < 0.1f * curUser.pointsInTalent(Talent.THROWN_EVIL)){
+        if (Random.Float() < 0.1f * curUser.pointsInTalent(Talent.THROWN_EVIL) && curUser.buff(MagicImmune.class) == null){
             Actor.add(new Actor() {
-                {
-                    actPriority = VFX_PRIO;
-                }
+                {actPriority = VFX_PRIO;}
                 @Override
                 protected boolean act() {
                     Actor.remove(this);
@@ -269,7 +267,6 @@ abstract public class MissileWeapon extends Weapon {
                 }
             });
         }
-
     }
 
 	@Override

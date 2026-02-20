@@ -34,7 +34,7 @@ public class BrokenArmor extends FlavourBuff{
 
     @Override
     public int icon() {
-        return BuffIndicator.VULNERABLE;
+        return BuffIndicator.BROKEN_ARMOR;
     }
 
     @Override

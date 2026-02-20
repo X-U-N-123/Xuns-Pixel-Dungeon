@@ -688,7 +688,10 @@ public abstract class Char extends Actor {
 				}
 
                 if (hero.hasTalent(Talent.FLEET_BARRIER)){
-                    Buff.affect(hero, Barrier.class).incShield(1 + hero.pointsInTalent(Talent.FLEET_BARRIER));
+					int shieldToGive = Math.min(1 + hero.pointsInTalent(Talent.FLEET_BARRIER),
+						2 + 3 * hero.pointsInTalent(Talent.FLEET_BARRIER) - hero.shielding());
+                    if (hero.shielding() <= 2 + 3 * hero.pointsInTalent(Talent.FLEET_BARRIER))
+						Buff.affect(hero, Barrier.class).incShield(shieldToGive);
                 }
 			}
 
