@@ -240,7 +240,7 @@ public enum Talent {
 	//Explorer T1
 	KEEN_MEAL(288), SECRET_FORESIGHT(289), TESTED_AWARENESS(290), HOME_ADVANTAGE(291), SAFE_SURVEY(292),
 	//Explorer T2
-	PREPARING_MEAL(293), LIQUID_CLAIRVOYANCE(294), ARCANE_BARRICADE(295), WINDING_PORCH(296), REKINDLED_EMBER(297), AGGRESSIVE_ROADBLOCK(298),
+	PREPARING_MEAL(293), LIQUID_CLAIRVOYANCE(294), BARBED_WIRE(295), WINDING_PORCH(296), REKINDLED_EMBER(297), AGGRESSIVE_ROADBLOCK(298),
 	//Explorer T3
 	DEMOLITION(299, 3), DIG_THE_WELL(300, 3), CONVENIENT_SHOVEL(301, 3),
 	//WaveChaser T3
@@ -250,7 +250,7 @@ public enum Talent {
 	//Rocksy T3
 	METEROIC_IRON(312, 3), ROCK_PROTECTOR(313, 3), MIND_CONTROL(314, 3), DESTRUCTIVE_STRIKE(315, 3), METEOR_CRATER(316, 3),
 	//Optical Camouflage T4
-	LASTING_DISGUISE(317, 4), STRAIN_CAPACITY(318, 4), STANDBY(319, 4), QUICK_BUILD(320, 4),
+	LASTING_DISGUISE(317, 4), STRAIN_CAPACITY(318, 4), STANDBY(319, 4), ENERGY_SURPLUS(320, 4),
 	//Sandstorm T4
 	GLOOM_ABOVE(321, 4), SAND_FLOW(322, 4), HEART_OF_STORM(323, 4), DRIFT_SAND(324, 4),
 	//Underpass T4
@@ -1130,7 +1130,7 @@ public enum Talent {
 		if (hero.hasTalent(PREPARING_MEAL)){
             Shovel.ExplorerCooldown cd = hero.buff(Shovel.ExplorerCooldown.class);
             if (hero.heroClass == HeroClass.EXPLORER){
-                if (cd != null) cd.decreaseCD(5 + 10 * hero.pointsInTalent(PREPARING_MEAL));
+                if (cd != null) cd.decreaseCD(10 + 10 * hero.pointsInTalent(PREPARING_MEAL));
             } else Buff.affect(Dungeon.hero, Swiftthistle.TimeBubble.class)
                     .reset(hero.pointsInTalent(PREPARING_MEAL) - 1); // effectively 2/3 turn of time bubble
 		}
@@ -1604,7 +1604,7 @@ public enum Talent {
 				Collections.addAll(tierTalents, ENLIGHTENING_MEAL, RECALL_INSCRIPTION, SUNRAY, DIVINE_SENSE, BLESS, ASCETICISM);
 				break;
 			case EXPLORER:
-				Collections.addAll(tierTalents, PREPARING_MEAL, LIQUID_CLAIRVOYANCE, ARCANE_BARRICADE, WINDING_PORCH, REKINDLED_EMBER, AGGRESSIVE_ROADBLOCK);
+				Collections.addAll(tierTalents, PREPARING_MEAL, LIQUID_CLAIRVOYANCE, BARBED_WIRE, WINDING_PORCH, REKINDLED_EMBER, AGGRESSIVE_ROADBLOCK);
 				break;
             case WRAITH:
                 Collections.addAll(tierTalents, TEARING_MEAL, INSCRIBED_REGENERATION, BLOODLETTING, PSIONIC_BLAST, SCAPEGOAT, THROWN_EVIL);

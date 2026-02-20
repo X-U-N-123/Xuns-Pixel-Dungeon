@@ -610,7 +610,7 @@ public class Hero extends Char {
 
 		if ((Dungeon.level.map[pos] == Terrain.EMPTY || Dungeon.level.map[pos] == Terrain.EMPTY_DECO)
 		&& heroClass == HeroClass.EXPLORER)
-			accuracy *= 1.1f;
+			accuracy *= 1.15f;
 
 		if(attackDelay() >1 && hasTalent(Talent.OVERWHELMING)){
 			accuracy += accuracy * Math.max (attackDelay()-(pointsInTalent(Talent.OVERWHELMING) / 3f),0.5f);
@@ -675,7 +675,7 @@ public class Hero extends Char {
 
 		if ((Dungeon.level.map[pos] == Terrain.EMPTY || Dungeon.level.map[pos] == Terrain.EMPTY_DECO)
 		&& heroClass == HeroClass.EXPLORER){
-			evasion *= 1.1f;
+			evasion *= 1.15f;
 		}
 
 		if (belongings.armor() != null) {
@@ -791,7 +791,7 @@ public class Hero extends Char {
 
 		if ((Dungeon.level.map[pos] == Terrain.EMPTY_SP || Dungeon.level.map[pos] == Terrain.PEDESTAL)
 			&& heroClass == HeroClass.EXPLORER){
-			dmg = Math.round(dmg * 1.1f);
+			dmg = Math.round(dmg * 1.15f);
 		}
 
 		if( attackDelay() >1 && hasTalent(Talent.OVERWHELMING)){
@@ -859,7 +859,7 @@ public class Hero extends Char {
 		}
 
 		if (heroClass == HeroClass.EXPLORER && Dungeon.level.map[pos] == Terrain.WATER && subClass != HeroSubClass.WAVECHASER)
-			speed *= 1.1f; //overriden by wavechaser ability, see spend(float time)
+			speed *= 1.15f; //overriden by wavechaser ability, see spend(float time)
 
 		speed = AscensionChallenge.modifyHeroSpeed(speed);
 		
@@ -971,7 +971,7 @@ public class Hero extends Char {
         if (hasTalent(Talent.YIN_GAIT) && energy != null)
             timeScale *= 1f + 0.08f * pointsInTalent(Talent.YIN_GAIT) * energy.Getenergy() / energy.energyCap();
 
-        if (subClass == HeroSubClass.WAVECHASER && Dungeon.level.map[pos] == Terrain.WATER) timeScale *= 1.1f;
+        if (subClass == HeroSubClass.WAVECHASER && Dungeon.level.map[pos] == Terrain.WATER) timeScale *= 1.15f;
 
         return timeScale * super.timeScale();
     }

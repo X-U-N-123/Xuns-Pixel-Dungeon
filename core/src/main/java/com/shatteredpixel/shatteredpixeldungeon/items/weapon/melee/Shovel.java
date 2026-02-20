@@ -26,6 +26,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Fire;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ArtifactRecharge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Recharging;
@@ -34,7 +35,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.WhirlpoolBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.explorer.OpticalCamou;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Barricade;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
@@ -53,7 +53,6 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.audio.Sample;
-import com.watabou.utils.Callback;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.PointF;
 import com.watabou.utils.Random;
@@ -123,10 +122,9 @@ public class Shovel extends MeleeWeapon {
         public void tintIcon(Image icon) { icon.hardlight(0.5f, 0.5f, 0.5f); }
 
         public static void affectCD(float turn, Hero hero){
-            float percent = 1 - hero.pointsInTalent(Talent.CONVENIENT_SHOVEL) * 0.1f;
-            if (hero.buff(OpticalCamou.Camouflage.class) != null){
-                percent -= 0.12f * hero.pointsInTalent(Talent.QUICK_BUILD);
-            }
+            float percent = 1 - hero.pointsInTalent(Talent.CONVENIENT_SHOVEL) * 0.12f;
+			Shovel shovel = hero.belongings.getItem(Shovel.class);
+			if (shovel != null) percent *= 5f / (5 + shovel.level());
             Buff.affect(hero, ExplorerCooldown.class, turn * percent);
         }
 
@@ -173,19 +171,16 @@ public class Shovel extends MeleeWeapon {
 
                             curUser.next();
                         }
-                        curUser.sprite.zap(cell, new Callback() {
-                            @Override
-                            public void call() {
-                                if (Actor.findChar(cell) == null){
-                                    //build a barricade that can block the enemy
-                                    Barricade.buildBarricade(cell, 2 * curUser.lvl + 5, Char.Alignment.ALLY, 0);
+                        curUser.sprite.zap(cell, ()->{
+							if (Actor.findChar(cell) == null){
+								//build a barricade that can block the enemy
+								Barricade.buildBarricade(cell, 3 * curUser.lvl + 5, Char.Alignment.ALLY, 0);
 
-                                    Sample.INSTANCE.play( Assets.Sounds.BUILD );
-                                    ExplorerCooldown.affectCD(50, curUser);
-                                    if (curUser.pointsInTalent(Talent.AGGRESSIVE_ROADBLOCK) < 2) curUser.spendAndNext(Actor.TICK);
-                                }
-                            }
-                        });
+								Sample.INSTANCE.play( Assets.Sounds.BUILD );
+								ExplorerCooldown.affectCD(50, curUser);
+								curUser.spendAndNext(Actor.TICK);
+							}
+						});
                         return;
                     }
                     break;
@@ -206,7 +201,7 @@ public class Shovel extends MeleeWeapon {
                         if (watered){
                             Sample.INSTANCE.play(Assets.Sounds.WATER, 3f);
                             Splash.at( DungeonTilemap.tileCenterToWorld( curUser.pos ), -PointF.PI/2, PointF.PI/2, 0x5bc1e3, 10, 0.01f);
-                            ExplorerCooldown.affectCD(10 * (7 - curUser.pointsInTalent(Talent.LAKE_DEVELOPMENT)), curUser);
+                            ExplorerCooldown.affectCD(8 * (7 - curUser.pointsInTalent(Talent.LAKE_DEVELOPMENT)), curUser);
                             curUser.spendAndNext(Actor.TICK);
                             Dungeon.observe();
                             curUser.sprite.zap(cell);
@@ -217,16 +212,7 @@ public class Shovel extends MeleeWeapon {
                         Level.set(cell, Terrain.EMPTY);
 
                         //remove water here if here is
-                        if (ch != null && ch.alignment == Char.Alignment.ENEMY){
-                            switch (curUser.pointsInTalent(Talent.SON_OF_SEA)){
-                                case 3:
-                                    curUser.buff(WhirlpoolBuff.class).decreaseCD(5);
-                                case 2:
-                                    Buff.prolong(curUser, Recharging.class, 4f);
-                                case 1:
-                                    Buff.prolong(ch, Vertigo.class, 4f);
-                            }
-                        }
+						sonOfSeaProc(ch);
                         CellEmitter.get(cell).burst( Speck.factory( Speck.STEAM ), 5 );
 
                         Sample.INSTANCE.play(Assets.Sounds.WATER, 3f);
@@ -239,11 +225,12 @@ public class Shovel extends MeleeWeapon {
                     } else if (curUser.buff(ExplorerCooldown.class) == null
                             && Dungeon.level.setCellToWater(true, cell)){
                         if (fire != null) fire.clear(cell);
+						sonOfSeaProc(ch);
 
                         //put water if there has no water
                         Sample.INSTANCE.play(Assets.Sounds.WATER, 3f);
                         Splash.at( DungeonTilemap.tileCenterToWorld( cell ), -PointF.PI/2, PointF.PI/2, 0x5bc1e3, 5, 0.01f);
-                        ExplorerCooldown.affectCD(10, curUser);
+                        ExplorerCooldown.affectCD(8, curUser);
                         curUser.spendAndNext(Actor.TICK);
                         GameScene.updateMap(cell);
                         Dungeon.observe();
@@ -304,4 +291,20 @@ public class Shovel extends MeleeWeapon {
         }
         return false;
     }
+
+	private static void sonOfSeaProc(Char c){
+		if (c != null && c.alignment == Char.Alignment.ENEMY){
+			switch (curUser.pointsInTalent(Talent.SON_OF_SEA)){
+				case 3:
+					curUser.buff(WhirlpoolBuff.class).decreaseCD(5);
+				case 2:
+					Buff.prolong(curUser, Recharging.class, 4f);
+					ArtifactRecharge recharge = Buff.affect(curUser, ArtifactRecharge.class).set(4f);
+					recharge.ignoreHolyTome = false;
+					recharge.ignoreHornOfPlenty = false;
+				case 1:
+					Buff.prolong(c, Vertigo.class, 5f);
+			}
+		}
+	}
 }

@@ -856,9 +856,6 @@ public abstract class Char extends Actor {
 				&& hero.buff(AuraOfProtection.AuraBuff.class) != null
 				&& (Dungeon.level.distance(pos, hero.pos) <= 2 || buff(LifeLinkSpell.LifeLinkSpellBuff.class) != null)) {
 			return hero.glyphLevel(cls);
-		} else if (this instanceof Barricade && alignment == Alignment.ALLY
-				&& hero != null && hero.heroClass == HeroClass.EXPLORER && hero.hasTalent(Talent.ARCANE_BARRICADE)) {
-			return hero.glyphLevel(cls);
 		} else {
 			return -1;
 		}

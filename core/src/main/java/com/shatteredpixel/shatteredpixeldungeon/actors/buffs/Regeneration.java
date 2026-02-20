@@ -149,7 +149,7 @@ public class Regeneration extends Buff {
 		(Dungeon.level.map[target.pos] == Terrain.GRASS
 		|| Dungeon.level.map[target.pos] == Terrain.HIGH_GRASS
 		|| Dungeon.level.map[target.pos] == Terrain.FURROWED_GRASS)){
-			delay /= 1.25f;
+			delay /= 1.33f;
 		}
 
 		return delay;

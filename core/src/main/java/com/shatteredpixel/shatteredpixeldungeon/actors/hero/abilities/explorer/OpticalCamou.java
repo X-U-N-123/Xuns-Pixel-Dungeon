@@ -5,6 +5,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Recharging;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.ArmorAbility;
@@ -27,6 +28,9 @@ public class OpticalCamou extends ArmorAbility {
     protected void activate(ClassArmor armor, Hero hero, Integer target){
 
         Buff.prolong(hero, Camouflage.class, 15 + 3 * Dungeon.hero.pointsInTalent(Talent.LASTING_DISGUISE));
+		if (hero.hasTalent(Talent.ENERGY_SURPLUS)){
+			Buff.affect(hero, Recharging.class, 2 * hero.pointsInTalent(Talent.ENERGY_SURPLUS));
+		}
         hero.sprite.operate(hero.pos);
 
         Sample.INSTANCE.play(Assets.Sounds.MELD, 0.5f);
@@ -52,7 +56,7 @@ public class OpticalCamou extends ArmorAbility {
 
     @Override
     public Talent[] talents() {
-        return new Talent[]{Talent.LASTING_DISGUISE, Talent.STRAIN_CAPACITY, Talent.STANDBY, Talent.QUICK_BUILD, Talent.HEROIC_ENERGY};
+        return new Talent[]{Talent.LASTING_DISGUISE, Talent.STRAIN_CAPACITY, Talent.STANDBY, Talent.ENERGY_SURPLUS, Talent.HEROIC_ENERGY};
     }
     
     public static class Camouflage extends Invisibility {

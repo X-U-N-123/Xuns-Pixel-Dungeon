@@ -25,6 +25,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.BrokenArmor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
@@ -37,6 +38,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vulnerable;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Weakness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Bestiary;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -46,7 +48,6 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.BarricadeSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
-import com.watabou.utils.Callback;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
@@ -68,7 +69,7 @@ public class Barricade extends Mob {
         useParry = true;
     }
 
-    public float aggression = 0f;
+    private float aggression = 0f;
 
     @Override
     public float spawningWeight() {
@@ -96,6 +97,16 @@ public class Barricade extends Mob {
         return alignment == Alignment.ALLY;
     }
 
+	@Override
+	public int drRoll() {
+		int dr = super.drRoll();
+		Hero hero = Dungeon.hero;
+		if (hero != null && hero.heroClass == HeroClass.EXPLORER && hero.pointsInTalent(Talent.AGGRESSIVE_ROADBLOCK) >= 2
+				&& hero.belongings.armor() != null && alignment == Alignment.ALLY)
+			dr += Random.NormalIntRange(hero.belongings.armor().DRMin(), hero.belongings.armor().DRMax()) / 2;
+		return dr;
+	}
+
     @Override
     public boolean canInteract(Char c){
         return c instanceof Hero && alignment == Alignment.ALLY && Dungeon.level.adjacent( pos, c.pos );
@@ -109,17 +120,14 @@ public class Barricade extends Mob {
             && Actor.findChar(pos * 2 - c.pos ) == null){
 
             Sample.INSTANCE.play( Assets.Sounds.MISS, 1.5f);
-            c.sprite.jump(c.pos, pos * 2 - c.pos, new Callback() {
-                @Override
-                public void call() {
-                    c.pos = pos * 2 - c.pos;
-                    Dungeon.level.occupyCell( c );
-                    Dungeon.observe();
-                    GameScene.updateFog();
-                    //jump over the barricade if there is
-                    ((Hero)c).spendAndNext(1f/c.speed());
-                }
-            });
+            c.sprite.jump(c.pos, pos * 2 - c.pos, ()->{
+				c.pos = pos * 2 - c.pos;
+				Dungeon.level.occupyCell( c );
+				Dungeon.observe();
+				GameScene.updateFog();
+				//jump over the barricade if there is
+				((Hero)c).spendAndNext(1f/c.speed());
+			});
         } else if (c.buff(Roots.class) != null) {
             PixelScene.shake( 1, 1f );
         }
@@ -142,10 +150,9 @@ public class Barricade extends Mob {
                 Buff.affect((Char)src, debuff.get(Random.Int(debuff.size())), aggression);
             }
 
-            Hero hero = Dungeon.hero;
-            if (hero != null && hero.belongings.armor() != null && hero.belongings.armor().glyph != null
-                && Random.Float() <= hero.pointsInTalent(Talent.ARCANE_BARRICADE) / 3f && alignment == Alignment.ALLY){
-                hero.belongings.armor().glyph.proc(hero.belongings.armor(), (Char)src, this, dmg);
+            if (Dungeon.hero != null && Dungeon.hero.heroClass == HeroClass.EXPLORER && alignment == Alignment.ALLY){
+                Buff.affect((Char) src, Bleeding.class)
+					.set(dmg * (4 + Dungeon.hero.pointsInTalent(Talent.BARBED_WIRE)) / 10f, Barricade.class);
             }
         }
         super.damage( dmg, src );
@@ -182,6 +189,8 @@ public class Barricade extends Mob {
         switch (alignment){
             case ALLY:
                 desc = Messages.get(this, "desc_ally");
+				if (Dungeon.hero != null && Dungeon.hero.heroClass == HeroClass.EXPLORER)
+					desc += Messages.get(this, "explorer_desc");
                 break;
             case ENEMY: default:
                 desc = Messages.get(this, "desc_enemy");

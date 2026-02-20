@@ -57,7 +57,9 @@ public class Whirlpool extends Blob {
             }
 
             for (Mob m : Dungeon.level.mobs.toArray( new Mob[0])) {
-                if (m.isFlying() && Dungeon.hero.pointsInTalent(Talent.UNDERCURRENT) < 3) continue;
+                if ((m.isFlying() && Dungeon.hero.pointsInTalent(Talent.UNDERCURRENT) < 3)
+						|| m.alignment == Char.Alignment.ALLY || m.properties().contains(Char.Property.IMMOVABLE))
+					continue;
 
                 if (m.pos == k){
                     if (Dungeon.hero.hasTalent(Talent.DROWNING) && !(m instanceof Piranha))
