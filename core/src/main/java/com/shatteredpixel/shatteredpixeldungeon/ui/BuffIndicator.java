@@ -143,6 +143,7 @@ public class BuffIndicator extends Component {
 	public static final int ROCK        = 90;
     public static final int COLLAPSE    = 91;
 	public static final int BROKEN_ARMOR= 92;
+	public static final int LIFELOAN    = 93;
 
 	public static final int SIZE_SMALL  = 7;
 	public static final int SIZE_LARGE  = 16;

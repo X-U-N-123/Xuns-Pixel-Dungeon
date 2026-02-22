@@ -82,7 +82,11 @@ public class Ooze extends Buff {
 		acted = false;
 	}
 
-	public void extend( float duration ) {
+	public float left() {
+		return left;
+	}
+
+	public void extend(float duration ) {
 		left += duration;
 	}
 

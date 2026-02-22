@@ -131,7 +131,19 @@ public class Viscosity extends Glyph {
 			}
 			this.damage += damage;
 		}
-		
+
+		public void set( float damage ) {
+			if (this.damage == 0){
+				//wait 1 turn before damaging if this is freshly applied
+				postpone(TICK);
+			}
+			this.damage = (int)Math.max(damage, this.damage);
+		}
+
+		public int damage() {
+			return damage;
+		}
+
 		@Override
 		public int icon() {
 			return BuffIndicator.DEFERRED;
