@@ -27,7 +27,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Dread;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hex;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
@@ -36,11 +35,13 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.ArmorAbili
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClassArmor;
+import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.ui.HeroIcon;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Random;
 
@@ -74,27 +75,33 @@ public class GhostWander extends ArmorAbility {
                 return;
             }
 
-            Ballistica route = new Ballistica(hero.pos, target, Ballistica.STOP_TARGET | Ballistica.STOP_SOLID);
-            int cell = route.collisionPos;
+            Ballistica route = new Ballistica(hero.pos, target, Ballistica.STOP_TARGET);
 
             //can't occupy the same cell as another char, so move back one.
             int backTrace = route.dist-1;
-            while (Actor.findChar( cell ) != null && cell != hero.pos) {
-                cell = route.path.get(backTrace);
+            while ((Actor.findChar( target ) != null || (Dungeon.level.solid[target]) && Dungeon.level.map[target] != Terrain.DOOR)
+					&& target != hero.pos) { //the door is passable actually
+                target = route.path.get(backTrace);
                 backTrace--;
             }
 
+			int solidCells = 0;
             ArrayList<Integer> routeCells = new ArrayList<>();
             for (int i : route.path) {
                 routeCells.add(i);
+				if (Dungeon.level.solid[i]) solidCells ++;
                 if (i == route.collisionPos) break;
             }
+			if (solidCells > 2 * hero.pointsInTalent(Talent.SOUL_VANISHING)){
+				GLog.w(Messages.get(this, "invalid_pos"));
+				return;
+			}
             armor.charge -= chargeUse( hero );
             armor.updateQuickslot();
 
             hero.busy();
-            int finalCell = cell;
-            hero.sprite.jump(hero.pos, cell, 0, Dungeon.level.trueDistance(hero.pos, cell) * 0.07f, ()->{
+            int finalCell = target;
+            hero.sprite.jump(hero.pos, target, 0, Dungeon.level.trueDistance(hero.pos, target) * 0.06f, ()->{
                 hero.move(finalCell);
                 Dungeon.level.occupyCell(hero);
                 Dungeon.observe();
@@ -109,13 +116,10 @@ public class GhostWander extends ArmorAbility {
                         continue;
                     }
                     for (int i : routeCells) {
-                        if (Dungeon.level.distance(m.pos, i) <= 1 + hero.pointsInTalent(Talent.FEAR_SPREADING)){
-                            if (hero.hasTalent(Talent.SOUL_VANISHING))
-                                Buff.affect(m, Hex.class, 3 * hero.pointsInTalent(Talent.SOUL_VANISHING));
-                            if (!m.isImmune(Terror.class)){
-                                Buff.prolong(m, Terror.class, 15f).object = hero.id();
-                                break;
-                            }
+                        if (Dungeon.level.distance(m.pos, i) <= 1 + hero.pointsInTalent(Talent.FEAR_SPREADING)
+								&& !m.isImmune(Terror.class)){
+							Buff.prolong(m, Terror.class, 15f).object = hero.id();
+							break;
                         }
                     }
                 }

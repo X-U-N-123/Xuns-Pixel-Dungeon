@@ -123,7 +123,7 @@ public class Goldarrow extends Item {
             Class<? extends FlavourBuff>[] buffs = new Class[]{Awareness.class, MindVision.class, MagicalSight.class, Foresight.class};
             for (Class<? extends FlavourBuff> buffCls : buffs){
                 if (curUser.buff(buffCls) != null) curUser.buff(buffCls).detach();
-                else                               Buff.prolong(curUser, buffCls, 2e+9f);
+                else                               Buff.prolong(curUser, buffCls, Short.MAX_VALUE);
             }
             Dungeon.observe();
             Dungeon.hero.checkVisibleMobs();
