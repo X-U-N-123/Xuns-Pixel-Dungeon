@@ -406,7 +406,7 @@ public enum HeroClass {
 
 	public String spritesheet() {
 		switch (this) {
-			case WARRIOR: default:
+			case WARRIOR:
 				return Assets.Sprites.WARRIOR;
 			case MAGE:
 				return Assets.Sprites.MAGE;
@@ -421,17 +421,15 @@ public enum HeroClass {
 			case EXPLORER:
 				return Assets.Sprites.EXPLORER;
             case WRAITH:
-                return Assets.Sprites.MITA;
+                return Assets.Sprites.HEROWRAITH;
+			default:
+				return Assets.Sprites.MITA;
 		}
-	}
-
-	public static String spritesheetmita(){
-		return Assets.Sprites.MITA;
 	}
 
 	public String splashArt(){
 		switch (this) {
-			case WARRIOR: default:
+			case WARRIOR:
 				return Assets.Splashes.WARRIOR;
 			case MAGE:
 				return Assets.Splashes.MAGE;
@@ -443,10 +441,8 @@ public enum HeroClass {
 				return Assets.Splashes.DUELIST;
 			case CLERIC:
 				return Assets.Splashes.CLERIC;
-			case EXPLORER:
-				return Assets.Splashes.EXPLORER;
-            case WRAITH:
-                return Assets.Splashes.EXPLORER;
+			default:
+				return Assets.Splashes.NEW_HERO;
 		}
 	}
 	

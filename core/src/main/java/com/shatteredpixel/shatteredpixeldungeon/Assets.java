@@ -248,7 +248,7 @@ public class Assets {
 		public static final String HUNTRESS = "splashes/huntress.jpg";
 		public static final String DUELIST  = "splashes/duelist.jpg";
 		public static final String CLERIC   = "splashes/cleric.jpg";
-		public static final String EXPLORER = "splashes/explorer.jpg";
+		public static final String NEW_HERO = "splashes/newhero.jpg";
 
 		public static final String SEWERS   = "splashes/sewers.jpg";
 		public static final String PRISON   = "splashes/prison.jpg";
@@ -274,6 +274,7 @@ public class Assets {
 		public static final String HUNTRESS = "sprites/huntress.png";
 		public static final String DUELIST  = "sprites/duelist.png";
 		public static final String CLERIC   = "sprites/cleric.png";
+		public static final String HEROWRAITH="sprites/herowraith.png";
 		public static final String MITA     = "sprites/mita.png";
 		public static final String EXPLORER = "sprites/explorer.png";
 		public static final String AVATARS  = "sprites/avatars.png";

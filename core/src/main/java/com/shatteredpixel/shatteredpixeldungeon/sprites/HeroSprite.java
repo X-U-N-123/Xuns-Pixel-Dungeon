@@ -21,8 +21,6 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.sprites;
 
-import static com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass.spritesheetmita;
-
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HeroDisguise;
@@ -66,13 +64,8 @@ public class HeroSprite extends CharSprite {
 	}
 
 	public void disguise(HeroClass cls){
-		texture( cls.spritesheet() );
-		updateArmor();
-	}
-
-	public void disguisemita(){
-		String Mita = spritesheetmita();
-		texture(Mita);
+		if (cls == null) texture( Assets.Sprites.MITA );
+		else             texture( cls.spritesheet() );
 		updateArmor();
 	}
 	
@@ -140,12 +133,9 @@ public class HeroSprite extends CharSprite {
 	}
 
 	public synchronized void read() {
-		animCallback = new Callback() {
-			@Override
-			public void call() {
-				idle();
-				ch.onOperateComplete();
-			}
+		animCallback = ()->{
+			idle();
+			ch.onOperateComplete();
 		};
 		play( read );
 	}
@@ -184,7 +174,7 @@ public class HeroSprite extends CharSprite {
 
 	public static Image avatar( Hero hero ){
 		if (hero.buff(HeroDisguise.class) != null){
-			return avatarmita( hero.tier());
+			return avatar(null, hero.tier());
 		} else {
 			return avatar(hero.heroClass, hero.tier());
 		}
@@ -193,22 +183,13 @@ public class HeroSprite extends CharSprite {
 	public static Image avatar( HeroClass cl, int armorTier ) {
 		
 		RectF patch = tiers().get( armorTier );
-		Image avatar = new Image( cl.spritesheet() );
+		Image avatar;
+		if (cl == null) avatar = new Image( Assets.Sprites.MITA );
+		else            avatar = new Image( cl.spritesheet() );
 		RectF frame = avatar.texture.uvRect( 1, 0, FRAME_WIDTH, FRAME_HEIGHT );
 		frame.shift( patch.left, patch.top );
 		avatar.frame( frame );
 		
-		return avatar;
-	}
-
-	public static Image avatarmita(int armorTier ) {
-
-		RectF patch = tiers().get( armorTier );
-		Image avatar = new Image( spritesheetmita() );
-		RectF frame = avatar.texture.uvRect( 1, 0, FRAME_WIDTH, FRAME_HEIGHT );
-		frame.shift( patch.left, patch.top );
-		avatar.frame( frame );
-
 		return avatar;
 	}
 }

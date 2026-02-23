@@ -47,8 +47,7 @@ public class HeroDisguise extends FlavourBuff {
 	@Override
 	public void fx(boolean on) {
 		if (target instanceof Hero && target.sprite instanceof HeroSprite){
-			if (on) ((HeroSprite)target.sprite).disguisemita();
-			else    ((HeroSprite)target.sprite).disguise(((Hero) target).heroClass);
+			((HeroSprite)target.sprite).disguise(on ? null : ((Hero) target).heroClass);
 			GameScene.updateAvatar();
 		}
 	}
