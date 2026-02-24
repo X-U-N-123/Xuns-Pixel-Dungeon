@@ -53,7 +53,7 @@ public class ResidualRemain extends RemainsItem {
     @Override
     protected void onThrow( int cell ) {
         Char c = Actor.findChar(cell);
-        if (c != null){
+        if (c != null && c.alignment != Char.Alignment.ALLY){
             Buff.affect(c, Terror.class, 8f);
             new Flare( 5, 32 ).color( 0xFF0000, true ).show( c.sprite, 2f );
             Sample.INSTANCE.play( Assets.Sounds.BADGE );

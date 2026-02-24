@@ -67,6 +67,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.bags.MagicalHolster;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.PotionBandolier;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.ScrollHolder;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.VelvetPouch;
+import com.shatteredpixel.shatteredpixeldungeon.items.devPickaxe;
 import com.shatteredpixel.shatteredpixeldungeon.items.devShield;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfExperience;
@@ -186,6 +187,8 @@ public enum HeroClass {
 			scrollOfDebug.collect();
 			devShield devshield = new devShield();
 			devshield.collect();
+			devPickaxe pickaxe = new devPickaxe();
+			pickaxe.collect();
 
 			RingOfEnergy ring = new RingOfEnergy();
 			ring.identify();
@@ -209,9 +212,6 @@ public enum HeroClass {
 			new PotionOfExperience().quantity(29).identify().collect();
 			new ScrollOfUpgrade().quantity(65520).identify().collect();
 
-			Havoc havoc = new Havoc();
-			havoc.Enemieskilled = 127;
-			havoc.identify().collect();
 			new LamellarArmor().upgrade(210).identify().collect();
             new BladeOfMimic().identify().collect();
 
@@ -220,6 +220,7 @@ public enum HeroClass {
 					Dungeon.quickslot.setSlot(s, goldarrow);
 					Dungeon.quickslot.setSlot(s+1, scrollOfDebug);
 					Dungeon.quickslot.setSlot(s+2, devshield);
+					Dungeon.quickslot.setSlot(s+3, pickaxe);
 					break;
 				}
 			}

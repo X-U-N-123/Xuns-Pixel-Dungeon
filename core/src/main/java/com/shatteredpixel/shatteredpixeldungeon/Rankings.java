@@ -80,6 +80,7 @@ public enum Rankings {
 	public LinkedHashMap<Long, Integer> dailyScoreHistory = new LinkedHashMap<>();
 
 	public void submit( boolean win, Object cause ) {
+		if (Dungeon.isChallenged(Challenges.X_U_NS_POWER)) return;
 
 		load();
 		
