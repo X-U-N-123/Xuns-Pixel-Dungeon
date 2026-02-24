@@ -74,7 +74,7 @@ public class EtherealChains extends Artifact {
 	public ArrayList<String> actions(Hero hero) {
 		ArrayList<String> actions = super.actions( hero );
 		if (isEquipped(hero) && charge > 0 && hero.buff(MagicImmune.class) == null
-                && (!cursed || hero.pointsInTalent(Talent.CURSED_POWER) > 3)) {
+                && (!cursed || hero.pointsInTalent(Talent.CURSED_POWER) >= 3)) {
 			actions.add(AC_CAST);
 		}
 		return actions;
@@ -343,7 +343,8 @@ public class EtherealChains extends Artifact {
 		}
 
 		public void gainExp( float levelPortion ) {
-			if (cursed || target.buff(MagicImmune.class) != null || levelPortion == 0) return;
+			if ((cursed && Dungeon.hero.pointsInTalent(Talent.CURSED_POWER) < 3)
+					|| target.buff(MagicImmune.class) != null || levelPortion == 0) return;
 
 			exp += Math.round(levelPortion*100);
 

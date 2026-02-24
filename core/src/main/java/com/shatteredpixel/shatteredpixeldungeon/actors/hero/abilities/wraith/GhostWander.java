@@ -43,6 +43,8 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.ui.HeroIcon;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.BArray;
+import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
@@ -77,10 +79,13 @@ public class GhostWander extends ArmorAbility {
 
             Ballistica route = new Ballistica(hero.pos, target, Ballistica.STOP_TARGET);
 
+			PathFinder.buildDistanceMap(hero.pos, BArray.or(Dungeon.level.passable, Dungeon.level.avoid, null));
+
             //can't occupy the same cell as another char, so move back one.
             int backTrace = route.dist-1;
-            while ((Actor.findChar( target ) != null || (Dungeon.level.solid[target]) && Dungeon.level.map[target] != Terrain.DOOR)
-					&& target != hero.pos) { //the door is passable actually
+            while ((Actor.findChar( target ) != null || PathFinder.distance[target] == Integer.MAX_VALUE
+					|| (Dungeon.level.solid[target]) && Dungeon.level.map[target] != Terrain.DOOR) //the door is passable actually
+					&& target != hero.pos) {
                 target = route.path.get(backTrace);
                 backTrace--;
             }
@@ -101,7 +106,7 @@ public class GhostWander extends ArmorAbility {
 
             hero.busy();
             int finalCell = target;
-            hero.sprite.jump(hero.pos, target, 0, Dungeon.level.trueDistance(hero.pos, target) * 0.06f, ()->{
+            hero.sprite.jump(hero.pos, target, 0, Dungeon.level.trueDistance(hero.pos, target) * 0.07f, ()->{
                 hero.move(finalCell);
                 Dungeon.level.occupyCell(hero);
                 Dungeon.observe();

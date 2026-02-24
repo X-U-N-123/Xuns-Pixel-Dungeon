@@ -22,7 +22,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
@@ -97,7 +96,8 @@ public class Hypnosis extends Buff implements ActionIndicator.Action {
                 if (cell == null) return;
 
                 Char c = Actor.findChar(cell);
-                if (!(c instanceof Mob) || target.isImmune(Sleep.class)){ //the Incubus can't hypnotize itself
+                if (!(c instanceof Mob) || target.isImmune(Sleep.class) //the Incubus can't hypnotize itself
+						|| c.properties().contains(Char.Property.MINIBOSS) || c.properties().contains(Char.Property.BOSS)){
                     GLog.w(Messages.get(this, "invalid_char"));
                     return;
                 }
@@ -108,10 +108,10 @@ public class Hypnosis extends Buff implements ActionIndicator.Action {
 
                 ActionIndicator.clearAction();
                 timeToNow();
-                spend(80f);
+                spend(75f);
                 prepared = false;
                 BuffIndicator.refreshHero();
-                Dungeon.hero.spendAndNext(1f);
+                target.next();
             }
         });
 

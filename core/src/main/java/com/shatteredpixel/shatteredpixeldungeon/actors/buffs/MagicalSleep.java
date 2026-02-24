@@ -70,7 +70,7 @@ public class MagicalSleep extends Buff {
 		}
 		if (target.alignment == Char.Alignment.ALLY) {
 			if (Dungeon.hero.hasTalent(Talent.SLEEPWALKING)){
-                partialHealing += 0.1f + 0.2f * Dungeon.hero.pointsInTalent(Talent.SLEEPWALKING);
+                partialHealing += 0.5f + 0.25f * Dungeon.hero.pointsInTalent(Talent.SLEEPWALKING);
                 while (partialHealing >= 1){
                     target.HP = Math.min(target.HP+1, target.HT);
                     partialHealing --;

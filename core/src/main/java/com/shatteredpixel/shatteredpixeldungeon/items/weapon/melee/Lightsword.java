@@ -57,7 +57,7 @@ public class Lightsword extends MeleeWeapon{
     public float accuracyFactor(Char owner, Char target) {
         if ((owner != Dungeon.hero || Dungeon.hero.STR >= STRReq())
         && (target.properties().contains(Char.Property.UNDEAD) || target.properties().contains(Char.Property.DEMONIC))) {
-            //always hit while fighting against undead and demonic enemies
+            //more accurate when fighting against undead and demonic enemies
             return super.accuracyFactor(owner, target) * 1.5f;
         } else {
             return super.accuracyFactor(owner, target);

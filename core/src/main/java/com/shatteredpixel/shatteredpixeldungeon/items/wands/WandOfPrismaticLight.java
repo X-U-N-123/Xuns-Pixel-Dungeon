@@ -59,11 +59,11 @@ public class WandOfPrismaticLight extends DamageWand {
 	}
 
 	public int min(int lvl){
-		return 1+lvl;
+		return 3+lvl;
 	}
 
 	public int max(int lvl){
-		return 5+3*lvl;
+		return 5+4*lvl;
 	}
 
 	@Override
@@ -87,9 +87,10 @@ public class WandOfPrismaticLight extends DamageWand {
 
 	private void affectTarget(Char ch, int dmg){
 
-		//three in (5+lvl) chance of failing
-		if (Random.Int(5+buffedLvl()) >= 3) {
-			Buff.prolong(ch, Blindness.class, 2f + (buffedLvl() * 0.333f));
+		float chance = 0.6f + 0.2f * buffedLvl();
+		if (Random.Float() < chance) {
+			if (chance > 1) Buff.affect(ch, Blindness.class, 2f * chance);
+			else            Buff.affect(ch, Blindness.class, 2f);
 			ch.sprite.emitter().burst(Speck.factory(Speck.LIGHT), 6 );
 		}
 
@@ -97,7 +98,7 @@ public class WandOfPrismaticLight extends DamageWand {
 			ch.sprite.emitter().start( ShadowParticle.UP, 0.05f, 10+buffedLvl() );
 			Sample.INSTANCE.play(Assets.Sounds.BURNING);
 
-			ch.damage(Math.round(dmg*1.333f), this);
+			ch.damage(Math.round(dmg*1.4f), this);
 		} else {
 			ch.sprite.centerEmitter().burst( RainbowParticle.BURST, 10+buffedLvl() );
 
@@ -142,7 +143,7 @@ public class WandOfPrismaticLight extends DamageWand {
 
 	@Override
 	public String upgradeStat2(int level) {
-		return Messages.decimalFormat("#", 100*(1-(3/(float)(5+level)))) + "%";
+		return Messages.decimalFormat("#", 60 + 20 * level) + "%";
 	}
 
 	@Override

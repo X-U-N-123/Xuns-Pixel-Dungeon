@@ -778,7 +778,7 @@ public abstract class Mob extends Char {
 
         if (state == SLEEPING && hero.subClass == HeroSubClass.INCUBUS){
             //proc effect for char src here(if src isn't char, we will proc it in damage)
-            damage = Math.round(damage * (1.4f + 0.2f * hero.pointsInTalent(Talent.NIGHTMARE_HAUNTING)));
+            damage = Math.round(damage * (1.3f + 0.15f * hero.pointsInTalent(Talent.NIGHTMARE_HAUNTING)));
             switch (hero.pointsInTalent(Talent.WRONG_SIDE_OF_THE_BED)) {
                 case 3:
                     Buff.affect(this, PhysicalEmpower.class).set(damage, 1);
@@ -1164,52 +1164,34 @@ public abstract class Mob extends Char {
 			desc += "\n\n_" + Messages.titleCase(b.name()) + "_\n" + b.desc();
 		}
 
-		String desc_dev = "";
-		String property = "";
-		String State = "";
-		String alignment = "";
+		String dev_desc = "";
 		String plunder = "";
-		if (Dungeon.hero != null && Dungeon.isChallenged(Challenges.X_U_NS_POWER)){
-			property = Messages.get(this, "property");
-			if (this.properties().contains(Char.Property.BOSS))       property += Messages.get(this, "boss");
-			if (this.properties().contains(Char.Property.MINIBOSS))   property += Messages.get(this, "miniboss");
-			if (this.properties().contains(Char.Property.BOSS_MINION))property += Messages.get(this, "boss_minion");
-			if (this.properties().contains(Char.Property.UNDEAD))     property += Messages.get(this, "undead");
-			if (this.properties().contains(Char.Property.DEMONIC))    property += Messages.get(this, "demonic");
-			if (this.properties().contains(Char.Property.INORGANIC))  property += Messages.get(this, "inorganic");
-			if (this.properties().contains(Char.Property.FIERY))      property += Messages.get(this, "fiery");
-			if (this.properties().contains(Char.Property.ICY))        property += Messages.get(this, "icy");
-			if (this.properties().contains(Char.Property.ACIDIC))     property += Messages.get(this, "acidic");
-			if (this.properties().contains(Char.Property.ELECTRIC))   property += Messages.get(this, "electric");
-			if (this.properties().contains(Char.Property.LARGE))      property += Messages.get(this, "large");
-			if (this.properties().contains(Char.Property.IMMOVABLE))  property += Messages.get(this, "immovable");
-			if (this.properties().contains(Char.Property.STATIC))     property += Messages.get(this, "static");
-
-			State = Messages.get(this, "state");
-			if (this.state.equals(WANDERING))State += Messages.get(this, "wandering");
-			if (this.state.equals(SLEEPING)) State += Messages.get(this, "sleeping");
-			if (this.state.equals(HUNTING))  State += Messages.get(this, "hunting");
-			if (this.state.equals(FLEEING))  State += Messages.get(this, "fleeing");
-			if (this.state.equals(PASSIVE))  State += Messages.get(this, "passive");
-
-			alignment = Messages.get(this, "alignment");
-			if (this.alignment == Alignment.ALLY)   alignment += Messages.get(this, "ally");
-			if (this.alignment == Alignment.ENEMY)  alignment += Messages.get(this, "enemy");
-			if (this.alignment == Alignment.NEUTRAL)alignment += Messages.get(this, "neutral");
-			alignment += "\n\n";
+		if (Dungeon.isChallenged(Challenges.X_U_NS_POWER)){
 			int inc = StoneofIntelligence.LootandExpinc();
 			int armor = Math.round(drRoll() * AscensionChallenge.statModifier(this));
 			if (this.buff(BrokenArmor.class) != null){
 				armor = 0;
 			}
-			desc_dev = Messages.get(this, "dev_info", HP, HT, attackSkill(this), defenseSkill(this),
-                EXP, maxLvl + inc, damageRoll(), attackDelay(), armor, speed(), 1/timeScale());
+			dev_desc = Messages.get(this, "dev_info", HP, HT, attackSkill(this), defenseSkill(this),
+				EXP, maxLvl + inc, damageRoll(), attackDelay(), armor, speed(), 1/timeScale());
+
+			dev_desc += "\n" + Messages.get(this, "property");
+			for (Property prop : properties().toArray(new Property[0])) dev_desc += Messages.get(this, prop.toString());
+
+			dev_desc += "\n" + Messages.get(this, "state");
+			if (this.state.equals(WANDERING))dev_desc += Messages.get(this, "wandering");
+			if (this.state.equals(SLEEPING)) dev_desc += Messages.get(this, "sleeping");
+			if (this.state.equals(HUNTING))  dev_desc += Messages.get(this, "hunting");
+			if (this.state.equals(FLEEING))  dev_desc += Messages.get(this, "fleeing");
+			if (this.state.equals(PASSIVE))  dev_desc += Messages.get(this, "passive");
+
+			dev_desc += "\n" + Messages.get(this, "alignment") + Messages.get(this, alignment.toString()) + "\n\n";
 		}
 		if (Dungeon.isChallenged(Challenges.CRAZY_LOOT) && plunderedItem != null){
 			plunder += "\n\n" + Messages.get(this, "plunder");
 		}
 
-		return desc_dev + property + State + alignment + desc + plunder;
+		return dev_desc + desc + plunder;
 	}
 	
 	public void notice() {
