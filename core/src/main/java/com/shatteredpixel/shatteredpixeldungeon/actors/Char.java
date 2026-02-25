@@ -27,6 +27,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Electricity;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.StormCloud;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ToxicGas;
@@ -426,6 +427,19 @@ public abstract class Char extends Actor {
 			return false;
 
 		} else if (hit( this, enemy, accMulti, false )) {
+
+			if (this instanceof Hero && ((Hero) this).subClass == HeroSubClass.PLAGUEGOD){
+				int gasPos = -1;
+				for (int i : PathFinder.NEIGHBOURS8){
+					if (!Dungeon.level.solid[enemy.pos+i] &&
+							(gasPos == -1 ||
+									Dungeon.level.trueDistance(this.pos, enemy.pos+i) < Dungeon.level.trueDistance(this.pos, gasPos))){
+						gasPos = enemy.pos+i;
+					}
+				}
+				if (gasPos == -1) gasPos = enemy.pos;
+				GameScene.add( Blob.seed( gasPos, 15, ToxicGas.class ) );
+			}
 			
 			int dr = Math.round(enemy.drRoll() * AscensionChallenge.statModifier(enemy));
 			
@@ -765,7 +779,7 @@ public abstract class Char extends Actor {
 			defRoll *= buff.EvasionFactor();
 		}
 		if (defender == hero && hero.subClass == HeroSubClass.GUARD && hero.shielding() > 0) {
-			acuRoll *= 1.2f;
+			defRoll *= 1.2f;
 		}
 		defRoll *= AscensionChallenge.statModifier(defender);
 		if (hero.heroClass != HeroClass.CLERIC

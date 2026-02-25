@@ -95,7 +95,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.BladeOfMimic;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Cudgel;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dagger;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Gloves;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Havoc;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Rapier;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Shovel;
@@ -120,7 +119,7 @@ public enum HeroClass {
 	DUELIST( HeroSubClass.CHAMPION, HeroSubClass.MONK, HeroSubClass.PHANTOM),
 	CLERIC( HeroSubClass.PRIEST, HeroSubClass.PALADIN, HeroSubClass.PREACHER),
 	EXPLORER( HeroSubClass.WAVECHASER, HeroSubClass.TRAPPER, HeroSubClass.ROCKSY),
-    WRAITH( HeroSubClass.INCUBUS );
+    WRAITH( HeroSubClass.INCUBUS, HeroSubClass.PLAGUEGOD );
 
 	private HeroSubClass[] subClasses;
 

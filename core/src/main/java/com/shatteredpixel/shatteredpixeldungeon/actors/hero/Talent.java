@@ -27,6 +27,7 @@ import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AcidRain;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Adrenaline;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ArtifactRecharge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
@@ -47,6 +48,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicalSight;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MonkEnergy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.PhysicalEmpower;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Poison;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Recharging;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RevealedArea;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Roots;
@@ -264,6 +266,8 @@ public enum Talent {
     VICIOUS_BETRAYAL(347, 3), CURSED_POWER(348, 3), BLURRING_BODY(349, 3),
     //Incubus T3
     LULLABY(350, 3), SLEEPWALKING(351, 3), SLEEPING_IN(352, 3), WRONG_SIDE_OF_THE_BED(353, 3), NIGHTMARE_HAUNTING(354, 3),
+	//PlagueGod T3
+	CORPSE_DECAY(355, 3), HOMEMADE_DRUG(356, 3), MAGICAL_VENT(357, 3), ACID_RAIN(358, 3), PLAGUE_EUCHARIST(359, 3),
 	//Lifeloan T4
 	HIGH_QUOTA(365, 4), EXTRA_GIFT(366, 4), BREACH_OF_TRUST(367, 4), PHILANTHROPIST(368, 4),
 	//GhostWander T4
@@ -961,7 +965,7 @@ public enum Talent {
 		if (Dungeon.level.map[hero.pos] == Terrain.EMBERS && talent == REKINDLED_EMBER && hero.buff(Burning.class) != null)
 			Buff.detach(hero, Burning.class);
 
-        if (talent == RIVER_EROSION || (talent == UNDERCURRENT && Dungeon.hero.pointsInTalent(talent) >= 3)){
+        if (talent == RIVER_EROSION || (talent == UNDERCURRENT && hero.pointsInTalent(talent) >= 3)){
             for (Mob m : Dungeon.level.mobs.toArray(new Mob[0])) {
                 if (m.alignment == Char.Alignment.ENEMY && m.state != m.SLEEPING
                 && (!m.isFlying() || Dungeon.hero.pointsInTalent(Talent.UNDERCURRENT) >= 3)){
@@ -969,10 +973,34 @@ public enum Talent {
                 }
             }
         }
+
+		if (talent == HOMEMADE_DRUG && hero.pointsInTalent(talent) >= 2)
+			Buff.affect(hero, HomemadeDrugTracker.class);
+
+		if (talent == ACID_RAIN) {
+			AcidRain acid = Buff.affect(hero, AcidRain.class);
+			if (hero.pointsInTalent(talent) == 1) ActionIndicator.setAction(acid);
+		}
 	}
 
 	public static class CachedRationsDropped extends CounterBuff{{revivePersists = true;}}
 	public static class NatureBerriesDropped extends CounterBuff{{revivePersists = true;}}
+	public static class HomemadeDrugTracker extends Buff {
+		@Override
+		public boolean act(){
+			if (((Hero)target).pointsInTalent(HOMEMADE_DRUG) < 2){ //to prevent player get free boost from elixir of amnesia
+				detach();
+			} else if (target.buff(Poison.class) == null){
+				Poison p = Buff.affect(target, Poison.class);
+			}
+			spend(TICK);
+			return true;
+		}
+		@Override
+		public void spend(float time){
+			super.spend(time);
+		}
+	}
 
 	public static void onFoodEaten( Hero hero, float foodVal, Item foodSource ){
 		if (hero.hasTalent(HEARTY_MEAL)){
@@ -1740,6 +1768,9 @@ public enum Talent {
             case INCUBUS:
                 Collections.addAll(tierTalents, LULLABY, SLEEPWALKING, SLEEPING_IN, WRONG_SIDE_OF_THE_BED, NIGHTMARE_HAUNTING);
                 break;
+			case PLAGUEGOD:
+				Collections.addAll(tierTalents, CORPSE_DECAY, HOMEMADE_DRUG, MAGICAL_VENT, ACID_RAIN, PLAGUE_EUCHARIST);
+				break;
 		}
 		for (Talent talent : tierTalents){
 			if (corroTalent != talent) talents.get(2).put(talent, 0);

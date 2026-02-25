@@ -60,9 +60,10 @@ public enum HeroSubClass {
 	TRAPPER(HeroIcon.TRAPPER),
 	ROCKSY(HeroIcon.ROCKSY),
 
-    INCUBUS(HeroIcon.INCUBUS);
+    INCUBUS(HeroIcon.INCUBUS),
+	PLAGUEGOD(HeroIcon.PLAGUEGOD);
 
-	int icon;
+	final int icon;
 
 	HeroSubClass(int icon){
 		this.icon = icon;

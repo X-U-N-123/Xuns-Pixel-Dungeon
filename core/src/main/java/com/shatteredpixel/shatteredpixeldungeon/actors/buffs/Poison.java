@@ -25,6 +25,8 @@ import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.PoisonParticle;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -101,10 +103,22 @@ public class Poison extends Buff implements Hero.Doom {
 	public boolean act() {
 		if (target.isAlive()) {
 			
-			target.damage( (int)(left / 3) + 1, this );
+			if (!(target instanceof Hero) || ((Hero) target).subClass != HeroSubClass.PLAGUEGOD)
+				target.damage( (int)(left / 3) + 1, this );
 			spend( TICK );
-			
-			if ((left -= TICK) <= 0) {
+
+			if (target instanceof Hero){
+				switch (((Hero) target).pointsInTalent(Talent.HOMEMADE_DRUG)){
+					case 1: break;
+					case 2: case 3:
+						if (left < 2 * ((Hero) target).pointsInTalent(Talent.HOMEMADE_DRUG)) left += TICK;
+						break;
+					default:
+						left -= TICK;
+						break;
+				}
+			} else left -= TICK;
+			if (left <= 0) {
 				detach();
 			}
 			

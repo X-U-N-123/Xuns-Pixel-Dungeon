@@ -27,6 +27,8 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ToxicGas;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ArtifactRecharge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
@@ -77,6 +79,7 @@ import com.watabou.noosa.Image;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
+import com.watabou.utils.PathFinder;
 import com.watabou.utils.PointF;
 import com.watabou.utils.Random;
 
@@ -519,7 +522,7 @@ public abstract class Wand extends Item {
 		curCharges -= cursed ? 1 : chargesPerCast();
 
 		Switch buff1 = curUser.buff(Switch.class);
-		int switchLvl = 0;
+		float timeModifier = 1f;
 		//remove magic charge at a higher priority, if we are benefiting from it are and not the
 		//wand that just applied it
 		WandOfMagicMissile.MagicCharge buff = curUser.buff(WandOfMagicMissile.MagicCharge.class);
@@ -535,10 +538,10 @@ public abstract class Wand extends Item {
 			}
 		} else if (buffedLvl() > super.buffedLvl()){
 			buff1.detach();
-			switchLvl += 1;
+			timeModifier = 0.8f;
 			int point = curUser.pointsInTalent(Talent.SWITCH_MASTER);
 			if (point > 0){
-				switchLvl += 1;
+				timeModifier = 0.6f;
 				if (point > 1){
 					this.gainCharge(0.2f);
 					if (point > 2 && curUser.belongings.getItem(MagesStaff.class) != null){
@@ -593,7 +596,11 @@ public abstract class Wand extends Item {
 		Invisibility.dispel();
 		updateQuickslot();
 
-		curUser.spendAndNext(TIME_TO_ZAP - 0.2f*switchLvl);
+		Blob gas = Dungeon.level.blobs.get(ToxicGas.class);
+		if (Dungeon.hero.pointsInTalent(Talent.PLAGUE_EUCHARIST) >= 2
+				&& gas != null && gas.cur[Dungeon.hero.pos] > 0) timeModifier /= 1.12f;
+
+		curUser.spendAndNext(TIME_TO_ZAP * timeModifier);
 	}
 	
 	@Override
@@ -745,6 +752,10 @@ public abstract class Wand extends Item {
 							return;
 						}
 
+						if (Random.Float() < curUser.pointsInTalent(Talent.MAGICAL_VENT) / 3f){
+							GameScene.add( Blob.seed( target, 15, ToxicGas.class ));
+						}
+
 						float shield = curUser.HT * (0.04f*curWand.curCharges);
 						if (curUser.pointsInTalent(Talent.SHIELD_BATTERY) == 2) shield *= 1.5f;
 						Buff.affect(curUser, Barrier.class).setShield(Math.round(shield));
@@ -773,10 +784,23 @@ public abstract class Wand extends Item {
 					
 					curUser.busy();
 
+					if (Random.Float() < curUser.pointsInTalent(Talent.MAGICAL_VENT) / 3f){
+						int gasPos = -1;
+						for (int i : PathFinder.NEIGHBOURS8){
+							if (!Dungeon.level.solid[target+i] &&
+									(gasPos == -1 ||
+											Dungeon.level.trueDistance(curUser.pos, target+i) < Dungeon.level.trueDistance(curUser.pos, gasPos))){
+								gasPos = target+i;
+							}
+						}
+						if (gasPos == -1) gasPos = target;
+						GameScene.add( Blob.seed( gasPos, 15, ToxicGas.class ) );
+					}
+
 					//backup barrier logic
 					//This triggers before the wand zap, mostly so the barrier helps vs skeletons
 					if (curUser.hasTalent(Talent.BACKUP_BARRIER)
-							&& curWand.curCharges == curWand.chargesPerCast()
+							&& curWand.curCharges <= curWand.chargesPerCast()
 							&& curWand.charger != null && curWand.charger.target == curUser){
 
 						//regular. If hero owns wand but it isn't in belongings it must be in the staff
@@ -804,17 +828,16 @@ public abstract class Wand extends Item {
 					}
 
 					if (curUser.hasTalent(Talent.RESERVED_ENERGY)
-						&& curWand.curCharges == curWand.chargesPerCast()
-						&& curWand.charger != null && curWand.charger.target == curUser
-						&& curUser.buff(Wand.ReservedenergyCooldown.class) == null
-						&& curWand.isIdentified()){
+							&& curWand.curCharges <= curWand.chargesPerCast()
+							&& curWand.charger != null && curWand.charger.target == curUser
+							&& curUser.buff(Wand.ReservedenergyCooldown.class) == null && curWand.curChargeKnown){
 						curWand.curCharges = Math.min(3 , curWand.maxCharges+1);
 						Sample.INSTANCE.play( Assets.Sounds.CHARGEUP );
 						ScrollOfRecharging.charge(curUser);
 						SpellSprite.show(curUser, SpellSprite.CHARGE);
 						Buff.affect(curUser, ReservedenergyCooldown.class, 110 - 30f*(curUser.pointsInTalent(Talent.RESERVED_ENERGY)));
 					}
-					
+
 					if (curWand.cursed){
 						if (!curWand.cursedKnown){
 							GLog.n(Messages.get(Wand.class, "curse_discover", curWand.name()));

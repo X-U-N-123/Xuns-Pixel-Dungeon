@@ -30,6 +30,8 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.StenchGas;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Adrenaline;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AllyBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Amok;
@@ -974,22 +976,26 @@ public abstract class Mob extends Char {
 
 			rollToDropLoot();
 
-			if (cause == Dungeon.hero || cause instanceof Weapon || cause instanceof Weapon.Enchantment){
-				if (Dungeon.hero.hasTalent(Talent.LETHAL_MOMENTUM)
-						&& Random.Float() < 0.34f + 0.33f * Dungeon.hero.pointsInTalent(Talent.LETHAL_MOMENTUM)){
-					Buff.affect(Dungeon.hero, Talent.LethalMomentumTracker.class, 0f);
+			if (cause == hero || cause instanceof Weapon || cause instanceof Weapon.Enchantment){
+				if (hero.hasTalent(Talent.LETHAL_MOMENTUM)
+						&& Random.Float() < 0.34f + 0.33f * hero.pointsInTalent(Talent.LETHAL_MOMENTUM)){
+					Buff.affect(hero, Talent.LethalMomentumTracker.class, 0f);
 				}
-				if (Dungeon.hero.heroClass != HeroClass.DUELIST
-						&& Dungeon.hero.hasTalent(Talent.LETHAL_HASTE)
-						&& Dungeon.hero.buff(Talent.LethalHasteCooldown.class) == null){
-					Buff.affect(Dungeon.hero, Talent.LethalHasteCooldown.class, 100f);
-					Buff.affect(Dungeon.hero, GreaterHaste.class).set(2 + 2*Dungeon.hero.pointsInTalent(Talent.LETHAL_HASTE));
+				if (hero.heroClass != HeroClass.DUELIST
+						&& hero.hasTalent(Talent.LETHAL_HASTE)
+						&& hero.buff(Talent.LethalHasteCooldown.class) == null){
+					Buff.affect(hero, Talent.LethalHasteCooldown.class, 100f);
+					Buff.affect(hero, GreaterHaste.class).set(2 + 2*hero.pointsInTalent(Talent.LETHAL_HASTE));
 				}
+			}
+			
+			if (hero.pointsInTalent(Talent.CORPSE_DECAY) >= 2){
+				GameScene.add( Blob.seed( pos, 8 * hero.pointsInTalent(Talent.CORPSE_DECAY), StenchGas.class ) );
 			}
 
 		}
 
-		if (Dungeon.hero.isAlive() && !Dungeon.level.heroFOV[pos]) {
+		if (hero.isAlive() && !Dungeon.level.heroFOV[pos]) {
 			GLog.i( Messages.get(this, "died") );
 		}
 
@@ -999,7 +1005,7 @@ public abstract class Mob extends Char {
 
 		if (!(this instanceof Wraith)
 				&& soulMarked
-				&& Random.Float() < 0.15f*Dungeon.hero.pointsInTalent(Talent.NECROMANCERS_MINIONS)){
+				&& Random.Float() < 0.15f*hero.pointsInTalent(Talent.NECROMANCERS_MINIONS)){
 			Wraith w = Wraith.spawnAt(pos, Wraith.class);
 			if (w != null) {
 				Buff.affect(w, Corruption.class);

@@ -34,6 +34,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.SacrificialFire;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.StenchGas;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ToxicGas;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.WellWater;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Adrenaline;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AdrenalineSurge;
@@ -63,6 +65,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MindVision;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Momentum;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MonkEnergy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Poison;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Preparation;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Recharging;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Regeneration;
@@ -513,31 +516,36 @@ public class Hero extends Char {
 		belongings.thrownWeapon = wep;
 		boolean hit = attack( enemy );
 		Invisibility.dispel();
-
-		NinjaInvisCooldown invis = buff(NinjaInvisCooldown.class);
-		if (invis != null && !invis.invisGiven && hit){
-			Buff.affect(this, Invisibility.class, 3f);
-			invis.invisGiven = true;
-		}
-
-		Char.ExtremistTracker extreme = buff(ExtremistTracker.class);
-		if (extreme != null){
-			Buff.affect(this, Invisibility.class, 1f);
-			extreme.detach();
-			buff(Preparation.class).incTurnsInvis(8);
-		}
 		belongings.thrownWeapon = null;
 
 		if (hit && wasEnemy){
+			NinjaInvisCooldown invis = buff(NinjaInvisCooldown.class);
+			if (invis != null && !invis.invisGiven && hit){
+				Buff.affect(this, Invisibility.class, 3f);
+				invis.invisGiven = true;
+			}
+			Char.ExtremistTracker extreme = buff(ExtremistTracker.class);
+			if (extreme != null){
+				Buff.affect(this, Invisibility.class, 1f);
+				extreme.detach();
+				buff(Preparation.class).incTurnsInvis(8);
+			}
 			if (subClass == HeroSubClass.GLADIATOR){
 				Buff.affect( this, Combo.class ).hit( enemy );
 				if (pointsInTalent(Talent.FAR_STANDOFF) >= 2)
 					Buff.affect( this, Combo.class ).hit( enemy );
 			}
-
 			if (heroClass == HeroClass.DUELIST)
 				Buff.affect( this, Sai.ComboStrikeTracker.class).addHit();
-
+			if (hasTalent(Talent.HOMEMADE_DRUG)){
+				Poison p = buff(Poison.class);
+				if (p != null && !attackTarget.isImmune(Poison.class)){
+					Buff.affect(enemy, Poison.class).set(p.left());
+					p.detach();
+					Talent.HomemadeDrugTracker drug = buff(Talent.HomemadeDrugTracker.class);
+					if (drug != null) drug.spend(3f);
+				}
+			}
 		}
 
 		attackTarget = null;
@@ -859,6 +867,10 @@ public class Hero extends Char {
 			speed *= courierFactor;
 		}
 
+		Blob gas = Dungeon.level.blobs.get(ToxicGas.class);
+		if (pointsInTalent(Talent.PLAGUE_EUCHARIST) >= 1
+				&& gas != null && gas.cur[pos] > 0) speed *= 1.12f;
+
 		if (heroClass == HeroClass.EXPLORER && Dungeon.level.map[pos] == Terrain.WATER && subClass != HeroSubClass.WAVECHASER)
 			speed *= 1.15f; //overriden by wavechaser ability, see spend(float time)
 
@@ -931,6 +943,10 @@ public class Hero extends Char {
 		if (heroClass != HeroClass.EXPLORER){
 			delay /= 1f + 0.05f * pointsInTalent(Talent.CONVENIENT_SHOVEL);
 		}//convenient shovel transmuting effect
+
+		Blob gas = Dungeon.level.blobs.get(ToxicGas.class);
+		if (pointsInTalent(Talent.PLAGUE_EUCHARIST) >= 3
+				&& gas != null && gas.cur[pos] > 0) delay /= 1.12f;
 
 		if (!RingOfForce.fightingUnarmed(this)) {
 			
@@ -2625,34 +2641,39 @@ public class Hero extends Char {
 		boolean hit = attack(attackTarget);
 		
 		Invisibility.dispel();
-
-		NinjaInvisCooldown invis = buff(NinjaInvisCooldown.class);
-		if (invis != null && !invis.invisGiven){
-			Buff.affect(this, Invisibility.class, 3f);
-			invis.invisGiven = true;
-		}
 		spend( attackDelay() );
 
-		Char.ExtremistTracker extreme = buff(ExtremistTracker.class);
-		if (extreme != null){
-			Buff.affect(this, Invisibility.class, attackDelay());
-			extreme.detach();
-			buff(Preparation.class).incTurnsInvis(8);
-		}
-
 		if (hit && wasEnemy){
+			NinjaInvisCooldown invis = buff(NinjaInvisCooldown.class);
+			if (invis != null && !invis.invisGiven){
+				Buff.affect(this, Invisibility.class, 3f);
+				invis.invisGiven = true;
+			}
+			Char.ExtremistTracker extreme = buff(ExtremistTracker.class);
+			if (extreme != null){
+				Buff.affect(this, Invisibility.class, attackDelay());
+				extreme.detach();
+				buff(Preparation.class).incTurnsInvis(8);
+			}
 			if (subClass == HeroSubClass.GLADIATOR){
 				Buff.affect( this, Combo.class ).hit( attackTarget );
                 if (!Dungeon.level.adjacent(pos, attackTarget.pos) && hasTalent(Talent.FAR_STANDOFF))
                     Buff.affect( this, Combo.class ).hit( attackTarget );
 			}
-
 			if (hasTalent(Talent.SKILLED_DUAL) && belongings.weapon() != null){
 				Buff.prolong( this, Talent.SkilleddualTracker.class, 10).hit((Weapon)belongings.weapon());
 			}
-
 			if (heroClass == HeroClass.DUELIST)
 				Buff.affect( this, Sai.ComboStrikeTracker.class).addHit();
+			if (hasTalent(Talent.HOMEMADE_DRUG)){
+				Poison p = buff(Poison.class);
+				if (p != null && !attackTarget.isImmune(Poison.class)){
+					Buff.affect(attackTarget, Poison.class).set(p.left());
+					p.detach();
+					Talent.HomemadeDrugTracker drug = buff(Talent.HomemadeDrugTracker.class);
+					if (drug != null) drug.spend(3f);
+				}
+			}
 		}
 
 		curAction = null;
@@ -2992,5 +3013,12 @@ public class Hero extends Char {
 			super.restoreFromBundle(bundle);
 			invisGiven = bundle.getBoolean(GIVEN);
 		}
+	}
+
+	@Override
+	public boolean isImmune(Class effect){
+		if (effect == ToxicGas.class && subClass == HeroSubClass.PLAGUEGOD) return true;
+		if (effect == StenchGas.class && hasTalent(Talent.CORPSE_DECAY))    return true;
+		else return super.isImmune(effect);
 	}
 }
