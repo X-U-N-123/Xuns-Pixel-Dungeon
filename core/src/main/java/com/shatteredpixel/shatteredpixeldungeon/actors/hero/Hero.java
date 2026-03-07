@@ -520,7 +520,7 @@ public class Hero extends Char {
 
 		if (hit && wasEnemy){
 			NinjaInvisCooldown invis = buff(NinjaInvisCooldown.class);
-			if (invis != null && !invis.invisGiven && hit){
+			if (invis != null && !invis.invisGiven){
 				Buff.affect(this, Invisibility.class, 3f);
 				invis.invisGiven = true;
 			}
@@ -869,7 +869,7 @@ public class Hero extends Char {
 
 		Blob gas = Dungeon.level.blobs.get(ToxicGas.class);
 		if (pointsInTalent(Talent.PLAGUE_EUCHARIST) >= 1
-				&& gas != null && gas.cur[pos] > 0) speed *= 1.12f;
+				&& gas != null && gas.volume > 0 && gas.cur[pos] > 0) speed *= 1.12f;
 
 		if (heroClass == HeroClass.EXPLORER && Dungeon.level.map[pos] == Terrain.WATER && subClass != HeroSubClass.WAVECHASER)
 			speed *= 1.15f; //overriden by wavechaser ability, see spend(float time)
@@ -946,7 +946,7 @@ public class Hero extends Char {
 
 		Blob gas = Dungeon.level.blobs.get(ToxicGas.class);
 		if (pointsInTalent(Talent.PLAGUE_EUCHARIST) >= 3
-				&& gas != null && gas.cur[pos] > 0) delay /= 1.12f;
+				&& gas != null && gas.volume > 0 && gas.cur[pos] > 0) delay /= 1.12f;
 
 		if (!RingOfForce.fightingUnarmed(this)) {
 			

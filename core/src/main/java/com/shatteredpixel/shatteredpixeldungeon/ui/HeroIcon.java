@@ -124,7 +124,6 @@ public class HeroIcon extends Image {
 	public static final int HOLY_CHAMPION   = 111;
 	public static final int HOLY_REGENERATION = 112;
 	public static final int MIMIC_FORM      = 113;
-	public static final int BLESSED_FOG     = 114;
 	public static final int PUNISHMENT      = 115;
 	public static final int HOLY_DRAPE      = 116;
 	public static final int BOOKPAGE        = 117;

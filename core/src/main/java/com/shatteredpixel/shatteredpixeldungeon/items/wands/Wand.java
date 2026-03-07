@@ -598,7 +598,7 @@ public abstract class Wand extends Item {
 
 		Blob gas = Dungeon.level.blobs.get(ToxicGas.class);
 		if (Dungeon.hero.pointsInTalent(Talent.PLAGUE_EUCHARIST) >= 2
-				&& gas != null && gas.cur[Dungeon.hero.pos] > 0) timeModifier /= 1.12f;
+				&& gas != null && gas.volume > 0 && gas.cur[Dungeon.hero.pos] > 0) timeModifier /= 1.12f;
 
 		curUser.spendAndNext(TIME_TO_ZAP * timeModifier);
 	}

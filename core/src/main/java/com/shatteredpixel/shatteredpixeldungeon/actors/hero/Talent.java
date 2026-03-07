@@ -79,6 +79,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HolyTome;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HornOfPlenty;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfIdentify;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMagicMapping;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRecharging;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
@@ -117,12 +118,10 @@ import com.watabou.utils.Reflection;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 
-@SuppressWarnings("SuspiciousIndentation")
 public enum Talent {
 
 	//Warrior T1
@@ -643,7 +642,7 @@ public enum Talent {
 				itemToID = equipmentsToID.remove(Random.Int(equipmentsToID.toArray().length));
 
 				if (itemToID != null){
-					itemToID.identify();
+					ScrollOfIdentify.IDItem(itemToID);
 					GLog.p(Messages.get(Hero.class, "talent_id", itemToID.name()));
 					Buff.affect(hero, SecretForesightCooldown.class, 499f);//1 turn less as this is instant
 				}
@@ -739,11 +738,11 @@ public enum Talent {
 		public float iconFadePercent() { return Math.max(0, visualcooldown() / 20); }
 	}
 
-	int icon;
-	int maxPoints;
+	final int icon;
+	final int maxPoints;
 
 	// tiers 1/2/3/4 start at levels 2/7/13/20
-	public static int[] tierLevelThresholds = new int[]{0, 2, 7, 13, 21, 31};
+	public static final int[] tierLevelThresholds = new int[]{0, 2, 7, 13, 21, 31};
 
 	Talent( int icon ){
 		this(icon, 2);
@@ -861,16 +860,16 @@ public enum Talent {
 		}
 
 		if (talent == VETERANS_INTUITION && hero.pointsInTalent(VETERANS_INTUITION) == 2){
-			if (hero.belongings.armor() != null && !ShardOfOblivion.passiveIDDisabled())  {
-				hero.belongings.armor.identify();
+			if (hero.belongings.armor() != null && !ShardOfOblivion.passiveIDDisabled()) {
+				ScrollOfIdentify.IDItem(hero.belongings.armor);
 			}
 		}
 		if (talent == THIEFS_INTUITION && hero.pointsInTalent(THIEFS_INTUITION) == 2){
-			if (hero.belongings.ring instanceof Ring && !ShardOfOblivion.passiveIDDisabled()) {
-				hero.belongings.ring.identify();
+			if (hero.belongings.ring != null && !ShardOfOblivion.passiveIDDisabled()) {
+				ScrollOfIdentify.IDItem(hero.belongings.ring);
 			}
 			if (hero.belongings.misc instanceof Ring && !ShardOfOblivion.passiveIDDisabled()) {
-				hero.belongings.misc.identify();
+				ScrollOfIdentify.IDItem(hero.belongings.misc);
 			}
 			for (Item item : Dungeon.hero.belongings){
 				if (item instanceof Ring){
@@ -879,12 +878,12 @@ public enum Talent {
 			}
 		}
 		if (talent == THIEFS_INTUITION && hero.pointsInTalent(THIEFS_INTUITION) == 1){
-			if (hero.belongings.ring instanceof Ring) hero.belongings.ring.setKnown();
+			if (hero.belongings.ring != null) hero.belongings.ring.setKnown();
 			if (hero.belongings.misc instanceof Ring) ((Ring) hero.belongings.misc).setKnown();
 		}
 		if (talent == ADVENTURERS_INTUITION && hero.pointsInTalent(ADVENTURERS_INTUITION) == 2){
 			if (hero.belongings.weapon() != null && !ShardOfOblivion.passiveIDDisabled()){
-				hero.belongings.weapon().identify();
+				ScrollOfIdentify.IDItem(hero.belongings.weapon());
 			}
 		}
 
@@ -991,7 +990,7 @@ public enum Talent {
 			if (((Hero)target).pointsInTalent(HOMEMADE_DRUG) < 2){ //to prevent player get free boost from elixir of amnesia
 				detach();
 			} else if (target.buff(Poison.class) == null){
-				Poison p = Buff.affect(target, Poison.class);
+				Buff.affect(target, Poison.class);
 			}
 			spend(TICK);
 			return true;
@@ -1128,21 +1127,18 @@ public enum Talent {
 			}
 
 			Collections.shuffle(disarmCandidates);
-			Collections.sort(disarmCandidates, new Comparator<Trap>() {
-				@Override
-				public int compare(Trap o1, Trap o2) {
-					float diff = Dungeon.level.trueDistance(hero.pos, o1.pos) - Dungeon.level.trueDistance(hero.pos, o2.pos);
-					if (diff < 0){
-						return -1;
-					} else if (diff == 0){
-						return 0;
-					} else {
-						return 1;
-					}
+			Collections.sort(disarmCandidates, (o1, o2)->{
+				float diff = Dungeon.level.trueDistance(hero.pos, o1.pos) - Dungeon.level.trueDistance(hero.pos, o2.pos);
+				if (diff < 0){
+					return -1;
+				} else if (diff == 0){
+					return 0;
+				} else {
+					return 1;
 				}
 			});
 
-			//disarms at most 4/9 traps
+			//disarms at most 4/6 traps
 			while (disarmCandidates.size() > 2 + 2*hero.pointsInTalent(KEEN_MEAL)){
 				disarmCandidates.remove(2 + 2*hero.pointsInTalent(KEEN_MEAL));
 			}
@@ -1389,10 +1385,7 @@ public enum Talent {
 	}
 
 	public static void onItemEquipped( Hero hero, Item item ){
-		boolean identify = false;
-		if (hero.pointsInTalent(VETERANS_INTUITION) == 2 && item instanceof Armor){
-			identify = true;
-		}
+		boolean identify = hero.pointsInTalent(VETERANS_INTUITION) == 2 && item instanceof Armor;
 		if (hero.hasTalent(THIEFS_INTUITION) && item instanceof Ring){
 			if (hero.pointsInTalent(THIEFS_INTUITION) == 2){
 				identify = true;
@@ -1403,9 +1396,7 @@ public enum Talent {
 			identify = true;
 		}
 
-		if (identify && !ShardOfOblivion.passiveIDDisabled()){
-			item.identify();
-		}
+		if (identify) ScrollOfIdentify.IDItem(item);
 	}
 
 	public static void onItemCollected( Hero hero, Item item ){

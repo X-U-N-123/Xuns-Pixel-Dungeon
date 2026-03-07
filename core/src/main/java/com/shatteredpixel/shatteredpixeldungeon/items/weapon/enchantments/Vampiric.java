@@ -22,8 +22,11 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments;
 
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Healing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mimic;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.VialOfBlood;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
@@ -32,14 +35,14 @@ import com.watabou.utils.Random;
 
 public class Vampiric extends Weapon.Enchantment {
 
-	private static ItemSprite.Glowing RED = new ItemSprite.Glowing( 0x660022 );
+	private static final ItemSprite.Glowing RED = new ItemSprite.Glowing( 0x660022 );
 	
 	@Override
 	public int proc( Weapon weapon, Char attacker, Char defender, int damage ) {
 		
-		//chance to heal scales from 5%-30% based on missing HP
+		//chance to heal scales from 15%-90% based on missing HP
 		float missingPercent = (attacker.HT - attacker.HP) / (float)attacker.HT;
-		float healChance = 0.05f + .25f*missingPercent;
+		float healChance = 0.15f + .75f*missingPercent;
 
 		healChance *= procChanceMultiplier(attacker);
 		
@@ -48,16 +51,22 @@ public class Vampiric extends Weapon.Enchantment {
 				&& (defender.alignment != Char.Alignment.NEUTRAL || defender instanceof Mimic)){
 
 			float powerMulti = Math.max(1f, healChance);
-			
-			//heals for 50% of damage dealt
-			int healAmt = Math.round(damage * 0.5f * powerMulti);
+			int realDmg = Math.min(damage, defender.HP);
+			//heals for ~16.7% of damage dealt
+			int healAmt = Math.round(realDmg * powerMulti / 6f);
 			healAmt = Math.min( healAmt, attacker.HT - attacker.HP );
 			
 			if (healAmt > 0 && attacker.isAlive()) {
-				
-				attacker.HP += healAmt;
-				attacker.sprite.showStatusWithIcon( CharSprite.POSITIVE, Integer.toString( healAmt ), FloatingText.HEALING );
-				
+
+				if (VialOfBlood.delayBurstHealing()){
+					Healing healing = Buff.affect(attacker, Healing.class);
+					healing.setHeal(healAmt, 0, VialOfBlood.maxHealPerTurn());
+					healing.applyVialEffect();
+				} else {
+					attacker.HP += healAmt;
+					attacker.sprite.showStatusWithIcon( CharSprite.POSITIVE, Integer.toString( healAmt ), FloatingText.HEALING );
+				}
+
 			}
 		}
 

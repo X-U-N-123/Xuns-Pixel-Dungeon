@@ -410,7 +410,7 @@ public class DriedRose extends Artifact {
 			
 			//rose does not charge while ghost hero is alive
 			if (ghost != null && target.buff(MagicImmune.class) == null
-                    && (!cursed || Dungeon.hero.pointsInTalent(Talent.CURSED_POWER) > 3)){
+                    && (!cursed || Dungeon.hero.pointsInTalent(Talent.CURSED_POWER) >= 3)){
 				
 				//heals to full over 500 turns
 				if (ghost.HP < ghost.HT && Regeneration.regenOn()) {
