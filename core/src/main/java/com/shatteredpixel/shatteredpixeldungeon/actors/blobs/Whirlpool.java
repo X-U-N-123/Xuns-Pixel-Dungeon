@@ -34,6 +34,10 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 
 public class Whirlpool extends Blob {
 
+	{
+		alwaysVisible = true;
+	}
+
     @Override
     protected void evolve() {
 

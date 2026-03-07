@@ -40,8 +40,8 @@ public class Collapse extends Buff {
     }
 
     private int totalTime = 0;
-    private final int timePerLevel = 600;
-    private final int[] hintTime = new int[]{10, 50, 100, 200, 400};
+    private final int timePerLevel = 500;
+    private final int[] hintTime = new int[]{10, 50, 100, 200, 300};
 
     @Override
     public String iconTextDisplay() {
@@ -66,7 +66,7 @@ public class Collapse extends Buff {
         }
         if (Regeneration.regenOn()) totalTime += TICK;
         spend(TICK);
-        if (timeRemain() < 600){
+        if (timeRemain() < timePerLevel){
             int magnitude = 0;
             for (int i : hintTime) {
                 if (timeRemain() <= i) magnitude ++;

@@ -28,6 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Collapse;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
@@ -299,6 +300,8 @@ public class CrystalSpire extends Mob {
 			dmg = 0;
 		}
 		super.damage(dmg, src);
+		Collapse c = Dungeon.hero.buff(Collapse.class);
+		if (c != null && src instanceof Pickaxe) c.incTotalTime(2*dmg);
 	}
 
 	@Override

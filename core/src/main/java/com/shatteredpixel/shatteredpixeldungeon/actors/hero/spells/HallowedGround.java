@@ -164,6 +164,10 @@ public class HallowedGround extends TargetedClericSpell {
 
 	public static class HallowedTerrain extends Blob {
 
+		{
+			alwaysVisible = true;
+		}
+
 		@Override
 		protected void evolve() {
 

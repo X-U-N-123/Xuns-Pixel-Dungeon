@@ -155,6 +155,10 @@ public class MagicalFireRoom extends SpecialRoom {
 
 	public static class EternalFire extends Blob {
 
+		{
+			alwaysVisible = true;
+		}
+
 		@Override
 		protected void evolve() {
 

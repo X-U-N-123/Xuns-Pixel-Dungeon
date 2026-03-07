@@ -40,6 +40,10 @@ import com.watabou.utils.Random;
 
 public abstract class WellWater extends Blob {
 
+	{
+		alwaysVisible = true;
+	}
+
 	public static int CUR_EMPTY = 10;
 
 	@Override

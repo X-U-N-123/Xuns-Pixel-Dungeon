@@ -51,6 +51,10 @@ import com.watabou.utils.Random;
 
 public class SacrificialFire extends Blob {
 
+	{
+		alwaysVisible = true;
+	}
+
 	BlobEmitter curEmitter;
 
 	{

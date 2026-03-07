@@ -53,11 +53,10 @@ public class Woodsword extends MeleeWeapon {
 
     @Override
     public int proc(Char attacker, Char defender, int damage) {
-        if (damage > 3){
+        if (Math.min(damage, defender.HP) >= 4 + level() && attacker.HP < attacker.HT){
             attacker.HP ++;
             attacker.sprite.emitter().start( Speck.factory( Speck.HEALING ), 0.33f, 2 );
         }
-        if (attacker.HP > attacker.HT) attacker.HP = attacker.HT;
         return super.proc( attacker, defender, damage );
     }
 

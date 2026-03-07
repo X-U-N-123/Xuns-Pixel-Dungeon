@@ -28,6 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Collapse;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ShieldBuff;
@@ -291,6 +292,8 @@ public class GnollGeomancer extends Mob {
 			carveRockAndDash();
 			Buff.affect(this, RockArmor.class).setShield(25);
 		}
+		Collapse c = Dungeon.hero.buff(Collapse.class);
+		if (c != null && !isImmune(src.getClass()) && !isInvulnerable(src.getClass())) c.incTotalTime(4*dmg);
 	}
 
 	private boolean inFinalBracket = false;

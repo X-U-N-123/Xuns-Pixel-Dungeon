@@ -124,13 +124,13 @@ public class HolyTrap extends TargetedClericSpell {
 
             switch (Dungeon.hero.pointsInTalent(Talent.HOLY_TRAP)){
                 case 1:
-                    Buff.affect(ch, Cripple.class, 6f);
+                    Buff.prolong(ch, Cripple.class, 6f);
                     break;
                 case 3:
                     Buff.affect(ch, Bleeding.class).set(Dungeon.hero.lvl /3f, HolyTrapBlob.class);
                 case 2:
-                    Buff.affect(ch, Cripple.class, 10f);
-                    Buff.affect(ch, Roots.class, 4f);
+                    Buff.prolong(ch, Cripple.class, 10f);
+                    Buff.prolong(ch, Roots.class, 4f);
                     break;
             }
         }

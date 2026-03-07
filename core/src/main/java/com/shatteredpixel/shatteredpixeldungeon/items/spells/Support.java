@@ -47,7 +47,7 @@ public class Support extends Spell {
     @Override
     protected void onCast(Hero hero) {
         if (hero.buff(Collapse.class) != null) {
-            hero.buff(Collapse.class).incTotalTime(-301);
+            hero.buff(Collapse.class).incTotalTime(-201);
             hero.spendAndNext(1f);
             Catalog.countUse(getClass());
             GLog.p(Messages.get(this, "support"));
@@ -83,7 +83,7 @@ public class Support extends Spell {
 
     @Override
     public int energyVal() {
-        return (int)(15 * (quantity/(float) Recipe.OUT_QUANTITY));
+        return (int)(5 * (quantity/(float) Recipe.OUT_QUANTITY));
     }
 
     public static class Recipe extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe.SimpleRecipe {
@@ -94,7 +94,7 @@ public class Support extends Spell {
             inputs =  new Class[]{ScrollOfIdentify.class, PotionOfHealing.class};
             inQuantity = new int[]{1, 1};
 
-            cost = 3;
+            cost = 0;
 
             output = Support.class;
             outQuantity = OUT_QUANTITY;
