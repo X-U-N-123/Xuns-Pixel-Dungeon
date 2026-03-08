@@ -23,6 +23,7 @@ package com.shatteredpixel.shatteredpixeldungeon.sprites;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Berserk;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HeroDisguise;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
@@ -66,6 +67,11 @@ public class HeroSprite extends CharSprite {
 	public void disguise(HeroClass cls){
 		if (cls == null) texture( Assets.Sprites.MITA );
 		else             texture( cls.spritesheet() );
+		updateArmor();
+	}
+
+	public void berserk(){
+		texture( Assets.Sprites.BERSERKER );
 		updateArmor();
 	}
 	
@@ -175,6 +181,8 @@ public class HeroSprite extends CharSprite {
 	public static Image avatar( Hero hero ){
 		if (hero.buff(HeroDisguise.class) != null){
 			return avatar(null, hero.tier());
+		} else if (hero.buff(Berserk.class) != null && hero.buff(Berserk.class).berserking()) {
+			return avatarBerserk(hero.tier());
 		} else {
 			return avatar(hero.heroClass, hero.tier());
 		}
@@ -190,6 +198,17 @@ public class HeroSprite extends CharSprite {
 		frame.shift( patch.left, patch.top );
 		avatar.frame( frame );
 		
+		return avatar;
+	}
+
+	public static Image avatarBerserk( int armorTier ) {
+
+		RectF patch = tiers().get( armorTier );
+		Image avatar = new Image( Assets.Sprites.BERSERKER );
+		RectF frame = avatar.texture.uvRect( 1, 0, FRAME_WIDTH, FRAME_HEIGHT );
+		frame.shift( patch.left, patch.top );
+		avatar.frame( frame );
+
 		return avatar;
 	}
 }

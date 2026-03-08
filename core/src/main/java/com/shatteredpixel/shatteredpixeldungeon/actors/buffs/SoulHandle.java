@@ -33,6 +33,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.RipperDemon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Wraith;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.YogDzewa;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector;
@@ -143,6 +144,7 @@ public class SoulHandle extends Buff implements ActionIndicator.Action {
 		else if (enemy instanceof Wraith)                       energyGain = 0.5f;
 
 		soulAmount += energyGain;
+		soulAmount = Math.min(soulAmount, soulCap());
 		if (((Hero)target).hasTalent(Talent.IMMEDIATE_USE)){
 			Buff.prolong(target, ImmediateUseTracker.class, 1f);
 		}
@@ -174,7 +176,7 @@ public class SoulHandle extends Buff implements ActionIndicator.Action {
 			} else ((Hero) target).spendAndNext(1f);
 			tracker.detach();
 		} else ((Hero) target).spendAndNext(1f);
-		cooldown += MAX_COOLDOWN;
+		cooldown += MAX_COOLDOWN + 1;
 
 		if (cooldown > 0 || soulAmount < 3){
 			ActionIndicator.clearAction(this);
@@ -224,16 +226,18 @@ public class SoulHandle extends Buff implements ActionIndicator.Action {
 							(0.5f + 0.1f * ((Hero) c).pointsInTalent(Talent.DEVOUR_SURGING)) * ((Hero) c).lvl);
 					c.HP += toHeal;
 					c.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(toHeal), FloatingText.HEALING);
-					Sample.INSTANCE.play(Assets.Sounds.EAT);
+					c.sprite.emitter().start( Speck.factory( Speck.HEALING ), 0.33f, 4 );
+					Sample.INSTANCE.play(Assets.Sounds.TELEPORT);
+					c.sprite.operate(cell);
 				} else if (c != null) { //doom the enemy
 					Buff.affect(c, Doom.class);
-					Sample.INSTANCE.play(Assets.Sounds.BURNING);
 					c.sprite.emitter().burst(ShadowParticle.CURSE, 5);
 					switch (((Hero)target).pointsInTalent(Talent.SOUL_CAGING)) {
 						case 2: c.damage((int)(((Hero)target).lvl * 0.3f), new SoulDamage());
 						case 1: Buff.affect(c, Vertigo.class, 5f);
 						default: break;
 					}
+					c.sprite.attack(cell);
 				} else { //summon a wraith ally
 					c = Wraith.spawnAt(cell, Wraith.class, false, false);
 					if (c == null) {
@@ -245,6 +249,7 @@ public class SoulHandle extends Buff implements ActionIndicator.Action {
 						case 1: Buff.affect(c, Adrenaline.class, 5.5f); //effectively 5 turn
 						default: break;
 					}
+					c.sprite.attack(cell);
 					Buff.affect(c, Corruption.class);
 					Sample.INSTANCE.play(Assets.Sounds.CURSED);
 				}
@@ -258,9 +263,5 @@ public class SoulHandle extends Buff implements ActionIndicator.Action {
 		});
 	}
 	public static class SoulDamage{} //only used to track doom damage
-	public static class ImmediateUseTracker extends FlavourBuff{
-		@Override public int icon() {
-			return BuffIndicator.POISON;
-		}
-	}
+	public static class ImmediateUseTracker extends FlavourBuff{}
 }

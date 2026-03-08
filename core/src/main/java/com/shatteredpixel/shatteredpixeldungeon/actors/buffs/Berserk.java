@@ -32,6 +32,7 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ActionIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.HeroIcon;
@@ -103,6 +104,7 @@ public class Berserk extends ShieldBuff implements ActionIndicator.Action {
 				if (target.shielding() <= 0){
 					state = State.RECOVERING;
 					power = 0f;
+					fx(false);
 					BuffIndicator.refreshHero();
 					if (!target.isAlive()){
 						target.die(this);
@@ -113,6 +115,7 @@ public class Berserk extends ShieldBuff implements ActionIndicator.Action {
 			} else {
 				state = State.RECOVERING;
 				power = 0f;
+				fx(false);
 				if (!target.isAlive()){
 					target.die(this);
 					if (!target.isAlive()) Dungeon.fail(this);
@@ -162,7 +165,7 @@ public class Berserk extends ShieldBuff implements ActionIndicator.Action {
 	}
 
 	public boolean berserking(){
-		if (target.HP == 0
+		if (target.HP <= 0
 				&& state == State.NORMAL
 				&& power >= 1f
 				&& ((Hero)target).hasTalent(Talent.DEATHLESS_FURY)){
@@ -190,6 +193,8 @@ public class Berserk extends ShieldBuff implements ActionIndicator.Action {
 		target.sprite.showStatusWithIcon( CharSprite.POSITIVE, Integer.toString(shieldAmount), FloatingText.SHIELDING );
 
 		BuffIndicator.refreshHero();
+
+		fx(true);
 	}
 
 	public int currentShieldBoost(){
@@ -332,6 +337,14 @@ public class Berserk extends ShieldBuff implements ActionIndicator.Action {
 			case RECOVERING:
 				return Messages.get(this, "recovering_desc") + "\n\n" + Messages.get(this, "recovering_desc_turns", turnRecovery);
 		}
-		
+	}
+
+	@Override
+	public void fx(boolean on) {
+		if (target instanceof Hero && target.sprite instanceof HeroSprite){
+			if (on && berserking()) ((HeroSprite)target.sprite).berserk();
+			else                    ((HeroSprite)target.sprite).disguise(((Hero) target).heroClass);
+			GameScene.updateAvatar();
+		}
 	}
 }

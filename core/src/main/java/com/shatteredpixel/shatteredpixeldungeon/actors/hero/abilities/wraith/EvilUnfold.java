@@ -73,7 +73,7 @@ public class EvilUnfold extends ArmorAbility {
 
 	@Override
 	public Talent[] talents() {
-		return new Talent[]{Talent.HEROIC_ENERGY};
+		return new Talent[]{Talent.BUFFED_NERF, Talent.ARMY_OF_DEATH, Talent.STRANGLING, Talent.IMMORTAL_EVIL, Talent.HEROIC_ENERGY};
 	}
 
 	public static class Evil extends FlavourBuff {
@@ -114,6 +114,7 @@ public class EvilUnfold extends ArmorAbility {
 			toDly = Math.min(toDly, 10 - delayedTime);
 			spend(toDly);
 			delayedTime += toDly;
+			BuffIndicator.refreshHero();
 		}
 	}
 }

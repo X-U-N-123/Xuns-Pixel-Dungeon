@@ -1169,7 +1169,8 @@ public enum Talent {
 		}
 
         if (hero.hasTalent(ANCESTRAL_TRIBUTE))
-            Buff.affect(hero, Adrenaline.class, 2 * hero.pointsInTalent(ANCESTRAL_TRIBUTE) + hero.cooldown());
+            Buff.affect(hero, Adrenaline.class, 2 * hero.pointsInTalent(ANCESTRAL_TRIBUTE) + hero.cooldown() + 0.5f);
+		// effectively 3/5 turn of adrenaline
 
         if (hero.hasTalent(TEARING_MEAL)) Buff.affect(hero, TearingMealTracker.class);
 	}

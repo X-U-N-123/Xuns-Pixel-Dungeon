@@ -307,6 +307,7 @@ public class ItemSpriteSheet {
 	public static final int LightFlail      = WEP_TIER3+10;
 	public static final int Shortrunicblade = WEP_TIER3+11;
 	public static final int Knife           = WEP_TIER3+12;
+	public static final int ZHOUYI          = WEP_TIER3+13;
 	public static final int Windblade       = WEP_TIER3+14;
 	static{
 		assignItemRect(SWORD,           14, 14);
@@ -323,6 +324,7 @@ public class ItemSpriteSheet {
 		assignItemRect(Scythe,          12, 13);
 		assignItemRect(LightFlail,      13, 13);
 		assignItemRect(Windblade,       15, 15);
+		assignItemRect(ZHOUYI,          13, 16);
 	}
 
 	private static final int WEP_TIER4         = xy(17, 6);   //16 slots
@@ -339,7 +341,7 @@ public class ItemSpriteSheet {
 	public static final int RUNIC_BLADE        = WEP_TIER4+11;
 	public static final int Jieniu             = WEP_TIER4+12;
 	public static final int CROSSBOW           = WEP_TIER4+13;
-	public static final int ZHOUYI             = WEP_TIER4+14;
+	public static final int FUTSUNOMITAMA = WEP_TIER4+14;
 	public static final int Darkgoldsword      = WEP_TIER4+15;
 	static{
 		assignItemRect(LONGSWORD,         15, 15);
@@ -355,7 +357,7 @@ public class ItemSpriteSheet {
 		assignItemRect(Hoe,               13, 15);
 		assignItemRect(Jieniu,            15, 15);
 		assignItemRect(Crystalsword,      15, 15);
-		assignItemRect(ZHOUYI,            13, 16);
+		assignItemRect(FUTSUNOMITAMA,     15, 16);
 		assignItemRect(Darkgoldsword,     15, 15);
 	}
 
@@ -413,7 +415,7 @@ public class ItemSpriteSheet {
 		assignItemRect(Shangfang,      16, 16);
 		assignItemRect(Doublesword,    15, 14);
 		assignItemRect(Jingubang,      16, 16);
-		assignItemRect(Etherealsword,  15, 15);
+		assignItemRect(Etherealsword,  16, 16);
 		assignItemRect(Darknesssword,  16, 16);
 		assignItemRect(Ripperclaw,     15, 16);
 		assignItemRect(Rake,           15, 16);

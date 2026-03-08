@@ -79,7 +79,7 @@ public class Lifeloan extends ArmorAbility {
 			GLog.w(Messages.get(this, "invalid_target"));
 			return;
 		}
-		Buff.affect(c, LifeloanTracker.class).spend(18 - 3 * hero.pointsInTalent(Talent.BREACH_OF_TRUST));
+		Buff.affect(c, LifeloanTracker.class).spend(24 - 4 * hero.pointsInTalent(Talent.BREACH_OF_TRUST));
 		int toHeal = Math.min(c.HT - c.HP, loanAmount);
 		c.HP += toHeal;
 		c.sprite.emitter().start( Speck.factory( Speck.HEALING ), 0.33f, 3 + hero.pointsInTalent(Talent.HIGH_QUOTA));

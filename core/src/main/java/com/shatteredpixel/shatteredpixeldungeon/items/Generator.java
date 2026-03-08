@@ -176,6 +176,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Etherealsword
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Fetter;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Flail;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Fork;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Futsunomitama;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Gauntlet;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Glaive;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Gloves;
@@ -528,7 +529,7 @@ public class Generator {
 			WEP_T2.defaultProbs = new float[]{ 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0 };
 			WEP_T2.probs = WEP_T2.defaultProbs.clone();
 			
-			WEP_T3.classes = new Class<?>[]{//14 Weapons
+			WEP_T3.classes = new Class<?>[]{//15 Weapons
 					Sword.class,
 					Mace.class,
 					Scimitar.class,
@@ -542,9 +543,10 @@ public class Generator {
 					Knife.class,
 					Scythe.class,
 					LightFlail.class,
-					Windblade.class
+					Windblade.class,
+					Zhouyi.class
 			};
-			WEP_T3.defaultProbs = new float[]{ 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2};
+			WEP_T3.defaultProbs = new float[]{ 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2};
 			WEP_T3.probs = WEP_T3.defaultProbs.clone();
 			
 			WEP_T4.classes = new Class<?>[]{//16 Weapons
@@ -563,7 +565,7 @@ public class Generator {
 					Jieniu.class,
 					Crystalsword.class,
 					Darkgoldsword.class,
-					Zhouyi.class
+					Futsunomitama.class
 			};
 			WEP_T4.defaultProbs = new float[]{ 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2};
 			WEP_T4.probs = WEP_T4.defaultProbs.clone();
