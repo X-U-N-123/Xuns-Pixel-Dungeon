@@ -70,6 +70,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Preparation;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Recharging;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Regeneration;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.SnipersMark;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.SoulHandle;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.TimeStasis;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Weakness;
@@ -655,6 +656,9 @@ public class Hero extends Char {
 		}
 		
 		float evasion = defenseSkill;
+
+		SoulHandle handle = buff(SoulHandle.class);
+		if (handle != null) evasion += Math.max(0, handle.extraSoul());
 		
 		evasion *= RingOfEvasion.evasionMultiplier( this );
 

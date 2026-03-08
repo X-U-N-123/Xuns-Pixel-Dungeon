@@ -41,6 +41,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Charm;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Corruption;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Doom;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Dread;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.GreaterHaste;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
@@ -51,6 +52,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.PhysicalEmpower;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Preparation;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Regeneration;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Sleep;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.SoulHandle;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.SoulMark;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
@@ -955,6 +957,9 @@ public abstract class Mob extends Char {
 				if (Dungeon.hero.subClass == HeroSubClass.MONK){
 					Buff.affect(Dungeon.hero, MonkEnergy.class).gainEnergy(this);
 				}
+				if (Dungeon.hero.subClass == HeroSubClass.SOULHANDLER){
+					Buff.affect(Dungeon.hero, SoulHandle.class).gainEnergy(this);
+				}
 			}
 		}
 	}
@@ -1000,6 +1005,10 @@ public abstract class Mob extends Char {
 		}
 
 		boolean soulMarked = buff(SoulMark.class) != null;
+
+		if (buff(Doom.class) != null && hero.pointsInTalent(Talent.SOUL_CAGING) >= 3){
+			Buff.affect(Dungeon.hero, SoulHandle.class).gainEnergy(this);
+		}
 
 		super.die( cause );
 

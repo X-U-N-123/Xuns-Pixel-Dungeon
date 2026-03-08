@@ -61,6 +61,7 @@ public class HeroIcon extends Image {
 	public static final int ROCKSY      = 26;
     public static final int INCUBUS     = 28;
 	public static final int PLAGUEGOD   = 29;
+	public static final int SOULHANDLER = 30;
 
     //abilities
 	public static final int HEROIC_LEAP     = 48;
@@ -146,6 +147,7 @@ public class HeroIcon extends Image {
 	public static final int ROCK            = 186;
     public static final int HYPNOSIS        = 187;
 	public static final int ACID            = 188;
+	public static final int SOUL            = 189;
 
 	public HeroIcon(HeroSubClass subCls){
 		super( Assets.Interfaces.HERO_ICONS );
