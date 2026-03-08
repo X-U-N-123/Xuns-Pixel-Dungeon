@@ -28,11 +28,13 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.AttackIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.Callback;
 import com.watabou.utils.Random;
 
 public class Zhouyi extends MeleeWeapon {
@@ -42,7 +44,7 @@ public class Zhouyi extends MeleeWeapon {
         hitSound = Assets.Sounds.HIT;
         hitSoundPitch = 0.9f;
 
-        tier = 3;
+        tier = 4;
     }
 
     @Override
@@ -95,20 +97,56 @@ public class Zhouyi extends MeleeWeapon {
         }
         hero.belongings.abilityWeapon = null;
 
-        hero.sprite.attack(enemy.pos, () -> {
-			beforeAbilityUsed(hero, enemy);
-			AttackIndicator.target(enemy);
-			if (hero.attack(enemy, 1f, 0, Char.INFINITE_ACCURACY)){
-				Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG);
-			}
+        hero.sprite.attack(enemy.pos, new Callback() {
+            @Override
+            public void call() {
+                beforeAbilityUsed(hero, enemy);
+                AttackIndicator.target(enemy);
+                if (hero.attack(enemy, 1f, 0, Char.INFINITE_ACCURACY)){
+                    Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG);
+                }
+                int heropos = hero.pos;
+                int enemypos = enemy.pos;
 
-			Char.swapPlace(hero, enemy);
+                //can't swap into a space without room
+                if ((!enemy.properties().contains(Char.Property.LARGE) || Dungeon.level.openSpace[heropos])
+                && (Dungeon.level.passable[enemypos] || hero.isFlying())
+                && !enemy.properties().contains(Char.Property.STATIC) && !enemy.properties().contains(Char.Property.IMMOVABLE)
+                && !hero.rooted && !enemy.rooted){
+                    enemy.pos = heropos;
+                    hero.pos = enemypos;
+                    ScrollOfTeleportation.appear(enemy, heropos);
+                    ScrollOfTeleportation.appear(hero, enemypos);
+                    enemy.move( heropos );
+                    hero.move( enemypos );
+                }
 
-			Invisibility.dispel();
-			if (!enemy.isAlive()) onAbilityKill(hero, enemy);
-			hero.next();
+                Invisibility.dispel();
 
-			afterAbilityUsed(hero);
-		});
+                if (!enemy.isAlive()){
+                    hero.next();
+                    onAbilityKill(hero, enemy);
+                }
+                float timeMulti = Random.NormalFloat(0, 1f/(level()+1));
+                hero.spendAndNext(hero.attackDelay()*timeMulti);
+
+                afterAbilityUsed(hero);
+            }
+        });
     }
+
+    @Override
+    public String abilityInfo() {
+        float maxMulti = 1f/(buffedLvl()+1);
+        if (levelKnown){
+            return Messages.get(this, "ability_desc", maxMulti);
+        } else {
+            return Messages.get(this, "typical_ability_desc", maxMulti);
+        }
+    }
+
+    public String upgradeAbilityStat(int level){
+        return String.valueOf(1f/(level+1));
+    }
+
 }

@@ -285,77 +285,72 @@ public abstract class Char extends Actor {
 	//swaps places by default
 	public boolean interact(Char c){
 
-		swapPlace(this, c);
-		
-		return true;
-	}
-
-	public static boolean swapPlace(Char a, Char b){
 		//don't allow char to swap onto hazard unless they're flying
 		//you can swap onto a hazard though, as you're not the one instigating the swap
-		if (!Dungeon.level.passable[a.pos] && !b.isFlying()){
-			return false;
+		if (!Dungeon.level.passable[pos] && !c.isFlying()){
+			return true;
 		}
 
 		//can't swap into a space without room
-		if (a.properties().contains(Property.LARGE) && !Dungeon.level.openSpace[b.pos]
-				|| b.properties().contains(Property.LARGE) && !Dungeon.level.openSpace[a.pos]){
-			return false;
+		if (properties().contains(Property.LARGE) && !Dungeon.level.openSpace[c.pos]
+			|| c.properties().contains(Property.LARGE) && !Dungeon.level.openSpace[pos]){
+			return true;
 		}
 
 		//we do a little raw position shuffling here so that the characters are never
 		// on the same cell when logic such as occupyCell() is triggered
-		int oldPos = a.pos;
-		int newPos = b.pos;
+		int oldPos = pos;
+		int newPos = c.pos;
 
 		//can't swap or ally warp if either char is immovable
-		if (hasProp(a, Property.IMMOVABLE) || hasProp(a, Property.IMMOVABLE)){
-			return false;
+		if (hasProp(this, Property.IMMOVABLE) || hasProp(c, Property.IMMOVABLE)){
+			return true;
 		}
 
 		//warp instantly with allies in this case
-		if (b == hero && hero.hasTalent(Talent.ALLY_WARP)){
-			PathFinder.buildDistanceMap(b.pos, BArray.or(Dungeon.level.passable, Dungeon.level.avoid, null));
-			if (PathFinder.distance[a.pos] == Integer.MAX_VALUE){
-				return false;
+		if (c == hero && hero.hasTalent(Talent.ALLY_WARP)){
+			PathFinder.buildDistanceMap(c.pos, BArray.or(Dungeon.level.passable, Dungeon.level.avoid, null));
+			if (PathFinder.distance[pos] == Integer.MAX_VALUE){
+				return true;
 			}
-			a.pos = newPos;
-			b.pos = oldPos;
-			ScrollOfTeleportation.appear(a, newPos);
-			ScrollOfTeleportation.appear(b, oldPos);
+			pos = newPos;
+			c.pos = oldPos;
+			ScrollOfTeleportation.appear(this, newPos);
+			ScrollOfTeleportation.appear(c, oldPos);
 			Dungeon.observe();
 			GameScene.updateFog();
 			return true;
 		}
 
 		//can't swap places if one char has restricted movement
-		if (a.paralysed > 0 || b.paralysed > 0 || a.rooted || b.rooted
-				|| a.buff(Vertigo.class) != null || b.buff(Vertigo.class) != null){
-			return false;
+		if (paralysed > 0 || c.paralysed > 0 || rooted || c.rooted
+				|| buff(Vertigo.class) != null || c.buff(Vertigo.class) != null){
+			return true;
 		}
 
-		b.pos = oldPos;
-		b.moveSprite( oldPos, newPos );
-		b.move( newPos );
+		c.pos = oldPos;
+		moveSprite( oldPos, newPos );
+		move( newPos );
 
-		a.pos = newPos;
-		a.sprite.move( newPos, oldPos );
-		a.move( oldPos );
+		c.pos = newPos;
+		c.sprite.move( newPos, oldPos );
+		c.move( oldPos );
+		
+		c.spend( 1 / c.speed() );
 
-		b.spend( 1 / b.speed() );
-
-		if (b == hero){
+		if (c == hero){
 			if (hero.subClass == HeroSubClass.FREERUNNER){
 				Buff.affect(hero, Momentum.class).gainStack();
 			}
-			if (hero.hasTalent(Talent.MARCH_FORWARD) && !Swiftness.enemynear(b)){
-				Buff.prolong(b, Talent.MarchForwardTracker.class, 5f).step++;
+			if (hero.hasTalent(Talent.MARCH_FORWARD) && !Swiftness.enemynear(c)){
+				Buff.prolong(c, Talent.MarchForwardTracker.class, 5f).step++;
 			}
 
 			hero.justMoved = true;
 
 			hero.busy();
 		}
+		
 		return true;
 	}
 	
