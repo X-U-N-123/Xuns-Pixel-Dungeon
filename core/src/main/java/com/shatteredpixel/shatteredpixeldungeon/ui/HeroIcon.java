@@ -87,7 +87,7 @@ public class HeroIcon extends Image {
 	public static final int SANDSTORM       = 68;
 	public static final int UNDERPASS       = 69;
 	public static final int LIFELOAN        = 70;
-
+	public static final int EVILUNFOLD      = 71;
     public static final int GHOSTWANDER     = 72;
 
 	//cleric spells

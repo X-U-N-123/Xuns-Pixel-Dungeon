@@ -82,6 +82,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.duelist.El
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.duelist.Feint;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.huntress.NaturesPower;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.Endure;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.wraith.EvilUnfold;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.BodyForm;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.HallowedGround;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.HolyWard;
@@ -1739,6 +1740,9 @@ public class Hero extends Char {
             Buff.prolong(enemy, Weakness.class, 3f);
         }
 
+		if (buff(EvilUnfold.Evil.class) != null)
+			EvilUnfold.Evil.giveDebuff(pointsInTalent(Talent.BUFFED_NERF), enemy);
+
 		if (wep != null) {
 			damage = wep.proc( this, enemy, damage );
 		} else {
@@ -1941,6 +1945,9 @@ public class Hero extends Char {
 
 		if (buff(Challenge.DuelParticipant.class) != null){
 			buff(Challenge.DuelParticipant.class).addDamage(effectiveDamage);
+		}
+		if (buff(EvilUnfold.Evil.class) != null){
+			buff(EvilUnfold.Evil.class).delayTime(effectiveDamage);
 		}
 
         if (HP <= HT / 5f) Badges.validateWraithUnlock();

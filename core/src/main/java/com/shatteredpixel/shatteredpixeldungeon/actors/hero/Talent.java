@@ -29,6 +29,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AcidRain;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Adrenaline;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AllyBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ArtifactRecharge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
@@ -37,6 +38,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.BrokenArmor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Chill;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Corruption;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.CounterBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedRings;
@@ -58,6 +60,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.WandEmpower;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.ArmorAbility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.Ratmogrify;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.duelist.Challenge;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.wraith.EvilUnfold;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.DivineSense;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.RecallInscription;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
@@ -271,6 +274,8 @@ public enum Talent {
 	IMMEDIATE_USE(360, 3), VENGEFUL_SPIRIT(361, 3), SOUL_CAGING(362, 3), DEVOUR_SURGING(363, 3), OVERFLOW(364, 3),
 	//Lifeloan T4
 	HIGH_QUOTA(365, 4), EXTRA_GIFT(366, 4), BREACH_OF_TRUST(367, 4), PHILANTHROPIST(368, 4),
+	//EvilUnfold T4
+	BUFFED_NERF(369, 4), ARMY_OF_DEATH(370, 4), STRANGLING(371, 4), IMMORTAL_EVIL(372, 4),
 	//GhostWander T4
     FACE_TO_FACE_FRIGHT(373, 4), SOUL_VANISHING(374, 4), FEAR_SPREADING(375, 4), SOULFREE_GHOST(376, 4),
 
@@ -1502,6 +1507,20 @@ public enum Talent {
         if (enemy.HP <= enemy.HT * (0.2f + 0.3f * hero.pointsInTalent(BURIAL_CEREMONY)) && hero.hasTalent(BURIAL_CEREMONY)){
             dmg ++;
         }
+
+		EvilUnfold.Evil tracker = hero.buff(EvilUnfold.Evil.class);
+		if (tracker != null){
+			for (Buff buff : enemy.buffs()) if (buff.type == Buff.buffType.NEGATIVE) dmg += hero.pointsInTalent(STRANGLING);
+
+			if (dmg >= enemy.HP
+					&& Random.Float() < 0.15f * (1 + hero.pointsInTalent(Talent.ARMY_OF_DEATH))
+					&& !enemy.isImmune(Corruption.class) && enemy.buff(Corruption.class) == null
+					&& enemy instanceof Mob && enemy.isAlive()){
+				Corruption.corruptionHeal(enemy);
+				AllyBuff.affectAndLoot((Mob) enemy, hero, Corruption.class);
+				dmg = 0;
+			}
+		}
 
         TearingMealTracker tear = hero.buff(TearingMealTracker.class);
         if (tear != null){
