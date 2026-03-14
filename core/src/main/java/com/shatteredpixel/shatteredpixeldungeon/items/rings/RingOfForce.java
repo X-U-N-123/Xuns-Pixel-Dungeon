@@ -175,7 +175,7 @@ public class RingOfForce extends Ring {
 
 	@Override
 	public String defaultAction() {
-		if (Dungeon.hero != null && Dungeon.hero.heroClass == HeroClass.DUELIST){
+		if (Dungeon.hero != null && Dungeon.hero.heroClass == HeroClass.DUELIST && isKnown()){
 			return AC_ABILITY;
 		} else {
 			return super.defaultAction();
@@ -185,7 +185,7 @@ public class RingOfForce extends Ring {
 	@Override
 	public ArrayList<String> actions(Hero hero) {
 		ArrayList<String> actions = super.actions(hero);
-		if (isEquipped(hero) && hero.heroClass == HeroClass.DUELIST){
+		if (isEquipped(hero) && hero.heroClass == HeroClass.DUELIST && isKnown()){
 			actions.add(AC_ABILITY);
 		}
 		return actions;
@@ -202,7 +202,7 @@ public class RingOfForce extends Ring {
 
 	@Override
 	public void execute(Hero hero, String action) {
-		if (action.equals(AC_ABILITY)){
+		if (action.equals(AC_ABILITY) && isKnown()){
 			if (hero.buff(BrawlersStance.class) != null){
 				if (!hero.buff(BrawlersStance.class).active){
 					hero.buff(BrawlersStance.class).reset();

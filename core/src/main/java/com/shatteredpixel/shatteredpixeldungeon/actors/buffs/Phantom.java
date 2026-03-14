@@ -23,6 +23,7 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMirrorImage;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
@@ -113,7 +114,7 @@ public class Phantom extends Buff implements ActionIndicator.Action {
 
     public void summon(){
         if (ScrollOfMirrorImage.spawnImages((Hero)target, 1) > 0){
-            CD += 50;
+            CD += 50 + 15 * ((Hero) target).pointsInTalent(Talent.EIDOLON); //without this, the phantom will be too strong
             ActionIndicator.refresh();
         } else GLog.w(Messages.get(this, "no_space"));
     }

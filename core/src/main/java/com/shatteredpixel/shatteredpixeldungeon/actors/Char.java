@@ -285,17 +285,19 @@ public abstract class Char extends Actor {
 	//swaps places by default
 	public boolean interact(Char c){
 
+		swapPos(c);
+		
+		return true;
+	}
+
+	public void swapPos(Char c){
 		//don't allow char to swap onto hazard unless they're flying
 		//you can swap onto a hazard though, as you're not the one instigating the swap
-		if (!Dungeon.level.passable[pos] && !c.isFlying()){
-			return true;
-		}
+		if (!Dungeon.level.passable[pos] && !c.isFlying()) return;
 
 		//can't swap into a space without room
 		if (properties().contains(Property.LARGE) && !Dungeon.level.openSpace[c.pos]
-			|| c.properties().contains(Property.LARGE) && !Dungeon.level.openSpace[pos]){
-			return true;
-		}
+				|| c.properties().contains(Property.LARGE) && !Dungeon.level.openSpace[pos]) return;
 
 		//we do a little raw position shuffling here so that the characters are never
 		// on the same cell when logic such as occupyCell() is triggered
@@ -303,29 +305,25 @@ public abstract class Char extends Actor {
 		int newPos = c.pos;
 
 		//can't swap or ally warp if either char is immovable
-		if (hasProp(this, Property.IMMOVABLE) || hasProp(c, Property.IMMOVABLE)){
-			return true;
-		}
+		if (hasProp(this, Property.IMMOVABLE) || hasProp(c, Property.IMMOVABLE)) return;
 
 		//warp instantly with allies in this case
 		if (c == hero && hero.hasTalent(Talent.ALLY_WARP)){
 			PathFinder.buildDistanceMap(c.pos, BArray.or(Dungeon.level.passable, Dungeon.level.avoid, null));
-			if (PathFinder.distance[pos] == Integer.MAX_VALUE){
-				return true;
-			}
+			if (PathFinder.distance[pos] == Integer.MAX_VALUE) return;
 			pos = newPos;
 			c.pos = oldPos;
 			ScrollOfTeleportation.appear(this, newPos);
 			ScrollOfTeleportation.appear(c, oldPos);
 			Dungeon.observe();
 			GameScene.updateFog();
-			return true;
+			return;
 		}
 
 		//can't swap places if one char has restricted movement
 		if (paralysed > 0 || c.paralysed > 0 || rooted || c.rooted
 				|| buff(Vertigo.class) != null || c.buff(Vertigo.class) != null){
-			return true;
+			return;
 		}
 
 		c.pos = oldPos;
@@ -335,7 +333,7 @@ public abstract class Char extends Actor {
 		c.pos = newPos;
 		c.sprite.move( newPos, oldPos );
 		c.move( oldPos );
-		
+
 		c.spend( 1 / c.speed() );
 
 		if (c == hero){
@@ -350,8 +348,6 @@ public abstract class Char extends Actor {
 
 			hero.busy();
 		}
-		
-		return true;
 	}
 	
 	protected boolean moveSprite( int from, int to ) {

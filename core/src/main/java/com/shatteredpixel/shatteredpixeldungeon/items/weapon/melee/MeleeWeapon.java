@@ -426,9 +426,9 @@ public class MeleeWeapon extends Weapon {
 						chargeToGain *= 1.5f;
 					}
 
-					//50% slower charge gain with brawler's stance enabled, even if buff is inactive
+					//75% slower charge gain with brawler's stance enabled, even if buff is inactive
 					if (Dungeon.hero.buff(RingOfForce.BrawlersStance.class) != null){
-						chargeToGain *= 0.50f;
+						chargeToGain /= 4f;
 					}
 
 					chargeToGain *= 1f + 0.12f*Dungeon.hero.pointsInTalent(Talent.POWER_ACCUMULATION) * (chargeCap() - charges)/chargeCap();
@@ -575,12 +575,6 @@ public class MeleeWeapon extends Weapon {
 			Item.updateQuickslot();
 			AttackIndicator.updateState();
 		}
-	}
-
-	@Override
-	public float weight(){
-		if (this == Dungeon.hero.belongings.weapon() || this == Dungeon.hero.belongings.secondWep) return 0;
-		return STRReq() / 10f;
 	}
 
 	@Override
