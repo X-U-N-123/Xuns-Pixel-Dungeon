@@ -41,6 +41,7 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
+import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Group;
@@ -198,19 +199,22 @@ public class WandOfBlastWave extends DamageWand {
 	@Override
 	public void onHit(MagesStaff staff, Char attacker, Char defender, int damage) {
 
-		if (defender.buff(Paralysis.class) != null && defender.buff(BWaveOnHitTracker.class) == null){
+		if (defender.buff(Paralysis.class) != null && attacker.buff(BWaveOnHitTracker.class) == null){
 			defender.buff(Paralysis.class).detach();
-			int dmg = Random.NormalIntRange(6+buffedLvl(), 12+2*buffedLvl());
+			int dmg = Random.NormalIntRange(4+buffedLvl(), 8+2*buffedLvl());
 			defender.damage(Math.round(procChanceMultiplier(attacker) * dmg), this);
 			BlastWave.blast(defender.pos);
 			Sample.INSTANCE.play( Assets.Sounds.BLAST );
 
-			//brief immunity, to prevent stacking absurd damage with it with things like para gas
-			Buff.prolong(defender, BWaveOnHitTracker.class, 3f);
+			//brief cd, to prevent stacking absurd damage with it with things like para gas
+			Buff.prolong(attacker, BWaveOnHitTracker.class, 10f);
 		}
 	}
 
-	public static class BWaveOnHitTracker extends FlavourBuff{}
+	public static class BWaveOnHitTracker extends FlavourBuff {
+		public int icon() { return BuffIndicator.TIME; }
+		public void tintIcon(Image icon) { icon.hardlight(0.6f, 0.6f, 0f); }
+	}
 
 	@Override
 	public String upgradeStat2(int level) {

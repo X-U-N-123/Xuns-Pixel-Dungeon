@@ -27,6 +27,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Barricade;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Ghoul;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.RipperDemon;
@@ -142,6 +143,7 @@ public class SoulHandle extends Buff implements ActionIndicator.Action {
 		else if (enemy instanceof RipperDemon)                  energyGain = 0.5f;
 		else if (enemy instanceof YogDzewa.Larva)               energyGain = 0.5f;
 		else if (enemy instanceof Wraith)                       energyGain = 0.5f;
+		else if (enemy instanceof Barricade)                    energyGain = 0;
 
 		soulAmount += energyGain;
 		soulAmount = Math.min(soulAmount, soulCap());
@@ -233,10 +235,12 @@ public class SoulHandle extends Buff implements ActionIndicator.Action {
 					Buff.affect(c, Doom.class);
 					c.sprite.emitter().burst(ShadowParticle.CURSE, 5);
 					switch (((Hero)target).pointsInTalent(Talent.SOUL_CAGING)) {
+						case 3: //proc in Mob.die()
 						case 2: c.damage((int)(((Hero)target).lvl * 0.3f), new SoulDamage());
 						case 1: Buff.affect(c, Vertigo.class, 5f);
 						default: break;
 					}
+					Sample.INSTANCE.play(Assets.Sounds.BURNING);
 					c.sprite.attack(cell);
 				} else { //summon a wraith ally
 					c = Wraith.spawnAt(cell, Wraith.class, false, false);

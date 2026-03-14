@@ -27,6 +27,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Barricade;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Ghoul;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.RipperDemon;
@@ -157,6 +158,7 @@ public class MonkEnergy extends Buff implements ActionIndicator.Action {
 		else if (enemy instanceof RipperDemon)                  energyGain = 0.5f;
 		else if (enemy instanceof YogDzewa.Larva)               energyGain = 0.5f;
 		else if (enemy instanceof Wraith)                       energyGain = 0.5f;
+		else if (enemy instanceof Barricade)                    energyGain = 0;
 		else                                                    energyGain = 1;
 
 		float enGainMulti = 1f;

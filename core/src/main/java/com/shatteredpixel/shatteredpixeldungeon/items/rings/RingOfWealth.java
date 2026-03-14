@@ -27,10 +27,14 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.CounterBuff;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
+import com.shatteredpixel.shatteredpixeldungeon.items.ArcaneResin;
+import com.shatteredpixel.shatteredpixeldungeon.items.EnergyCrystal;
+import com.shatteredpixel.shatteredpixeldungeon.items.GemPowder;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.Honeypot;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.LiquidMetal;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfExperience;
@@ -43,7 +47,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfMet
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.UnstableSpell;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfEnchantment;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ExoticCrystals;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.watabou.noosa.Visual;
@@ -208,23 +213,22 @@ public class RingOfWealth extends Ring {
 	}
 
 	private static Item genLowValueConsumable(){
-		switch (Random.Int(4)){
+		switch (Random.Int(5)){
 			case 0: default:
 				Item i = new Gold().random();
 				return i.quantity(i.quantity()/2);
-			case 1:
-				return Generator.randomUsingDefaults(Generator.Category.STONE);
-			case 2:
-				return Generator.randomUsingDefaults(Generator.Category.POTION);
-			case 3:
-				return Generator.randomUsingDefaults(Generator.Category.SCROLL);
+			case 1: return Generator.randomUsingDefaults(Generator.Category.STONE);
+			case 2: return Generator.randomUsingDefaults(Generator.Category.POTION);
+			case 3: return Generator.randomUsingDefaults(Generator.Category.SCROLL);
+			case 4: return new EnergyCrystal(Random.IntRange(3, 6));
 		}
 	}
 
 	private static Item genMidValueConsumable(){
-		switch (Random.Int(6)){
+		Item i;
+		switch (Random.Int(7)){
 			case 0: default:
-				Item i = genLowValueConsumable();
+				i = genLowValueConsumable();
 				return i.quantity(i.quantity()*2);
 			case 1:
 				i = Generator.randomUsingDefaults(Generator.Category.POTION);
@@ -240,17 +244,15 @@ public class RingOfWealth extends Ring {
 				} else {
 					return Reflection.newInstance(i.getClass());
 				}
-			case 3:
-				return Random.Int(2) == 0 ? new UnstableBrew() : new UnstableSpell();
-			case 4:
-				return new Bomb();
-			case 5:
-				return new Honeypot();
+			case 3: return Random.Int(2) == 0 ? new UnstableBrew() : new UnstableSpell();
+			case 4: return new Bomb();
+			case 5: return new Honeypot();
+			case 6: return new LiquidMetal().quantity(Random.IntRange( 1 + Dungeon.depth, 3 + Dungeon.depth * 2 ));
 		}
 	}
 
 	private static Item genHighValueConsumable(){
-		switch (Random.Int(4)){
+		switch (Random.Int(6)){
 			case 0: default:
 				Item i = genMidValueConsumable();
 				if (i instanceof Bomb){
@@ -258,12 +260,11 @@ public class RingOfWealth extends Ring {
 				} else {
 					return i.quantity(i.quantity()*2);
 				}
-			case 1:
-				return new StoneOfEnchantment();
-			case 2:
-				return Random.Float() < ExoticCrystals.consumableExoticChance() ? new PotionOfDivineInspiration() : new PotionOfExperience();
-			case 3:
-				return Random.Float() < ExoticCrystals.consumableExoticChance() ? new ScrollOfMetamorphosis() : new ScrollOfTransmutation();
+			case 1: return new StoneOfEnchantment();
+			case 2: return Random.Float() < ExoticCrystals.consumableExoticChance() ? new PotionOfDivineInspiration() : new PotionOfExperience();
+			case 3: return Random.Float() < ExoticCrystals.consumableExoticChance() ? new ScrollOfMetamorphosis() : new ScrollOfTransmutation();
+			case 4: return new ArcaneResin();
+			case 5: return new GemPowder();
 		}
 	}
 
@@ -271,17 +272,20 @@ public class RingOfWealth extends Ring {
 		Item result;
 		//each upgrade increases depth used for calculating drops by 1
 		int floorset = (Dungeon.depth + level)/5;
-		switch (Random.Int(5)){
-			default: case 0: case 1:
-				Weapon w = Generator.randomWeapon(floorset, true);
-				if (!w.hasGoodEnchant() && Random.Int(10) < level)      w.enchant();
+		switch (Random.Int(6)){
+			default: case 0:
+				MeleeWeapon w = Generator.randomWeapon(floorset, true);
+				if (!w.hasGoodEnchant() && Random.Int(10) < level) w.enchant();
 				else if (w.hasCurseEnchant())                           w.enchant(null);
 				result = w;
 				break;
+			case 1:
+				result = Generator.random(Generator.Category.WAND);
+				break;
 			case 2:
 				Armor a = Generator.randomArmor(floorset);
-				if (!a.hasGoodGlyph() && Random.Int(10) < level)        a.inscribe();
-				else if (a.hasCurseGlyph())                             a.inscribe(null);
+				if (!a.hasGoodGlyph() && Random.Int(10) < level) a.inscribe();
+				else if (a.hasCurseGlyph())                           a.inscribe(null);
 				result = a;
 				break;
 			case 3:
@@ -290,17 +294,25 @@ public class RingOfWealth extends Ring {
 			case 4:
 				result = Generator.random(Generator.Category.ARTIFACT);
 				break;
+			case 5:
+				MissileWeapon m = Generator.randomMissile(floorset, true);
+				result = m.quantity(2);
+				break;
 		}
 		//minimum level is 1/2/3/4/5/6 when ring level is 1/3/5/7/9/11
 		if (result.isUpgradable()){
 			int minLevel = (level+1)/2;
-			if (result.level() < minLevel){
-				result.level(minLevel);
+			if (result instanceof MissileWeapon) {
+				result.quantity(result.quantity() + minLevel);
+			} else {
+				if (result.level() < minLevel) {
+					result.level(minLevel);
+				}
 			}
 		}
 		result.cursed = false;
 		result.cursedKnown = true;
-		if (result.level() >= 2) {
+		if (result.level() >= 2 || result.quantity() > 4) {
 			latestDropTier = 4;
 		} else {
 			latestDropTier = 3;
@@ -308,18 +320,9 @@ public class RingOfWealth extends Ring {
 		return result;
 	}
 
-	public class Wealth extends RingBuff {
-	}
+	public class Wealth extends RingBuff {}
 
-	public static class TriesToDropTracker extends CounterBuff {
-		{
-			revivePersists = true;
-		}
-	}
+	public static class TriesToDropTracker extends CounterBuff{{revivePersists = true;}}
 
-	public static class DropsToEquipTracker extends CounterBuff {
-		{
-			revivePersists = true;
-		}
-	}
+	public static class DropsToEquipTracker extends CounterBuff{{revivePersists = true;}}
 }

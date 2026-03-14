@@ -90,7 +90,7 @@ public class Futsunomitama extends MeleeWeapon {
 						GameScene.add(Blob.seed(hero.pos + i, 8, Electricity.class));
 					}
 				}
-				Buff.affect(hero, BlobImmunity.class, 8);
+				Buff.affect(hero, BlobImmunity.class, 7);
 				curCharge = 0;
 				Sample.INSTANCE.play(Assets.Sounds.LIGHTNING);
 				hero.sprite.operate(hero.pos);
