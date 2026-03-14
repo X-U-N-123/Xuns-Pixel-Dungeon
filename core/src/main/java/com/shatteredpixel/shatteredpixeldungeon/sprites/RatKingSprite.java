@@ -55,7 +55,7 @@ public class RatKingSprite extends MobSprite {
 
 		if (Dungeon.hero != null && Dungeon.hero.armorAbility instanceof Ratmogrify){
 			c = 24;
-			if (parent != null) aura(0xFFFF00, 5);
+			if (parent != null) aura(0xFFFF00, 5, true);
 		}
 
 		texture( Assets.Sprites.RATKING );
@@ -83,7 +83,7 @@ public class RatKingSprite extends MobSprite {
 	public void link(Char ch) {
 		super.link(ch);
 		if (Dungeon.hero != null && Dungeon.hero.armorAbility instanceof Ratmogrify){
-			aura(0xFFFF00, 5);
+			aura(0xFFFF00, 5, true);
 		}
 	}
 }

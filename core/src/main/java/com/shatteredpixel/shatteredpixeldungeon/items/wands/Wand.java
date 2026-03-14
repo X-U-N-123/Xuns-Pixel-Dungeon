@@ -29,12 +29,10 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ToxicGas;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AllyBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ArtifactRecharge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Corruption;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Degrade;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
@@ -54,7 +52,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.mage.WildM
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.wraith.EvilUnfold;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.DivineSense;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.GuidingLight;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
@@ -270,22 +267,9 @@ public abstract class Wand extends Item {
 			}
 		}
 
-		if (Dungeon.hero.buff(EvilUnfold.Evil.class) != null)
-			EvilUnfold.Evil.giveDebuff(Dungeon.hero.pointsInTalent(Talent.BUFFED_NERF), target);
+		EvilUnfold.Evil evil = Dungeon.hero.buff(EvilUnfold.Evil.class);
+		if (evil != null) dmg = evil.proc(target, dmg);
 
-		EvilUnfold.Evil tracker = Dungeon.hero.buff(EvilUnfold.Evil.class);
-		if (tracker != null){
-			for (Buff buff : target.buffs()) if (buff.type == Buff.buffType.NEGATIVE) dmg += Dungeon.hero.pointsInTalent(Talent.STRANGLING);
-
-			if (dmg >= target.HP
-					&& Random.Float() < 0.15f * (1 + Dungeon.hero.pointsInTalent(Talent.ARMY_OF_DEATH))
-					&& !target.isImmune(Corruption.class) && target.buff(Corruption.class) == null
-					&& target instanceof Mob && target.isAlive()){
-				Corruption.corruptionHeal(target);
-				AllyBuff.affectAndLoot((Mob) target, Dungeon.hero, Corruption.class);
-				dmg = 0;
-			}
-		}
 		return dmg;
 	}
 

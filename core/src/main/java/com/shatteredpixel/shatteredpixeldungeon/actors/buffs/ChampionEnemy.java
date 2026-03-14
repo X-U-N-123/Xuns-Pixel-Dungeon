@@ -26,11 +26,16 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Electricity;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Fire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Freezing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Splash;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfFireblast;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfFrost;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfLightning;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
@@ -65,7 +70,7 @@ public abstract class ChampionEnemy extends Buff {
 
 	@Override
 	public void fx(boolean on) {
-		if (on) target.sprite.aura( color, rays );
+		if (on) target.sprite.aura( color, rays, false);
 		else target.sprite.clearAura();
 	}
 
@@ -105,7 +110,7 @@ public abstract class ChampionEnemy extends Buff {
 		//we roll for a champion enemy even if we aren't spawning one to ensure that
 		//mobsToChampion does not affect levelgen RNG (number of calls to Random.Int() is constant)
 		Class<?extends ChampionEnemy> buffCls;
-		switch (Random.Int(11)){
+		switch (Random.Int(13)){
 			case 0: default:    buffCls = Blazing.class;      break;
 			case 1:             buffCls = Projecting.class;   break;
 			case 2:             buffCls = AntiMagic.class;    break;
@@ -117,6 +122,8 @@ public abstract class ChampionEnemy extends Buff {
 			case 8:             buffCls = Vampiric.class;     break;
 			case 9:             buffCls = FrostEnemy.class;   break;
 			case 10:            buffCls = OozeEnemy.class;    break;
+			case 11:            buffCls = Displacing.class;   break;
+			case 12:            buffCls = Shocking.class;     break;
 		}
 
 		if (Dungeon.mobsToChampion <= 0 && Dungeon.isChallenged(Challenges.CHAMPION_ENEMIES)) {
@@ -139,6 +146,8 @@ public abstract class ChampionEnemy extends Buff {
 		if(m.buff(BerserkEnemy.class) == null) Usablebuff.add(BerserkEnemy.class);
 		if(m.buff(FrostEnemy.class) == null)   Usablebuff.add(FrostEnemy.class);
 		if(m.buff(OozeEnemy.class) == null)    Usablebuff.add(OozeEnemy.class);
+		if(m.buff(Displacing.class) == null)   Usablebuff.add(Displacing.class);
+		if(m.buff(Shocking.class) == null)     Usablebuff.add(Shocking.class);
 		if(m.buff(Giant.class) == null && Usablebuff.isEmpty()) Usablebuff.add(Giant.class);
 
 		if (!Usablebuff.isEmpty()){
@@ -183,6 +192,7 @@ public abstract class ChampionEnemy extends Buff {
 
 		{
 			immunities.add(Burning.class);
+			immunities.add(WandOfFireblast.class);
 		}
 	}
 
@@ -196,9 +206,9 @@ public abstract class ChampionEnemy extends Buff {
 		@Override
 		public void onAttackProc(Char enemy) {
 			if (Dungeon.level.water[enemy.pos]) {
-				Buff.prolong(enemy, Chill.class, 3f);
+				Buff.prolong(enemy, Chill.class, 5f);
 			} else {
-				Buff.prolong(enemy, Chill.class, 2f);
+				Buff.prolong(enemy, Chill.class, 3f);
 			}
 		}
 
@@ -226,6 +236,7 @@ public abstract class ChampionEnemy extends Buff {
 		{
 			immunities.add(Frost.class);
 			immunities.add(Chill.class);
+			resistances.add(WandOfFrost.class);
 		}
 	}
 
@@ -275,13 +286,13 @@ public abstract class ChampionEnemy extends Buff {
 	public static class Vampiric extends ChampionEnemy {
 
 		{
-			color = 0x99FF99;
+			color = 0x990000;
 			rays = 5;
 		}
 
 		@Override
 		public void onAttackProc(Char enemy) {
-			int toHeal = (int)(0.125f*(target.HT - target.HP));
+			int toHeal = Math.round(0.125f*(target.HT - target.HP));
             if (toHeal > 0){
 		    	target.HP += toHeal;
 			    target.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(toHeal), FloatingText.HEALING);
@@ -485,6 +496,63 @@ public abstract class ChampionEnemy extends Buff {
 		public void restoreFromBundle(Bundle bundle) {
 			super.restoreFromBundle(bundle);
 			multiplier = bundle.getFloat(MULTIPLIER);
+		}
+	}
+
+	public static class Displacing extends ChampionEnemy {
+
+		{
+			color = 0x888888;
+			rays = 5;
+		}
+
+		@Override
+		public void onAttackProc(Char enemy) {
+			ScrollOfTeleportation.teleportChar(target, this.getClass());
+		}
+
+		@Override
+		public float meleeDamageFactor() {
+			return 1.25f;
+		}
+
+	}
+
+	public static class Shocking extends ChampionEnemy {
+
+		{
+			color = 0x999900;
+			rays = 5;
+		}
+
+		@Override
+		public void onAttackProc(Char enemy) {
+			if (Random.Float() < 0.2f) {
+				Buff.affect(enemy, Paralysis.class, 2f);
+			}
+		}
+
+		@Override
+		public void detach() {
+			//don't trigger when killed by being knocked into a pit
+			if (target.isFlying() || !Dungeon.level.pit[target.pos]) {
+				for (int i : PathFinder.NEIGHBOURS9) {
+					if (!Dungeon.level.solid[target.pos + i]) {
+						GameScene.add(Blob.seed(target.pos + i, 4, Electricity.class));
+					}
+				}
+			}
+			super.detach();
+		}
+
+		@Override
+		public float meleeDamageFactor() {
+			return 1.25f;
+		}
+
+		{
+			immunities.add(Electricity.class);
+			resistances.add(WandOfLightning.class);
 		}
 	}
 

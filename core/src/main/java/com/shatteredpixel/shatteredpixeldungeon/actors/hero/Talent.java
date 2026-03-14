@@ -29,7 +29,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AcidRain;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Adrenaline;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AllyBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ArtifactRecharge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
@@ -38,7 +37,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.BrokenArmor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Chill;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Corruption;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.CounterBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedRings;
@@ -60,7 +58,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.WandEmpower;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.ArmorAbility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.Ratmogrify;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.duelist.Challenge;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.wraith.EvilUnfold;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.DivineSense;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.RecallInscription;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
@@ -1508,20 +1505,6 @@ public enum Talent {
         if (enemy.HP <= enemy.HT * (0.2f + 0.3f * hero.pointsInTalent(BURIAL_CEREMONY)) && hero.hasTalent(BURIAL_CEREMONY)){
             dmg ++;
         }
-
-		EvilUnfold.Evil tracker = hero.buff(EvilUnfold.Evil.class);
-		if (tracker != null){
-			for (Buff buff : enemy.buffs()) if (buff.type == Buff.buffType.NEGATIVE) dmg += hero.pointsInTalent(STRANGLING);
-
-			if (dmg >= enemy.HP
-					&& Random.Float() < 0.15f * (1 + hero.pointsInTalent(Talent.ARMY_OF_DEATH))
-					&& !enemy.isImmune(Corruption.class) && enemy.buff(Corruption.class) == null
-					&& enemy instanceof Mob && enemy.isAlive()){
-				Corruption.corruptionHeal(enemy);
-				AllyBuff.affectAndLoot((Mob) enemy, hero, Corruption.class);
-				dmg = 0;
-			}
-		}
 
         TearingMealTracker tear = hero.buff(TearingMealTracker.class);
         if (tear != null){

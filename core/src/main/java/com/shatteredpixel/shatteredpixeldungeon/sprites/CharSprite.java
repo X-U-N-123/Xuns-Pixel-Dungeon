@@ -84,7 +84,7 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 	protected float shadowOffset    = 0.25f;
 
 	public enum State {
-		BURNING, LEVITATING, INVISIBLE, PARALYSED, FROZEN, ILLUMINATED, CHILLED, DARKENED, MARKED, HEALING, SHIELDED, HEARTS, GLOWING, AURA
+		BURNING, LEVITATING, INVISIBLE, PARALYSED, FROZEN, ILLUMINATED, CHILLED, DARKENED, MARKED, HEALING, SHIELDED, HEARTS, GLOWING, AURA, DARK_AURA
 	}
 	
 	protected Animation idle;
@@ -376,8 +376,8 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 	private int auraRays = 0;
 
 	//Aura needs color and ray count data too
-	public void aura( int color, int nRays ){
-		add(State.AURA);
+	public void aura( int color, int nRays, boolean lightMode ){
+		add(lightMode ? State.AURA : State.DARK_AURA);
 		auraColor = color;
 		auraRays = nRays;
 	}
@@ -448,13 +448,13 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 				if (glowBlock != null) glowBlock.killAndErase();
 				glowBlock = GlowBlock.lighten(this);
 				break;
-			case AURA:
+			case AURA: case DARK_AURA:
 				if (aura != null)   aura.killAndErase();
 				float size = Math.max(width(), height());
 				size = Math.max(size+4, 16);
 				aura = new Flare(auraRays, size);
 				aura.angularSpeed = 90;
-				aura.color(auraColor, true);
+				aura.color(auraColor, state == State.AURA);
 				aura.visible = visible;
 
 				if (parent != null) {
@@ -480,6 +480,7 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 
 	public void clearAura(){
 		remove(State.AURA);
+		remove(State.DARK_AURA);
 	}
 
 	protected synchronized void processStateRemoval( State state ) {
@@ -559,7 +560,7 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 					glowBlock = null;
 				}
 				break;
-			case AURA:
+			case AURA: case DARK_AURA:
 				if (aura != null){
 					aura.killAndErase();
 					aura = null;

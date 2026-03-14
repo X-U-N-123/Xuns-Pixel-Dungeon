@@ -1740,8 +1740,8 @@ public class Hero extends Char {
             Buff.prolong(enemy, Weakness.class, 3f);
         }
 
-		if (buff(EvilUnfold.Evil.class) != null)
-			EvilUnfold.Evil.giveDebuff(pointsInTalent(Talent.BUFFED_NERF), enemy);
+		EvilUnfold.Evil evil = buff(EvilUnfold.Evil.class);
+		if (evil != null) damage = evil.proc(enemy, damage);
 
 		if (wep != null) {
 			damage = wep.proc( this, enemy, damage );

@@ -96,7 +96,7 @@ public class ProtectiveBookpage extends ClericSpell {
 
         @Override
         public void fx(boolean on) {
-            if (on) target.sprite.aura( 0xAAAA00, 4);
+            if (on) target.sprite.aura( 0xAAAA00, pages, true);
             else target.sprite.clearAura();
         }
 
@@ -111,6 +111,7 @@ public class ProtectiveBookpage extends ClericSpell {
             pageTime = 10;
             if (((Hero)target).pointsInTalent(Talent.ENHANCED_BOOKPAGE) >= 3) pageTime += 2;
             BuffIndicator.refreshHero();
+			fx(true); //refresh the aura on the hero
         }
 
         @Override

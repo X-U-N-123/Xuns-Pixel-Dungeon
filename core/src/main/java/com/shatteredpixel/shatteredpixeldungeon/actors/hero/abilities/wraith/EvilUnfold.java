@@ -24,8 +24,10 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.wraith;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AllyBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.BrokenArmor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Corruption;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Daze;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
@@ -38,11 +40,13 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vulnerable;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.ArmorAbility;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClassArmor;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.HeroIcon;
 import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
@@ -90,7 +94,17 @@ public class EvilUnfold extends ArmorAbility {
 			return BuffIndicator.EVILUNFOLD;
 		}
 
-		public static void giveDebuff(int point, Char c){
+		@Override
+		public void fx(boolean on) {
+			if (on) target.sprite.aura( 0xFF0000, 6, true);
+			else target.sprite.clearAura();
+		}
+
+		public int proc(Char c, int dmg){
+			for (Buff buff : target.buffs()) if (buff.type == Buff.buffType.NEGATIVE)
+				dmg += ((Hero)target).pointsInTalent(Talent.STRANGLING);
+
+			int point = ((Hero)target).pointsInTalent(Talent.BUFFED_NERF);
 			ArrayList<Class<? extends FlavourBuff>> debuffs = new ArrayList<>();
 			if (c.buff(Vulnerable.class) == null) debuffs.add(Vulnerable.class);
 			else if (c.buff(BrokenArmor.class) == null && point >= 1)
@@ -106,6 +120,16 @@ public class EvilUnfold extends ArmorAbility {
 				debuffs.add(Paralysis.class);
 
 			if (!debuffs.isEmpty()) Buff.prolong(c, debuffs.get(Random.Int(debuffs.size())), 10f);
+
+			if (dmg >= c.HP
+					&& Random.Float() < 0.2f + 0.15f * ((Hero)target).pointsInTalent(Talent.ARMY_OF_DEATH)
+					&& !c.isImmune(Corruption.class) && c.alignment == Char.Alignment.ENEMY
+					&& c instanceof Mob && c.isAlive()){
+				Corruption.corruptionHeal(c);
+				AllyBuff.affectAndLoot((Mob)c, (Hero)target, Corruption.class);
+				dmg = 0;
+			}
+			return dmg;
 		}
 
 		public void delayTime(float dmg){
@@ -115,6 +139,20 @@ public class EvilUnfold extends ArmorAbility {
 			spend(toDly);
 			delayedTime += toDly;
 			BuffIndicator.refreshHero();
+		}
+
+		public static final String DLY_TIME = "delayed_time";
+
+		@Override
+		public void storeInBundle(Bundle bundle) {
+			super.storeInBundle(bundle);
+			bundle.put(DLY_TIME, delayedTime);
+		}
+
+		@Override
+		public void restoreFromBundle(Bundle bundle) {
+			super.restoreFromBundle(bundle);
+			delayedTime = bundle.getFloat(DLY_TIME);
 		}
 	}
 }

@@ -78,7 +78,7 @@ public class devShield extends Item {
         @Override
         public void fx(boolean on) {
             if (!target.buffs(ChampionEnemy.class).isEmpty()) return;
-            if (on) target.sprite.aura( 0x1111FF, 6 );
+            if (on) target.sprite.aura( 0x1111FF, 6, true);
             else target.sprite.clearAura();
         }
     }
