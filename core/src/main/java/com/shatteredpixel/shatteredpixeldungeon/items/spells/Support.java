@@ -83,7 +83,7 @@ public class Support extends Spell {
 
     @Override
     public int energyVal() {
-        return (int)(5 * (quantity/(float) Recipe.OUT_QUANTITY));
+        return (int)(8 * (quantity/(float) Recipe.OUT_QUANTITY));
     }
 
     public static class Recipe extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe.SimpleRecipe {

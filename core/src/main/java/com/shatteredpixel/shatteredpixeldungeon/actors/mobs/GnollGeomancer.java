@@ -293,7 +293,7 @@ public class GnollGeomancer extends Mob {
 			Buff.affect(this, RockArmor.class).setShield(25);
 		}
 		Collapse c = Dungeon.hero.buff(Collapse.class);
-		if (c != null && !isImmune(src.getClass()) && !isInvulnerable(src.getClass())) c.incTotalTime(4*dmg);
+		if (c != null && !isImmune(src.getClass()) && !isInvulnerable(src.getClass())) c.incTotalTime(-4*dmg);
 	}
 
 	private boolean inFinalBracket = false;

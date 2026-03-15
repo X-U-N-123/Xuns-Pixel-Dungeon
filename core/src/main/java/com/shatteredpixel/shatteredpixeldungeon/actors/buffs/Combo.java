@@ -37,6 +37,7 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ActionIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.AttackIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
@@ -461,6 +462,7 @@ public class Combo extends Buff implements ActionIndicator.Action {
 				//fury attacks as many times as you have combo count
 				if (furyHitsLeft > 0 && enemy.isAlive() && hero.canAttack(enemy) &&
 						(wasAlly || enemy.alignment != target.alignment)){
+					((HeroSprite)target.sprite).bash(3f);
 					target.sprite.attack(enemy.pos, new Callback() {
 						@Override
 						public void call() {
@@ -468,6 +470,7 @@ public class Combo extends Buff implements ActionIndicator.Action {
 						}
 					});
 				} else {
+					((HeroSprite)target.sprite).bash(1f);
 					furyHitsLeft = 0;
 					detach();
 					Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG);

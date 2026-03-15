@@ -33,8 +33,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Splash;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
-import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfFireblast;
-import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfFrost;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfLightning;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -192,7 +190,6 @@ public abstract class ChampionEnemy extends Buff {
 
 		{
 			immunities.add(Burning.class);
-			immunities.add(WandOfFireblast.class);
 		}
 	}
 
@@ -236,7 +233,6 @@ public abstract class ChampionEnemy extends Buff {
 		{
 			immunities.add(Frost.class);
 			immunities.add(Chill.class);
-			resistances.add(WandOfFrost.class);
 		}
 	}
 

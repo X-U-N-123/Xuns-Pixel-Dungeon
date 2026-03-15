@@ -301,7 +301,7 @@ public class CrystalSpire extends Mob {
 		}
 		super.damage(dmg, src);
 		Collapse c = Dungeon.hero.buff(Collapse.class);
-		if (c != null && src instanceof Pickaxe) c.incTotalTime(2*dmg);
+		if (c != null && src instanceof Pickaxe) c.incTotalTime(-2*dmg);
 	}
 
 	@Override
