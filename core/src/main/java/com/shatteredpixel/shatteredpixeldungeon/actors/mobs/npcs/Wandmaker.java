@@ -31,9 +31,9 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Elemental;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.RotHeart;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
-import com.shatteredpixel.shatteredpixeldungeon.items.Goldarrow;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.devPickaxe;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.CeremonialCandle;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.CorpseDust;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Embers;
@@ -357,7 +357,7 @@ public class Wandmaker extends NPC {
 		
 		public static ArrayList<Room> spawnRoom( ArrayList<Room> rooms) {
 			questRoomSpawned = false;
-			if (!spawned && (type != 0 || (Dungeon.depth == Goldarrow.questDepth ||
+			if (!spawned && (type != 0 || (Dungeon.depth == devPickaxe.questDepth ||
 			(Dungeon.depth > 6 && Random.Int( 10 - Dungeon.depth ) == 0)))) {
 
 				// decide between 1,2, or 3 for quest type.
@@ -376,7 +376,7 @@ public class Wandmaker extends NPC {
 				}
 		
 				questRoomSpawned = true;
-				Goldarrow.questDepth = -1;
+				devPickaxe.questDepth = -1;
 				
 			}
 			return rooms;

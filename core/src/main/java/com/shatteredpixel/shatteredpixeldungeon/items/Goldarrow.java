@@ -32,11 +32,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Foresight;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicalSight;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MindVision;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Blacksmith;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Ghost;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Imp;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Wandmaker;
 import com.shatteredpixel.shatteredpixeldungeon.effects.TargetedCell;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfFeatherFall;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
@@ -47,22 +42,25 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.shatteredpixel.shatteredpixeldungeon.ui.AttackIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
+import com.shatteredpixel.shatteredpixeldungeon.ui.CheckBox;
+import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
+import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
+import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.watabou.noosa.Game;
 
 import java.util.ArrayList;
 
 public class Goldarrow extends Item {
 
-    String AC_TELEPORT = "teleport";
-    String AC_RETURN = "return";
-    String AC_AWARE = "aware";
-    String AC_GOTO = "goto";
-    String AC_RESET = "reset";
-    String AC_TARGET = "target";
-
-    public static int questDepth;
+	private static final String AC_TELEPORT = "teleport";
+	private static final String AC_RETURN   = "return";
+	private static final String AC_AWARE    = "aware";
+	private static final String AC_GOTO     = "goto";
+	private static final String AC_TARGET   = "target";
 
     {
         defaultAction = AC_GOTO;
@@ -79,7 +77,6 @@ public class Goldarrow extends Item {
         actions.add(AC_RETURN);
         actions.add(AC_AWARE);
         actions.add(AC_GOTO);
-        actions.add(AC_RESET);
         actions.add(AC_TARGET);
         return actions;
     }
@@ -128,6 +125,7 @@ public class Goldarrow extends Item {
             Dungeon.observe();
             Dungeon.hero.checkVisibleMobs();
             BuffIndicator.refreshHero();
+			AttackIndicator.updateState();
             defaultAction = AC_AWARE;
         }
         if (action.equals(AC_GOTO)){
@@ -145,59 +143,8 @@ public class Goldarrow extends Item {
             defaultAction = AC_GOTO;
         }
         if (action.equals(AC_TARGET)){
-            GameScene.selectCell(new CellSelector.Listener() {
-                @Override public String prompt() {
-                    return Messages.get(Goldarrow.class, "target");
-                }
-                @Override public void onSelect(Integer cell) {
-                    if (cell == null) return;
-                    Ballistica trajectory = new Ballistica(curUser.pos, cell, Ballistica.WONT_STOP);
-                    for (int i : trajectory.path){
-                        curUser.sprite.parent.addToFront(new TargetedCell(i, 0xFFFFFF));
-                    }
-                    curUser.sprite.parent.addToFront(new TargetedCell(cell, 0x00FF00));
-                }
-            });
+			GameScene.show(new TargetWindow());
             defaultAction = AC_TARGET;
-        }
-        if (action.contains(AC_RESET)){
-            switch (Dungeon.depth){
-                case 2: case 3: case 4:
-                    for (Mob m: Dungeon.level.mobs){
-                        if (m instanceof Ghost) {
-                            questDepth = Dungeon.depth;
-                            Ghost.Quest.reset();
-                        }
-                    }
-                    break;
-                case 7: case 8: case 9:
-                    for (Mob m: Dungeon.level.mobs){
-                        if (m instanceof Wandmaker) {
-                            questDepth = Dungeon.depth;
-                            Wandmaker.Quest.reset();
-                        }
-                    }
-                    break;
-                case 12: case 13: case 14:
-                    for (Mob m: Dungeon.level.mobs){
-                        if (m instanceof Blacksmith) {
-                            questDepth = Dungeon.depth;
-                            Blacksmith.Quest.reset();
-                        }
-                    }
-                    break;
-                case 17: case 18: case 19:
-                    for (Mob m: Dungeon.level.mobs){
-                        if (m instanceof Imp) {
-                            questDepth = Dungeon.depth;
-                            Imp.Quest.reset();
-                        }
-                    }
-                    break;
-            }
-            InterlevelScene.mode = InterlevelScene.Mode.RESET;
-            Game.switchScene(InterlevelScene.class);
-            defaultAction = AC_RESET;
         }
         GameScene.updateFog();
     }
@@ -217,4 +164,97 @@ public class Goldarrow extends Item {
         return 0;
     }
 
+	public static class TargetWindow extends Window {
+		private static final int GAP = 2;
+		private static int projectileProp = 0;
+		private static final boolean[] propList = new boolean[]{false, false, false, false};
+
+		public TargetWindow(){
+			int WIDTH = PixelScene.landscape() ? 180 : 120;
+
+			RenderedTextBlock title = PixelScene.renderTextBlock(Messages.titleCase(Messages.get(this, "title")), 9);
+			title.hardlight(TITLE_COLOR);
+			title.setPos((WIDTH-title.width())/2, GAP);
+			title.maxWidth(WIDTH - GAP * 2);
+			add(title);
+
+			RenderedTextBlock desc = PixelScene.renderTextBlock(Messages.titleCase(Messages.get(this, "desc")), 6);
+			desc.maxWidth(WIDTH);
+			desc.setPos(0, title.bottom() + 3);
+			add(desc);
+
+			CheckBox stopTargetBox = new CheckBox(Messages.titleCase(Messages.get(this, "stop_target"))) {
+				@Override
+				protected void onClick() {
+					super.onClick();
+					propList[0] = checked();
+				}
+			};
+			stopTargetBox.setRect(0, desc.bottom() + GAP, WIDTH, 16);
+			stopTargetBox.checked(propList[0]);
+			add(stopTargetBox);
+
+			CheckBox stopCharsBox = new CheckBox(Messages.titleCase(Messages.get(this, "stop_chars"))) {
+				@Override
+				protected void onClick() {
+					super.onClick();
+					propList[1] = checked();
+				}
+			};
+			stopCharsBox.setRect(0, stopTargetBox.bottom() + GAP, WIDTH, 16);
+			stopCharsBox.checked(propList[1]);
+			add(stopCharsBox);
+
+			CheckBox stopSolidBox = new CheckBox(Messages.titleCase(Messages.get(this, "stop_solid"))) {
+				@Override
+				protected void onClick() {
+					super.onClick();
+					propList[2] = checked();
+				}
+			};
+			stopSolidBox.setRect(0, stopCharsBox.bottom() + GAP, WIDTH, 16);
+			stopSolidBox.checked(propList[2]);
+			add(stopSolidBox);
+
+			CheckBox ignoreSoftSolidBox = new CheckBox(Messages.titleCase(Messages.get(this, "ignore_soft_solid"))) {
+				@Override
+				protected void onClick() {
+					super.onClick();
+					propList[3] = checked();
+				}
+			};
+			ignoreSoftSolidBox.setRect(0, stopSolidBox.bottom() + GAP, WIDTH, 16);
+			ignoreSoftSolidBox.checked(propList[3]);
+			add(ignoreSoftSolidBox);
+
+			RedButton targetButton = new RedButton(Messages.get(Goldarrow.class, "ac_target")) {
+				@Override
+				protected void onClick() {
+					hide();
+					projectileProp = 0;
+					for (int i = 0; i < propList.length; i++){
+						if (propList[i]) projectileProp = projectileProp | (int)Math.pow(2, i);
+					}
+					GameScene.selectCell(new CellSelector.Listener() {
+						@Override public String prompt() {
+							return Messages.get(TargetWindow.class, "target");
+						}
+						@Override public void onSelect(Integer cell) {
+							if (cell == null) return;
+							Ballistica trajectory = new Ballistica(curUser.pos, cell, projectileProp);
+							for (int i : trajectory.path){
+								if (i == trajectory.collisionPos)
+									 curUser.sprite.parent.addToFront(new TargetedCell(i, Window.XUN_COLOR));
+								else curUser.sprite.parent.addToFront(new TargetedCell(i, Window.TITLE_COLOR));
+							}
+						}
+					});
+				}
+			};
+			targetButton.setRect(0, ignoreSoftSolidBox.bottom() + GAP, WIDTH, 16);
+			add(targetButton);
+
+			resize(WIDTH, (int)targetButton.bottom() + GAP);
+		}
+	}
 }

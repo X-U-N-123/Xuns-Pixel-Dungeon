@@ -7,7 +7,6 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.loadLevel;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.newLevel;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.saveAll;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.switchLevel;
-import static com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation.teleportToLocation;
 import static java.util.Arrays.copyOfRange;
 
 import com.badlogic.gdx.utils.StringBuilder;
@@ -24,6 +23,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.Trap;
@@ -436,7 +436,10 @@ public class ScrollOfDebug extends Scroll {
                     Object storedVariable = input.length > 1 ? Variable.get(input[1]) : null;
                     if (storedVariable instanceof Integer) {
                         // backport note: prior to 1.0.0 there was no return value
-                        return teleportToLocation(hero, (int)storedVariable);
+						ScrollOfTeleportation.appear(hero, (int)storedVariable);
+						Dungeon.observe();
+						AttackIndicator.updateState();
+                        return true;
                     }
                     else if (input.length > 1) {
                         GLog.w("Invalid argument provided: " + (storedVariable == null ? input[1] : storedVariable));
@@ -444,7 +447,11 @@ public class ScrollOfDebug extends Scroll {
                         GameScene.selectCell(new CellSelector.Listener() {
                             @Override
                             public void onSelect(Integer cell) {
-                                if (cell != null) teleportToLocation(hero, cell);
+                                if (cell != null) {
+									ScrollOfTeleportation.appear(hero, cell);
+									Dungeon.observe();
+									AttackIndicator.updateState();
+								}
                             }
 
                             @Override

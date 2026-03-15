@@ -30,7 +30,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Golem;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Monk;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
-import com.shatteredpixel.shatteredpixeldungeon.items.Goldarrow;
+import com.shatteredpixel.shatteredpixeldungeon.items.devPickaxe;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.DwarfToken;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
@@ -211,7 +211,7 @@ public class Imp extends NPC {
 		}
 		
 		public static void spawn( CityLevel level ) {
-			if (!spawned && (Dungeon.depth == Goldarrow.questDepth ||
+			if (!spawned && (Dungeon.depth == devPickaxe.questDepth ||
 			(Dungeon.depth > 16 && Random.Int( 20 - Dungeon.depth ) == 0))) {
 
 				Imp npc = new Imp();
@@ -256,7 +256,7 @@ public class Imp extends NPC {
 				} while (reward.cursed);
 				reward.upgrade( 2 );
 				reward.cursed = true;
-				Goldarrow.questDepth = -1;
+				devPickaxe.questDepth = -1;
 			}
 		}
 		

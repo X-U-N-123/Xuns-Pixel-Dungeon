@@ -193,6 +193,7 @@ public class InventoryPane extends Component {
 
 		crossB = Icons.TARGET.get();
 		crossB.visible = false;
+		crossB.hardlight(0xFFD400);
 		add( crossB );
 
 		crossM = new Image();

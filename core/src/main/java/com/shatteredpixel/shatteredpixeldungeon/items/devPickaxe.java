@@ -21,13 +21,20 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items;
 
+import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Blacksmith;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Ghost;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Imp;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Wandmaker;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTerrainTilemap;
@@ -35,17 +42,22 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.AttackIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.IconButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.watabou.noosa.Game;
 import com.watabou.noosa.Image;
+import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 
 import java.util.ArrayList;
 
 public class devPickaxe extends Item {
 
-	private static final String AC_SET  = "set";
-	private static final String AC_MINE = "mine";
+	private static final String AC_SET   = "set";
+	private static final String AC_MINE  = "mine";
+	private static final String AC_RESET = "reset";
 
 	private int chosenTerrain = 0;
+	public static int questDepth;
 
 	{
 		defaultAction = AC_MINE;
@@ -60,6 +72,7 @@ public class devPickaxe extends Item {
 		ArrayList<String> actions = super.actions(hero);
 		actions.add(AC_SET);
 		actions.add(AC_MINE);
+		actions.add(AC_RESET);
 		return actions;
 	}
 
@@ -68,13 +81,18 @@ public class devPickaxe extends Item {
 
 		super.execute(hero, action);
 		if (action.equals(AC_SET)) GameScene.show(new WndSelectTerrain(this));
-		if (action.equals(AC_MINE))
+		if (action.equals(AC_MINE)){
 			GameScene.selectCell(new CellSelector.Listener() {
 				@Override
 				public void onSelect(Integer cell) {
 					if (cell == null) return;
+					if (!Dungeon.level.insideMap(cell)){
+						GLog.w(Messages.get(this, "oom"));
+						return;
+					}
 					curUser.sprite.attack(cell);
 					Level.set(cell, chosenTerrain);
+					Sample.INSTANCE.play(Assets.Sounds.MINE);
 
 					GameScene.updateMap(cell);
 					Dungeon.level.buildFlagMaps();
@@ -87,6 +105,31 @@ public class devPickaxe extends Item {
 					return Messages.get(this, "prompt");
 				}
 			});
+			defaultAction = AC_MINE;
+		}
+		if (action.contains(AC_RESET)){
+			for (Mob m: Dungeon.level.mobs){
+				if (m instanceof Ghost) {
+					questDepth = Dungeon.depth;
+					Ghost.Quest.reset();
+				}
+				if (m instanceof Wandmaker) {
+					questDepth = Dungeon.depth;
+					Wandmaker.Quest.reset();
+				}
+				if (m instanceof Blacksmith) {
+					questDepth = Dungeon.depth;
+					Blacksmith.Quest.reset();
+				}
+				if (m instanceof Imp) {
+					questDepth = Dungeon.depth;
+					Imp.Quest.reset();
+				}
+			}
+			InterlevelScene.mode = InterlevelScene.Mode.RESET;
+			Game.switchScene(InterlevelScene.class);
+			defaultAction = AC_RESET;
+		}
 	}
 
 	private static class WndSelectTerrain extends Window {

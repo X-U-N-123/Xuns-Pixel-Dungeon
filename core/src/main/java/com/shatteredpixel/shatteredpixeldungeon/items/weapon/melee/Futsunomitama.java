@@ -47,7 +47,7 @@ public class Futsunomitama extends MeleeWeapon {
 	private int curCharge = 0;
 	private static final int maxCharges = 15;
 
-	public static final String AC_DISCHARGE = "DISCHARGE";
+	public static final String AC_DISCHARGE = "discharge";
 
 	{
 		image = ItemSpriteSheet.FUTSUNOMITAMA;
@@ -74,7 +74,7 @@ public class Futsunomitama extends MeleeWeapon {
 	@Override
 	public ArrayList<String> actions(Hero hero) {
 		ArrayList<String> actions = super.actions( hero );
-		if (curCharge >= maxCharges) actions.add(AC_DISCHARGE);
+		if (curCharge >= maxCharges && isEquipped(hero)) actions.add(AC_DISCHARGE);
 		return actions;
 	}
 
