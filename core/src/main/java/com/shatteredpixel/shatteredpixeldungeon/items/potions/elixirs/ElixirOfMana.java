@@ -46,12 +46,12 @@ public class ElixirOfMana extends Elixir {
 
     @Override
     public int value() {
-        return (int)(100 * (quantity/(float) Recipe.OUT_QUANTITY));
+        return (int)(150 * (quantity/(float) Recipe.OUT_QUANTITY));
     }
 
     @Override
     public int energyVal() {
-        return (int)(18 * (quantity/(float) Recipe.OUT_QUANTITY));
+        return (int)(24 * (quantity/(float) Recipe.OUT_QUANTITY));
     }
 
     public static class Recipe extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe.SimpleRecipe {
@@ -62,7 +62,7 @@ public class ElixirOfMana extends Elixir {
             inputs =  new Class[]{PotionOfMastery.class};
             inQuantity = new int[]{1};
 
-            cost = 4;
+            cost = 8;
 
             output = ElixirOfMana.class;
             outQuantity = OUT_QUANTITY;

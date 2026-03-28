@@ -267,7 +267,7 @@ public abstract class Wand extends Item {
 			}
 		}
 
-		dmg *= 1f + Statistics.elixirManaDrunk * 0.075f;
+		dmg *= 1f + Statistics.elixirManaDrunk * 0.1f;
 
 		EvilUnfold.Evil evil = Dungeon.hero.buff(EvilUnfold.Evil.class);
 		if (evil != null) dmg = evil.proc(target, dmg);

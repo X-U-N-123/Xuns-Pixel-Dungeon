@@ -159,6 +159,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Bayonet;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.BladeOfUnreal;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Canopy;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Chainwhip;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Chixiao;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Crabclaw;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Crossbow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Crystalsword;
@@ -594,7 +595,7 @@ public class Generator {
 			WEP_T5.defaultProbs = new float[]{ 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0};
 			WEP_T5.probs = WEP_T5.defaultProbs.clone();
 
-			WEP_T6.classes = new Class<?>[]{//15 Weapons
+			WEP_T6.classes = new Class<?>[]{//16 Weapons
 					Greataxe.class,
 					Shangfang.class,
 					Doublesword.class,
@@ -609,9 +610,10 @@ public class Generator {
 					Greatrunicblade.class,
 					Fetter.class,
 					StoneCudgel.class,
-					ZhugeCrossbow.class
+					ZhugeCrossbow.class,
+					Chixiao.class
 			};
-			WEP_T6.defaultProbs = new float[]{ 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2};
+			WEP_T6.defaultProbs = new float[]{ 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2};
 			WEP_T6.probs = WEP_T6.defaultProbs.clone();
 
 			//see Generator.randomArmor

@@ -207,7 +207,7 @@ public class WandOfBlastWave extends DamageWand {
 			Sample.INSTANCE.play( Assets.Sounds.BLAST );
 
 			//brief cd, to prevent stacking absurd damage with it with things like para gas
-			Buff.prolong(attacker, BWaveOnHitTracker.class, 10f);
+			Buff.prolong(attacker, BWaveOnHitTracker.class, 3f);
 		}
 	}
 

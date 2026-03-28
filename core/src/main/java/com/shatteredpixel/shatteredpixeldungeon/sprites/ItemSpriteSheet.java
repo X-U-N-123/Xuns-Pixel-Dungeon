@@ -409,6 +409,7 @@ public class ItemSpriteSheet {
 	public static final int Ripperclaw     = WEP_TIER6+12;
 	public static final int ZHUGE_CROSSBOW = WEP_TIER6+13;
 	public static final int Stonecudgel    = WEP_TIER6+14;
+	public static final int CHIXIAO        = WEP_TIER6+15;
 	static{
 		assignItemRect(GREATAXE,       12, 16);
 		assignItemRect(Shangfang,      16, 16);
@@ -425,6 +426,7 @@ public class ItemSpriteSheet {
 		assignItemRect(Fetter,         14, 14);
 		assignItemRect(Stonecudgel,    16, 16);
 		assignItemRect(ZHUGE_CROSSBOW, 15, 15);
+		assignItemRect(CHIXIAO,        16, 16);
 	}
 
 	private static final int MISSILE_WEP    = xy(1, 8);  //32 slots. 5 per tier + bow
