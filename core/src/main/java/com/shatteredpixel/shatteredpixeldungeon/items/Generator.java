@@ -224,6 +224,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Shortrunicbla
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Shortsword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Shovel;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sickle;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.SleeveArrow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Smallrunicblade;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Spear;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.StoneCudgel;
@@ -240,6 +241,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Wolftailgrass
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Woodsword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WornShortsword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Zhouyi;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.ZhugeCrossbow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Antimatter;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Bolas;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.BoneFragment;
@@ -523,13 +525,13 @@ public class Generator {
 					Smallrunicblade.class,
 					Havoc.class,
 					StoneHammer.class,
-                    HiddenBlade.class,
+                    SleeveArrow.class,
 					Pickaxe.class,
 			};
 			WEP_T2.defaultProbs = new float[]{ 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0 };
 			WEP_T2.probs = WEP_T2.defaultProbs.clone();
 			
-			WEP_T3.classes = new Class<?>[]{//15 Weapons
+			WEP_T3.classes = new Class<?>[]{//16 Weapons
 					Sword.class,
 					Mace.class,
 					Scimitar.class,
@@ -544,9 +546,10 @@ public class Generator {
 					Scythe.class,
 					LightFlail.class,
 					Windblade.class,
-					Zhouyi.class
+					Zhouyi.class,
+					HiddenBlade.class
 			};
-			WEP_T3.defaultProbs = new float[]{ 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2};
+			WEP_T3.defaultProbs = new float[]{ 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2};
 			WEP_T3.probs = WEP_T3.defaultProbs.clone();
 			
 			WEP_T4.classes = new Class<?>[]{//16 Weapons
@@ -591,7 +594,7 @@ public class Generator {
 			WEP_T5.defaultProbs = new float[]{ 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0};
 			WEP_T5.probs = WEP_T5.defaultProbs.clone();
 
-			WEP_T6.classes = new Class<?>[]{//14 Weapons
+			WEP_T6.classes = new Class<?>[]{//15 Weapons
 					Greataxe.class,
 					Shangfang.class,
 					Doublesword.class,
@@ -605,9 +608,10 @@ public class Generator {
 					Erlangknife.class,
 					Greatrunicblade.class,
 					Fetter.class,
-					StoneCudgel.class
+					StoneCudgel.class,
+					ZhugeCrossbow.class
 			};
-			WEP_T6.defaultProbs = new float[]{ 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2};
+			WEP_T6.defaultProbs = new float[]{ 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2};
 			WEP_T6.probs = WEP_T6.defaultProbs.clone();
 
 			//see Generator.randomArmor

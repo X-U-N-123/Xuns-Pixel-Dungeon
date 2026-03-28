@@ -32,8 +32,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.MagicalInfusion;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Crossbow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Greatshield;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.KindOfCrossbow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RoundShield;
@@ -210,10 +210,10 @@ public class WndUpgrade extends Window {
 					bottom);
 		}
 
-		if (toUpgrade instanceof Crossbow){
+		if (toUpgrade instanceof KindOfCrossbow){
 			bottom = fillFields(Messages.get(this, "dart_damage"),
-					((Crossbow) toUpgrade).dartMin(levelFrom) + "-" + ((Crossbow) toUpgrade).dartMax(levelFrom),
-					((Crossbow) toUpgrade).dartMin(levelTo) + "-" + ((Crossbow) toUpgrade).dartMax(levelTo),
+					((KindOfCrossbow) toUpgrade).dartMin(levelFrom) + "-" + ((KindOfCrossbow) toUpgrade).dartMax(levelFrom),
+					((KindOfCrossbow) toUpgrade).dartMin(levelTo) + "-" + ((KindOfCrossbow) toUpgrade).dartMax(levelTo),
 					bottom);
 		}
 

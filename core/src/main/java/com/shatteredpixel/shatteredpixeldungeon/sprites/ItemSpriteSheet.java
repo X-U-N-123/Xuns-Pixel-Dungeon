@@ -271,9 +271,8 @@ public class ItemSpriteSheet {
 	public static final int Stonehammer     = WEP_TIER2+10;
 	public static final int Smallrunicblade = WEP_TIER2+11;
 	public static final int Jiewan          = WEP_TIER2+12;
-	public static final int Havoc           = WEP_TIER2+13;
-    public static final int HIDDEN_BLADE    = WEP_TIER2+14;
-    public static final int HIDDEN_BLADE_LOCKED= WEP_TIER2+15;
+	public static final int SLEEVE_ARROW    = WEP_TIER2+13;
+	public static final int Havoc           = WEP_TIER2+14;
 	static{
 		assignItemRect(SHORTSWORD,      13, 13);
 		assignItemRect(HAND_AXE,        12, 14);
@@ -289,8 +288,7 @@ public class ItemSpriteSheet {
 		assignItemRect(Smallrunicblade, 12, 12);
 		assignItemRect(Havoc,           14, 14);
 		assignItemRect(Stonehammer,     15, 15);
-        assignItemRect(HIDDEN_BLADE,    16, 16);
-        assignItemRect(HIDDEN_BLADE_LOCKED,16, 16);
+		assignItemRect(SLEEVE_ARROW,    15, 15);
 	}
 
 	private static final int WEP_TIER3      = xy(1, 6);   //16 slots
@@ -341,7 +339,7 @@ public class ItemSpriteSheet {
 	public static final int RUNIC_BLADE        = WEP_TIER4+11;
 	public static final int Jieniu             = WEP_TIER4+12;
 	public static final int CROSSBOW           = WEP_TIER4+13;
-	public static final int FUTSUNOMITAMA = WEP_TIER4+14;
+	public static final int FUTSUNOMITAMA      = WEP_TIER4+14;
 	public static final int Darkgoldsword      = WEP_TIER4+15;
 	static{
 		assignItemRect(LONGSWORD,         15, 15);
@@ -409,6 +407,7 @@ public class ItemSpriteSheet {
 	public static final int Fetter         = WEP_TIER6+10;
 	public static final int Greatrunicblade= WEP_TIER6+11;
 	public static final int Ripperclaw     = WEP_TIER6+12;
+	public static final int ZHUGE_CROSSBOW = WEP_TIER6+13;
 	public static final int Stonecudgel    = WEP_TIER6+14;
 	static{
 		assignItemRect(GREATAXE,       12, 16);
@@ -425,6 +424,7 @@ public class ItemSpriteSheet {
 		assignItemRect(Greatrunicblade,16, 16);
 		assignItemRect(Fetter,         14, 14);
 		assignItemRect(Stonecudgel,    16, 16);
+		assignItemRect(ZHUGE_CROSSBOW, 15, 15);
 	}
 
 	private static final int MISSILE_WEP    = xy(1, 8);  //32 slots. 5 per tier + bow
@@ -496,15 +496,20 @@ public class ItemSpriteSheet {
 		assignItemRect(HEAVYBOOMERANG,  15, 15);
 	}
 
-	public static final int OTHER_WEP = xy(1, 9);//16 slots
+	public static final int OTHER_WEP = xy(1, 9); //16 slots
+	public static final int HIDDEN_BLADE         = OTHER_WEP +0;
+	public static final int HIDDEN_BLADE_LOCKED  = OTHER_WEP +1;
     public static final int BLADE_OF_MIMIC       = OTHER_WEP +3;
 
 	public static final int BLADE_OF_REAL        = OTHER_WEP +6;
 	public static final int BLADE_OF_UNREAL      = OTHER_WEP +7;
 
 	public static final int KITESHIELD_START     = OTHER_WEP +8;
-		public static final int coatOfArmsKind = 8;//currently 8 kinds of coat of arms is usable
+		public static final int coatOfArmsKind = 8;//currently 8 kinds of coat of arms are usable
 	static {
+		assignItemRect(HIDDEN_BLADE,    16, 16);
+		assignItemRect(HIDDEN_BLADE_LOCKED,16, 16);
+
         assignItemRect(BLADE_OF_MIMIC,  15, 15);
 
 		assignItemRect(BLADE_OF_REAL,   15, 16);

@@ -24,12 +24,12 @@ package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
-public class Crossbow extends KindOfCrossbow {
+public class SleeveArrow extends KindOfCrossbow {
 	{
-		image = ItemSpriteSheet.CROSSBOW;
-		hitSound = Assets.Sounds.HIT;
-		hitSoundPitch = 1f;
+		image = ItemSpriteSheet.SLEEVE_ARROW;
+		hitSound = Assets.Sounds.HIT_CRUSH;
+		hitSoundPitch = 1.1f;
 
-		tier = 4;
+		tier = 2;
 	}
 }
