@@ -40,6 +40,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.BrokenArmor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Charm;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Chill;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Corruption;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Doom;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Dread;
@@ -248,6 +249,12 @@ public abstract class Mob extends Char {
 	
 	@Override
 	protected boolean act() {
+
+		if (Dungeon.hero.hasTalent(Talent.RIVER_EROSION) && alignment == Char.Alignment.ENEMY
+				&& (!isFlying() || Dungeon.hero.pointsInTalent(Talent.UNDERCURRENT) >= 3)
+				&& Dungeon.level.water[pos]){
+			Buff.prolong(this, Chill.class, 1 + Dungeon.hero.pointsInTalent(Talent.RIVER_EROSION));
+		}
 		
 		super.act();
 		
@@ -1359,8 +1366,7 @@ public abstract class Mob extends Char {
 			enemySeen = false;
 
 			Heap itemOnFloor = Dungeon.level.heaps.get( pos );
-			if (itemOnFloor != null && itemOnFloor.type == Heap.Type.HEAP && plunderedItem == null && Dungeon.isChallenged(Challenges.CRAZY_LOOT)
-			&& state != HUNTING && state != FLEEING && alignment == Alignment.ENEMY){
+			if (itemOnFloor != null && itemOnFloor.type == Heap.Type.HEAP && canPickup(itemOnFloor.items.get(0))){
 				plunderedItem = itemOnFloor.pickUp();
 				spend( TICK );
 				target = randomDestination();
@@ -1370,12 +1376,12 @@ public abstract class Mob extends Char {
 			if (Dungeon.isChallenged(Challenges.CRAZY_LOOT) && plunderedItem == null && alignment == Alignment.ENEMY && state != HUNTING && state != FLEEING){
 
 				PathFinder.buildDistanceMap(pos, Dungeon.level.passable);
-				int[] reachable = PathFinder.distance.clone();
 
 				for (int j = 0 ; j < Dungeon.level.heaps.size; j++){
 					itemOnFloor = Dungeon.level.heaps.get(j);
 
-					if (itemOnFloor != null && fieldOfView[itemOnFloor.pos] && itemOnFloor.type == Heap.Type.HEAP && reachable[itemOnFloor.pos] < Integer.MAX_VALUE){
+					if (itemOnFloor != null && fieldOfView[itemOnFloor.pos] && itemOnFloor.type == Heap.Type.HEAP
+							&& PathFinder.distance[itemOnFloor.pos] < Integer.MAX_VALUE && canPickup(itemOnFloor.items.get(0))){
 						target = itemOnFloor.pos;
 						break;
 					}
@@ -1648,6 +1654,19 @@ public abstract class Mob extends Char {
 	
 	public static void clearHeldAllies(){
 		heldAllies.clear();
+	}
+
+	protected boolean canPickup( Item toPickUp ){
+
+		if (!Dungeon.isChallenged(Challenges.CRAZY_LOOT)) return false;
+
+		if (plunderedItem != null) return false;
+
+		if (state == HUNTING || state == FLEEING || alignment != Alignment.ENEMY) return false;
+		if (toPickUp instanceof Tengu.BombAbility.BombItem || toPickUp instanceof Tengu.ShockerAbility.ShockerItem)
+			return false;
+
+		return true;
 	}
 }
 

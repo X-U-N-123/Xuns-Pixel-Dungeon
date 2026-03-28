@@ -27,6 +27,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AllyBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Amok;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.items.Honeypot;
+import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.BeeSprite;
 import com.watabou.utils.Bundle;
@@ -214,5 +216,10 @@ public class Bee extends Mob {
 		} else {
 			return super.description();
 		}
+	}
+
+	@Override
+	protected boolean canPickup( Item toPickUp ){
+		return super.canPickup(toPickUp) && !(toPickUp instanceof Honeypot.ShatteredPot);
 	}
 }

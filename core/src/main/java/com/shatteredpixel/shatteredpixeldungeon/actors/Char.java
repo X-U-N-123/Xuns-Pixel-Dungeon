@@ -107,6 +107,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.ShieldOfLight
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Barricade;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Brute;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.CrystalSpire;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM300;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DwarfKing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Elemental;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GnollGeomancer;
@@ -1225,6 +1226,7 @@ public abstract class Char extends Actor {
 		NO_ARMOR_PHYSICAL_SOURCES.add(Sandstorm.class); //chasm effect
 		NO_ARMOR_PHYSICAL_SOURCES.add(RockFallBuff.class);
         NO_ARMOR_PHYSICAL_SOURCES.add(Collapse.class);
+		NO_ARMOR_PHYSICAL_SOURCES.add(DM300.FallingRockBuff.class);
 	}
 	
 	public void destroy() {

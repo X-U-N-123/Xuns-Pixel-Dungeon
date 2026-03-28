@@ -228,4 +228,9 @@ public class Thief extends Mob {
 			}
 		}
 	}
+
+	@Override
+	protected boolean canPickup( Item toPickUp ){
+		return false; //小偷们不屑于弯腰，因为他们可以从玩家处获得他们想要的东西
+	}
 }

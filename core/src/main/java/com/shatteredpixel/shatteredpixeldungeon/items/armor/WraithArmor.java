@@ -26,7 +26,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 public class WraithArmor extends ClassArmor {
 
     {
-        image = ItemSpriteSheet.ARMOR_HOLDER;
+        image = ItemSpriteSheet.ARMOR_WRAITH;
     }
 
 }

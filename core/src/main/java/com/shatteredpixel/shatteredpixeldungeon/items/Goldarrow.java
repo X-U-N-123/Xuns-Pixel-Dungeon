@@ -139,6 +139,8 @@ public class Goldarrow extends Item {
                 @Override public void onSelect(Integer cell) {
                     if (cell == null) return;
                     ScrollOfTeleportation.appear(curUser, cell);
+					Dungeon.observe();
+					AttackIndicator.updateState();
 
                     hero.next();
                 }

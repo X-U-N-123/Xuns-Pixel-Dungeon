@@ -1210,10 +1210,6 @@ public abstract class Level implements Bundlable {
 					if (ch instanceof Hero) Badges.validateExplorerUnlock();
 					ch.buff(Ooze.class).act();
 				}
-                if (Dungeon.hero.hasTalent(Talent.RIVER_EROSION) && ch.alignment == Char.Alignment.ENEMY
-                    && (!ch.isFlying() || Dungeon.hero.pointsInTalent(Talent.UNDERCURRENT) >= 3)){
-                    Buff.affect(ch, Talent.RiverErosionTracker.class);
-                }
 			}
 
 			if (map[ch.pos] == Terrain.EMBERS && ch instanceof Hero
