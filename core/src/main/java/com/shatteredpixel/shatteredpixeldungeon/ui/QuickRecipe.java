@@ -68,6 +68,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ExoticScroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Alchemize;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.BeaconOfReturning;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.ConstantEnergy;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.ConstantRecharge;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Corrosion;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.CorruptionSpell;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.CurseInfusion;
@@ -437,8 +439,9 @@ public class QuickRecipe extends Component {
 				result.add(new QuickRecipe(new Scout.Recipe()));
 				result.add(new QuickRecipe(new Corrosion.Recipe()));
 				result.add(new QuickRecipe(new CorruptionSpell.Recipe()));
+				result.add(new QuickRecipe(new ConstantRecharge.Recipe()));
+				result.add(new QuickRecipe(new ConstantEnergy.Recipe()));
 				return result;
 		}
 	}
-	
 }

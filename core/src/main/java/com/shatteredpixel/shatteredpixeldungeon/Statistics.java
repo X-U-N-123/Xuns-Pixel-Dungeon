@@ -40,6 +40,8 @@ public class Statistics {
 	public static int ankhsUsed;
 	public static int enlighteningDrunk;
 	public static int elixirManaDrunk;
+	public static int conRechargeUsed;
+	public static int conEnergyUsed;
 	public static boolean corrosionUsed;
 	public static int wellWaterDug;
 	//tracks every item type 'seen' this run (i.e. would be added to catalogs)
@@ -93,6 +95,8 @@ public class Statistics {
 		corrosionUsed   = false;
 		wellWaterDug    = 0;
 		elixirManaDrunk = 0;
+		conRechargeUsed = 0;
+		conEnergyUsed   = 0;
 		itemTypesDiscovered.clear();
 
 		progressScore   = 0;
@@ -137,6 +141,8 @@ public class Statistics {
 	private static final String ANKHS		= "ankhsUsed";
     private static final String ENLIGHTENING= "enlighteningUsed";
 	private static final String MANA        = "elixirManaUsed";
+	private static final String CONRECHARGE = "conRechargeUsed";
+	private static final String CONENERGY   = "conEnergyUsed";
 	private static final String CORROSION   = "corrosionUsed";
 	private static final String WELLDUG     = "wellWaterDug";
 
@@ -183,6 +189,8 @@ public class Statistics {
 		bundle.put( ANKHS,		ankhsUsed );
 		bundle.put( ENLIGHTENING, enlighteningDrunk);
 		bundle.put( MANA, elixirManaDrunk);
+		bundle.put( CONRECHARGE, conRechargeUsed );
+		bundle.put( CONENERGY, conEnergyUsed );
 		bundle.put( CORROSION, corrosionUsed);
 		bundle.put( WELLDUG, wellWaterDug);
 		bundle.put( ITEM_TYPES_DISCOVERED, itemTypesDiscovered.toArray(new Class<?>[0]) );
@@ -233,6 +241,8 @@ public class Statistics {
 		ankhsUsed		= bundle.getInt( ANKHS );
 		enlighteningDrunk= bundle.getInt( ENLIGHTENING );
 		elixirManaDrunk = bundle.getInt( MANA );
+		conRechargeUsed = bundle.getInt( CONRECHARGE );
+		conEnergyUsed = bundle.getInt( CONENERGY );
 		corrosionUsed   = bundle.getBoolean( CORROSION );
 		wellWaterDug    = bundle.getInt(WELLDUG);
 

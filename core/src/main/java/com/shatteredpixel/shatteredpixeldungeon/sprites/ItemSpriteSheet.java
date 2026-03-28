@@ -893,8 +893,8 @@ public class ItemSpriteSheet {
 	public static final int CORRUPTION      = SPELLS+25;
 	public static final int CORROSION       = SPELLS+26;
 	public static final int SUMMON_ELE      = SPELLS+27;
-
-	//2 unused slots
+	public static final int CON_RECHARGE    = SPELLS+28;
+	public static final int CON_ENERGY      = SPELLS+29;
 	public static final int SCOUT           = SPELLS+30;
 	public static final int RETURN_BEACON   = SPELLS+31;
 

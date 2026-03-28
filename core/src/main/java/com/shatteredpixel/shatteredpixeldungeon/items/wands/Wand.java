@@ -267,6 +267,8 @@ public abstract class Wand extends Item {
 			}
 		}
 
+		dmg *= 1f + Statistics.elixirManaDrunk * 0.075f;
+
 		EvilUnfold.Evil evil = Dungeon.hero.buff(EvilUnfold.Evil.class);
 		if (evil != null) dmg = evil.proc(target, dmg);
 
@@ -953,8 +955,7 @@ public abstract class Wand extends Item {
 			missingCharges = Math.max(0, missingCharges);
 
 			float turnsToCharge = (float) (BASE_CHARGE_DELAY
-					+ (SCALING_CHARGE_ADDITION * Math.pow(scalingFactor, missingCharges)))
-					/ (1 + Statistics.elixirManaDrunk * 0.1f);
+					+ (SCALING_CHARGE_ADDITION * Math.pow(scalingFactor, missingCharges)));
 
 			if (Dungeon.hero.hasTalent(Talent.POWER_ACCUMULATION) && Dungeon.hero.heroClass != HeroClass.DUELIST){
 				turnsToCharge /= 1f + 0.12f*Dungeon.hero.pointsInTalent(Talent.POWER_ACCUMULATION) * missingCharges / maxCharges;

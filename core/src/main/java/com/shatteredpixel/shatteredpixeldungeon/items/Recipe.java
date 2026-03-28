@@ -57,6 +57,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ExoticScroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Alchemize;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.BeaconOfReturning;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.ConstantEnergy;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.ConstantRecharge;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Corrosion;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.CorruptionSpell;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.CurseInfusion;
@@ -222,6 +224,8 @@ public abstract class Recipe {
 		new TelekineticGrab.Recipe(),
 		new SummonElemental.Recipe(),
 		new Scout.Recipe(),
+		new ConstantRecharge.Recipe(),
+		new ConstantEnergy.Recipe(),
 		new StewedMeat.oneMeat(),
 		new TrinketCatalyst.Recipe(),
 		new Trinket.UpgradeTrinket()

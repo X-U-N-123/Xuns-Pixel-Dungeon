@@ -115,6 +115,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.remains.TornPage;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ExoticScroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Alchemize;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.BeaconOfReturning;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.ConstantEnergy;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.ConstantRecharge;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Corrosion;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.CorruptionSpell;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.CurseInfusion;
@@ -277,7 +279,7 @@ public enum Catalog {
 
 		SPELLS.addItems( UnstableSpell.class, WildEnergy.class, TelekineticGrab.class, PhaseShift.class, SummonWraith.class, Watchtower.class, MagicBan.class,
 				Alchemize.class, CurseInfusion.class, MagicalInfusion.class, Recycle.class, MagicalTran.class, Uptier.class, //Extract.class,
-				ReclaimTrap.class, SummonElemental.class, BeaconOfReturning.class, Scout.class, Corrosion.class, CorruptionSpell.class, Support.class);
+				ReclaimTrap.class, SummonElemental.class, BeaconOfReturning.class, Scout.class, Corrosion.class, CorruptionSpell.class, Support.class, ConstantRecharge.class, ConstantEnergy.class);
 
 		MISC_CONSUMABLES.addItems( Gold.class, EnergyCrystal.class, Dewdrop.class,
 				IronKey.class, GoldenKey.class, CrystalKey.class, SkeletonKey.class,

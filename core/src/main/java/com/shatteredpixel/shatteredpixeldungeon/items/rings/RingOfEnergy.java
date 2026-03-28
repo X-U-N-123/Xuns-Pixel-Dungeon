@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.rings;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
@@ -69,6 +70,8 @@ public class RingOfEnergy extends Ring {
 			bonus *= 1f + (0.2f * ((Hero) target).pointsInTalent(Talent.LIGHT_READING)/3f);
 		}
 
+		if (target instanceof Hero) bonus *= 1 + Statistics.conRechargeUsed * 0.1f;
+
 		return bonus;
 	}
 
@@ -80,6 +83,8 @@ public class RingOfEnergy extends Ring {
 		}
 
         if (buff != null && buff.artifact().cursed) bonus *= 1.1f;
+
+		if (target instanceof Hero) bonus *= 1 + Statistics.conEnergyUsed * 0.1f;
 
 		return bonus;
 	}
