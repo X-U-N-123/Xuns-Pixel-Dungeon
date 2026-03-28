@@ -22,7 +22,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -114,7 +113,6 @@ public class Antimatter extends MissileWeapon{
         for (Char target : targets){
             curUser.shoot(target, this);
             if (target == Dungeon.hero && !target.isAlive()){
-                Badges.validateDeathFromFriendlyMagic();
                 Dungeon.fail(this);
                 GLog.n(Messages.get(this, "ondeath"));
             }

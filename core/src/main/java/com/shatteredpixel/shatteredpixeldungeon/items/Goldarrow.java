@@ -25,6 +25,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.items;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.SPDAction;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Awareness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
@@ -45,11 +46,13 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.AttackIndicator;
+import com.shatteredpixel.shatteredpixeldungeon.ui.BinaryIconButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
-import com.shatteredpixel.shatteredpixeldungeon.ui.CheckBox;
+import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
+import com.watabou.input.GameAction;
 import com.watabou.noosa.Game;
 
 import java.util.ArrayList;
@@ -170,7 +173,9 @@ public class Goldarrow extends Item {
 		private static final boolean[] propList = new boolean[]{false, false, false, false};
 
 		public TargetWindow(){
-			int WIDTH = PixelScene.landscape() ? 180 : 120;
+			int WIDTH = 120;
+
+			float btnSpace = WIDTH / 4f;
 
 			RenderedTextBlock title = PixelScene.renderTextBlock(Messages.titleCase(Messages.get(this, "title")), 9);
 			title.hardlight(TITLE_COLOR);
@@ -183,49 +188,93 @@ public class Goldarrow extends Item {
 			desc.setPos(0, title.bottom() + 3);
 			add(desc);
 
-			CheckBox stopTargetBox = new CheckBox(Messages.titleCase(Messages.get(this, "stop_target"))) {
+			BinaryIconButton targetBtn = new BinaryIconButton(Icons.STOP_TARGET.get(), Icons.CROSS_TARGET.get(), propList[0]){
 				@Override
 				protected void onClick() {
 					super.onClick();
-					propList[0] = checked();
+					propList[0] = checked;
 				}
-			};
-			stopTargetBox.setRect(0, desc.bottom() + GAP, WIDTH, 16);
-			stopTargetBox.checked(propList[0]);
-			add(stopTargetBox);
 
-			CheckBox stopCharsBox = new CheckBox(Messages.titleCase(Messages.get(this, "stop_chars"))) {
 				@Override
-				protected void onClick() {
-					super.onClick();
-					propList[1] = checked();
+				public GameAction keyAction() {
+					return SPDAction.QUICKSLOT_1;
 				}
-			};
-			stopCharsBox.setRect(0, stopTargetBox.bottom() + GAP, WIDTH, 16);
-			stopCharsBox.checked(propList[1]);
-			add(stopCharsBox);
 
-			CheckBox stopSolidBox = new CheckBox(Messages.titleCase(Messages.get(this, "stop_solid"))) {
 				@Override
-				protected void onClick() {
-					super.onClick();
-					propList[2] = checked();
+				protected String hoverText() {
+					return checked ?
+						Messages.get(TargetWindow.class, "stop_target")
+					  : Messages.get(TargetWindow.class, "cross_target");
 				}
 			};
-			stopSolidBox.setRect(0, stopCharsBox.bottom() + GAP, WIDTH, 16);
-			stopSolidBox.checked(propList[2]);
-			add(stopSolidBox);
+			targetBtn.setRect((btnSpace - 16) / 2f, desc.bottom() + GAP, 16, 16);
+			add(targetBtn);
 
-			CheckBox ignoreSoftSolidBox = new CheckBox(Messages.titleCase(Messages.get(this, "ignore_soft_solid"))) {
+			BinaryIconButton charsBtn = new BinaryIconButton(Icons.STOP_CHARS.get(), Icons.CROSS_CHARS.get(), propList[1]){
 				@Override
 				protected void onClick() {
 					super.onClick();
-					propList[3] = checked();
+					propList[1] = checked;
+				}
+
+				@Override
+				public GameAction keyAction() {
+					return SPDAction.QUICKSLOT_2;
+				}
+
+				@Override
+				protected String hoverText() {
+					return checked ?
+						Messages.get(TargetWindow.class, "stop_chars")
+					  : Messages.get(TargetWindow.class, "cross_chars");
 				}
 			};
-			ignoreSoftSolidBox.setRect(0, stopSolidBox.bottom() + GAP, WIDTH, 16);
-			ignoreSoftSolidBox.checked(propList[3]);
-			add(ignoreSoftSolidBox);
+			charsBtn.setRect(targetBtn.left() + btnSpace, targetBtn.top(), 16, 16);
+			add(charsBtn);
+
+			BinaryIconButton solidBtn = new BinaryIconButton(Icons.STOP_SOLID.get(), Icons.CROSS_SOLID.get(), propList[2]){
+				@Override
+				protected void onClick() {
+					super.onClick();
+					propList[2] = checked;
+				}
+
+				@Override
+				public GameAction keyAction() {
+					return SPDAction.QUICKSLOT_3;
+				}
+
+				@Override
+				protected String hoverText() {
+					return checked ?
+						Messages.get(TargetWindow.class, "stop_solid")
+					  : Messages.get(TargetWindow.class, "cross_solid");
+				}
+			};
+			solidBtn.setRect(charsBtn.left() + btnSpace, targetBtn.top(), 16, 16);
+			add(solidBtn);
+
+			BinaryIconButton softSolidBtn = new BinaryIconButton(Icons.IGNORE_SOFT_SOLID.get(), Icons.STOP_SOFT_SOLID.get(), propList[3]){
+				@Override
+				protected void onClick() {
+					super.onClick();
+					propList[3] = checked;
+				}
+
+				@Override
+				public GameAction keyAction() {
+					return SPDAction.QUICKSLOT_4;
+				}
+
+				@Override
+				protected String hoverText() {
+					return checked ?
+						Messages.get(TargetWindow.class, "ignore_soft_solid")
+					  : Messages.get(TargetWindow.class, "stop_soft_solid");
+				}
+			};
+			softSolidBtn.setRect(solidBtn.left() + btnSpace, targetBtn.top(), 16, 16);
+			add(softSolidBtn);
 
 			RedButton targetButton = new RedButton(Messages.get(Goldarrow.class, "ac_target")) {
 				@Override
@@ -251,10 +300,10 @@ public class Goldarrow extends Item {
 					});
 				}
 			};
-			targetButton.setRect(0, ignoreSoftSolidBox.bottom() + GAP, WIDTH, 16);
+			targetButton.setRect(0, targetBtn.bottom() + GAP, WIDTH, 16);
 			add(targetButton);
 
-			resize(WIDTH, (int)targetButton.bottom() + GAP);
+			resize(WIDTH, (int)targetButton.bottom() + 1);
 		}
 	}
 }

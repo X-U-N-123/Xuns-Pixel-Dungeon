@@ -135,6 +135,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.keys.SkeletonKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfExperience;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfCrashCourse;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfMight;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfDivineInspiration;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.DarkGold;
@@ -2289,6 +2290,8 @@ public class Hero extends Char {
 
 	public void earnExp( int exp, Class source ) {
 
+		int expBefore = this.exp;
+
 		//xp granted by ascension challenge is only for on-exp gain effects
 		if (source != AscensionChallenge.class) {
 			this.exp += exp;
@@ -2375,7 +2378,6 @@ public class Hero extends Char {
 				sprite.showStatus( CharSprite.POSITIVE, Messages.get(this, "level_up") );
 				Sample.INSTANCE.play( Assets.Sounds.LEVELUP );
 				if (lvl < Talent.tierLevelThresholds[Talent.MAX_TALENT_TIERS+1]){
-					GLog.newLine();
 					sprite.showStatusWithIcon(CharSprite.NEUTRAL, "1", FloatingText.TALENT);
 					StatusPane.talentBlink = 10f;
 					WndHero.lastIdx = 1;
@@ -2386,6 +2388,13 @@ public class Hero extends Char {
 
 			Badges.validateLevelReached();
 		}
+
+		if (expBefore < maxExp() * 0.8f && this.exp >= maxExp() * 0.8f
+				&& belongings.getItem(ElixirOfCrashCourse.class) != null){
+			GLog.newLine();
+			GLog.p(Messages.get(this, "crash_course"));
+		}
+
 	}
 
 	public int maxExp() {

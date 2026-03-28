@@ -92,6 +92,7 @@ public enum Icons {
 	TERRAIN,
     STRENGTHEN,
     WEAKEN,
+	MARKED,
 
 	STAIRS,
 	STAIRS_CHASM,
@@ -140,7 +141,17 @@ public enum Icons {
 	CUBE_CODE,
 	PURIGRO,
 	ARCNOR,
-    ODG;
+    ODG,
+
+	//icons that used in gold arrow ballistica
+	STOP_TARGET,
+	CROSS_TARGET,
+	STOP_CHARS,
+	CROSS_CHARS,
+	STOP_SOLID,
+	CROSS_SOLID,
+	STOP_SOFT_SOLID,
+	IGNORE_SOFT_SOLID;
 
 	public Image get() {
 		return get( this );
@@ -312,6 +323,9 @@ public enum Icons {
             case WEAKEN:
                 icon.frame( icon.texture.uvRectBySize( 160, 48, 15, 15 ) );
                 break;
+			case MARKED:
+				icon.frame( icon.texture.uvRectBySize( 176, 48, 16, 16 ) );
+				break;
 
 			case STAIRS:
 				icon.frame( icon.texture.uvRectBySize( 0, 64, 15, 16 ) );
@@ -457,6 +471,31 @@ public enum Icons {
                 icon.frame( icon.texture.uvRectBySize( 187, 96, 32, 32 ) );
                 icon.scale.set(PixelScene.align(0.49f));
                 break;
+
+			case STOP_TARGET:
+				icon.frame( icon.texture.uvRectBySize( 0, 128, 16, 16 ) );
+				break;
+			case CROSS_TARGET:
+				icon.frame( icon.texture.uvRectBySize( 16, 128, 16, 16 ) );
+				break;
+			case STOP_CHARS:
+				icon.frame( icon.texture.uvRectBySize( 32, 128, 16, 14 ) );
+				break;
+			case CROSS_CHARS:
+				icon.frame( icon.texture.uvRectBySize( 48, 128, 16, 14 ) );
+				break;
+			case STOP_SOLID:
+				icon.frame( icon.texture.uvRectBySize( 64, 128, 16, 16 ) );
+				break;
+			case CROSS_SOLID:
+				icon.frame( icon.texture.uvRectBySize( 80, 128, 16, 16 ) );
+				break;
+			case STOP_SOFT_SOLID:
+				icon.frame( icon.texture.uvRectBySize( 96, 128, 16, 16 ) );
+				break;
+			case IGNORE_SOFT_SOLID:
+				icon.frame( icon.texture.uvRectBySize( 112, 128, 16, 16 ) );
+				break;
 
 		}
 		return icon;

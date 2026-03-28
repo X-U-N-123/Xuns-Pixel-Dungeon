@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Weakness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
@@ -64,6 +65,11 @@ public class ElixirOfCrashCourse extends Elixir {
         hero.incAttackSkill(1);
         hero.incDefenseSkill(1);
     }
+
+	@Override
+	public String desc() {
+		return Messages.get(this, "desc", Dungeon.hero != null ? (int)(Dungeon.hero.maxExp() * 0.8f) : 8);
+	}
 
     @Override
     public int value() {
