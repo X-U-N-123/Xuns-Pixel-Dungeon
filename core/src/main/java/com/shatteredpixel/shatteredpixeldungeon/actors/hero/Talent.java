@@ -196,7 +196,7 @@ public enum Talent {
 	//Spectral Blades T4
 	FAN_OF_BLADES(173, 4), PROJECTING_BLADES(174, 4), SPIRIT_BLADES(175, 4), INSTANT_BLADES(176, 4),
 	//Natures Power T4
-	GROWING_POWER(177, 4), NATURES_WRATH(178, 4), WILD_MOMENTUM(179, 4), REGROWTH(180, 4),
+	GROWING_POWER(177, 4), NATURES_WRATH(178, 4), WILD_MOMENTUM(179, 4), NATURAL_BLESS(180, 4),
 	//Spirit Hawk T4
 	EAGLE_EYE(181, 4), GO_FOR_THE_EYES(182, 4), SWIFT_SPIRIT(183, 4), STRONG_HAWK(184, 4),
 
@@ -260,7 +260,7 @@ public enum Talent {
     //Wraith T1
     ANCESTRAL_TRIBUTE(336), BLOOD_INTUITION(337), TESTED_ANTIMAGIC(338), BURIAL_CEREMONY(339), FLEET_BARRIER(340),
     //Wraith T2
-    TEARING_MEAL(341), INSCRIBED_REGENERATION(342), BLOODLETTING(343), PSIONIC_BLAST(344), SCAPEGOAT(345), THROWN_EVIL(346),
+    TEARING_MEAL(341), INSCRIBED_REGENERATION(342), EVIL_NERF(343), PSIONIC_BLAST(344), SCAPEGOAT(345), THROWN_EVIL(346),
     //Wraith T3
     VICIOUS_BETRAYAL(347, 3), CURSED_POWER(348, 3), BLURRING_BODY(349, 3),
     //Incubus T3
@@ -269,8 +269,8 @@ public enum Talent {
 	CORPSE_DECAY(355, 3), HOMEMADE_DRUG(356, 3), MAGICAL_VENT(357, 3), ACID_RAIN(358, 3), PLAGUE_EUCHARIST(359, 3),
 	//SoulHandler T3
 	IMMEDIATE_USE(360, 3), VENGEFUL_SPIRIT(361, 3), SOUL_CAGING(362, 3), DEVOUR_SURGING(363, 3), OVERFLOW(364, 3),
-	//Lifeloan T4
-	HIGH_QUOTA(365, 4), EXTRA_GIFT(366, 4), BREACH_OF_TRUST(367, 4), PHILANTHROPIST(368, 4),
+	//Transfusion T4
+	EMERGENCY_TRANSFUSION(365, 4), BLOOD_INFECTION(366, 4), BIOLOGICAL_CONTROL(367, 4), HEMATOPOIESIS(368, 4),
 	//EvilUnfold T4
 	BUFFED_NERF(369, 4), ARMY_OF_DEATH(370, 4), STRANGLING(371, 4), IMMORTAL_EVIL(372, 4),
 	//GhostWander T4
@@ -1633,7 +1633,7 @@ public enum Talent {
 				Collections.addAll(tierTalents, PREPARING_MEAL, LIQUID_CLAIRVOYANCE, BARBED_WIRE, WINDING_PORCH, REKINDLED_EMBER, AGGRESSIVE_ROADBLOCK);
 				break;
             case WRAITH:
-                Collections.addAll(tierTalents, TEARING_MEAL, INSCRIBED_REGENERATION, BLOODLETTING, PSIONIC_BLAST, SCAPEGOAT, THROWN_EVIL);
+                Collections.addAll(tierTalents, TEARING_MEAL, INSCRIBED_REGENERATION, EVIL_NERF, PSIONIC_BLAST, SCAPEGOAT, THROWN_EVIL);
                 break;
 		}
 		for (Talent talent : tierTalents){
@@ -1824,12 +1824,13 @@ public enum Talent {
 
 	private static final HashSet<String> removedTalents = new HashSet<>();
 	static{
-		//v2.2.0
 		removedTalents.add("X_U_N");
 	}
 
 	private static final HashMap<String, String> renamedTalents = new HashMap<>();
 	static{
+		//X_U_N v2.0.1
+		renamedTalents.put("BLOODLETTING",              "EVIL_NERF");
         //X_U_N v1.0.1
         renamedTalents.put("FARSIGHT_MEAL",             "PREPARING_MEAL");
         renamedTalents.put("FLUORESCENCE",              "SENSITIVE_PEDAL");
@@ -1839,22 +1840,6 @@ public enum Talent {
 		renamedTalents.put("HOLY_DRAPE",                "DRAPE_OF_REDEMPTION");
 		renamedTalents.put("HOLY_ANTIMAGIC",            "HOLY_TRAP");
 		renamedTalents.put("HOLY_IMAGE",                "HOLY_GHOST");
-		//X_U_N v0.2.5
-		renamedTalents.put("TESTED_ADRENALINE",         "TESTED_SWIFTNESS");
-		//X_U_N v0.2.2
-		renamedTalents.put("SHIELDING_DEW",             "DEW_COLLECTING");
-		renamedTalents.put("IN_BATTLE",                 "REPEATED_SKILL");
-		//X_U_N v0.2.0
-		renamedTalents.put("BOUNTY_HUNTER",             "TERRORIST_ATTACK");
-		//X_U_N v0.1.4
-		renamedTalents.put("POINT_BLANK",               "L_M_MASTER");
-		//X_U_N v0.1.2
-		renamedTalents.put("SACRED_ARCANE",             "ASCETICISM");
-		//X_U_N v0.1.1
-		renamedTalents.put("WIDE_SEARCH",               "STEALTH_METABOLISM");
-		//X_U_N v0.1.0
-		renamedTalents.put("TEST_SUBJECT",              "TESTED_REVIVE");
-		renamedTalents.put("HOLD_FAST",                 "INTACT_SEAL");
 	}
 
 	public static void restoreTalentsFromBundle( Bundle bundle, Hero hero ){

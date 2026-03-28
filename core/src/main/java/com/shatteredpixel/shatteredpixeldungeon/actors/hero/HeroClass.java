@@ -52,7 +52,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.He
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.Shockwave;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.wraith.EvilUnfold;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.wraith.GhostWander;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.wraith.Lifeloan;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.wraith.Transfusion;
 import com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal;
 import com.shatteredpixel.shatteredpixeldungeon.items.Goldarrow;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
@@ -401,7 +401,7 @@ public enum HeroClass {
 			case EXPLORER:
 				return new ArmorAbility[]{new OpticalCamou(), new Sandstorm(), new Underpass()};
             case WRAITH:
-                return new ArmorAbility[]{new Lifeloan(), new EvilUnfold(), new GhostWander()};
+                return new ArmorAbility[]{new Transfusion(), new EvilUnfold(), new GhostWander()};
 		}
 	}
 

@@ -24,8 +24,6 @@ package com.shatteredpixel.shatteredpixeldungeon.items;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invulnerability;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
@@ -37,10 +35,8 @@ import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
-import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndBag;
-import com.watabou.noosa.Image;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.GameMath;
@@ -53,7 +49,6 @@ public class Waterskin extends Item {
 
 	private static final String AC_DRINK = "DRINK";
     private static final String AC_ID    = "IDENTIFY";
-    private static final String AC_BLOOD = "BLOOD";
 
 	private static final float TIME_TO_DRINK = 1f;
 
@@ -91,10 +86,6 @@ public class Waterskin extends Item {
 		}
         if (hero.hasTalent(Talent.BLOOD_INTUITION) && hero.buff(Invulnerability.class) == null){
             actions.add( AC_ID );
-        }
-        if (hero.hasTalent(Talent.BLOODLETTING) && hero.buff(Invulnerability.class) == null
-                && hero.buff(BloodLettingCooldown.class) == null){
-            actions.add( AC_BLOOD );
         }
 		return actions;
 	}
@@ -175,29 +166,6 @@ public class Waterskin extends Item {
                     }
                 });
                 break;
-            case AC_BLOOD:
-                dmg = 1 + 2 * hero.pointsInTalent(Talent.BLOODLETTING);
-
-                if (hero.HP + hero.shielding() <= dmg || hero.buff(Invulnerability.class) != null) {
-                    GLog.w(Messages.get(this, "no_enough_hp"));
-                    return;
-                }
-
-                if (hero.buff(BloodLettingCooldown.class) != null) {
-                    GLog.w(Messages.get(this, "cd"));
-                    return;
-                }
-
-                Buff.affect(hero, BladeOfUnreal.UnRealTracker.class).damage = dmg;
-                hero.damage(dmg, this);
-                hero.buff(Hunger.class).satisfy(10 * dmg + 1); //1 more point because this takes a turn
-                Sample.INSTANCE.play(Assets.Sounds.CURSED);
-                hero.sprite.operate(hero.pos);
-                hero.sprite.emitter().burst(ShadowParticle.CURSE, dmg);
-                hero.spendAndNext(Actor.TICK);
-                Buff.affect(hero, BloodLettingCooldown.class, 150);
-
-                break;
         }
     }
 
@@ -258,11 +226,4 @@ public class Waterskin extends Item {
 	public String status() {
 		return Messages.format( TXT_STATUS, volume, MAX_VOLUME );
 	}
-
-    public static class BloodLettingCooldown extends FlavourBuff {
-        public int icon() { return BuffIndicator.TIME; }
-        public void tintIcon(Image icon) { icon.hardlight(0.6f, 0f, 0.6f); }
-        public float iconFadePercent() { return Math.max(0, visualcooldown() / 150); }
-    }
-
 }

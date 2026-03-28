@@ -35,7 +35,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.huntress.NaturesPower;
-import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Splash;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.LeafParticle;
@@ -48,14 +47,18 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Blindweed;
+import com.shatteredpixel.shatteredpixeldungeon.plants.Earthroot;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Firebloom;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Icecap;
+import com.shatteredpixel.shatteredpixeldungeon.plants.Mageroyal;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Plant;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Sorrowmoss;
+import com.shatteredpixel.shatteredpixeldungeon.plants.Starflower;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Stormvine;
+import com.shatteredpixel.shatteredpixeldungeon.plants.Sungrass;
+import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MissileSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
@@ -112,7 +115,14 @@ public class SpiritBow extends Weapon {
 	}
 
 	private static Class[] harmfulPlants = new Class[]{
-			Blindweed.class, Firebloom.class, Icecap.class, Sorrowmoss.class,  Stormvine.class
+			Blindweed.class, Firebloom.class, Icecap.class, Sorrowmoss.class, Stormvine.class
+	};
+
+	private static Class[] beneficialPlants = new Class[]{
+			Earthroot.class, Mageroyal.class, Starflower.class, Swiftthistle.class, Sungrass.class,
+			Earthroot.class, Mageroyal.class, Starflower.class, Swiftthistle.class,
+			Earthroot.class, Mageroyal.class, Starflower.class, Swiftthistle.class,
+			//阳春草触发概率仅为其它植物的 1/3
 	};
 
 	@Override
@@ -162,18 +172,16 @@ public class SpiritBow extends Weapon {
 						plant.activate( defender.isAlive() ? defender : null );
 					}
 
+					if (Random.Int(12) < ((Hero)attacker).pointsInTalent(Talent.NATURAL_BLESS)){
+						Plant plant = (Plant) Reflection.newInstance(Random.element(beneficialPlants));
+						plant.pos = attacker.pos;
+						plant.activate( attacker.isAlive() ? attacker : null );
+					}
+
 					if (!defender.isAlive()){
 						NaturesPower.naturesPowerTracker tracker = attacker.buff(NaturesPower.naturesPowerTracker.class);
 						if (tracker != null){
 							tracker.extend(((Hero) attacker).pointsInTalent(Talent.WILD_MOMENTUM));
-						}
-					}
-
-					if (((Hero)attacker).hasTalent(Talent.REGROWTH)) {
-						int toHeal = Math.min(attacker.HT - attacker.HP, 1+ ((Hero)attacker).pointsInTalent(Talent.REGROWTH));
-						attacker.HP += toHeal;
-						if (attacker.sprite != null && toHeal > 0) {
-							attacker.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(toHeal), FloatingText.HEALING);
 						}
 					}
 

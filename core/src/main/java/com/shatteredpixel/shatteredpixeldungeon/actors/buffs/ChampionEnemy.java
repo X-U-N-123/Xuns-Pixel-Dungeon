@@ -72,9 +72,9 @@ public abstract class ChampionEnemy extends Buff {
 		else target.sprite.clearAura();
 	}
 
-	public void onAttackProc(Char enemy ){
+	public void onAttackProc(Char enemy ){}
 
-	}
+	public void onDefenseProc(Char enemy ){}
 
 	public boolean canAttackWithExtraReach( Char enemy ){
 		return false;
@@ -508,8 +508,8 @@ public abstract class ChampionEnemy extends Buff {
 		}
 
 		@Override
-		public float meleeDamageFactor() {
-			return 1.25f;
+		public void onDefenseProc(Char enemy) {
+			ScrollOfTeleportation.teleportChar(enemy, this.getClass());
 		}
 
 	}
@@ -551,5 +551,4 @@ public abstract class ChampionEnemy extends Buff {
 			resistances.add(WandOfLightning.class);
 		}
 	}
-
 }

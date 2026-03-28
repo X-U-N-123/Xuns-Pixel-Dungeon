@@ -855,6 +855,10 @@ public abstract class Char extends Actor {
 			}
 		}
 
+		for (ChampionEnemy buff : buffs(ChampionEnemy.class)){
+			buff.onDefenseProc( enemy );
+		}
+
 		return damage;
 	}
 

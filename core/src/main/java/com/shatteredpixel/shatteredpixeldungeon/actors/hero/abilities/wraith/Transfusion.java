@@ -47,7 +47,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.HeroIcon;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 
-public class Lifeloan extends ArmorAbility {
+public class Transfusion extends ArmorAbility {
 
 	{
 		baseChargeUse = 50f;
@@ -62,27 +62,27 @@ public class Lifeloan extends ArmorAbility {
 	public float chargeUse( Hero hero ) {
 		float chargeUse = super.chargeUse(hero);
 		if (hero.buff(PhilanthropistTracker.class) != null)
-			chargeUse *= 1 - hero.pointsInTalent(Talent.PHILANTHROPIST) / 8f;
+			chargeUse *= 1 - hero.pointsInTalent(Talent.HEMATOPOIESIS) / 8f;
 		return chargeUse;
 	}
 
 	@Override
 	protected void activate(ClassArmor armor, Hero hero, Integer target) {
 		if (target == null) return;
-		int loanAmount = 10 + 5 * hero.pointsInTalent(Talent.HIGH_QUOTA);
+		int loanAmount = 10 + 5 * hero.pointsInTalent(Talent.EMERGENCY_TRANSFUSION);
 		if (hero.HP <= loanAmount){
 			GLog.w(Messages.get(this, "no_enough_hp"));
 			return;
 		}
 		Char c = Actor.findChar(target);
-		if (c == null || c.alignment == Char.Alignment.ALLY || c.buff(LifeloanTracker.class) != null){
+		if (c == null || c.alignment == Char.Alignment.ALLY || c.buff(TransfusionTracker.class) != null){
 			GLog.w(Messages.get(this, "invalid_target"));
 			return;
 		}
-		Buff.affect(c, LifeloanTracker.class).spend(24 - 4 * hero.pointsInTalent(Talent.BREACH_OF_TRUST));
+		Buff.affect(c, TransfusionTracker.class).spend(24 - 4 * hero.pointsInTalent(Talent.BIOLOGICAL_CONTROL));
 		int toHeal = Math.min(c.HT - c.HP, loanAmount);
 		c.HP += toHeal;
-		c.sprite.emitter().start( Speck.factory( Speck.HEALING ), 0.33f, 3 + hero.pointsInTalent(Talent.HIGH_QUOTA));
+		c.sprite.emitter().start( Speck.factory( Speck.HEALING ), 0.33f, 3 + hero.pointsInTalent(Talent.EMERGENCY_TRANSFUSION));
 		c.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(toHeal), FloatingText.HEALING);
 
 		hero.HP -= loanAmount;
@@ -95,7 +95,7 @@ public class Lifeloan extends ArmorAbility {
 
 		int giftAmount = 0;
 		for (Buff b : hero.buffs()){
-			if (giftAmount >= hero.pointsInTalent(Talent.EXTRA_GIFT)) break;
+			if (giftAmount >= hero.pointsInTalent(Talent.BLOOD_INFECTION)) break;
 			if (b.type != Buff.buffType.NEGATIVE
 					|| b instanceof AllyBuff || b instanceof LostInventory)
 				continue;
@@ -121,12 +121,12 @@ public class Lifeloan extends ArmorAbility {
 
 	@Override
 	public Talent[] talents() {
-		return new Talent[]{Talent.HIGH_QUOTA, Talent.EXTRA_GIFT, Talent.BREACH_OF_TRUST, Talent.PHILANTHROPIST, Talent.HEROIC_ENERGY};
+		return new Talent[]{Talent.EMERGENCY_TRANSFUSION, Talent.BLOOD_INFECTION, Talent.BIOLOGICAL_CONTROL, Talent.HEMATOPOIESIS, Talent.HEROIC_ENERGY};
 	}
 
 	public static class PhilanthropistTracker extends FlavourBuff{}
 
-	public static class LifeloanTracker extends Buff {
+	public static class TransfusionTracker extends Buff {
 
 		{
 			announced = true;
@@ -139,8 +139,8 @@ public class Lifeloan extends ArmorAbility {
 
 		@Override
 		public boolean act(){
-			if (Dungeon.hero.hasTalent(Talent.BREACH_OF_TRUST))
-				Buff.affect(target, StoneOfAggression.Aggression.class, Short.MAX_VALUE);
+			if (Dungeon.hero.hasTalent(Talent.BIOLOGICAL_CONTROL))
+				Buff.affect(target, StoneOfAggression.Aggression.class, 25);
 			diactivate();
 			return true;
 		}
@@ -153,10 +153,10 @@ public class Lifeloan extends ArmorAbility {
 		@Override
 		public void detach() {
 			int toHeal = Math.min(Dungeon.hero.HT - Dungeon.hero.HP,
-					20 + Math.round(Dungeon.hero.pointsInTalent(Talent.HIGH_QUOTA) * 7.5f));
+					20 + Math.round(Dungeon.hero.pointsInTalent(Talent.EMERGENCY_TRANSFUSION) * 7.5f));
 			Dungeon.hero.HP += toHeal;
 			Dungeon.hero.sprite.emitter().start( Speck.factory( Speck.HEALING ),
-					0.33f, 5 + 2 * Dungeon.hero.pointsInTalent(Talent.HIGH_QUOTA));
+					0.33f, 5 + 2 * Dungeon.hero.pointsInTalent(Talent.EMERGENCY_TRANSFUSION));
 			Dungeon.hero.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(toHeal), FloatingText.HEALING);
 			super.detach();
 		}
