@@ -136,7 +136,6 @@ public class SPDSettings extends GameSettings {
 	public static final String KEY_FLIPTOOLBAR	= "flipped_ui";
 	public static final String KEY_FLIPTAGS 	= "flip_tags";
 	public static final String KEY_BARMODE		= "toolbar_mode";
-	public static final String KEY_SLOTWATERSKIN= "quickslot_waterskin";
 	public static final String KEY_SYSTEMFONT	= "system_font";
 	public static final String KEY_VIBRATION    = "vibration";
 
@@ -192,14 +191,6 @@ public class SPDSettings extends GameSettings {
 		return getString(KEY_BARMODE, PixelScene.landscape() ? "GROUP" : "SPLIT");
 	}
 
-	public static void quickslotWaterskin( boolean value ){
-		put( KEY_SLOTWATERSKIN, value);
-	}
-
-	public static boolean quickslotWaterskin(){
-		return getBoolean( KEY_SLOTWATERSKIN, true );
-	}
-
 	public static void systemFont(boolean value){
 		put(KEY_SYSTEMFONT, value);
 	}
@@ -234,9 +225,8 @@ public class SPDSettings extends GameSettings {
 	public static final String KEY_LAST_DAILY	= "last_daily";
 	public static final String KEY_INTRO		= "intro";
 
-	public static final String KEY_SUPPORT_NAGGED= "support_nagged";
 	public static final String KEY_VICTORY_NAGGED= "victory_nagged";
-	
+
 	public static void intro( boolean value ) {
 		put( KEY_INTRO, value );
 	}
@@ -275,14 +265,6 @@ public class SPDSettings extends GameSettings {
 
 	public static long lastDaily() {
 		return getLong( KEY_LAST_DAILY, 0);
-	}
-
-	public static void supportNagged( boolean value ) {
-		put( KEY_SUPPORT_NAGGED, value );
-	}
-
-	public static boolean supportNagged() {
-		return getBoolean(KEY_SUPPORT_NAGGED, false);
 	}
 
 	public static void victoryNagged( boolean value ) {
@@ -350,7 +332,6 @@ public class SPDSettings extends GameSettings {
 	public static final String KEY_MUSIC_VOL    = "music_vol";
 	public static final String KEY_SOUND_FX		= "soundfx";
 	public static final String KEY_SFX_VOL      = "sfx_vol";
-	public static final String KEY_IGNORE_SILENT= "ignore_silent";
 	public static final String KEY_MUSIC_BG     = "music_bg";
     public static final String OLD_MUSIC        = "lod_music";
 	
@@ -388,15 +369,6 @@ public class SPDSettings extends GameSettings {
 	
 	public static int SFXVol() {
 		return getInt( KEY_SFX_VOL, 10, 0, 10 );
-	}
-
-	public static void ignoreSilentMode( boolean value ){
-		put( KEY_IGNORE_SILENT, value);
-		Game.platform.setHonorSilentSwitch(!value);
-	}
-
-	public static boolean ignoreSilentMode(){
-		return getBoolean( KEY_IGNORE_SILENT, false);
 	}
 
 	public static void playMusicInBackground( boolean value ){

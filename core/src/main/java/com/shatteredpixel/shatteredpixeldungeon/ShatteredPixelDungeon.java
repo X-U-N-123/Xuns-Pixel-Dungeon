@@ -40,7 +40,13 @@ public class ShatteredPixelDungeon extends Game {
     public ShatteredPixelDungeon( PlatformSupport platform ) {
 		super( sceneClass == null ? WelcomeScene.class : sceneClass, platform );
 
-        //pre-v2.5.3
+		com.watabou.utils.Bundle.addAlias(
+				com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.wraith.Transfusion.class,
+				"com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.wraith.Lifeloan.class" );
+		com.watabou.utils.Bundle.addAlias(
+				com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.wraith.Transfusion.TransfusionTracker.class,
+				"com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.wraith.Lifeloan.LifeloanTracker.class" );
+
         com.watabou.utils.Bundle.addAlias(
             com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.BarricadeCurse.class,
             "com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Pier.class" );

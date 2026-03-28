@@ -1072,10 +1072,13 @@ public abstract class Char extends Actor {
 			if (this instanceof Hero && ((Hero)this).hasTalent(Talent.FIGHTING_BACK)){
 				if (shield != null && hero.heroClass == HeroClass.WARRIOR){
 					if (dmg >= shield.maxShield()
-					&& !shield.coolingDown()){
-						shield.enterCooldown(1f, 0);
+					&& shield.getCooldown() <= 0){
+						shield.activate();
+						shield.absorbDamage(shield.maxShield());
+
 						if (((Hero)this).pointsInTalent(Talent.FIGHTING_BACK) > 1) {
-							shield.reduceCooldown(0f, (dmg-shield.maxShield())*67 / hero.lvl);
+							int CDdecrease = Math.min((dmg-shield.maxShield())*200 / (hero.lvl * 3), shield.cooldownStart());
+							shield.reduceCooldown(0f, CDdecrease);
 						}
 						sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(dmg), FloatingText.SHIELDING);
 						dmg = 0;
@@ -1096,7 +1099,7 @@ public abstract class Char extends Actor {
 			if (dmg > 0
 			//either HP is already 75% or below (ignoring shield) or the hit will reduce it to 80% or below
 			&& (HP <= HT*3/4 || HP + shielding() - dmg <= HT*3/4)
-			&& shield != null && !shield.coolingDown()){
+			&& shield != null && shield.getCooldown() <= 0){
 				sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(buff(BrokenSeal.WarriorShield.class).maxShield()), FloatingText.SHIELDING);
 				shield.activate();
 			}

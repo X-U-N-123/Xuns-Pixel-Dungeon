@@ -24,12 +24,9 @@ package com.shatteredpixel.shatteredpixeldungeon.ui;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.QuickSlot;
 import com.shatteredpixel.shatteredpixeldungeon.SPDAction;
-import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
-import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
-import com.shatteredpixel.shatteredpixeldungeon.items.Waterskin;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
@@ -273,15 +270,6 @@ public class QuickSlotButton extends Button {
 	public static void set(int slotNum, Item item){
 		Dungeon.quickslot.setSlot( slotNum , item );
 		refresh();
-
-		//Remember if the player adds the waterskin as one of their first actions.
-		if (Statistics.duration + Actor.now() <= 10){
-			boolean containsWaterskin = false;
-			for (int i = 0; i < instance.length; i++) {
-				if (select(i) instanceof Waterskin) containsWaterskin = true;
-			}
-			if (containsWaterskin) SPDSettings.quickslotWaterskin(true);
-		}
 	}
 
 	private static Item select(int slotNum){
@@ -377,14 +365,6 @@ public class QuickSlotButton extends Button {
 		}
 		if (Toolbar.SWAP_INSTANCE != null){
 			Toolbar.SWAP_INSTANCE.updateVisuals();
-		}
-		//Remember if the player removes the waterskin as one of their first actions.
-		if (Statistics.duration + Actor.now() <= 10){
-			boolean containsWaterskin = false;
-			for (int i = 0; i < instance.length; i++) {
-				if (select(i) instanceof Waterskin) containsWaterskin = true;
-			}
-			if (!containsWaterskin) SPDSettings.quickslotWaterskin(false);
 		}
 	}
 	

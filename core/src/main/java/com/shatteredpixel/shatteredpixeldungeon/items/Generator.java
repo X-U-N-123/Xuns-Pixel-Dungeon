@@ -433,7 +433,7 @@ public class Generator {
 					Earthroot.Seed.class,
 					Mageroyal.Seed.class,
 					Starflower.Seed.class};
-			SEED.defaultProbs = new float[]{ 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1 };
+			SEED.defaultProbs = new float[]{ 0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2 };
 			SEED.probs = SEED.defaultProbs.clone();
 			
 			SCROLL.classes = new Class<?>[]{
@@ -776,8 +776,8 @@ public class Generator {
 			{0, 75, 20,  4,  1,  0},
 			{0, 25, 45, 20,  5,  5},
 			{0,  0, 35, 45, 10, 10},
-			{0,  0, 20, 30, 30, 20},
-			{0,  0,  0, 20, 50, 30}
+			{0,  0, 20, 25, 30, 25},
+			{0,  0,  0, 15, 45, 40}
 	};
 
 	private static boolean usingFirstDeck = false;

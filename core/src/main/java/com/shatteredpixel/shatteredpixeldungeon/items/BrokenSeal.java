@@ -286,7 +286,7 @@ public class BrokenSeal extends Item {
 
         @Override
 		public int icon() {
-			if (coolingDown() || shielding() > 0 || cooldown < 0){
+			if (getCooldown() > 0 || shielding() > 0 || cooldown < 0){
 				return BuffIndicator.SEAL_SHIELD;
 			} else {
 				return BuffIndicator.NONE;
@@ -296,7 +296,7 @@ public class BrokenSeal extends Item {
 		@Override
 		public void tintIcon(Image icon) {
 			icon.resetColor();
-			if (coolingDown() && shielding() == 0){
+			if (getCooldown() > 0 && shielding() == 0){
 				icon.brightness(0.3f);
 			} else if (cooldown < 0) {
 				icon.invert();
@@ -307,7 +307,7 @@ public class BrokenSeal extends Item {
 		public float iconFadePercent() {
 			if (shielding() > 0){
 				return GameMath.gate(0, 1f - shielding()/(float)initialShield, 1);
-			} else if (coolingDown()){
+			} else if (getCooldown() > 0){
 				return GameMath.gate(0, cooldown / (float)COOLDOWN_START, 1);
 			} else {
 				return 0;
@@ -318,7 +318,7 @@ public class BrokenSeal extends Item {
 		public String iconTextDisplay() {
 			if (shielding() > 0){
 				return Integer.toString(shielding());
-			} else if (coolingDown() || cooldown < 0){
+			} else if (getCooldown() > 0 || cooldown < 0){
 				return Integer.toString(cooldown);
 			} else {
 				return "";
@@ -386,13 +386,8 @@ public class BrokenSeal extends Item {
 			initialShield = maxShield();
 		}
 
-		public boolean coolingDown(){
-			return cooldown > 0;
-		}
-
-		public void enterCooldown(float percentage, int turn){
-			cooldown = Math.round(cooldownStart() * percentage);
-			cooldown += turn;
+		public int getCooldown(){
+			return cooldown;
 		}
 
 		public void reduceCooldown(float percentage, int turn){
