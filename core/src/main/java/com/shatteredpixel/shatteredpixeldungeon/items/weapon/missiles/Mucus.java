@@ -27,26 +27,26 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
-public class Clay extends MissileWeapon {
+public class Mucus extends MissileWeapon {
 
-    {
-        image = ItemSpriteSheet.CLAY;
-        hitSound = Assets.Sounds.BLAST;
-        hitSoundPitch = 1.1f;
+	{
+		image = ItemSpriteSheet.MUCUS;
+		hitSound = Assets.Sounds.BLAST;
+		hitSoundPitch = 1.1f;
 
-        tier = 1;
-        baseUses = 1;
-    }
+		tier = 2;
+		baseUses = 5;
+	}
 
-    @Override
-    public int max(int lvl) {
-        return  3 * tier +     //3 base, down from 5
-                2 * lvl;       //scaling unchanged
-    }
+	@Override
+	public int max(int lvl) {
+		return  3 * tier +                      //6 base, down from 10
+				(tier == 1 ? 2*lvl : tier*lvl); //scaling unchanged
+	}
 
-    @Override
-    public int proc(Char attacker, Char defender, int damage ) {
-        Buff.prolong( defender, Cripple.class, Cripple.DURATION );
-        return super.proc( attacker, defender, damage );
-    }
+	@Override
+	public int proc(Char attacker, Char defender, int damage ) {
+		Buff.prolong( defender, Cripple.class, Cripple.DURATION );
+		return super.proc( attacker, defender, damage );
+	}
 }

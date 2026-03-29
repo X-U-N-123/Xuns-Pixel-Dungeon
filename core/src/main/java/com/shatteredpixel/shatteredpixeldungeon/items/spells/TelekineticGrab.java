@@ -112,7 +112,8 @@ public class TelekineticGrab extends TargetedSpell {
 					hero.spend(-Item.TIME_TO_PICK_UP); //casting the spell already takes a turn
 					GLog.i( Messages.capitalize(Messages.get(hero, "you_now_have", item.name())) );
 
-					if (!(item instanceof ThrowingClub) && !(item instanceof ThrowingHammer) && !(item instanceof Ironball))
+					if (!(item instanceof ThrowingClub)
+							&& !(item instanceof ThrowingHammer) && !(item instanceof Ironball))
 						spendTime = true;
 
 				} else {

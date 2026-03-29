@@ -22,16 +22,31 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
 public class Scorpiospike extends MissileWeapon {
 
     {
-        image = ItemSpriteSheet.Scorpiospike;
+        image = ItemSpriteSheet.SCORPIOSPIKE;
         hitSound = Assets.Sounds.HIT_STAB;
         hitSoundPitch = 0.9f;
 
         tier = 6;
     }
+
+	@Override
+	public int max(int lvl) {
+		return  3 * tier +     //18 base, down from 30
+				2 * lvl;       //scaling unchanged
+	}
+
+	@Override
+	public int proc(Char attacker, Char defender, int damage ) {
+		Buff.prolong( defender, Cripple.class, Cripple.DURATION );
+		return super.proc( attacker, defender, damage );
+	}
 
 }

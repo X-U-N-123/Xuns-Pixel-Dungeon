@@ -28,7 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 public class Ironball extends MissileWeapon {
 
     {
-        image = ItemSpriteSheet.Ironball;
+        image = ItemSpriteSheet.IRONBALL;
         hitSound = Assets.Sounds.HIT_CRUSH;
         hitSoundPitch = 0.8f;
 

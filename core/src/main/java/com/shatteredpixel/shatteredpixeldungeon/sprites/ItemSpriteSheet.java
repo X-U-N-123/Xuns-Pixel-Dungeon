@@ -442,27 +442,27 @@ public class ItemSpriteSheet {
 	public static final int SHURIKEN        = MISSILE_WEP+8;
 	public static final int THROWING_CLUB   = MISSILE_WEP+9;
 	public static final int LIGHTBOOMERANG  = MISSILE_WEP+10;
-	
+	public static final int MUCUS           = MISSILE_WEP+11;
 	public static final int THROWING_SPEAR  = MISSILE_WEP+12;
 	public static final int BOLAS           = MISSILE_WEP+13;
 	public static final int KUNAI           = MISSILE_WEP+14;
 	public static final int COINDART        = MISSILE_WEP+15;
-	
+	public static final int SMOKEBOMB       = MISSILE_WEP+16;
 	public static final int JAVELIN         = MISSILE_WEP+17;
 	public static final int TOMAHAWK        = MISSILE_WEP+18;
 	public static final int BOOMERANG       = MISSILE_WEP+19;
 	public static final int LANCET          = MISSILE_WEP+20;
-	
+	public static final int FORCE_COBBLE    = MISSILE_WEP+21;
 	public static final int TRIDENT         = MISSILE_WEP+22;
 	public static final int THROWING_HAMMER = MISSILE_WEP+23;
 	public static final int FORCE_CUBE      = MISSILE_WEP+24;
 	public static final int HEADDART        = MISSILE_WEP+25;
-
-	public static final int Scorpiospike    = MISSILE_WEP+27;
-	public static final int Ironball        = MISSILE_WEP+28;
+	public static final int FLYING_CYMBALS  = MISSILE_WEP+26;
+	public static final int IRON_THORN      = MISSILE_WEP+27;
+	public static final int IRONBALL        = MISSILE_WEP+28;
 	public static final int ANTIMATTER      = MISSILE_WEP+29;
 	public static final int HEAVYBOOMERANG  = MISSILE_WEP+30;
-	
+	public static final int SCORPIOSPIKE    = MISSILE_WEP+31;
 	static{
 		assignItemRect(SPIRIT_BOW,      16, 16);
 		
@@ -476,26 +476,31 @@ public class ItemSpriteSheet {
 		assignItemRect(SHURIKEN,        12, 12);
 		assignItemRect(THROWING_CLUB,   12, 12);
 		assignItemRect(LIGHTBOOMERANG,  13, 13);
-		
+		assignItemRect(MUCUS,           12, 12);
+
 		assignItemRect(THROWING_SPEAR,  13, 13);
 		assignItemRect(BOLAS,           15, 14);
 		assignItemRect(KUNAI,           15, 15);
 		assignItemRect(COINDART,        12, 12);
-		
+		assignItemRect(SMOKEBOMB,       10, 10);
+
 		assignItemRect(JAVELIN,         16, 16);
 		assignItemRect(TOMAHAWK,        13, 13);
 		assignItemRect(BOOMERANG,       14, 14);
-		assignItemRect(LANCET,          15 ,16);
-		
+		assignItemRect(LANCET,          15, 16);
+		assignItemRect(FORCE_COBBLE,    12, 10);
+
 		assignItemRect(TRIDENT,         16, 16);
 		assignItemRect(THROWING_HAMMER, 12, 12);
 		assignItemRect(FORCE_CUBE,      11, 12);
-		assignItemRect(HEADDART,        14 ,14);
+		assignItemRect(HEADDART,        14, 14);
+		assignItemRect(FLYING_CYMBALS,  14, 14);
 
-		assignItemRect(Scorpiospike,    16, 16);
-		assignItemRect(Ironball,        12, 12);
+		assignItemRect(IRON_THORN,      16, 16);
+		assignItemRect(IRONBALL,        12, 12);
 		assignItemRect(ANTIMATTER,      12, 11);
 		assignItemRect(HEAVYBOOMERANG,  15, 15);
+		assignItemRect(SCORPIOSPIKE,    16, 16);
 	}
 
 	public static final int OTHER_WEP = xy(1, 9); //16 slots

@@ -23,30 +23,29 @@ package com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
-public class Clay extends MissileWeapon {
+public class FlyingCymbals extends MissileWeapon {
 
-    {
-        image = ItemSpriteSheet.CLAY;
-        hitSound = Assets.Sounds.BLAST;
-        hitSoundPitch = 1.1f;
-
-        tier = 1;
-        baseUses = 1;
-    }
-
-    @Override
-    public int max(int lvl) {
-        return  3 * tier +     //3 base, down from 5
-                2 * lvl;       //scaling unchanged
-    }
-
-    @Override
-    public int proc(Char attacker, Char defender, int damage ) {
-        Buff.prolong( defender, Cripple.class, Cripple.DURATION );
-        return super.proc( attacker, defender, damage );
-    }
+	{
+		image = ItemSpriteSheet.FLYING_CYMBALS;
+		hitSound = Assets.Sounds.HIT_STAB;
+		hitSoundPitch = 1f;
+		
+		tier = 5;
+		baseUses = 5;
+	}
+	
+	@Override
+	public int max(int lvl) {
+		return  4 * tier +  //20 base, down from 25
+				tier * lvl; //scaling unchanged
+	}
+	
+	@Override
+	public float delayFactor(Char owner) {
+		if (owner instanceof Hero && ((Hero) owner).justMoved)  return 0;
+		else                                                    return super.delayFactor(owner);
+	}
 }

@@ -250,17 +250,22 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Boomerang;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Clay;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.CoinDart;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.FishingSpear;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.FlyingCymbals;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ForceCobble;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ForceCube;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Headdart;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.HeavyBoomerang;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.IronThorn;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Ironball;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Javelin;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Kunai;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Lancet;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.LightBoomerang;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Mucus;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Scorpiospike;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Shuriken;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.SmokeBombWep;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingClub;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingHammer;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingKnife;
@@ -654,45 +659,50 @@ public class Generator {
 					FishingSpear.class,
 					ThrowingClub.class,
 					Shuriken.class,
-					LightBoomerang.class
+					LightBoomerang.class,
+					Mucus.class
 			};
-			MIS_T2.defaultProbs = new float[]{ 3, 3, 3, 3 };
+			MIS_T2.defaultProbs = new float[]{ 3, 3, 3, 3, 3 };
 			MIS_T2.probs = MIS_T2.defaultProbs.clone();
 			
 			MIS_T3.classes = new Class<?>[]{
 					ThrowingSpear.class,
 					Kunai.class,
 					Bolas.class,
-					CoinDart.class
+					CoinDart.class,
+					SmokeBombWep.class
 			};
-			MIS_T3.defaultProbs = new float[]{ 3, 3, 3, 3 };
+			MIS_T3.defaultProbs = new float[]{ 3, 3, 3, 3, 3 };
 			MIS_T3.probs = MIS_T3.defaultProbs.clone();
 			
 			MIS_T4.classes = new Class<?>[]{
 					Javelin.class,
 					Tomahawk.class,
 					Boomerang.class,
-					Lancet.class
+					Lancet.class,
+					ForceCobble.class
 			};
-			MIS_T4.defaultProbs = new float[]{ 3, 3, 3, 3 };
+			MIS_T4.defaultProbs = new float[]{ 3, 3, 3, 3, 3 };
 			MIS_T4.probs = MIS_T4.defaultProbs.clone();
 			
 			MIS_T5.classes = new Class<?>[]{
 					Trident.class,
 					ThrowingHammer.class,
 					ForceCube.class,
-					Headdart.class
+					Headdart.class,
+					FlyingCymbals.class
 			};
-			MIS_T5.defaultProbs = new float[]{ 3, 3, 3, 3 };
+			MIS_T5.defaultProbs = new float[]{ 3, 3, 3, 3, 3 };
 			MIS_T5.probs = MIS_T5.defaultProbs.clone();
 
 			MIS_T6.classes = new Class<?>[]{
 					Scorpiospike.class,
 					Ironball.class,
 					Antimatter.class,
-					HeavyBoomerang.class
+					HeavyBoomerang.class,
+					IronThorn.class
 			};
-			MIS_T6.defaultProbs = new float[]{ 3, 3, 3, 3 };
+			MIS_T6.defaultProbs = new float[]{ 3, 3, 3, 3, 3 };
 			MIS_T6.probs = MIS_T6.defaultProbs.clone();
 			
 			FOOD.classes = new Class<?>[]{

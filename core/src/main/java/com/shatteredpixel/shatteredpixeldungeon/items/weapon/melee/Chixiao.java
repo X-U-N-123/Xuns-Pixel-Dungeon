@@ -116,7 +116,7 @@ public class Chixiao extends MeleeWeapon {
 
 	@Override
 	public void hitSound( float pitch ){
-		Sample.INSTANCE.play(hitSound, 1, pitch * hitSoundPitch * (slow ? 0.9f : 1.1f));
+		Sample.INSTANCE.play(hitSound, 1, pitch * hitSoundPitch * (slow ? 1.1f : 0.9f));
 	}
 
 	private static final String SLOW = "is_slow";
