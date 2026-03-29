@@ -6,4 +6,6 @@ sourceCompatibility = targetCompatibility = appJavaCompatibility
 dependencies {
     api project(':SPD-classes')
     implementation project(':services')
+
+    implementation 'cn.6tail:lunar:1.7.7'
 }

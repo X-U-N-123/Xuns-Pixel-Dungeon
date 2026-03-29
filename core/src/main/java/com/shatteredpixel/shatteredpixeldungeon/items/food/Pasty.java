@@ -23,25 +23,20 @@ package com.shatteredpixel.shatteredpixeldungeon.items.food;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AllyBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ArtifactRecharge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bless;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LostInventory;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
-import com.shatteredpixel.shatteredpixeldungeon.effects.Splash;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfExperience;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRecharging;
-import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
-import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
-import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
-import com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector;
-import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
@@ -68,6 +63,9 @@ public class Pasty extends Food {
 				break;
 			case LUNAR_NEW_YEAR:
 				image = ItemSpriteSheet.STEAMED_FISH;
+				break;
+			case FLOWER_FESTIVAL:
+				image = ItemSpriteSheet.FLOWER_CAKE;
 				break;
 			case APRIL_FOOLS:
 				image = ItemSpriteSheet.CHOC_AMULET;
@@ -130,6 +128,16 @@ public class Pasty extends Food {
 				if (!left.collect()){
 					Dungeon.level.drop(left, hero.pos).sprite.drop();
 				}
+				break;
+			case FLOWER_FESTIVAL:
+				for (Buff b : hero.buffs()){
+					if (b.type == Buff.buffType.NEGATIVE
+							&& !(b instanceof AllyBuff)
+							&& !(b instanceof LostInventory)){
+						b.detach();
+					}
+				}
+				new Flare( 6, 32 ).color(0xFF4CD2, true).show( curUser.sprite, 2f );
 				break;
 			case APRIL_FOOLS:
 				Sample.INSTANCE.play(Assets.Sounds.MIMIC);
@@ -204,6 +212,8 @@ public class Pasty extends Food {
 				return super.name();
 			case LUNAR_NEW_YEAR:
 				return Messages.get(this, "fish_name");
+			case FLOWER_FESTIVAL:
+				return Messages.get(this, "flower_name");
 			case APRIL_FOOLS:
 				return Messages.get(this, "amulet_name");
 			case EASTER:
@@ -234,6 +244,8 @@ public class Pasty extends Food {
 				return super.desc();
 			case LUNAR_NEW_YEAR:
 				return Messages.get(this, "fish_desc");
+			case FLOWER_FESTIVAL:
+				return Messages.get(this, "flower_desc");
 			case APRIL_FOOLS:
 				return Messages.get(this, "amulet_desc");
 			case EASTER:

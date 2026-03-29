@@ -96,6 +96,7 @@ public class Statistics {
 		corrosionUsed   = false;
 		wellWaterDug    = 0;
 		elixirManaDrunk = 0;
+		concealment     = 0;
 		conRechargeUsed = 0;
 		conEnergyUsed   = 0;
 		itemTypesDiscovered.clear();
