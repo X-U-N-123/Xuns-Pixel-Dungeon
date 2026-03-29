@@ -865,6 +865,7 @@ public class ItemSpriteSheet {
 	public static final int ELIXIR_MANA     = ELIXIRS+10;
 	public static final int ELIXIR_TEMPERING= ELIXIRS+11;
 	public static final int ELIXIR_AMNESIA  = ELIXIRS+12;
+	public static final int ELIXIR_CONCEAL  = ELIXIRS+13;
 	static{
 		for (int i = BREWS; i < BREWS+32; i++)
 			assignItemRect(i, 12, 14);

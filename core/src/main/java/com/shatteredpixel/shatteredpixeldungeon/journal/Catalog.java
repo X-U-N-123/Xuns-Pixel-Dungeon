@@ -86,6 +86,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.UnstableBrew
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfAmnesia;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfAquaticRejuvenation;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfArcaneArmor;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfConcealment;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfCrashCourse;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfDragonsBlood;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfEnlightening;
@@ -275,7 +276,7 @@ public enum Catalog {
 				AquaBrew.class, HeatBrew.class, RegrowingBrew.class, TrackingBrew.class,
 				ElixirOfHoneyedHealing.class, ElixirOfAquaticRejuvenation.class, ElixirOfArcaneArmor.class, ElixirOfDragonsBlood.class, ElixirOfMana.class,
 				ElixirOfIcyTouch.class, ElixirOfToxicEssence.class, ElixirOfMight.class, ElixirOfFeatherFall.class,
-                ElixirOfAmnesia.class, ElixirOfEnlightening.class, ElixirOfOverdraft.class, ElixirOfCrashCourse.class);
+                ElixirOfAmnesia.class, ElixirOfEnlightening.class, ElixirOfOverdraft.class, ElixirOfCrashCourse.class, ElixirOfConcealment.class);
 
 		SPELLS.addItems( UnstableSpell.class, WildEnergy.class, TelekineticGrab.class, PhaseShift.class, SummonWraith.class, Watchtower.class, MagicBan.class,
 				Alchemize.class, CurseInfusion.class, MagicalInfusion.class, Recycle.class, MagicalTran.class, Uptier.class, //Extract.class,

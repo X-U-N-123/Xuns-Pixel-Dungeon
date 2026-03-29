@@ -21,8 +21,11 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.MysteryMeat;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Crabclaw;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CrabSprite;
 import com.watabou.utils.Random;
 
@@ -57,5 +60,20 @@ public class Crab extends Mob {
 	@Override
 	public int drRoll() {
 		return super.drRoll() + Random.NormalIntRange(0, 4);
+	}
+
+	@Override
+	public float lootChance(){
+		return super.lootChance() * (Dungeon.LimitedDrops.CRAB_CLAW.dropped() ? 2 : 1);
+	}
+
+	@Override
+	public Item createLoot() {
+		Item i = super.createLoot();
+		if (!Dungeon.LimitedDrops.CRAB_CLAW.dropped() && Random.Float() >= 0.5f){
+			i = new Crabclaw().random();
+			Dungeon.LimitedDrops.CRAB_CLAW.count++;
+		}
+		return i;
 	}
 }

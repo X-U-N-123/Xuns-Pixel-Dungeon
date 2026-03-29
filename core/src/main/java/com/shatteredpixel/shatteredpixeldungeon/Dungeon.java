@@ -127,6 +127,7 @@ public class Dungeon {
 
 		//Other limited enemy drops
 		SLIME_WEP,
+		CRAB_CLAW,
 		SKELE_WEP,
 		THEIF_MISC,
 		GUARD_ARM,

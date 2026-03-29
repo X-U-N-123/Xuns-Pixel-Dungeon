@@ -41,6 +41,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.UnstableBrew
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfAmnesia;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfAquaticRejuvenation;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfArcaneArmor;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfConcealment;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfCrashCourse;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfDragonsBlood;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfEnlightening;
@@ -215,6 +216,7 @@ public abstract class Recipe {
 		new ElixirOfFeatherFall.Recipe(),
 		new ElixirOfEnlightening.Recipe(),
 		new ElixirOfMana.Recipe(),
+		new ElixirOfConcealment.Recipe(),
 		new MagicalInfusion.Recipe(),
 		new BeaconOfReturning.Recipe(),
 		new PhaseShift.Recipe(),

@@ -57,7 +57,7 @@ public class Necromancer extends Mob {
 		maxLvl = 14;
 		
 		loot = PotionOfHealing.class;
-		lootChance = 0.2f; //see lootChance()
+		lootChance = 0.1333f; //see lootChance()
 		
 		properties.add(Property.UNDEAD);
 		
@@ -98,7 +98,7 @@ public class Necromancer extends Mob {
 	
 	@Override
 	public float lootChance() {
-		return super.lootChance() * ((6f - Dungeon.LimitedDrops.NECRO_HP.count) / 6f);
+		return super.lootChance() * ((5f - Dungeon.LimitedDrops.NECRO_HP.count) / 5f);
 	}
 	
 	@Override

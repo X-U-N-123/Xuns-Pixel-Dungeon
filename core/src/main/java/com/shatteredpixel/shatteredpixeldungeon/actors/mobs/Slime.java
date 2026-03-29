@@ -24,10 +24,8 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
-import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
-import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.MagicalGem;
-import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Mucus;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SlimeSprite;
 import com.watabou.utils.Random;
 
@@ -41,7 +39,8 @@ public class Slime extends Mob {
 		
 		EXP = 4;
 		maxLvl = 9;
-		
+
+		loot = new Mucus();
 		lootChance = 0.2f; //by default, see lootChance()
 
 		useParry = true;
@@ -79,14 +78,6 @@ public class Slime extends Mob {
 	@Override
 	public Item createLoot() {
 		Dungeon.LimitedDrops.SLIME_WEP.count++;
-		Item w = Generator.randomUsingDefaults(Generator.Category.WEP_T2);
-
-        if (Random.Float() < MagicalGem.wandReplaceChance()){
-            Wand wand = (Wand)Generator.random(Generator.Category.WAND);
-            wand.cursed = w.cursed;
-            w = wand;
-        }
-		w.level(0);
-		return w;
+		return super.createLoot();
 	}
 }

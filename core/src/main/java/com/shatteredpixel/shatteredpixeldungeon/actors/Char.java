@@ -27,6 +27,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Electricity;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.StormCloud;
@@ -1497,11 +1498,12 @@ public abstract class Char extends Actor {
 	}
 	
 	public float stealth() {
-		float stealth = 0;
+		float stealth = Obfuscation.stealthBoost(this, glyphLevel(Obfuscation.class));
 
-		stealth += Obfuscation.stealthBoost(this, glyphLevel(Obfuscation.class));
-
-        if (this instanceof Hero && ((Hero) this).subClass == HeroSubClass.INCUBUS) stealth += 2;
+		if (this instanceof Hero){
+			stealth += Statistics.concealment;
+			if (((Hero) this).subClass == HeroSubClass.INCUBUS) stealth += 2;
+		}
 
 		return stealth;
 	}
