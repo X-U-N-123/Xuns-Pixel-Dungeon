@@ -60,7 +60,7 @@ public class OozeTrap extends Trap {
 
 						if (Dungeon.hero.pointsInTalent(Talent.SENSITIVE_PEDAL) >= 3) {
 							Buff.append(Dungeon.hero, TalismanOfForesight.CharAwareness.class, 10)
-							.charID = Actor.findChar(i).id();
+							.charID = ch.id();
 						}
 					}
 				}

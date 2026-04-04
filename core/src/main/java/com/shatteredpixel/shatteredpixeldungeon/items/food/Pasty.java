@@ -23,22 +23,27 @@ package com.shatteredpixel.shatteredpixeldungeon.items.food;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AllyBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ArtifactRecharge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bless;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Charm;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LostInventory;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.RainbowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfExperience;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRecharging;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.shatteredpixel.shatteredpixeldungeon.ui.TargetHealthIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.utils.Holiday;
 import com.watabou.noosa.audio.Sample;
@@ -78,6 +83,9 @@ public class Pasty extends Food {
 				break;
 			case DRAGON_BOAT:
 				image = ItemSpriteSheet.ZONGZI;
+				break;
+			case QIXI:
+				image = ItemSpriteSheet.CRISPY_PASTRY;
 				break;
 			case SHATTEREDPD_BIRTHDAY:
 				image = ItemSpriteSheet.SHATTERED_CAKE;
@@ -155,7 +163,7 @@ public class Pasty extends Food {
 					GLog.i( Messages.get(this, "salty") );
 				}
 				break;
-			/*case PRIDE:
+			case QIXI:
 				Char target = null;
 
 				//charms an adjacent non-boss enemy, prioritizing the one the hero is focusing on
@@ -174,7 +182,7 @@ public class Pasty extends Food {
 					Buff.affect(target, Charm.class, 5f).object = hero.id();
 				}
 				hero.sprite.emitter().burst(RainbowParticle.BURST, 15);
-				break;*/
+				break;
 			case SHATTEREDPD_BIRTHDAY:
 			case XUNS_BIRTHDAY:
 			case PD_BIRTHDAY:
@@ -222,6 +230,8 @@ public class Pasty extends Food {
 				return Messages.get(this, "xuns_name");
 			case DRAGON_BOAT:
 				return Messages.get(this, "zongzi_name");
+			case QIXI:
+				return Messages.get(this, "pastry_name");
 			case SHATTEREDPD_BIRTHDAY:
 				return Messages.get(this, "shattered_name");
 			case HALLOWEEN:
@@ -256,6 +266,8 @@ public class Pasty extends Food {
 				return Messages.get(this, "shattered_desc");
 			case DRAGON_BOAT:
 				return Messages.get(this, "zongzi_desc");
+			case QIXI:
+				return Messages.get(this, "pastry_desc");
 			case HALLOWEEN:
 				return Messages.get(this, "pie_desc");
 			case MID_AUTUMN:

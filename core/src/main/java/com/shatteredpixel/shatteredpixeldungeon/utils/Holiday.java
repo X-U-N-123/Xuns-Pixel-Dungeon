@@ -31,23 +31,23 @@ public enum Holiday {
 
 	NONE,
 
-	LUNAR_NEW_YEAR,         //Varies, sometime in late Jan to Late Feb              (7 days)
-	FLOWER_FESTIVAL,        //Varies, sometime in early Mar to early Apr              (7 days)
-	APRIL_FOOLS,            //April 1st, can override easter                        (1 day)
+	LUNAR_NEW_YEAR,         //Lunar Jan 1st, sometime in late Jan to Late Feb       (7 days)
+	FLOWER_FESTIVAL,        //Lunar Feb 15th, sometime in early Mar to early Apr    (7 days)
+	APRIL_FOOLS,            //April 1st, can override easter and flower festival    (1 day)
 	EASTER,                 //Varies, sometime in Late Mar to Late Apr              (6-7 days)
-	XUNS_BIRTHDAY,          //Apr 15th to 21st                                      (7 days)
+	XUNS_BIRTHDAY,          //Apr 15th to 21st, can override easter                 (7 days)
 	//5月无事发生
-	DRAGON_BOAT,            //Varies, sometime in late May to late Jun              (7 days)
-	//7月无事发生
-	SHATTEREDPD_BIRTHDAY,   //Aug 1st to Aug 7th                                    (7 days)
-	MID_AUTUMN,             //Varies, sometime in early Sep to early Oct            (7 days)
+	DRAGON_BOAT,            //Lunar May 5th, sometime in late May to late Jun       (7 days)
+	QIXI,                   //Lunar Jul 7th, sometime in late Jul to late Aug       (7 days)
+	SHATTEREDPD_BIRTHDAY,   //Aug 1st to Aug 7th, can override qixi                 (7 days)
+	MID_AUTUMN,             //Lunar Aug 15th, sometime in early Sep to early Oct    (7 days)
 	HALLOWEEN,              //Oct 24th to Oct 31st                                  (7 days)
 	//11月无事发生
 	PD_BIRTHDAY,            //Dec 1st to Dec 7th                                    (7 days)
 	WINTER_HOLIDAYS,        //Dec 15th to Dec 26th                                  (12 days)
 	NEW_YEARS;              //Dec 27th to Jan 2nd                                   (7 days)
 
-	//total of 85-86 festive days each year, mainly concentrated in Late Oct to Early Feb
+	//total of 89-90 festive days each year, mainly concentrated in Late Oct to Early Feb
 
 	//we cache the holiday here so that holiday logic doesn't suddenly shut off mid-game
 	//this gets cleared on game launch (of course), and whenever leaving a game scene
@@ -66,12 +66,12 @@ public enum Holiday {
 	//requires a gregorian calendar
 	public static Holiday getHolidayForDate(GregorianCalendar cal){
 
-		//Lunar New Year
+		//春节
 		if (isLunarNewYear(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DATE))){
 			return LUNAR_NEW_YEAR;
 		}
 
-		//April Fools (priotized) and Flower Festival
+		//April Fools (priotized) and 花朝节
 		if (cal.get(Calendar.MONTH) == Calendar.APRIL
 				&& cal.get(Calendar.DAY_OF_MONTH) == 1){
 			return APRIL_FOOLS;
@@ -94,7 +94,7 @@ public enum Holiday {
 			return EASTER;
 		}
 
-		//DragonBoat
+		//端午节
 		if (isDragonBoat(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DATE))){
 			return DRAGON_BOAT;
 		}
@@ -105,7 +105,12 @@ public enum Holiday {
 			return SHATTEREDPD_BIRTHDAY;
 		}
 
-		//Mid-Autumn
+		//七夕
+		if (isQixi(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DATE))){
+			return QIXI;
+		}
+
+		//中秋
 		if (isMidAutumn(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DATE))){
 			return MID_AUTUMN;
 		}
@@ -168,6 +173,12 @@ public enum Holiday {
 
 		Lunar lunarDate = new Lunar(new Solar(year, month+1, day));
 		return lunarDate.getMonth() == 5 && lunarDate.getDay() >= 1 && lunarDate.getDay() <= 7;
+	}
+
+	public static boolean isQixi(int year, int month, int day){
+
+		Lunar lunarDate = new Lunar(new Solar(year, month+1, day));
+		return lunarDate.getMonth() == 7 && lunarDate.getDay() >= 3 && lunarDate.getDay() <= 9;
 	}
 
 	//has to be algorithmically computed =S

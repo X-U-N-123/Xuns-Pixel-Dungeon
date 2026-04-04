@@ -34,14 +34,13 @@ import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
-import com.watabou.utils.Callback;
 
 import java.util.ArrayList;
 
 public class Windblade extends MeleeWeapon {
 
     {
-        image = ItemSpriteSheet.Windblade;
+        image = ItemSpriteSheet.WINDBLADE;
         hitSound = Assets.Sounds.HIT_SLASH;
         hitSoundPitch = 1.3f;
 
@@ -56,11 +55,8 @@ public class Windblade extends MeleeWeapon {
 
     @Override
     public int reachFactor(Char owner){
-        return reachFactor(owner, level());
-    }
-
-    public int reachFactor(Char owner, int lvl){
-        return super.reachFactor(owner) + lvl;
+		RCH = buffedLvl() + 1;
+        return super.reachFactor(owner);
     }
 
     @Override
@@ -96,31 +92,28 @@ public class Windblade extends MeleeWeapon {
 
         throwSound();
         Char finalClosest = closest;
-        hero.sprite.attack(hero.pos, new Callback() {
-            @Override
-            public void call() {
-                beforeAbilityUsed(hero, finalClosest);
-                for (Char ch : targets) {
-                    //ability does 10% less base damage
-                    int oldPos = ch.pos;
-                    hero.attack(ch, 1f, -2, Char.INFINITE_ACCURACY);
-                    ch.sprite.emitter().burst(Speck.factory(Speck.JET), 15);
-                    if (ch.isAlive() && ch.pos == oldPos && !Pushing.pushingExistsForChar(ch)) {
-                        //trace a ballistica to our target (which will also extend past them
-                        Ballistica trajectory = new Ballistica(hero.pos, ch.pos, Ballistica.STOP_TARGET);
-                        //trim it to just be the part that goes past them
-                        trajectory = new Ballistica(trajectory.collisionPos, trajectory.path.get(trajectory.path.size() - 1), Ballistica.PROJECTILE);
-                        //knock them back along that ballistica
-                        WandOfBlastWave.throwChar(ch, trajectory, 2, true, true, hero);
-                    } else {
-                        onAbilityKill(hero, ch);
-                    }
-                }
-                Invisibility.dispel();
-                hero.spendAndNext(hero.attackDelay());
-                afterAbilityUsed(hero);
-            }
-        });
+        hero.sprite.attack(hero.pos, () -> {
+			beforeAbilityUsed(hero, finalClosest);
+			for (Char ch : targets) {
+				//ability does 10% less base damage
+				int oldPos = ch.pos;
+				hero.attack(ch, 1f, -2, Char.INFINITE_ACCURACY);
+				ch.sprite.emitter().burst(Speck.factory(Speck.JET), 15);
+				if (ch.isAlive() && ch.pos == oldPos && !Pushing.pushingExistsForChar(ch)) {
+					//trace a ballistica to our target (which will also extend past them
+					Ballistica trajectory = new Ballistica(hero.pos, ch.pos, Ballistica.STOP_TARGET);
+					//trim it to just be the part that goes past them
+					trajectory = new Ballistica(trajectory.collisionPos, trajectory.path.get(trajectory.path.size() - 1), Ballistica.PROJECTILE);
+					//knock them back along that ballistica
+					WandOfBlastWave.throwChar(ch, trajectory, 2, true, true, hero);
+				} else {
+					onAbilityKill(hero, ch);
+				}
+			}
+			Invisibility.dispel();
+			hero.spendAndNext(hero.attackDelay());
+			afterAbilityUsed(hero);
+		});
     }
 
     @Override

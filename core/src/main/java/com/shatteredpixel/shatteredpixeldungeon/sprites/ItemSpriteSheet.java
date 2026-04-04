@@ -306,7 +306,7 @@ public class ItemSpriteSheet {
 	public static final int Shortrunicblade = WEP_TIER3+11;
 	public static final int Knife           = WEP_TIER3+12;
 	public static final int ZHOUYI          = WEP_TIER3+13;
-	public static final int Windblade       = WEP_TIER3+14;
+	public static final int WINDBLADE       = WEP_TIER3+14;
 	static{
 		assignItemRect(SWORD,           14, 14);
 		assignItemRect(MACE,            15, 15);
@@ -321,7 +321,7 @@ public class ItemSpriteSheet {
 		assignItemRect(Knife,           15, 14);
 		assignItemRect(Scythe,          12, 13);
 		assignItemRect(LightFlail,      13, 13);
-		assignItemRect(Windblade,       15, 15);
+		assignItemRect(WINDBLADE,       15, 15);
 		assignItemRect(ZHOUYI,          13, 16);
 	}
 
@@ -970,6 +970,7 @@ public class ItemSpriteSheet {
 	public static final int MOONCAKE        = HOLIDAY_FOOD+10;
 	public static final int XUNS_CAKE       = HOLIDAY_FOOD+11;
 	public static final int ZONGZI          = HOLIDAY_FOOD+12;
+	public static final int CRISPY_PASTRY   = HOLIDAY_FOOD+13;
 	static{
 		assignItemRect(STEAMED_FISH,    16, 12);
 		assignItemRect(FISH_LEFTOVER,   16, 12);
@@ -984,6 +985,7 @@ public class ItemSpriteSheet {
 		assignItemRect(MOONCAKE,        16, 12);
 		assignItemRect(XUNS_CAKE,       14, 13);
 		assignItemRect(ZONGZI,          15, 16);
+		assignItemRect(CRISPY_PASTRY,   16, 16);
 	}
 
 	private static final int QUEST  = xy(17, 2);  //16 slots
