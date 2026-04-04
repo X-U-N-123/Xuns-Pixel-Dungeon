@@ -60,7 +60,8 @@ public class ElixirOfArcaneArmor extends Elixir {
 				Sample.INSTANCE.play(Assets.Sounds.SHATTER);
 			}
 
-			Buff.affect(ch, ArcaneArmor.class).set(5 + Dungeon.hero.lvl/2, 80);
+			if (ch instanceof Hero) Buff.affect(ch, ArcaneArmor.class).set(5 + ((Hero) ch).lvl/2, 80);
+			else                    Buff.affect(ch, ArcaneArmor.class).set(5 + ch.HT/10,          80);
 		}
 	}
 	

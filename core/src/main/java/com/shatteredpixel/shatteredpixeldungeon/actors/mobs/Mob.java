@@ -79,6 +79,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.LiquidMetal;
+import com.shatteredpixel.shatteredpixeldungeon.items.LostBackpack;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.MasterThievesArmband;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.ExoticPotion;
@@ -1663,7 +1664,9 @@ public abstract class Mob extends Char {
 		if (plunderedItem != null) return false;
 
 		if (state == HUNTING || state == FLEEING || alignment != Alignment.ENEMY) return false;
-		if (toPickUp instanceof Tengu.BombAbility.BombItem || toPickUp instanceof Tengu.ShockerAbility.ShockerItem)
+
+		if (toPickUp instanceof Tengu.BombAbility.BombItem || toPickUp instanceof Tengu.ShockerAbility.ShockerItem
+				|| toPickUp instanceof LostBackpack)
 			return false;
 
 		return true;

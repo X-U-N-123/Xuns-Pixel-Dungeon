@@ -27,9 +27,9 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Bee;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.plants.Sungrass;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
@@ -112,10 +112,10 @@ public class EmptyPot extends Item {
         private static final int OUT_QUANTITY = 1;
 
         {
-            inputs =  new Class[]{Honeypot.ShatteredPot.class, PotionOfHealing.class};
+            inputs =  new Class[]{Honeypot.ShatteredPot.class, Sungrass.Seed.class};
             inQuantity = new int[]{1, 1};
 
-            cost = 0;
+            cost = 1;
 
             output = EmptyPot.class;
             outQuantity = OUT_QUANTITY;
