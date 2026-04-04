@@ -61,7 +61,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FireImbue;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Frost;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FrostImbue;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Fury;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hex;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
@@ -510,10 +509,6 @@ public abstract class Char extends Actor {
 			Berserk berserk = buff(Berserk.class);
 			if (berserk != null) dmg = berserk.damageFactor(dmg);
 
-			if (buff( Fury.class ) != null) {
-				dmg *= 1.5f;
-			}
-
 			if (buff( PowerOfMany.PowerBuff.class) != null){
 				if (buff( BeamingRay.BeamingRayBoost.class) != null
 					&& buff( BeamingRay.BeamingRayBoost.class).object == enemy.id()){
@@ -700,9 +695,8 @@ public abstract class Char extends Actor {
 				}
 
                 if (hero.hasTalent(Talent.FLEET_BARRIER)){
-					int shieldToGive = Math.min(1 + hero.pointsInTalent(Talent.FLEET_BARRIER),
-						2 + 3 * hero.pointsInTalent(Talent.FLEET_BARRIER) - hero.shielding());
-                    if (hero.shielding() <= 2 + 3 * hero.pointsInTalent(Talent.FLEET_BARRIER))
+					int shieldToGive = Math.min(2, 1 + 2 * hero.pointsInTalent(Talent.FLEET_BARRIER) - hero.shielding());
+                    if (hero.shielding() <= 1 + 2 * hero.pointsInTalent(Talent.FLEET_BARRIER))
 						Buff.affect(hero, Barrier.class).incShield(shieldToGive);
                 }
 			}

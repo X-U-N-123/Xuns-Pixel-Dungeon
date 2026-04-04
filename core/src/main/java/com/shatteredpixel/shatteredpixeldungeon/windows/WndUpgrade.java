@@ -32,12 +32,17 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.MagicalInfusion;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Canopy;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Greatshield;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.KindOfCrossbow;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.KiteShield;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RoundShield;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Vineshield;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Windblade;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.BoneFragment;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Headdart;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Tomahawk;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Languages;
@@ -219,16 +224,28 @@ public class WndUpgrade extends Window {
 
 		if (toUpgrade instanceof Windblade){
 			bottom = fillFields(Messages.get(this, "rch"),
-			Integer.toString(((Windblade) toUpgrade).reachFactor(Dungeon.hero, levelFrom)),
-			Integer.toString(((Windblade) toUpgrade).reachFactor(Dungeon.hero, levelTo)),
-			bottom);
+					Integer.toString(levelFrom + 1),
+					Integer.toString(levelTo + 1),
+					bottom);
 		}
 
-		//bleeding (tomahawk)
+		//bleeding (tomahawk, bone feagment and headdart)
 		if (toUpgrade instanceof Tomahawk){
 			bottom = fillFields(Messages.get(this, "bleeding"),
 					Math.round(((Tomahawk) toUpgrade).minBleed(levelFrom)) + "-" + Math.round(((Tomahawk) toUpgrade).maxBleed(levelFrom)),
 					Math.round(((Tomahawk) toUpgrade).minBleed(levelTo)) + "-" + Math.round(((Tomahawk) toUpgrade).maxBleed(levelTo)),
+					bottom);
+		}
+		if (toUpgrade instanceof BoneFragment){
+			bottom = fillFields(Messages.get(this, "bleeding"),
+					Math.round(((BoneFragment) toUpgrade).minBleed(levelFrom)) + "-" + Math.round(((BoneFragment) toUpgrade).maxBleed(levelFrom)),
+					Math.round(((BoneFragment) toUpgrade).minBleed(levelTo)) + "-" + Math.round(((BoneFragment) toUpgrade).maxBleed(levelTo)),
+					bottom);
+		}
+		if (toUpgrade instanceof Headdart){
+			bottom = fillFields(Messages.get(this, "bleeding"),
+					Math.round(((Headdart) toUpgrade).minBleed(levelFrom)) + "-" + Math.round(((Headdart) toUpgrade).maxBleed(levelFrom)),
+					Math.round(((Headdart) toUpgrade).minBleed(levelTo)) + "-" + Math.round(((Headdart) toUpgrade).maxBleed(levelTo)),
 					bottom);
 		}
 
@@ -247,15 +264,30 @@ public class WndUpgrade extends Window {
 					((Armor) toUpgrade).DRMin(levelFrom) + "-" + (((Armor) toUpgrade).DRMax(levelFrom)),
 					((Armor) toUpgrade).DRMin(levelTo) + "-" +  (((Armor) toUpgrade).DRMax(levelTo)),
 					bottom);
+		} else if (toUpgrade instanceof Vineshield){
+			bottom = fillFields(Messages.get(this, "blocking"),
+					0 + "-" + ((Vineshield) toUpgrade).DRMax(levelFrom),
+					0 + "-" + ((Vineshield) toUpgrade).DRMax(levelTo),
+					bottom);
 		} else if (toUpgrade instanceof RoundShield){
 			bottom = fillFields(Messages.get(this, "blocking"),
 					0 + "-" + ((RoundShield) toUpgrade).DRMax(levelFrom),
 					0 + "-" + ((RoundShield) toUpgrade).DRMax(levelTo),
 					bottom);
+		} else if (toUpgrade instanceof KiteShield){
+			bottom = fillFields(Messages.get(this, "blocking"),
+					0 + "-" + ((KiteShield) toUpgrade).DRMax(levelFrom),
+					0 + "-" + ((KiteShield) toUpgrade).DRMax(levelTo),
+					bottom);
 		} else if (toUpgrade instanceof Greatshield){
 			bottom = fillFields(Messages.get(this, "blocking"),
 					0 + "-" + ((Greatshield) toUpgrade).DRMax(levelFrom),
 					0 + "-" + ((Greatshield) toUpgrade).DRMax(levelTo),
+					bottom);
+		} else if (toUpgrade instanceof Canopy){
+			bottom = fillFields(Messages.get(this, "blocking"),
+					0 + "-" + ((Canopy) toUpgrade).DRMax(levelFrom),
+					0 + "-" + ((Canopy) toUpgrade).DRMax(levelTo),
 					bottom);
 		}
 
@@ -278,8 +310,8 @@ public class WndUpgrade extends Window {
 			int uses1 = (int)Math.ceil(100f/((MissileWeapon) toUpgrade).durabilityPerUse());
 			int uses2 = (int)Math.ceil(300f/((MissileWeapon) toUpgrade).durabilityPerUse());
 			bottom = fillFields(Messages.get(this, "durability"),
-					uses1 >= 100 ? "∞" : Integer.toString(uses1),
-					uses2 >= 100 ? "∞" : Integer.toString(uses2),
+					uses1 >= 100 ? "+∞" : Integer.toString(uses1),
+					uses2 >= 100 ? "+∞" : Integer.toString(uses2),
 					bottom);
 		}
 
