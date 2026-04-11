@@ -226,6 +226,17 @@ public abstract class Wand extends Item {
 			Buff.append(Dungeon.hero, TalismanOfForesight.CharAwareness.class, dur).charID = target.id();
 		}
 
+		if (target.buff(SoulMark.class) != null && Dungeon.hero.hasTalent(Talent.MANA_EATING)) {
+			int restoration = Math.min(dmg, target.HP + target.shielding());
+
+			if (restoration > 0 && Dungeon.hero.HP < Dungeon.hero.HT && target.buff(MagicImmune.class) == null) {
+
+				int heal = (int)Math.ceil(restoration * (0.1f + Dungeon.hero.pointsInTalent(Talent.MANA_EATING) * 0.1f));
+				Dungeon.hero.HP = Math.min(Dungeon.hero.HT, Dungeon.hero.HP + heal);
+				Dungeon.hero.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(heal), FloatingText.HEALING);
+			}
+		}
+
 		if (target != Dungeon.hero &&
 				Dungeon.hero.subClass == HeroSubClass.WARLOCK &&
 				//standard 1 - 0.92^x chance, plus 7%. Starts at 15%
@@ -267,7 +278,7 @@ public abstract class Wand extends Item {
 			}
 		}
 
-		dmg *= 1f + Statistics.elixirManaDrunk * 0.1f;
+		dmg += Math.round(dmg * Statistics.elixirManaDrunk * 0.1f);
 
 		EvilUnfold.Evil evil = Dungeon.hero.buff(EvilUnfold.Evil.class);
 		if (evil != null) dmg = evil.proc(target, dmg);

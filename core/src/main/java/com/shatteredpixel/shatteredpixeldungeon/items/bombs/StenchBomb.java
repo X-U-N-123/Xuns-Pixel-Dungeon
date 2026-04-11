@@ -22,14 +22,19 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.bombs;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
-import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.SmokeScreen;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.StenchGas;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ToxicGas;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Poison;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.watabou.utils.BArray;
 import com.watabou.utils.PathFinder;
 
-public class SmokeBomb extends Bomb {
+public class StenchBomb extends Bomb {
 	
 	{
 		image = ItemSpriteSheet.SMOKE_BOMB;
@@ -44,18 +49,25 @@ public class SmokeBomb extends Bomb {
 	public void explode(int cell) {
 		super.explode(cell);
 
-		int centerVolume = 1000; //40*25
+		int centerVolume = 750; //30*25
 		PathFinder.buildDistanceMap( cell, BArray.not( Dungeon.level.solid, null ), explosionRange() );
 		for (int i = 0; i < PathFinder.distance.length; i++) {
 			if (PathFinder.distance[i] < Integer.MAX_VALUE) {
-				GameScene.add( Blob.seed( i, 40, SmokeScreen.class ) );
-				centerVolume -= 40;
+				GameScene.add( Blob.seed( i, 30, ToxicGas.class ) );
+				GameScene.add( Blob.seed( i, 30, StenchGas.class ) );
+				centerVolume -= 30;
+
+				Char ch = Actor.findChar(i);
+				if (ch != null && ch.alignment != Dungeon.hero.alignment){
+					Buff.affect(ch, Poison.class).set(3 + Dungeon.scalingDepth() / 2f);
+				}
 			}
 		}
 
 		//excess volume if some cells were blocked
 		if (centerVolume > 0){
-			GameScene.add( Blob.seed( cell, centerVolume, SmokeScreen.class ) );
+			GameScene.add( Blob.seed( cell, centerVolume, ToxicGas.class ) );
+			GameScene.add( Blob.seed( cell, centerVolume, StenchGas.class ) );
 		}
 		
 	}
@@ -63,6 +75,6 @@ public class SmokeBomb extends Bomb {
 	@Override
 	public int value() {
 		//prices of ingredients
-		return quantity * (20 + 40);
+		return quantity * (20 + 30);
 	}
 }

@@ -909,19 +909,6 @@ public abstract class Mob extends Char {
 				}
 			}
 		}
-
-        if (src instanceof Wand && buff(SoulMark.class) != null && Dungeon.hero.hasTalent(Talent.MANA_EATING)) {
-            int restoration = Math.min(dmg, HP+shielding());
-
-            if (restoration > 0) {
-
-                if (Dungeon.hero.HP < Dungeon.hero.HT) {
-                    int heal = (int)Math.ceil(restoration * (0.1f + Dungeon.hero.pointsInTalent(Talent.MANA_EATING) * 0.1f));
-                    Dungeon.hero.HP = Math.min(Dungeon.hero.HT, Dungeon.hero.HP + heal);
-                    Dungeon.hero.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(heal), FloatingText.HEALING);
-                }
-            }
-        }
 		
 		super.damage( dmg, src );
 	}

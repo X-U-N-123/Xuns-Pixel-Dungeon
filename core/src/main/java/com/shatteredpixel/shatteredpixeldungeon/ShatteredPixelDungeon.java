@@ -41,6 +41,10 @@ public class ShatteredPixelDungeon extends Game {
 		super( sceneClass == null ? WelcomeScene.class : sceneClass, platform );
 
 		com.watabou.utils.Bundle.addAlias(
+				com.shatteredpixel.shatteredpixeldungeon.items.bombs.StenchBomb.class,
+				"com.shatteredpixel.shatteredpixeldungeon.items.bombs.SmokeBomb.class" );
+
+		com.watabou.utils.Bundle.addAlias(
 				com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.wraith.Transfusion.class,
 				"com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.wraith.Lifeloan.class" );
 		com.watabou.utils.Bundle.addAlias(
