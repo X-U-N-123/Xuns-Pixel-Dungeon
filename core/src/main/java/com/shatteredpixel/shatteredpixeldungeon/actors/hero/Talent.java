@@ -1467,7 +1467,7 @@ public enum Talent {
 		if (hero.hasTalent(BURN_BRIDGES) && buffs != null){
 			dmg += Math.round(dmg * 0.1f * Dungeon.hero.pointsInTalent(BURN_BRIDGES));
 		}
-		
+
 		if (Dungeon.level.map[hero.pos] != Dungeon.level.map[enemy.pos] && hero.hasTalent(HOME_ADVANTAGE)){
 			dmg += Random.IntRange(1, hero.pointsInTalent(HOME_ADVANTAGE));
 		}
@@ -1482,20 +1482,20 @@ public enum Talent {
         }
 
         TearingMealTracker tear = hero.buff(TearingMealTracker.class);
-        if (tear != null){
-            tear.detach();
 
-            if (!enemy.isImmune(Bleeding.class)){
-                Bleeding b = enemy.buff(Bleeding.class);
-                if (b == null) b = new Bleeding();
+		if (tear != null && !enemy.isImmune(Bleeding.class)){
+			Bleeding b = enemy.buff(Bleeding.class);
+			if (b == null) b = new Bleeding();
 
-                b.announced = false;
-                b.set(dmg * (0.65f + 0.25f * hero.pointsInTalent(TEARING_MEAL)), TearingMealTracker.class);
-                b.attachTo(enemy);
-                enemy.sprite.showStatusWithIcon(CharSprite.WARNING, "+" + (int)b.level(), FloatingText.BLEEDING);
-                dmg = 0;
-            }
-        }
+			b.announced = false;
+			b.set(dmg * (0.65f + 0.25f * hero.pointsInTalent(TEARING_MEAL)), TearingMealTracker.class);
+			b.attachTo(enemy);
+			enemy.sprite.showStatusWithIcon(CharSprite.WARNING, "+" + (int)b.level(), FloatingText.BLEEDING);
+			dmg = 0;
+
+			tear.detach();
+		}
+
 		return dmg;
 	}
 

@@ -84,6 +84,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfStrength;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfVision;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfChallenge;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Support;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfEnchantment;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfIntuition;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.DimensionalSundial;
@@ -279,11 +280,9 @@ public abstract class Level implements Bundlable {
 						break;
 					case 3:
 						feeling = Feeling.DARK;
-						viewDistance = Math.round(5*viewDistance/8f);
 						break;
 					case 4:
 						feeling = Feeling.LARGE;
-						addItemToSpawn(Generator.random(Generator.Category.FOOD));
 						break;
 					case 5:
 						feeling = Feeling.TRAPS;
@@ -299,11 +298,16 @@ public abstract class Level implements Bundlable {
 							feeling = TrapMechanism.getNextFeeling();
 						} else if (Random.Float() < WornLock.overrideNormalLevelChance()) {
 							feeling = WornLock.getNextFeeling();
-						//and we need priority here
 						} else {
 							feeling = Feeling.NONE;
 						}
 				}
+				if (feeling == Feeling.LARGE) {
+					addItemToSpawn(Generator.random(Generator.Category.FOOD));
+					if (Dungeon.isChallenged(Challenges.NO_RETURN))
+						addItemToSpawn(new Support());
+				}
+				if (feeling == Feeling.DARK) viewDistance = Math.round(5*viewDistance/8f);
 			}
 		}
 		

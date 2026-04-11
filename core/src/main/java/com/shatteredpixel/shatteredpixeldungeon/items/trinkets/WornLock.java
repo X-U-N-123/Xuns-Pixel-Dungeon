@@ -89,8 +89,6 @@ public class WornLock extends Trinket {
 			Random.pushGenerator(Dungeon.seed+1);
 				lock.levelFeels.add(true);
 				lock.levelFeels.add(true);
-				lock.levelFeels.add(true);
-				lock.levelFeels.add(false);
 				lock.levelFeels.add(false);
 				lock.levelFeels.add(false);
 				for (int i = 0; i <= lock.shuffles; i++) {

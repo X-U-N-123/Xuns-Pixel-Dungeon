@@ -682,7 +682,7 @@ public abstract class Char extends Actor {
 
 			enemy.sprite.showStatus( CharSprite.NEUTRAL, enemy.defenseVerb() );
 			if (visibleFight) {
-				//Screw Evan for not doing such a easy thing!
+				//Screw Evan for not doing such an easy thing!
 				if (enemy.useParry) Sample.INSTANCE.play(Assets.Sounds.HIT_PARRY);
 				else                Sample.INSTANCE.play(Assets.Sounds.MISS);
 			}
@@ -715,7 +715,7 @@ public abstract class Char extends Actor {
 	public static int INFINITE_ACCURACY = 1_000_000;
 	public static int INFINITE_EVASION = 1_000_000;
 
-	final public static boolean hit( Char attacker, Char defender, boolean magic ) {
+	public static boolean hit( Char attacker, Char defender, boolean magic ) {
 		return hit(attacker, defender, magic ? 2f : 1f, magic);
 	}
 

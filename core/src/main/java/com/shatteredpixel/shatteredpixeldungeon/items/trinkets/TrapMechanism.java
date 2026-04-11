@@ -89,8 +89,6 @@ public class TrapMechanism extends Trinket {
 			Random.pushGenerator(Dungeon.seed+1);
 				mech.levelFeels.add(true);
 				mech.levelFeels.add(true);
-				mech.levelFeels.add(true);
-				mech.levelFeels.add(false);
 				mech.levelFeels.add(false);
 				mech.levelFeels.add(false);
 				for (int i = 0; i <= mech.shuffles; i++) {
