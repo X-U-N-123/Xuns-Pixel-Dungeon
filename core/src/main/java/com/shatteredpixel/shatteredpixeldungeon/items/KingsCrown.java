@@ -22,6 +22,8 @@
 package com.shatteredpixel.shatteredpixeldungeon.items;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
@@ -30,18 +32,24 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.Ratmogrify
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClassArmor;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfExperience;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndChooseAbility;
 import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.Bundle;
+import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 
 public class KingsCrown extends Item {
+
+	public boolean random = true;
 	
 	private static final String AC_WEAR = "WEAR";
 	
@@ -102,6 +110,9 @@ public class KingsCrown extends Item {
 				GLog.p(Messages.get(this, "ratgraded"));
 			} else {
 				GLog.p(Messages.get(this, "upgraded"));
+				if (random && Dungeon.isChallenged(Challenges.RANDOMIZE)){
+					ability = Random.oneOf(curUser.heroClass.armorAbilities());
+				} else random = true;
 			}
 
 			ClassArmor classArmor = ClassArmor.upgrade(hero, armor);
@@ -126,4 +137,51 @@ public class KingsCrown extends Item {
 		Sample.INSTANCE.play( Assets.Sounds.MASTERY );
 	}
 
+	private static final ItemSprite.Glowing WHITE = new ItemSprite.Glowing( 0xFFFFFF );
+
+	@Override
+	public ItemSprite.Glowing glowing() {
+		return random ? null : WHITE;
+	}
+
+	private static final String RANDOM = "random";
+
+	@Override
+	public void storeInBundle( Bundle bundle ) {
+		super.storeInBundle( bundle );
+		bundle.put( RANDOM, random );
+	}
+
+	@Override
+	public void restoreFromBundle( Bundle bundle ) {
+		super.restoreFromBundle( bundle );
+		random = bundle.getBoolean(RANDOM);
+	}
+
+	public static class DestinyControl extends Recipe.SimpleRecipe {
+
+		private static final int OUT_QUANTITY = 1;
+
+		{
+			inputs =  new Class[]{KingsCrown.class, PotionOfExperience.class};
+			inQuantity = new int[]{1, 1};
+
+			cost = 0;
+
+			output = KingsCrown.class;
+			outQuantity = OUT_QUANTITY;
+		}
+
+		@Override
+		public boolean testIngredients (ArrayList<Item> ingredients){
+			return Dungeon.isChallenged(Challenges.RANDOMIZE) && super.testIngredients(ingredients);
+		}
+
+		@Override
+		public Item brew(ArrayList<Item> ingredients) {
+			KingsCrown crown = ((KingsCrown)super.brew(ingredients));
+			crown.random = false;
+			return crown;
+		}
+	}
 }

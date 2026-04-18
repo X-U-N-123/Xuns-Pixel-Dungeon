@@ -23,6 +23,8 @@ package com.shatteredpixel.shatteredpixeldungeon.items;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hypnosis;
@@ -35,19 +37,25 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfExperience;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ActionIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndChooseSubclass;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.particles.Emitter;
+import com.watabou.utils.Bundle;
+import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 
 public class TengusMask extends Item {
+
+	public boolean random = true;
 	
 	private static final String AC_WEAR	= "WEAR";
 	
@@ -98,6 +106,10 @@ public class TengusMask extends Item {
 	}
 	
 	public void choose( HeroSubClass way ) {
+
+		if (random && Dungeon.isChallenged(Challenges.RANDOMIZE)){
+			way = Random.oneOf(curUser.heroClass.subClasses());
+		} else random = true;
 		
 		detach( curUser.belongings.backpack );
 		Catalog.countUse( getClass() );
@@ -140,5 +152,53 @@ public class TengusMask extends Item {
 		e.start(Speck.factory(Speck.MASK), 0.05f, 20);
 		GLog.p( Messages.get(this, "used"));
 		
+	}
+
+	private static final ItemSprite.Glowing WHITE = new ItemSprite.Glowing( 0xFFFFFF );
+
+	@Override
+	public ItemSprite.Glowing glowing() {
+		return random ? null : WHITE;
+	}
+
+	private static final String RANDOM = "random";
+
+	@Override
+	public void storeInBundle( Bundle bundle ) {
+		super.storeInBundle( bundle );
+		bundle.put( RANDOM, random );
+	}
+
+	@Override
+	public void restoreFromBundle( Bundle bundle ) {
+		super.restoreFromBundle( bundle );
+		random = bundle.getBoolean(RANDOM);
+	}
+
+	public static class DestinyControl extends Recipe.SimpleRecipe {
+
+		private static final int OUT_QUANTITY = 1;
+
+		{
+			inputs =  new Class[]{TengusMask.class, PotionOfExperience.class};
+			inQuantity = new int[]{1, 1};
+
+			cost = 0;
+
+			output = TengusMask.class;
+			outQuantity = OUT_QUANTITY;
+		}
+
+		@Override
+		public boolean testIngredients (ArrayList<Item> ingredients){
+			return Dungeon.isChallenged(Challenges.RANDOMIZE) && super.testIngredients(ingredients);
+		}
+
+		@Override
+		public Item brew(ArrayList<Item> ingredients) {
+			TengusMask mask = ((TengusMask)super.brew(ingredients));
+			mask.random = false;
+			return mask;
+		}
 	}
 }

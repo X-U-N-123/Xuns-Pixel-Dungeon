@@ -21,10 +21,13 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
@@ -81,7 +84,8 @@ public class WndInfoTalent extends Window {
 					buttonCallback.call();
 				}
 			};
-			button.icon(Icons.get(Icons.TALENT));
+			if (Dungeon.isChallenged(Challenges.RANDOMIZE) && Statistics.destinyRemain <= 0) button.icon(new ItemSprite(0));
+			else                                                                          button.icon(Icons.get(Icons.TALENT));
 			button.setRect(0, txtInfo.bottom() + 2*GAP, width, 18);
 			add(button);
 			resize( width, (int)button.bottom()+1 );

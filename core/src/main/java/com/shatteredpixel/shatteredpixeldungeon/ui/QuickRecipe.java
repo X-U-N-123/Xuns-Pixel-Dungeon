@@ -29,8 +29,10 @@ import com.shatteredpixel.shatteredpixeldungeon.items.EmptyPot;
 import com.shatteredpixel.shatteredpixeldungeon.items.GemPowder;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.KingsCrown;
 import com.shatteredpixel.shatteredpixeldungeon.items.LiquidMetal;
 import com.shatteredpixel.shatteredpixeldungeon.items.Recipe;
+import com.shatteredpixel.shatteredpixeldungeon.items.TengusMask;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Blandfruit;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
@@ -385,8 +387,14 @@ public class QuickRecipe extends Component {
 				result.add(new QuickRecipe( new GemPowder.Recipe(),
 				new ArrayList<Item>(Arrays.asList(new Ring.PlaceHolder())),
 				new GemPowder()));
+
                 if (Dungeon.isChallenged(Challenges.NO_RETURN))
                     result.add(new QuickRecipe(new Support.Recipe()));
+
+				if (Dungeon.isChallenged(Challenges.RANDOMIZE)){
+					result.add(new QuickRecipe(new TengusMask.DestinyControl()));
+					result.add(new QuickRecipe(new KingsCrown.DestinyControl()));
+				}
 				return result;
 			case 7:
 				result.add(new QuickRecipe(new UnstableBrew.Recipe(), new ArrayList<>(Arrays.asList(new Potion.PlaceHolder(), new  Plant.Seed.PlaceHolder())), new UnstableBrew()));

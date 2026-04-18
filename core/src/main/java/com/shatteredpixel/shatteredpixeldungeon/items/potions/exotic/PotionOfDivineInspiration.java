@@ -22,7 +22,9 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
@@ -144,6 +146,8 @@ public class PotionOfDivineInspiration extends ExoticPotion {
 						}
 					}
 
+					//challenge effect
+					if (Dungeon.isChallenged(Challenges.RANDOMIZE)) Statistics.destinyRemain += 4;
 				}
 			}
 

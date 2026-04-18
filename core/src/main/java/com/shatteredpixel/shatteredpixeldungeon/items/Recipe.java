@@ -257,6 +257,8 @@ public abstract class Recipe {
 		new Corrosion.Recipe(),
 		new Uptier.Recipe(),
         new Support.Recipe(),
+		new TengusMask.DestinyControl(),
+		new KingsCrown.DestinyControl(),
 		new StewedMeat.twoMeat()
 	};
 	

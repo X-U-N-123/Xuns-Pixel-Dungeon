@@ -22,7 +22,9 @@
 package com.shatteredpixel.shatteredpixeldungeon.ui;
 
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.Ratmogrify;
@@ -32,6 +34,7 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.watabou.noosa.ColorBlock;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.ui.Component;
+import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -158,6 +161,8 @@ public class TalentsPane extends ScrollPane {
 
 		private int tier;
 
+		public static boolean upgradeFromOther = false;
+
 		public RenderedTextBlock title;
 		ArrayList<TalentButton> buttons;
 
@@ -179,7 +184,20 @@ public class TalentsPane extends ScrollPane {
 				TalentButton btn = new TalentButton(tier, talent, talents.get(talent), mode){
 					@Override
 					public void upgradeTalent() {
-						super.upgradeTalent();
+						if (Dungeon.isChallenged(Challenges.RANDOMIZE) && !upgradeFromOther){
+							if (Dungeon.hero.talentPointsAvailable(tier) > 0 && parent != null && Statistics.destinyRemain <= 0){
+								upgradeFromOther = true;
+								TalentButton toUpgrade;
+								do {
+									toUpgrade = buttons.get(Random.Int(buttons.size()));
+								} while (toUpgrade.pointsInTalent >= toUpgrade.talent.maxPoints());
+								toUpgrade.upgradeTalent();
+								upgradeFromOther = false;
+							} else {
+								super.upgradeTalent();
+								Statistics.destinyRemain--;
+							}
+						} else super.upgradeTalent();
 						if (parent != null) {
 							setupStars();
 							TalentTierPane.this.layout();

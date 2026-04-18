@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bless;
@@ -83,6 +84,9 @@ public class ElixirOfEnlightening extends Elixir {
             Sample.INSTANCE.playDelayed(Assets.Sounds.LEVELUP, 0.8f, 0.7f, 1.2f);
             new Flare( 6, 32 ).color(0xFFFF00, true).show( curUser.sprite, 2f );
             curUser.sprite.showStatusWithIcon(CharSprite.NEUTRAL, "4", FloatingText.TALENT);
+
+            //challenge effect
+            if (Dungeon.isChallenged(Challenges.RANDOMIZE)) Statistics.destinyRemain += 4;
         }
     }
 

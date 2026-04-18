@@ -36,6 +36,8 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
 
+import java.util.ArrayList;
+
 public class Support extends Spell {
 
     {
@@ -98,6 +100,11 @@ public class Support extends Spell {
 
             output = Support.class;
             outQuantity = OUT_QUANTITY;
+        }
+
+        @Override
+        public boolean testIngredients (ArrayList<Item> ingredients){
+            return Dungeon.isChallenged(Challenges.NO_RETURN) && super.testIngredients(ingredients);
         }
     }
 }
