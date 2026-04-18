@@ -583,4 +583,11 @@ public enum Icons {
 				return get(STAIRS_SECRETS);
 		}
 	}
+
+	public static Image getChalIcon(int challenge){
+
+		Image icon = new Image( Assets.Interfaces.ICONS );
+		icon.frame( icon.texture.uvRectBySize( challenge * 16, 144, 16, 16 ) );
+		return icon;
+	}
 }

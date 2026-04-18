@@ -25,7 +25,7 @@ import com.watabou.noosa.Image;
 
 public class BinaryIconButton extends IconButton {
 
-	protected boolean checked;
+	private boolean checked;
 	protected Image icon1;
 	protected Image icon2;
 
@@ -50,5 +50,9 @@ public class BinaryIconButton extends IconButton {
 	@Override
 	public Image icon(){
 		return checked ? icon1 : icon2;
+	}
+
+	public boolean checked(){
+		return checked;
 	}
 }

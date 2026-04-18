@@ -31,19 +31,19 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.IconButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
+import com.watabou.noosa.Image;
 
 import java.util.ArrayList;
 
 public class WndChallenges extends Window {
 
-	private static final int WIDTH        = 120;
-	private static final int WIDTH_HORIZON= 240;
+	private static final int WIDTH        = 100;
 	private static final int TTL_HEIGHT   = 16;
 	private static final int BTN_HEIGHT   = 16;
-	private static final int GAP          = 1;
+	private static final int GAP          = 2;
 
-	private boolean editable;
-	private ArrayList<CheckBox> boxes;
+	private final boolean editable;
+	private final ArrayList<CheckBox> boxes;
 
 	public WndChallenges( int checked, boolean editable ) {
 
@@ -53,40 +53,34 @@ public class WndChallenges extends Window {
 
 		RenderedTextBlock title = PixelScene.renderTextBlock( Messages.get(this, "title"), 12 );
 		title.hardlight( TITLE_COLOR );
-		if (PixelScene.landscape()) {
-			title.setPos(
-			(WIDTH_HORIZON - title.width()) / 2,
-			(TTL_HEIGHT - title.height()) / 2
-			);
-		} else {
-			title.setPos(
-			(WIDTH - title.width()) / 2,
-			(TTL_HEIGHT - title.height()) / 2
-			);
-		}
+
+		title.setPos((WIDTH - title.width()) / 2, (TTL_HEIGHT - title.height()) / 2);
+
 		PixelScene.align(title);
 		add( title );
 
 		boxes = new ArrayList<>();
 
-		float pos = TTL_HEIGHT;
-		int pos1 = 0;
+		float posY = TTL_HEIGHT;
 		for (int i=0; i < Challenges.NAME_IDS.length; i++) {
 
 			final String challenge = Challenges.NAME_IDS[i];
-			
-			CheckBox cb = new CheckBox( Messages.titleCase(Messages.get(Challenges.class, challenge)) );
+
+			Image icon = Icons.getChalIcon(i);
+			icon.x = (i % 2) * 50 + 1;
+			icon.y = (i / 2) * (BTN_HEIGHT + GAP) + title.bottom() + 3;
+			add( icon );
+
+			CheckBox cb = new CheckBox(""){
+				@Override
+				protected String hoverText() {
+					return Messages.titleCase(Messages.get(Challenges.class, challenge));
+				}
+			};
 			cb.checked( (checked & Challenges.MASKS[i]) != 0 );
 			cb.active = editable;
-			if (pos >= (BTN_HEIGHT+GAP) * Math.ceil(Challenges.NAME_IDS.length/2f) && PixelScene.landscape()){
-				pos = TTL_HEIGHT;
-				pos1 = WIDTH + GAP;
-			}
 
-			if (i > 0 && pos > TTL_HEIGHT) {
-				pos += GAP;
-			}
-			cb.setRect( pos1, pos, WIDTH-16, BTN_HEIGHT );
+			cb.setRect( (i % 2) * 50 + 18, (i / 2) * (BTN_HEIGHT + GAP) + title.bottom() + 3, 16, BTN_HEIGHT );
 
 			add( cb );
 			boxes.add( cb );
@@ -96,21 +90,22 @@ public class WndChallenges extends Window {
 				protected void onClick() {
 					super.onClick();
 					ShatteredPixelDungeon.scene().add(
-							new WndMessage(Messages.get(Challenges.class, challenge+"_desc"))
+							new WndMessage("**" + Messages.titleCase(Messages.get(Challenges.class, challenge)) + "**\n\n"
+									+ Messages.get(Challenges.class, challenge+"_desc"))
 					);
 				}
+
+				@Override
+				protected String hoverText() {
+					return Messages.titleCase(Messages.get(Challenges.class, challenge));
+				}
 			};
-			info.setRect(cb.right(), pos, 16, BTN_HEIGHT);
+			info.setRect(cb.right(), cb.top(), 16, BTN_HEIGHT);
 			add(info);
 			
-			pos = cb.bottom();
+			posY = cb.bottom();
 		}
-
-		if(Challenges.NAME_IDS.length % 2 != 0 && PixelScene.landscape()){
-			pos += BTN_HEIGHT;
-		}
-		if (PixelScene.landscape()) resize(WIDTH_HORIZON, (int)pos );
-		else                        resize( WIDTH, (int)pos );
+		resize( WIDTH, (int)posY + GAP );
 	}
 
 	@Override

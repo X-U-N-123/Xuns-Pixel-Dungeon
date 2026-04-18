@@ -65,8 +65,8 @@ import java.util.Locale;
 
 public class WndRanking extends WndTabbed {
 	
-	private static final int WIDTH			= 115;
-	private static final int HEIGHT			= 160;
+	private static final int WIDTH			= 120;
+	private static final int HEIGHT			= 144;
 	
 	private static WndRanking INSTANCE;
 	
@@ -290,7 +290,7 @@ public class WndRanking extends WndTabbed {
 					icon.hardlight(1f, 1.5f, 0.67f);
 				}
 				btnSeed.icon(icon);
-				btnSeed.setRect(0, buttontop, 115, 16);
+				btnSeed.setRect(0, buttontop, WIDTH, 16);
 				add(btnSeed);
 			}
 
@@ -298,12 +298,22 @@ public class WndRanking extends WndTabbed {
 		
 		private float statSlot( Group parent, String label, String value, float pos ) {
 			
-			RenderedTextBlock txt = PixelScene.renderTextBlock( label, 7 );
-			txt.setPos(0, pos);
+			int size = 7;
+			RenderedTextBlock txt;
+			do {
+				txt = PixelScene.renderTextBlock( label, size );
+				size--;
+			} while (txt.width() >= WIDTH * 0.55f);
+			txt.setPos(0, pos + (6 - txt.height())/2);
+			PixelScene.align(txt);
 			parent.add( txt );
 			
-			txt = PixelScene.renderTextBlock( value, 7 );
-			txt.setPos(WIDTH * 0.6f, pos);
+			size = 7;
+			do {
+				txt = PixelScene.renderTextBlock( value, size );
+				size--;
+			} while (txt.width() >= WIDTH * 0.45f);
+			txt.setPos(WIDTH * 0.55f, pos + (6 - txt.height())/2);
 			PixelScene.align(txt);
 			parent.add( txt );
 			
@@ -386,7 +396,7 @@ public class WndRanking extends WndTabbed {
 				if (item != null){
 					QuickSlotButton slot = new QuickSlotButton(item);
 
-					slot.setRect( pos, 136, slotWidth, 23 );
+					slot.setRect( pos, 120, slotWidth, 23 );
 					PixelScene.align(slot);
 
 					add(slot);
@@ -431,20 +441,20 @@ public class WndRanking extends WndTabbed {
 
 			camera = WndRanking.this.camera;
 
-			float pos = 0;
-
 			for (int i=0; i < Challenges.NAME_IDS.length; i++) {
 
 				final String challenge = Challenges.NAME_IDS[i];
 
-				CheckBox cb = new CheckBox( Messages.titleCase(Messages.get(Challenges.class, challenge)) );
+				Image icon = Icons.getChalIcon(i);
+				icon.x = (i % 2) * 60 + 3;
+				icon.y = (i / 2) * 18;
+				add( icon );
+
+				CheckBox cb = new CheckBox(""){};
 				cb.checked( (Dungeon.challenges & Challenges.MASKS[i]) != 0 );
 				cb.active = false;
 
-				if (i > 0) {
-					pos += 1;
-				}
-				cb.setRect( 0, pos, WIDTH-16, 15 );
+				cb.setRect( (i % 2) * 60 + 23, (i / 2) * 18, 16, 16 );
 
 				add( cb );
 
@@ -453,14 +463,18 @@ public class WndRanking extends WndTabbed {
 					protected void onClick() {
 						super.onClick();
 						ShatteredPixelDungeon.scene().add(
-								new WndMessage(Messages.get(Challenges.class, challenge+"_desc"))
+								new WndMessage("**" + Messages.titleCase(Messages.get(Challenges.class, challenge)) + "**\n\n"
+										+ Messages.get(Challenges.class, challenge+"_desc"))
 						);
 					}
-				};
-				info.setRect(cb.right(), pos, 16, 15);
-				add(info);
 
-				pos = cb.bottom();
+					@Override
+					protected String hoverText() {
+						return Messages.titleCase(Messages.get(Challenges.class, challenge));
+					}
+				};
+				info.setRect(cb.right() + 2, cb.top(), 16, 16);
+				add(info);
 			}
 		}
 

@@ -27,6 +27,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Belongings;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Transmuting;
+import com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal;
 import com.shatteredpixel.shatteredpixeldungeon.items.EquipableItem;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
@@ -89,6 +90,11 @@ public class Uptier extends InventorySpell {
             ((Armor) result).masteryPotionBonus = ((Armor) item).masteryPotionBonus;
             ((Armor) result).augment = ((Armor) item).augment;
             ((Armor) result).glyphHardened = ((Armor) item).glyphHardened;
+            BrokenSeal seal = ((Armor) item).checkSeal();
+            if (seal != null) {
+                ((Armor) result).affixSeal(seal);
+                if (seal.level() > 0) result.degrade();
+            }
 
         } else if (item instanceof Weapon) {//change weapon
 

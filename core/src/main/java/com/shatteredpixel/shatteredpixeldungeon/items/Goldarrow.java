@@ -194,7 +194,7 @@ public class Goldarrow extends Item {
 				@Override
 				protected void onClick() {
 					super.onClick();
-					propList[0] = checked;
+					propList[0] = checked();
 				}
 
 				@Override
@@ -204,7 +204,7 @@ public class Goldarrow extends Item {
 
 				@Override
 				protected String hoverText() {
-					return checked ?
+					return checked() ?
 						Messages.get(TargetWindow.class, "stop_target")
 					  : Messages.get(TargetWindow.class, "cross_target");
 				}
@@ -216,7 +216,7 @@ public class Goldarrow extends Item {
 				@Override
 				protected void onClick() {
 					super.onClick();
-					propList[1] = checked;
+					propList[1] = checked();
 				}
 
 				@Override
@@ -226,7 +226,7 @@ public class Goldarrow extends Item {
 
 				@Override
 				protected String hoverText() {
-					return checked ?
+					return checked() ?
 						Messages.get(TargetWindow.class, "stop_chars")
 					  : Messages.get(TargetWindow.class, "cross_chars");
 				}
@@ -238,7 +238,7 @@ public class Goldarrow extends Item {
 				@Override
 				protected void onClick() {
 					super.onClick();
-					propList[2] = checked;
+					propList[2] = checked();
 				}
 
 				@Override
@@ -248,7 +248,7 @@ public class Goldarrow extends Item {
 
 				@Override
 				protected String hoverText() {
-					return checked ?
+					return checked() ?
 						Messages.get(TargetWindow.class, "stop_solid")
 					  : Messages.get(TargetWindow.class, "cross_solid");
 				}
@@ -260,7 +260,7 @@ public class Goldarrow extends Item {
 				@Override
 				protected void onClick() {
 					super.onClick();
-					propList[3] = checked;
+					propList[3] = checked();
 				}
 
 				@Override
@@ -270,7 +270,7 @@ public class Goldarrow extends Item {
 
 				@Override
 				protected String hoverText() {
-					return checked ?
+					return checked() ?
 						Messages.get(TargetWindow.class, "ignore_soft_solid")
 					  : Messages.get(TargetWindow.class, "stop_soft_solid");
 				}

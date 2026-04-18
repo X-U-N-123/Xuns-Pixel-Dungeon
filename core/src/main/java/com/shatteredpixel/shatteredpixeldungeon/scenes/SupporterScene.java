@@ -124,7 +124,7 @@ public class SupporterScene extends PixelScene {
 			if (Messages.lang() != Languages.CHI_SMPL) {
 				message += "\n" + Messages.get(SupporterScene.class, "patreon_english");
 			}
-			message += "\n\n-迅";
+			message += "\n\n-**迅**";
 
 			text = PixelScene.renderTextBlock(message, 6);
 			add(text);
@@ -143,7 +143,7 @@ public class SupporterScene extends PixelScene {
 			text.setPos(x + bg.marginLeft(), y + bg.marginTop() + 1);
 
 			icon.y = text.bottom() - icon.height() + 4;
-			icon.x = x + 25;
+			icon.x = x + 18;
 
 			height = (text.bottom() + 3) - y;
 
