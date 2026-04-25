@@ -213,6 +213,10 @@ public class ItemSpriteSheet {
 	public static final int NOISEMAKER      = BOMBS+9;
 	public static final int ARCANE_BOMB     = BOMBS+10;
 	public static final int SHRAPNEL_BOMB   = BOMBS+11;
+	public static final int WARP_BOMB       = BOMBS+12;
+	public static final int ADRENALINE_BOMB = BOMBS+13;
+	public static final int CYLINDER        = BOMBS+14;
+	public static final int PHANTOM_BOMB    = BOMBS+15;
 	
 	static{
 		assignItemRect(BOMB,            10, 13);
@@ -227,6 +231,10 @@ public class ItemSpriteSheet {
 		assignItemRect(NOISEMAKER,      10, 13);
 		assignItemRect(ARCANE_BOMB,     10, 13);
 		assignItemRect(SHRAPNEL_BOMB,   10, 13);
+		assignItemRect(WARP_BOMB,       10, 13);
+		assignItemRect(ADRENALINE_BOMB, 10, 13);
+		assignItemRect(CYLINDER,        13, 12);
+		assignItemRect(PHANTOM_BOMB,    13, 12);
 	}
 
 	private static final int WEP_TIER1      = xy(1, 5);//16 slots

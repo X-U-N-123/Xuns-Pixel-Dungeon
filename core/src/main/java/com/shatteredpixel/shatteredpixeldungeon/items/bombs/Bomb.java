@@ -26,6 +26,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.Explosion;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
@@ -37,6 +38,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Recipe;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfFrost;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLiquidFlame;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfMindVision;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfParalyticGas;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfToxicGas;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.GooBlob;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.MetalShard;
@@ -44,6 +47,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMirrorImag
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRage;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRecharging;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRemoveCurse;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTerror;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -75,7 +80,7 @@ public class Bomb extends Item {
 	public Fuse fuse;
 
 	//FIXME using a static variable for this is kinda gross, should be a better way
-	private static boolean lightingFuse = false;
+	protected static boolean lightingFuse = false;
 
 	private static final String AC_LIGHTTHROW = "LIGHTTHROW";
 
@@ -181,6 +186,11 @@ public class Bomb extends Item {
 				Heap heap = Dungeon.level.heaps.get(i);
 				if (heap != null) {
 					heap.explode();
+				}
+
+				Blob gas = Dungeon.level.blobs.get(Cylinder.Hydrogen.class);
+				if (gas != null && gas.volume > 0 && gas.cur[i] > 0){
+					((Cylinder.Hydrogen)gas).explode(i);
 				}
 			}
 			
@@ -354,10 +364,14 @@ public class Bomb extends Item {
 			validIngredients.put(ScrollOfRage.class,            Noisemaker.class);
 			
 			validIngredients.put(PotionOfToxicGas.class,        StenchBomb.class);
+			validIngredients.put(PotionOfMindVision.class,      PhantomBomb.class);
 			validIngredients.put(ScrollOfRecharging.class,      FlashBangBomb.class);
+			validIngredients.put(ScrollOfTeleportation.class,   WarpBomb.class);
 			
 			validIngredients.put(PotionOfHealing.class,         RegrowthBomb.class);
+			validIngredients.put(PotionOfParalyticGas.class,    Cylinder.class);
 			validIngredients.put(ScrollOfRemoveCurse.class,     HolyBomb.class);
+			validIngredients.put(ScrollOfTerror.class,          AdrenalineBomb.class);
 			
 			validIngredients.put(GooBlob.class,                 ArcaneBomb.class);
 			validIngredients.put(MetalShard.class,              ShrapnelBomb.class);
@@ -372,10 +386,14 @@ public class Bomb extends Item {
 			bombCosts.put(Noisemaker.class,     1);
 			
 			bombCosts.put(StenchBomb.class,     2);
+			bombCosts.put(PhantomBomb.class,    2);
 			bombCosts.put(FlashBangBomb.class,  2);
+			bombCosts.put(WarpBomb.class,       2);
 
 			bombCosts.put(RegrowthBomb.class,   3);
+			bombCosts.put(Cylinder.class,       3);
 			bombCosts.put(HolyBomb.class,       3);
+			bombCosts.put(AdrenalineBomb.class, 3);
 			
 			bombCosts.put(ArcaneBomb.class,     6);
 			bombCosts.put(ShrapnelBomb.class,   6);
