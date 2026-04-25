@@ -49,7 +49,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.bags.VelvetPouch;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.AdrenalineBomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.ArcaneBomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
-import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Cylinder;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Firebomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.FlashBangBomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.FrostBomb;
@@ -59,6 +58,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.bombs.PhantomBomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.RegrowthBomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.ShrapnelBomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.StenchBomb;
+import com.shatteredpixel.shatteredpixeldungeon.items.bombs.TimeBomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.WarpBomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.WoollyBomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Berry;
@@ -272,7 +272,7 @@ public enum Catalog {
 		EXOTIC_SCROLLS.addItems(ExoticScroll.exoToReg.keySet().toArray(new Class[0]));
 
 		BOMBS.addItems( Bomb.class,
-				FrostBomb.class, Firebomb.class, StenchBomb.class, PhantomBomb.class, RegrowthBomb.class, Cylinder.class,
+				FrostBomb.class, Firebomb.class, StenchBomb.class, PhantomBomb.class, RegrowthBomb.class, TimeBomb.class,
 				WoollyBomb.class, Noisemaker.class, FlashBangBomb.class, WarpBomb.class, HolyBomb.class, AdrenalineBomb.class,
 				ArcaneBomb.class, ShrapnelBomb.class);
 

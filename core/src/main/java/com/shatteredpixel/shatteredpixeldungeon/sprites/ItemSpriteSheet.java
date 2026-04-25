@@ -215,7 +215,7 @@ public class ItemSpriteSheet {
 	public static final int SHRAPNEL_BOMB   = BOMBS+11;
 	public static final int WARP_BOMB       = BOMBS+12;
 	public static final int ADRENALINE_BOMB = BOMBS+13;
-	public static final int CYLINDER        = BOMBS+14;
+	public static final int TIMEBOMB        = BOMBS+14;
 	public static final int PHANTOM_BOMB    = BOMBS+15;
 	
 	static{
@@ -233,7 +233,7 @@ public class ItemSpriteSheet {
 		assignItemRect(SHRAPNEL_BOMB,   10, 13);
 		assignItemRect(WARP_BOMB,       10, 13);
 		assignItemRect(ADRENALINE_BOMB, 10, 13);
-		assignItemRect(CYLINDER,        13, 12);
+		assignItemRect(TIMEBOMB,        13, 12);
 		assignItemRect(PHANTOM_BOMB,    13, 12);
 	}
 

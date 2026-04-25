@@ -66,15 +66,15 @@ public class WandOfAvalanche extends DamageWand {
 		return (2+lvl) * chargesPerCast();
 	}
 
-	//8/18/40 base damage with 4/8/12 scaling based on charges used
+	//6/14/30 base damage with 4/8/12 scaling based on charges used
 	public int max(int lvl){
 		switch (chargesPerCast()){
 			case 1: default:
-				return 8 + (3*lvl);
+				return 6 + (3*lvl);
 			case 2:
-				return 18 + (6*lvl);
+				return 14 + (6*lvl);
 			case 3:
-				return 38 + (9*lvl);
+				return 30 + (9*lvl);
 		}
 	}
 
@@ -108,7 +108,7 @@ public class WandOfAvalanche extends DamageWand {
 
 			ch.damage(dmg, this);
 			if (ch.isAlive()) {
-				Buff.affect(ch, Daze.class, 6f);
+				Buff.affect(ch, Daze.class, 5f);
 				switch (chargesPerCast()) {
 					case 1: break;//do nothing
 					case 2:

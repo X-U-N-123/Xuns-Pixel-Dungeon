@@ -26,7 +26,6 @@ import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.Explosion;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
@@ -186,11 +185,6 @@ public class Bomb extends Item {
 				Heap heap = Dungeon.level.heaps.get(i);
 				if (heap != null) {
 					heap.explode();
-				}
-
-				Blob gas = Dungeon.level.blobs.get(Cylinder.Hydrogen.class);
-				if (gas != null && gas.volume > 0 && gas.cur[i] > 0){
-					((Cylinder.Hydrogen)gas).explode(i);
 				}
 			}
 			
@@ -369,7 +363,7 @@ public class Bomb extends Item {
 			validIngredients.put(ScrollOfTeleportation.class,   WarpBomb.class);
 			
 			validIngredients.put(PotionOfHealing.class,         RegrowthBomb.class);
-			validIngredients.put(PotionOfParalyticGas.class,    Cylinder.class);
+			validIngredients.put(PotionOfParalyticGas.class,    TimeBomb.class);
 			validIngredients.put(ScrollOfRemoveCurse.class,     HolyBomb.class);
 			validIngredients.put(ScrollOfTerror.class,          AdrenalineBomb.class);
 			
@@ -391,7 +385,7 @@ public class Bomb extends Item {
 			bombCosts.put(WarpBomb.class,       2);
 
 			bombCosts.put(RegrowthBomb.class,   3);
-			bombCosts.put(Cylinder.class,       3);
+			bombCosts.put(TimeBomb.class,       3);
 			bombCosts.put(HolyBomb.class,       3);
 			bombCosts.put(AdrenalineBomb.class, 3);
 			

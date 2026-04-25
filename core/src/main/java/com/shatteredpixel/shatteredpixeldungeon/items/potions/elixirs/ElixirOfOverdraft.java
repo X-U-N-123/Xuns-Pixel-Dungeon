@@ -46,7 +46,7 @@ public class ElixirOfOverdraft extends Elixir {
 	@Override
 	public void apply(Hero hero) {
 		Buff.affect(hero, OverdraftTracker.class, 0f);
-		hero.spendConstant(-8f);
+		hero.spendConstant(-10f);
 		Sample.INSTANCE.play(Assets.Sounds.CHARGEUP);
 	}
 
@@ -60,9 +60,19 @@ public class ElixirOfOverdraft extends Elixir {
 			splash( cell );
 
 			Buff.affect(ch, OverdraftTracker.class, 0f);
-			ch.spendConstant(-8f);
+			ch.spendConstant(-10f);
 			Sample.INSTANCE.play(Assets.Sounds.CHARGEUP);
 		}
+	}
+
+	@Override
+	public int value() {
+		return 120 * quantity;
+	}
+
+	@Override
+	public int energyVal() {
+		return 23 * quantity;
 	}
 	
 	public static class Recipe extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe.SimpleRecipe {
@@ -71,7 +81,7 @@ public class ElixirOfOverdraft extends Elixir {
 			inputs =  new Class[]{PotionOfHaste.class, GooBlob.class};
 			inQuantity = new int[]{1, 1};
 			
-			cost = 16;
+			cost = 14;
 			
 			output = ElixirOfOverdraft.class;
 			outQuantity = 1;
@@ -89,7 +99,7 @@ public class ElixirOfOverdraft extends Elixir {
 		@Override
 		public void detach(){
 			super.detach();
-			Buff.affect(target, Slow.class, 14f);
+			Buff.affect(target, Slow.class, 15f);
 			Sample.INSTANCE.play(Assets.Sounds.DEGRADE);
 		}
 	}

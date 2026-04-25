@@ -90,13 +90,23 @@ public class ElixirOfEnlightening extends Elixir {
         }
     }
 
+    @Override
+    public int value() {
+        return 150 * quantity;
+    }
+
+    @Override
+    public int energyVal() {
+        return 28 * quantity;
+    }
+
     public static class Recipe extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe.SimpleRecipe {
 
         {
             inputs =  new Class[]{PotionOfDivineInspiration.class};
             inQuantity = new int[]{1};
 
-            cost = 12;
+            cost = 14;
 
             output = ElixirOfEnlightening.class;
             outQuantity = 1;

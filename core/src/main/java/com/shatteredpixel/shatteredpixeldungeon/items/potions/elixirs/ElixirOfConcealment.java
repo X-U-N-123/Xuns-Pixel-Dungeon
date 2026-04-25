@@ -50,7 +50,7 @@ public class ElixirOfConcealment extends Elixir {
 
 	@Override
 	public int energyVal() {
-		return (int)(16 * (quantity/(float) Recipe.OUT_QUANTITY));
+		return (int)(14 * (quantity/(float) Recipe.OUT_QUANTITY));
 	}
 
 	public static class Recipe extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe.SimpleRecipe {
@@ -61,7 +61,7 @@ public class ElixirOfConcealment extends Elixir {
 			inputs =  new Class[]{PotionOfInvisibility.class};
 			inQuantity = new int[]{1};
 
-			cost = 10;
+			cost = 8;
 
 			output = ElixirOfConcealment.class;
 			outQuantity = OUT_QUANTITY;
