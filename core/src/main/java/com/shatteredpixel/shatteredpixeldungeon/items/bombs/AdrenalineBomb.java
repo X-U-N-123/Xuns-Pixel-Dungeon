@@ -26,9 +26,10 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Adrenaline;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bless;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hex;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Weakness;
-import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.BArray;
@@ -41,26 +42,36 @@ public class AdrenalineBomb extends Bomb {
 	}
 
 	@Override
+	public boolean explodesDestructively() {
+		return false;
+	}
+
+	@Override
 	protected int explosionRange() {
-		return 2;
+		return 3;
 	}
 
 	@Override
 	public void explode(int cell) {
+		super.explode(cell);
+
 		PathFinder.buildDistanceMap( cell, BArray.not( Dungeon.level.solid, null ), explosionRange() );
 		for (int i = 0; i < PathFinder.distance.length; i++) {
 			if (PathFinder.distance[i] < Integer.MAX_VALUE) {
 				Char ch = Actor.findChar(i);
 				if (ch != null){
-					if (ch.alignment == Dungeon.hero.alignment) Buff.affect(ch, Adrenaline.class, 24.5f);
-					//effectively 20 turns of adrenaline
-					else                                        Buff.affect(ch, Weakness.class, 25f);
+					if (ch.alignment == Dungeon.hero.alignment) {
+						Buff.affect(ch, Adrenaline.class,24.5f); //effectively 25 turns of adrenaline
+						Buff.affect(ch, Bless.class,     25f);
+					} else {
+						Buff.affect(ch, Weakness.class,  25f);
+						Buff.affect(ch, Hex.class,       25f);
+					}
 				}
 			}
 		}
 
-		new Flare( 5, 32 ).color( 0xFF0000, true ).show( curUser.sprite, 2f );
-		Sample.INSTANCE.play( Assets.Sounds.READ );
+		Sample.INSTANCE.play( Assets.Sounds.CHALLENGE );
 	}
 
 	@Override

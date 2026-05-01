@@ -862,6 +862,10 @@ public class Hero extends Char {
 		|| Dungeon.level.map[pos] == Terrain.HIGH_GRASS
 		|| Dungeon.level.map[pos] == Terrain.FURROWED_GRASS)) {
 			speed *= 1.15f;
+
+			if (sprite != null){
+				sprite.emitter().start(Speck.factory(Speck.GREEN_LIGHT), 0.02f, 2);
+			}
 		}
 
 		if (hasTalent(Talent.SWIFT_COURIER)){

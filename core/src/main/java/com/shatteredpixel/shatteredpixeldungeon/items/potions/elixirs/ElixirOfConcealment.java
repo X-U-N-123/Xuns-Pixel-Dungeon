@@ -22,11 +22,16 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.Statistics;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfInvisibility;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
 
@@ -38,9 +43,27 @@ public class ElixirOfConcealment extends Elixir {
 
 	@Override
 	public void apply(Hero hero) {
-		Statistics.concealment ++;
+		Buff.affect(hero, Conceal.class, Conceal.DURATION);
+
 		Sample.INSTANCE.play(Assets.Sounds.MELD, 0.6f);
 		GLog.p(Messages.get(this, "conceal"));
+	}
+
+	@Override
+	public void shatter(int cell) {
+		Char ch = Actor.findChar(cell);
+
+		if (ch == null){
+			super.shatter(cell);
+		} else {
+			splash( cell );
+			if (Dungeon.level.heroFOV[cell]) {
+				Sample.INSTANCE.play(Assets.Sounds.SHATTER);
+			}
+
+			if (ch instanceof Hero) apply((Hero) ch);
+			else                    Buff.affect(ch, Conceal.class, Conceal.DURATION);
+		}
 	}
 
 	@Override
@@ -67,5 +90,23 @@ public class ElixirOfConcealment extends Elixir {
 			outQuantity = OUT_QUANTITY;
 		}
 
+	}
+
+	public static class Conceal extends FlavourBuff {
+		{
+			type = buffType.POSITIVE;
+		}
+
+		public static final float DURATION	= 50f;
+
+		@Override
+		public int icon() {
+			return BuffIndicator.IMBUE;
+		}
+
+		@Override
+		public float iconFadePercent() {
+			return Math.max(0, (DURATION - visualcooldown()) / DURATION);
+		}
 	}
 }

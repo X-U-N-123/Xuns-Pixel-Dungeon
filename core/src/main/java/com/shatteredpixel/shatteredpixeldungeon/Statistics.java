@@ -40,7 +40,6 @@ public class Statistics {
 	public static int ankhsUsed;
 	public static int enlighteningDrunk;
 	public static int elixirManaDrunk;
-	public static int concealment;
 	public static int conRechargeUsed;
 	public static int conEnergyUsed;
 	public static boolean corrosionUsed;
@@ -97,7 +96,6 @@ public class Statistics {
 		corrosionUsed   = false;
 		wellWaterDug    = 0;
 		elixirManaDrunk = 0;
-		concealment     = 0;
 		conRechargeUsed = 0;
 		conEnergyUsed   = 0;
 		destinyRemain   = 0;
@@ -145,7 +143,6 @@ public class Statistics {
 	private static final String ANKHS		= "ankhsUsed";
     private static final String ENLIGHTENING= "enlighteningUsed";
 	private static final String MANA        = "elixirManaUsed";
-	private static final String CONCEALMENT = "elixirConcealmentUsed";
 	private static final String CONRECHARGE = "conRechargeUsed";
 	private static final String CONENERGY   = "conEnergyUsed";
 	private static final String CORROSION   = "corrosionUsed";
@@ -195,7 +192,6 @@ public class Statistics {
 		bundle.put( ANKHS,		ankhsUsed );
 		bundle.put( ENLIGHTENING, enlighteningDrunk);
 		bundle.put( MANA, elixirManaDrunk);
-		bundle.put( CONCEALMENT, concealment);
 		bundle.put( CONRECHARGE, conRechargeUsed );
 		bundle.put( CONENERGY, conEnergyUsed );
 		bundle.put( CORROSION, corrosionUsed);
@@ -249,7 +245,6 @@ public class Statistics {
 		ankhsUsed		= bundle.getInt( ANKHS );
 		enlighteningDrunk= bundle.getInt( ENLIGHTENING );
 		elixirManaDrunk = bundle.getInt( MANA );
-		concealment     = bundle.getInt( CONCEALMENT );
 		conRechargeUsed = bundle.getInt( CONRECHARGE );
 		conEnergyUsed = bundle.getInt( CONENERGY );
 		corrosionUsed   = bundle.getBoolean( CORROSION );

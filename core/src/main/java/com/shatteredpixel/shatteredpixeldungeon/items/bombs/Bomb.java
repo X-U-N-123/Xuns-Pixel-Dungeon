@@ -356,16 +356,16 @@ public class Bomb extends Item {
 			
 			validIngredients.put(PotionOfLiquidFlame.class,     Firebomb.class);
 			validIngredients.put(ScrollOfRage.class,            Noisemaker.class);
-			
+
+			validIngredients.put(ScrollOfTerror.class,          AdrenalineBomb.class);
 			validIngredients.put(PotionOfToxicGas.class,        StenchBomb.class);
-			validIngredients.put(PotionOfMindVision.class,      PhantomBomb.class);
 			validIngredients.put(ScrollOfRecharging.class,      FlashBangBomb.class);
 			validIngredients.put(ScrollOfTeleportation.class,   WarpBomb.class);
-			
+
+			validIngredients.put(PotionOfMindVision.class,      PhantomBomb.class);
 			validIngredients.put(PotionOfHealing.class,         RegrowthBomb.class);
-			validIngredients.put(PotionOfParalyticGas.class,    TimeBomb.class);
 			validIngredients.put(ScrollOfRemoveCurse.class,     HolyBomb.class);
-			validIngredients.put(ScrollOfTerror.class,          AdrenalineBomb.class);
+			validIngredients.put(PotionOfParalyticGas.class,    TimeBomb.class);
 			
 			validIngredients.put(GooBlob.class,                 ArcaneBomb.class);
 			validIngredients.put(MetalShard.class,              ShrapnelBomb.class);
@@ -378,16 +378,17 @@ public class Bomb extends Item {
 			
 			bombCosts.put(Firebomb.class,       1);
 			bombCosts.put(Noisemaker.class,     1);
-			
+
+			bombCosts.put(AdrenalineBomb.class, 2);
 			bombCosts.put(StenchBomb.class,     2);
-			bombCosts.put(PhantomBomb.class,    2);
 			bombCosts.put(FlashBangBomb.class,  2);
 			bombCosts.put(WarpBomb.class,       2);
 
 			bombCosts.put(RegrowthBomb.class,   3);
-			bombCosts.put(TimeBomb.class,       3);
 			bombCosts.put(HolyBomb.class,       3);
-			bombCosts.put(AdrenalineBomb.class, 3);
+
+			bombCosts.put(TimeBomb.class,       4);
+			bombCosts.put(PhantomBomb.class,    4);
 			
 			bombCosts.put(ArcaneBomb.class,     6);
 			bombCosts.put(ShrapnelBomb.class,   6);

@@ -36,6 +36,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.huntress.NaturesPower;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
+import com.shatteredpixel.shatteredpixeldungeon.effects.SpellSprite;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Splash;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.LeafParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
@@ -195,20 +196,17 @@ public class SpiritBow extends Weapon {
 		if ((Dungeon.level.map[defender.pos] == Terrain.FURROWED_GRASS
 			|| Dungeon.level.map[defender.pos] == Terrain.GRASS
 			|| Dungeon.level.map[defender.pos] ==Terrain.HIGH_GRASS)
-			&& attacker.buff(IvybindCooldown.class) == null
-			&& Dungeon.hero.hasTalent(Talent.IVY_BIND)
+			&& attacker.buff(IvybindCooldown.class) == null && Dungeon.hero.hasTalent(Talent.IVY_BIND)
 			&& !defender.isFlying()
-            && !defender.properties().contains(Char.Property.IMMOVABLE)
-            && !defender.properties().contains(Char.Property.STATIC)) {
+            && !defender.properties().contains(Char.Property.IMMOVABLE) && !defender.properties().contains(Char.Property.STATIC)) {
 			Buff.affect(defender, Roots.class, 1 + 2*Dungeon.hero.pointsInTalent(Talent.IVY_BIND));
-			Sample.INSTANCE.play(Assets.Sounds.PLANT);
 			Buff.affect(attacker, IvybindCooldown.class, 40);
 		}
 
-		if ((Dungeon.level.map[attacker.pos] == Terrain.FURROWED_GRASS
-		|| Dungeon.level.map[attacker.pos] ==Terrain.HIGH_GRASS)
-		&& Random.Float() <= 0.25f * (Dungeon.hero.pointsInTalent(Talent.JUNGLE_GUERRILLA)-1)) {
-			Buff.affect(attacker, GreaterHaste.class).set((int)Math.ceil(delayFactor(curUser))+1);
+		if ((Dungeon.level.map[attacker.pos] == Terrain.FURROWED_GRASS || Dungeon.level.map[attacker.pos] ==Terrain.HIGH_GRASS)
+		&& Random.Float() <= 0.25f * ( Dungeon.hero.pointsInTalent(Talent.JUNGLE_GUERRILLA)-1 )) {
+			Buff.affect(attacker, GreaterHaste.class).set( (int)Math.ceil( delayFactor(curUser) )+1 );
+			SpellSprite.show(attacker, SpellSprite.HASTE, 1, 0.8f, 0);
 		}
 
 		if (Dungeon.hero.hasTalent(Talent.RESONANCE_FETCH) && !sniperSpecial

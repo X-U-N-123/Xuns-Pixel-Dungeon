@@ -73,7 +73,7 @@ public class Speck extends Image {
 	public static final int BLIZZARD    = 119;
 	public static final int YELLOW_LIGHT= 120;
 	public static final int BLUE_LIGHT  = 121;
-	public static final int HYDROGEN    = 122;
+	public static final int GREEN_LIGHT = 122;
 
 	private static final int SIZE = 7;
 	
@@ -121,6 +121,7 @@ public class Speck extends Image {
 		case RED_LIGHT:
 		case YELLOW_LIGHT:
 		case BLUE_LIGHT:
+		case GREEN_LIGHT:
 			frame( film.get( LIGHT ) );
 			break;
 		case EVOKE:
@@ -143,7 +144,6 @@ public class Speck extends Image {
 		case SMOKE:
 		case BLIZZARD:
 		case INFERNO:
-		case HYDROGEN:
 			frame( film.get( STEAM ) );
 			break;
 		case CALM:
@@ -231,6 +231,13 @@ public class Speck extends Image {
 
 		case BLUE_LIGHT:
 			tint(0xFF00CCFF);
+			angle = Random.Float( 360 );
+			angularSpeed = 90;
+			lifespan = 1f;
+			break;
+
+		case GREEN_LIGHT:
+			tint(0xFF00FF00);
 			angle = Random.Float( 360 );
 			angularSpeed = 90;
 			lifespan = 1f;
@@ -414,14 +421,6 @@ public class Speck extends Image {
 			angle = Random.Float( 360 );
 			lifespan = Random.Float( 0.4f, 0.6f );
 			break;
-
-		case HYDROGEN:
-			hardlight( 0x006600 );
-			angularSpeed = Random.Int(1) == 0 ? 240 : -240;
-			angle = Random.Float( 360 );
-			lifespan = Random.Float( 1f, 3f );
-			alpha(0.6f);
-			break;
 		}
 
 		
@@ -463,6 +462,7 @@ public class Speck extends Image {
 			case RED_LIGHT:
 			case YELLOW_LIGHT:
 			case BLUE_LIGHT:
+			case GREEN_LIGHT:
 			case LIGHT:
 				am = scale.set( p < 0.2f ? p * 5f : (1 - p) * 1.25f ).x;
 				break;
@@ -528,7 +528,6 @@ public class Speck extends Image {
 			case INFERNO:
 			case DUST:
 			case PAGES:
-			case HYDROGEN:
 				am = (float)Math.sqrt( (p < 0.5f ? p : 1 - p) * 0.5f );
 				scale.set( 1 + p );
 				break;

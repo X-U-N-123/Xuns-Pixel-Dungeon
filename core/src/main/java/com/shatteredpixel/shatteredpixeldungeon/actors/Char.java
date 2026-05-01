@@ -27,7 +27,6 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Electricity;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.StormCloud;
@@ -142,6 +141,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ElementalMask;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.items.devShield;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.HeatBrew;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfConcealment;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfCleansing;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Pickaxe;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfElements;
@@ -1494,10 +1494,9 @@ public abstract class Char extends Actor {
 	public float stealth() {
 		float stealth = Obfuscation.stealthBoost(this, glyphLevel(Obfuscation.class));
 
-		if (this instanceof Hero){
-			stealth += Statistics.concealment;
-			if (((Hero) this).subClass == HeroSubClass.INCUBUS) stealth += 2;
-		}
+		if (this instanceof Hero && ((Hero) this).subClass == HeroSubClass.INCUBUS) stealth += 2;
+
+		if (buff(ElixirOfConcealment.Conceal.class) != null) stealth += 4;
 
 		return stealth;
 	}
