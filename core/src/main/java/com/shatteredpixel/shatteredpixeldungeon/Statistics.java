@@ -44,7 +44,6 @@ public class Statistics {
 	public static int conEnergyUsed;
 	public static boolean corrosionUsed;
 	public static int wellWaterDug;
-	public static int destinyRemain;
 	//tracks every item type 'seen' this run (i.e. would be added to catalogs)
 	public static HashSet<Class> itemTypesDiscovered = new HashSet<>();
 
@@ -98,7 +97,6 @@ public class Statistics {
 		elixirManaDrunk = 0;
 		conRechargeUsed = 0;
 		conEnergyUsed   = 0;
-		destinyRemain   = 0;
 		itemTypesDiscovered.clear();
 
 		progressScore   = 0;
@@ -147,7 +145,6 @@ public class Statistics {
 	private static final String CONENERGY   = "conEnergyUsed";
 	private static final String CORROSION   = "corrosionUsed";
 	private static final String WELLDUG     = "wellWaterDug";
-	private static final String DESTINY     = "destiny";
 
 	private static final String PROG_SCORE	    = "prog_score";
 	private static final String ITEM_VAL	    = "item_val";
@@ -196,7 +193,6 @@ public class Statistics {
 		bundle.put( CONENERGY, conEnergyUsed );
 		bundle.put( CORROSION, corrosionUsed);
 		bundle.put( WELLDUG, wellWaterDug);
-		bundle.put( DESTINY, destinyRemain);
 		bundle.put( ITEM_TYPES_DISCOVERED, itemTypesDiscovered.toArray(new Class<?>[0]) );
 
 		bundle.put( PROG_SCORE,  progressScore );
@@ -248,8 +244,7 @@ public class Statistics {
 		conRechargeUsed = bundle.getInt( CONRECHARGE );
 		conEnergyUsed = bundle.getInt( CONENERGY );
 		corrosionUsed   = bundle.getBoolean( CORROSION );
-		wellWaterDug    = bundle.getInt( WELLDUG );
-		destinyRemain   = bundle.getInt( DESTINY );
+		wellWaterDug    = bundle.getInt(WELLDUG);
 
 		if (bundle.contains( ITEM_TYPES_DISCOVERED )) {
 			itemTypesDiscovered = new HashSet<>(Arrays.asList(bundle.getClassArray(ITEM_TYPES_DISCOVERED)));

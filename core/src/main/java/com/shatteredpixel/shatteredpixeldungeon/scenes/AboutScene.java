@@ -80,8 +80,8 @@ public class AboutScene extends PixelScene {
         "Sprite Design:",
         Icons.ODG.get(),
         "odg",
-        "No link as he requests",
-        "");
+        null,
+        null);
         odg.setSize(colWidth/2f, 0);
         if (landscape()){
             odg.setPos(xun.right() + colWidth/4f, xun.top() + (xun.height() - odg.height())/2f);

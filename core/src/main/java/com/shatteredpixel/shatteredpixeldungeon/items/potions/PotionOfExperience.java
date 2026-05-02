@@ -21,9 +21,6 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.potions;
 
-import com.shatteredpixel.shatteredpixeldungeon.Challenges;
-import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
@@ -46,9 +43,6 @@ public class PotionOfExperience extends Potion {
 		hero.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(hero.maxExp()), FloatingText.EXPERIENCE);
 		hero.earnExp( hero.maxExp(), getClass() );
 		new Flare( 6, 32 ).color(0xFFFF00, true).show( curUser.sprite, 2f );
-
-		//challenge effect
-		if (Dungeon.isChallenged(Challenges.RANDOMIZE)) Statistics.destinyRemain += 4;
 	}
 	
 	@Override

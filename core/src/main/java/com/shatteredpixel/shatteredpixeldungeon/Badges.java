@@ -244,7 +244,8 @@ public class Badges {
 		HIGH_SCORE_5                ( 117 ),
 		CHAMPION_2                  ( 118 ),
 		CHAMPION_3                  ( 119 ),
-		CHAMPION_4                  ( 120 );
+		CHAMPION_4                  ( 120 ),
+		CHAMPION_5                  ( 121 );
 
 		public boolean meta;
 

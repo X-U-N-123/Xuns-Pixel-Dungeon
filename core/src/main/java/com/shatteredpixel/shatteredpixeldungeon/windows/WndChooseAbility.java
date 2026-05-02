@@ -21,7 +21,6 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
-import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.ArmorAbility;
@@ -37,7 +36,6 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
-import com.watabou.noosa.Image;
 
 public class WndChooseAbility extends Window {
 
@@ -70,13 +68,8 @@ public class WndChooseAbility extends Window {
 			RedButton abilityButton = new RedButton(ability.shortDesc(), 6){
 				@Override
 				protected void onClick() {
-					Image icon = new HeroIcon(ability);
-					String text = Messages.titleCase(ability.name());
-					if (crown != null && crown.random && Dungeon.isChallenged(Challenges.RANDOMIZE)){
-						icon = new ItemSprite(0);
-						text = Messages.titleCase(Messages.get(WndChooseAbility.this, "random"));
-					}
-					GameScene.show(new WndOptions( icon, text,
+					GameScene.show(new WndOptions( new HeroIcon( ability ),
+							Messages.titleCase(ability.name()),
 							Messages.get(WndChooseAbility.this, "are_you_sure"),
 							Messages.get(WndChooseAbility.this, "yes"),
 							Messages.get(WndChooseAbility.this, "no")){

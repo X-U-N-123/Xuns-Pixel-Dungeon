@@ -21,7 +21,6 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
-import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
@@ -36,7 +35,6 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
-import com.watabou.noosa.Image;
 
 public class WndChooseSubclass extends Window {
 	
@@ -64,13 +62,8 @@ public class WndChooseSubclass extends Window {
 			RedButton btnCls = new RedButton( subCls.shortDesc(), 6 ) {
 				@Override
 				protected void onClick() {
-					Image icon = (tome.random && Dungeon.isChallenged(Challenges.RANDOMIZE))
-							? new ItemSprite(0) : new HeroIcon(subCls);
-					String text = (tome.random && Dungeon.isChallenged(Challenges.RANDOMIZE))
-							? Messages.titleCase(Messages.get(WndChooseSubclass.this, "random"))
-							: Messages.titleCase(subCls.title());
-
-					GameScene.show(new WndOptions(icon, text,
+					GameScene.show(new WndOptions(new HeroIcon(subCls),
+							Messages.titleCase(subCls.title()),
 							Messages.get(WndChooseSubclass.this, "are_you_sure"),
 							Messages.get(WndChooseSubclass.this, "yes"),
 							Messages.get(WndChooseSubclass.this, "no")){
