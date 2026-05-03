@@ -478,18 +478,28 @@ abstract public class MissileWeapon extends Weapon {
 	public String info() {
 
 		String info = super.info();
-		
+
+		int idLvl = levelKnown ? buffedLvl() : 0;
+
 		info += "\n\n" + Messages.get( MissileWeapon.class, "stats",
 				tier,
-				Math.round(augment.damageFactor(min())),
-				Math.round(augment.damageFactor(max())),
-				STRReq());
+				Math.round(augment.damageFactor(min(idLvl))),
+				Math.round(augment.damageFactor(max(idLvl))),
+				STRReq(idLvl));
 
 		if (Dungeon.hero != null) {
-			if (STRReq() > Dungeon.hero.STR()) {
-				info += " " + Messages.get(Weapon.class, "too_heavy");
-			} else if (Dungeon.hero.STR() > STRReq()) {
-				info += " " + Messages.get(Weapon.class, "excess_str", Dungeon.hero.STR() - STRReq());
+			if (levelKnown) {
+				if (STRReq() > Dungeon.hero.STR()) {
+					info += " " + Messages.get(Weapon.class, "too_heavy");
+				} else if (Dungeon.hero.STR() > STRReq()) {
+					info += " " + Messages.get(Weapon.class, "excess_str", Dungeon.hero.STR() - STRReq());
+				}
+			} else {
+				if (STRReq(0) > Dungeon.hero.STR()) {
+					info += " " + Messages.get(Weapon.class, "probably_too_heavy");
+				} else if (Dungeon.hero.STR() > STRReq(0)) {
+					info += " " + Messages.get(Weapon.class, "excess_str", Dungeon.hero.STR() - STRReq(0));
+				}
 			}
 		}
 
@@ -509,15 +519,16 @@ abstract public class MissileWeapon extends Weapon {
 		info += "\n\n" + Messages.get(MissileWeapon.class, "distance");
 		
 		info += "\n\n" + Messages.get(this, "durability");
-		
-		if (durabilityPerUse() > 0){
-			info += " " + Messages.get(this, "uses_left",
-					(int)Math.ceil(durability/durabilityPerUse()),
-					(int)Math.ceil(MAX_DURABILITY/durabilityPerUse()));
-		} else {
-			info += " " + Messages.get(this, "unlimited_uses");
-		}
-		
+
+		if (levelKnown){
+			if (durabilityPerUse() > 0) {
+				info += " " + Messages.get(this, "uses_left",
+						(int) Math.ceil(durability / durabilityPerUse()),
+						(int) Math.ceil(MAX_DURABILITY / durabilityPerUse()));
+
+			} else info += " " + Messages.get(this, "unlimited_uses");
+
+		} else info += " " + Messages.get(this, "unid_uses_left", "?", Integer.toString((int)baseUses));
 		
 		return info;
 	}

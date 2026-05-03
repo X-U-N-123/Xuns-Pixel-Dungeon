@@ -42,8 +42,9 @@ public class Challenges {
 	public static final int EXERCISES           = 4096;
     public static final int NO_RETURN           = 8192;
 	public static final int BLUNTED_BLADE       = 16384;
+	public static final int MANA_EXHAUSTION     = 32768;
 
-	public static final int MAX_VALUE           = 32767;
+	public static final int MAX_VALUE           = 65535;
 
 	public static final String[] NAME_IDS = {
 			"champion_enemies",
@@ -60,12 +61,13 @@ public class Challenges {
 			"exercises",
             "no_return",
 			"blunted_blade",
-			"x_u_ns_power"	//currently 14 challenges in total
+			"mana_exhaustion",
+			"x_u_ns_power"	//currently 15 challenges in total
 	};
 
 	public static final int[] MASKS = {
 			CHAMPION_ENEMIES, STRONGER_BOSSES, NO_FOOD, NO_ARMOR, NO_HEALING, NO_HERBALISM, SWARM_INTELLIGENCE,
-            DARKNESS, NO_SCROLLS, HEAVY_BURDEN, CRAZY_LOOT, EXERCISES, NO_RETURN, BLUNTED_BLADE, X_U_NS_POWER
+            DARKNESS, NO_SCROLLS, HEAVY_BURDEN, CRAZY_LOOT, EXERCISES, NO_RETURN, BLUNTED_BLADE, MANA_EXHAUSTION, X_U_NS_POWER
 	};
 
 	public static int activeChallenges(){

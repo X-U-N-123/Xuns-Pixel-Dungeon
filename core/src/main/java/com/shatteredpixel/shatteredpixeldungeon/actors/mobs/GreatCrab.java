@@ -27,6 +27,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.ClericSpell;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Ghost;
+import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.MysteryMeat;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -118,6 +119,11 @@ public class GreatCrab extends Crab {
 		super.die( cause );
 
 		Ghost.Quest.process();
+	}
+
+	@Override
+	public Item createLoot() {
+		return (Item) loot;
 	}
 
 	protected class Wandering extends Mob.Wandering{

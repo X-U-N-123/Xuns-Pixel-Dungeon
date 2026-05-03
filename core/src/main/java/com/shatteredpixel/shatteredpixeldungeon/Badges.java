@@ -1270,6 +1270,10 @@ public class Badges {
 			unlock(badge);
 			badge = Badge.CHAMPION_4;
 		}
+		if (challenges >= 15){
+			unlock(badge);
+			badge = Badge.CHAMPION_5;
+		}
 		local.add(badge);
 		displayBadge( badge );
 	}
@@ -1350,7 +1354,7 @@ public class Badges {
 			{Badge.RESEARCHER_1, Badge.RESEARCHER_2, Badge.RESEARCHER_3, Badge.RESEARCHER_4, Badge.RESEARCHER_5},
 			{Badge.HIGH_SCORE_1, Badge.HIGH_SCORE_2, Badge.HIGH_SCORE_3, Badge.HIGH_SCORE_4, Badge.HIGH_SCORE_5},
 			{Badge.GAMES_PLAYED_1, Badge.GAMES_PLAYED_2, Badge.GAMES_PLAYED_3, Badge.GAMES_PLAYED_4, Badge.GAMES_PLAYED_5},
-			{Badge.CHAMPION_1, Badge.CHAMPION_2, Badge.CHAMPION_3, Badge.CHAMPION_4},
+			{Badge.CHAMPION_1, Badge.CHAMPION_2, Badge.CHAMPION_3, Badge.CHAMPION_4, Badge.CHAMPION_5},
 			{Badge.PIRANHAS, Badge.PIRANHAS_2}
 	};
 

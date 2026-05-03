@@ -30,11 +30,16 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HeroDisguise;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.LamellarArmor;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.MailArmor;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.PlateArmor;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.ScaleArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.devPickaxe;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.DarkGold;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Pickaxe;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ParchmentScrap;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.quest.BlacksmithRoom;
@@ -368,18 +373,38 @@ public class Blacksmith extends NPC {
 
 		public static void generateRewards( boolean useDecks ){
 			smithRewards = new ArrayList<>();
-			smithRewards.add(Generator.randomWeapon(3, useDecks));
-			smithRewards.add(Generator.randomWeapon(3, useDecks));
+
+			smithRewards.add(Generator.random(
+					Generator.wepTiers[Random.chances(new float[]{0, 0, 7, 9, 2, 2}) - 1]));
+			smithRewards.add(Generator.random(
+					Generator.wepTiers[Random.chances(new float[]{0, 0, 7, 9, 2, 2}) - 1]));
+
 			ArrayList<Item> toUndo = new ArrayList<>();
 			while (smithRewards.get(0).getClass() == smithRewards.get(1).getClass()) {
 				if (useDecks)   toUndo.add(smithRewards.get(1));
 				smithRewards.remove(1);
-				smithRewards.add(Generator.randomWeapon(3, useDecks));
+				smithRewards.add(Generator.random(
+						Generator.misTiers[Random.chances(new float[]{0, 0, 7, 9, 2, 2}) - 1]));
 			}
-			for (Item i : toUndo){
-				Generator.undoDrop(i);
+
+			for (Item i : toUndo) Generator.undoDrop(i);
+
+			//35%:tier3, 45%:tier4, 10%:tier5, 10%:tier6
+			switch (Random.chances(new float[]{0, 0, 0, 7, 9, 2, 2})){
+				default:
+				case 3: smithRewards.add(new MailArmor());    break;
+				case 4: smithRewards.add(new ScaleArmor());   break;
+				case 5: smithRewards.add(new PlateArmor());   break;
+				case 6: smithRewards.add(new LamellarArmor());break;
 			}
-			smithRewards.add(Generator.randomArmor(3));
+			MissileWeapon m = (MissileWeapon)Generator.random(
+					Generator.misTiers[Random.chances(new float[]{0, 0, 7, 9, 2, 2}) - 1]);
+			//clear missile wep's starting properties
+			m.level(0);
+			m.enchant(null);
+			m.cursed = false;
+			m.levelKnown = false;
+			smithRewards.add(m);
 
 			//30%:+0, 45%:+1, 20%:+2, 5%:+3
 			int rewardLevel;
@@ -395,6 +420,7 @@ public class Blacksmith extends NPC {
 			}
 
 			for (Item i : smithRewards){
+				if (i instanceof MissileWeapon) i.quantity(3);
 				i.level(rewardLevel);
 				if (i instanceof Weapon) {
 					((Weapon) i).enchant(null);

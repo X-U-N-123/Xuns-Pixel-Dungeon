@@ -23,6 +23,7 @@ package com.shatteredpixel.shatteredpixeldungeon.items.wands;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
@@ -34,6 +35,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Degrade;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Exhaustion;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LostInventory;
@@ -536,6 +538,10 @@ public abstract class Wand extends Item {
 				Dungeon.hero.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(shieldToGive), FloatingText.SHIELDING);
 			}
 		}
+
+		if (Dungeon.isChallenged(Challenges.MANA_EXHAUSTION))
+			for (int i = 0; i < (cursed ? 1 : chargesPerCast()); i++)
+				Exhaustion.stack(curUser);
 		
 		curCharges -= cursed ? 1 : chargesPerCast();
 

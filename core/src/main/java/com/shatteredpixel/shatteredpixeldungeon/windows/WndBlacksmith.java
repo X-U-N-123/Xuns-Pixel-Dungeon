@@ -466,8 +466,8 @@ public class WndBlacksmith extends Window {
 	public static class WndSmith extends Window {
 
 		private static final int WIDTH      = 120;
-		private static final int BTN_SIZE	= 32;
-		private static final int BTN_GAP	= 5;
+		private static final int BTN_SIZE	= 27;
+		private static final int BTN_GAP	= 4;
 		private static final int GAP		= 2;
 
 		public WndSmith( Blacksmith troll, Hero hero ){
@@ -492,7 +492,6 @@ public class WndBlacksmith extends Window {
 
 			int count = 0;
 			for (Item i : Blacksmith.Quest.smithRewards){
-				count++;
 				ItemButton btnReward = new ItemButton(){
 					@Override
 					protected void onClick() {
@@ -500,9 +499,9 @@ public class WndBlacksmith extends Window {
 					}
 				};
 				btnReward.item( i );
-				btnReward.setRect( count*(WIDTH - BTN_GAP) / 3 - BTN_SIZE, message.top() + message.height() + BTN_GAP, BTN_SIZE, BTN_SIZE );
+				btnReward.setRect( count*(BTN_SIZE + BTN_GAP), message.top() + message.height() + BTN_GAP, BTN_SIZE, BTN_SIZE );
 				add( btnReward );
-
+				count++;
 			}
 
 			resize(WIDTH, (int)message.bottom() + 2*BTN_GAP + BTN_SIZE);
@@ -524,7 +523,7 @@ public class WndBlacksmith extends Window {
 					protected void onClick() {
 						RewardWindow.this.hide();
 
-						if (item instanceof Weapon && Blacksmith.Quest.smithEnchant != null){
+						if (item instanceof MeleeWeapon && Blacksmith.Quest.smithEnchant != null){
 							((Weapon) item).enchant(Blacksmith.Quest.smithEnchant);
 						} else if (item instanceof Armor && Blacksmith.Quest.smithGlyph != null){
 							((Armor) item).inscribe(Blacksmith.Quest.smithGlyph);

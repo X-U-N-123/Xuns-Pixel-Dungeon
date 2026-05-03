@@ -395,7 +395,7 @@ abstract public class Weapon extends KindOfWeapon {
 		} else if (enchantment != null) {
 			//chance to lose harden buff is 10/20/40/80/100% when upgrading from +6/7/8/9/10
 			if (enchantHardened){
-				if (level() >= 6 && Random.Float(10) < Math.pow(2, level()-6)){
+				if (level() >= 6 && Random.Float(10) < Math.pow(2, level()-6) && enchantment != null){
 					enchantHardened = false;
 				}
 

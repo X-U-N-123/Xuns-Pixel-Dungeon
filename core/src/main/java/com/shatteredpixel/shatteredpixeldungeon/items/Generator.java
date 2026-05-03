@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items;
 
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClericArmor;
@@ -987,11 +988,13 @@ public class Generator {
 
 		floorSet = (int)GameMath.gate(0, floorSet, floorSetTierProbs.length-1);
 
+		int tierDec = Dungeon.isChallenged(Challenges.BLUNTED_BLADE) && Random.Int(3) == 0 ? 1 : 0;
+
 		MeleeWeapon w;
 		if (useDefaults){
-			w = (MeleeWeapon) randomUsingDefaults(wepTiers[Random.chances(floorSetTierProbs[floorSet])]);
+			w = (MeleeWeapon) randomUsingDefaults(wepTiers[Random.chances(floorSetTierProbs[floorSet]) - tierDec]);
 		} else {
-			w = (MeleeWeapon) random(wepTiers[Random.chances(floorSetTierProbs[floorSet])]);
+			w = (MeleeWeapon) random(wepTiers[Random.chances(floorSetTierProbs[floorSet]) - tierDec]);
 		}
 		return w;
 	}
@@ -1021,11 +1024,13 @@ public class Generator {
 		
 		floorSet = (int)GameMath.gate(0, floorSet, floorSetTierProbs.length-1);
 
+		int tierDec = Dungeon.isChallenged(Challenges.BLUNTED_BLADE) && Random.Int(3) == 0 ? 1 : 0;
+
 		MissileWeapon w;
 		if (useDefaults){
-			w = (MissileWeapon)randomUsingDefaults(misTiers[Random.chances(floorSetTierProbs[floorSet])]);
+			w = (MissileWeapon)randomUsingDefaults(misTiers[Random.chances(floorSetTierProbs[floorSet]) - tierDec]);
 		} else {
-			w = (MissileWeapon)random(misTiers[Random.chances(floorSetTierProbs[floorSet])]);
+			w = (MissileWeapon)random(misTiers[Random.chances(floorSetTierProbs[floorSet]) - tierDec]);
 		}
 		return w;
 	}
