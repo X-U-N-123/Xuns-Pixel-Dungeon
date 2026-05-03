@@ -560,6 +560,10 @@ public class Item implements Bundlable {
 	public String info() {
 
 		String desc = desc();
+
+		if (Dungeon.isChallenged(Challenges.X_U_NS_POWER))
+			desc += "\n\n" + Messages.get(Item.class, "class_name", getClass().getSimpleName());
+
 		if (Dungeon.isChallenged(Challenges.HEAVY_BURDEN)){
 			String weight = "weight";
 			if (quantity > 1) weight += "_multi";

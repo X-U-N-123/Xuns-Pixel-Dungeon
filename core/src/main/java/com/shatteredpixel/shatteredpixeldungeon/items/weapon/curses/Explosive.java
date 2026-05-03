@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses;
 
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.BlastParticle;
@@ -103,14 +104,13 @@ public class Explosive extends Weapon.Enchantment {
 
 	@Override
 	public String desc() {
-		String desc = super.desc();
-		if (durability > 50){
-			desc += " " + Messages.get(this, "desc_cool");
-		} else if (durability > 10){
-			desc += " " + Messages.get(this, "desc_warm");
-		} else {
-			desc += " _" + Messages.get(this, "desc_hot") + "_";
-		}
+		String desc = Messages.get(this, "desc");
+		if (durability > 50) desc +=      " " + Messages.get(this, "desc_cool");
+		else if (durability > 10) desc += " " + Messages.get(this, "desc_warm");
+		else desc +=                     " _" + Messages.get(this, "desc_hot") + "_";
+
+		if (Dungeon.isChallenged(Challenges.X_U_NS_POWER))
+			desc += "\n\n" + Messages.get(Item.class, "class_name", getClass().getSimpleName());
 		return desc;
 	}
 

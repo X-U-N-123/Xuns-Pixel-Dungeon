@@ -602,7 +602,10 @@ abstract public class Weapon extends KindOfWeapon {
 		}
 
 		public String desc() {
-			return Messages.get(this, "desc");
+			String desc = Messages.get(this, "desc");
+			if (Dungeon.isChallenged(Challenges.X_U_NS_POWER))
+				desc += "\n\n" + Messages.get(Item.class, "class_name", getClass().getSimpleName());
+			return desc;
 		}
 
 		public boolean curse() {

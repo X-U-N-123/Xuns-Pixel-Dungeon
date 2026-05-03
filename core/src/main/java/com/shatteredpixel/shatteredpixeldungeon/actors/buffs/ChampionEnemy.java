@@ -74,8 +74,6 @@ public abstract class ChampionEnemy extends Buff {
 
 	public void onAttackProc(Char enemy ){}
 
-	public void onDefenseProc(Char enemy ){}
-
 	public boolean canAttackWithExtraReach( Char enemy ){
 		return false;
 	}
@@ -503,15 +501,14 @@ public abstract class ChampionEnemy extends Buff {
 		}
 
 		@Override
-		public void onAttackProc(Char enemy) {
-			ScrollOfTeleportation.teleportChar(target, this.getClass());
+		public float meleeDamageFactor() {
+			return 1.25f;
 		}
 
 		@Override
-		public void onDefenseProc(Char enemy) {
-			ScrollOfTeleportation.teleportChar(enemy, this.getClass());
+		public void onAttackProc(Char enemy) {
+			ScrollOfTeleportation.teleportChar(target, this.getClass());
 		}
-
 	}
 
 	public static class Shocking extends ChampionEnemy {

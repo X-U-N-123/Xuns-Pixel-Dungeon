@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels.traps;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Bestiary;
@@ -123,7 +124,10 @@ public abstract class Trap implements Bundlable {
 	}
 
 	public String desc() {
-		return Messages.get(this, "desc");
+		String desc = Messages.get(this, "desc");
+		if (Dungeon.isChallenged(Challenges.X_U_NS_POWER))
+			desc += "\n\n" + Messages.get(Trap.class, "class_name", getClass().getSimpleName());
+		return desc;
 	}
 
 	private static final String POS	= "pos";

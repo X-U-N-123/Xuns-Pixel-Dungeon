@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.explorer;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -238,6 +239,8 @@ public class Sandstorm extends ArmorAbility {
 			desc += "\n\n" + terrainDesc(Dungeon.hero);
 		}
 		desc += "\n\n" + Messages.get(this, "cost", (int)baseChargeUse);
+		if (Dungeon.isChallenged(Challenges.X_U_NS_POWER))
+			desc += "\n\n" + Messages.get(ArmorAbility.class, "class_name", getClass().getSimpleName());
 		return desc;
 	}
 

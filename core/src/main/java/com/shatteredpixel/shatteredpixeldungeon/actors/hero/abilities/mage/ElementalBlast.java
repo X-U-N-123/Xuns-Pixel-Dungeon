@@ -475,6 +475,8 @@ public class ElementalBlast extends ArmorAbility {
 			desc += "\n\n" + Messages.get(this, "generic_desc");
 		}
 		desc += "\n\n" + Messages.get(this, "cost", (int)baseChargeUse);
+		if (Dungeon.isChallenged(Challenges.X_U_NS_POWER))
+			desc += "\n\n" + Messages.get(ArmorAbility.class, "class_name", getClass().getSimpleName());
 		return desc;
 	}
 

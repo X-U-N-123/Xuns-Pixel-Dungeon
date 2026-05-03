@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
@@ -148,6 +149,8 @@ public class WndInfoCell extends Window {
 						desc += "\n\n";
 					}
 					desc += blob.tileDesc();
+					if (Dungeon.isChallenged(Challenges.X_U_NS_POWER))
+						desc += "\n" + Messages.get(Blob.class, "class_name", blob.getClass().getSimpleName());
 				}
 			}
 		}

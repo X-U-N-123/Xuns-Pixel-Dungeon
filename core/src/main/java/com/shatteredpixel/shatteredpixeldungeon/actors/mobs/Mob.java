@@ -1187,7 +1187,7 @@ public abstract class Mob extends Char {
 				armor = 0;
 			}
 			dev_desc = Messages.get(this, "dev_info", HP, HT, attackSkill(this), defenseSkill(this),
-				EXP, maxLvl + inc, damageRoll(), attackDelay(), armor, speed(), 1/timeScale());
+				EXP, maxLvl + inc, damageRoll(), attackDelay(), armor, speed(), 1/timeScale(), getClass().getSimpleName());
 
 			dev_desc += "\n" + Messages.get(this, "property");
 			for (Property prop : properties().toArray(new Property[0])) dev_desc += Messages.get(this, prop.toString());
@@ -1328,7 +1328,7 @@ public abstract class Mob extends Char {
 
 			}
 		}
-		
+
 		protected boolean noticeEnemy(){
 			enemySeen = true;
 			
@@ -1479,6 +1479,33 @@ public abstract class Mob extends Char {
 				}
 			}
 		}
+	}
+
+	//essentially a more aggressive version of wandering, where target pos is updated like hunting
+	//not currently used directly by mobs outside of the vault, which also add more behaviour here
+	protected class Investigating extends Wandering {
+
+		public static final String TAG	= "INVESTIGATING";
+
+		@Override
+		public boolean act(boolean enemyInFOV, boolean justAlerted) {
+			if (enemyInFOV){
+				target = enemy.pos;
+			} else {
+				//we lose our target BEFORE reaching their last known position
+				if (Dungeon.level.distance(pos, target) <= 1){
+					sprite.showLost();
+					state = WANDERING;
+					target = ((Mob.Wandering)WANDERING).randomDestination();
+					spend( TICK );
+					return true;
+				}
+		}
+			return super.act(enemyInFOV, justAlerted);
+		}
+
+		//same detection chance as wandering
+
 	}
 
 	protected class Fleeing implements AiState {

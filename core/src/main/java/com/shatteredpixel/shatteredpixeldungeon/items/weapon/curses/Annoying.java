@@ -115,7 +115,7 @@ public class Annoying extends Weapon.Enchantment {
 					return damage;
 				}
 				if (weapon instanceof Fetter){
-					GLog.n(Messages.get(this, "slave"));
+					GLog.n("Fucking Slaves, Get Your Ass Back HERE!!!");
 					return damage;
 				}
 				if (weapon instanceof Nunchaku){

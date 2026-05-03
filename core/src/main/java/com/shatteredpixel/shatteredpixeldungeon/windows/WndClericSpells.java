@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Chrome;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
@@ -191,10 +192,17 @@ public class WndClericSpells extends Window {
 			}
 		}
 
+		private String desc( ClericSpell spell ){
+			String desc = spell.desc();
+			if (Dungeon.isChallenged(Challenges.X_U_NS_POWER))
+				desc += "\n\n" + Messages.get(ClericSpell.class, "class_name", spell.getClass().getSimpleName());
+			return desc;
+		}
+
 		@Override
 		protected void onClick() {
 			if (info){
-				GameScene.show(new WndTitledMessage(new HeroIcon(spell), Messages.titleCase(spell.name()), spell.desc()));
+				GameScene.show(new WndTitledMessage(new HeroIcon(spell), Messages.titleCase(spell.name()), desc(spell)));
 			} else {
 				hide();
 
@@ -248,7 +256,7 @@ public class WndClericSpells extends Window {
 							}
 							break;
 						case 1:
-							GameScene.show(new WndTitledMessage(new HeroIcon(spell), Messages.titleCase(spell.name()), spell.desc()));
+							GameScene.show(new WndTitledMessage(new HeroIcon(spell), Messages.titleCase(spell.name()), desc(spell)));
 							break;
 						case 2:
 							hide();
