@@ -215,6 +215,8 @@ public class PrisonBossLevel extends Level {
 			Painter.set(this, p, Terrain.WALL_DECO);
 		}
 
+		addCagesToCells();
+
 		//we set up the exit for consistently with other levels, even though it's in the walls
 		LevelTransition exit = new LevelTransition(this, pointToCell(levelExit), LevelTransition.Type.REGULAR_EXIT);
 		exit.right+=2;
@@ -237,6 +239,8 @@ public class PrisonBossLevel extends Level {
 		Painter.fill(this, entranceRoom, Terrain.WALL);
 		Painter.set(this, startHallway.left+1, startHallway.top, Terrain.EMPTY);
 		Painter.set(this, startHallway.left+1, startHallway.top+1, Terrain.DOOR);
+
+		addCagesToCells();
 
 	}
 	
@@ -318,13 +322,7 @@ public class PrisonBossLevel extends Level {
 			cell += width();
 		}
 
-		//pre-2.5.1 saves, if exit wasn't already added
-		if (exit() == entrance()) {
-			LevelTransition exit = new LevelTransition(this, pointToCell(levelExit), LevelTransition.Type.REGULAR_EXIT);
-			exit.right += 2;
-			exit.bottom += 3;
-			transitions.add(exit);
-		}
+		addCagesToCells();
 	}
 	
 	//keep track of removed items as the level is changed. Dump them back into the level at the end.
@@ -388,7 +386,7 @@ public class PrisonBossLevel extends Level {
 		addVisuals(); //this also resets existing visuals
 		traps.clear();
 
-		for (CustomTilemap t : customTiles){
+		for (CustomTilemap t : customTiles.toArray(new CustomTilemap[0])){
 			if (t instanceof FadingTraps){
 				((FadingTraps) t).remove();
 			}
@@ -670,7 +668,7 @@ public class PrisonBossLevel extends Level {
 		Painter.fill(this, tenguCell, 1, Terrain.EMPTY);
 		buildFlagMaps();
 
-		for (CustomTilemap vis : customTiles){
+		for (CustomTilemap vis : customTiles.toArray(new CustomTilemap[0])){
 			if (vis instanceof FadingTraps){
 				((FadingTraps) vis).remove();
 			}

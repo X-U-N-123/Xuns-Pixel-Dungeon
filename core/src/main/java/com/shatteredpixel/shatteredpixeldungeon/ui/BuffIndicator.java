@@ -146,8 +146,7 @@ public class BuffIndicator extends Component {
 	public static final int LIFELOAN    = 93;
 	public static final int EVILUNFOLD  = 94;
 		public static final int EXHAUSTION_START = 94;
-	/*
-	three extra icons for exhaustion
+	/*two extra icons for exhaustion
 	*/
 
 	public static final int SIZE_SMALL  = 7;

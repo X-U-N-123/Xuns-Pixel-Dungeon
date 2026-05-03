@@ -406,7 +406,7 @@ public class Tengu extends Mob {
 						return result;
 					}
 				}
-				
+
 				//attempt to use an ability, even if enemy can't be decided
 				if (canUseAbility()){
 					return useAbility();
@@ -418,7 +418,7 @@ public class Tengu extends Mob {
 			}
 		}
 	}
-	
+
 	//*****************************************************************************************
 	//***** Tengu abilities. These are expressed in game logic as buffs, blobs, and items *****
 	//*****************************************************************************************
@@ -1108,12 +1108,15 @@ public class Tengu extends Mob {
 			@Override
 			protected void onThrow(int cell) {
 				super.onThrow(cell);
+				ShockerAbility buff;
 				if (throwingChar != null){
-					Buff.append(throwingChar, ShockerAbility.class).shockerPos = cell;
+					buff = Buff.append(throwingChar, ShockerAbility.class);
 					throwingChar = null;
 				} else {
-					Buff.append(curUser, ShockerAbility.class).shockerPos = cell;
+					buff = Buff.append(curUser, ShockerAbility.class);
 				}
+				buff.shockerPos = cell;
+				buff.spendToWhole(); //to ensure its aligned with blob logic
 			}
 			
 			@Override
