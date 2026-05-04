@@ -324,17 +324,16 @@ public class Ghost extends NPC {
 				depth = Dungeon.depth;
 
 				//36%:tier2, 28%:tier3, 20%:tier4, 12%:tier5, 4%:tier6
-				switch (Random.chances(new float[]{0, 0, 9, 7, 5, 3, 1})){
+				switch (Random.chances(new float[]{9, 7, 5, 3, 1})){
 					default:
-					case 2: armor = new LeatherArmor(); break;
-					case 3: armor = new MailArmor();    break;
-					case 4: armor = new ScaleArmor();   break;
-					case 5: armor = new PlateArmor();   break;
-					case 6: armor = new LamellarArmor();break;
+					case 0: armor = new LeatherArmor(); break;
+					case 1: armor = new MailArmor();    break;
+					case 2: armor = new ScaleArmor();   break;
+					case 3: armor = new PlateArmor();   break;
+					case 4: armor = new LamellarArmor();break;
 				}
 				//36%:tier2, 28%:tier3, 20%:tier4, 12%:tier5, 4%:tier6
-				int wepTier = Random.chances(new float[]{0, 0, 9, 7, 5, 3, 1});
-				weapon = (Weapon) Generator.random(Generator.wepTiers[wepTier - 1]);
+				weapon = (Weapon) Generator.random(Generator.wepTiers[Random.chances(new float[]{0, 9, 7, 5, 3, 1})]);
 
 				//clear weapon's starting properties
 				weapon.level(0);

@@ -23,12 +23,16 @@ package com.shatteredpixel.shatteredpixeldungeon.items;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.WaterOfAwareness;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.WaterOfHealth;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.WellWater;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Blacksmith;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Ghost;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Imp;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Wandmaker;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Splash;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -38,15 +42,19 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTerrainTilemap;
+import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.ui.AttackIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.IconButton;
+import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndTextInput;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
+import com.watabou.utils.PointF;
 
 import java.util.ArrayList;
 
@@ -55,7 +63,10 @@ public class devPickaxe extends Item {
 	private static final String AC_SET   = "set";
 	private static final String AC_MINE  = "mine";
 	private static final String AC_RESET = "reset";
+	private static final String AC_HEWELL = "hewell";
+	private static final String AC_AWWELL = "awwell";
 
+	private int radius = 1;
 	private int chosenTerrain = 0;
 	public static int questDepth;
 
@@ -70,9 +81,11 @@ public class devPickaxe extends Item {
 	@Override
 	public ArrayList<String> actions(Hero hero) {
 		ArrayList<String> actions = super.actions(hero);
+		actions.add(AC_RESET);
+		actions.add(AC_HEWELL);
+		actions.add(AC_AWWELL);
 		actions.add(AC_SET);
 		actions.add(AC_MINE);
-		actions.add(AC_RESET);
 		return actions;
 	}
 
@@ -81,7 +94,7 @@ public class devPickaxe extends Item {
 
 		super.execute(hero, action);
 		if (action.equals(AC_SET)) GameScene.show(new WndSelectTerrain(this));
-		if (action.equals(AC_MINE)){
+		if (action.equals(AC_MINE) || action.equals(AC_HEWELL) || action.equals(AC_AWWELL)){
 			GameScene.selectCell(new CellSelector.Listener() {
 				@Override
 				public void onSelect(Integer cell) {
@@ -90,11 +103,32 @@ public class devPickaxe extends Item {
 						GLog.w(Messages.get(this, "oom"));
 						return;
 					}
+					if (action.equals(AC_HEWELL) || action.equals(AC_AWWELL)){
+						if (Dungeon.level.map[cell] == Terrain.WELL || Dungeon.level.map[cell] == Terrain.EMPTY_WELL){
+							if (Dungeon.level.map[cell] == Terrain.EMPTY_WELL){
+								Level.set(cell, Terrain.WELL);
+								GameScene.updateMap(cell);
+							}
+							Splash.at( DungeonTilemap.tileCenterToWorld( cell ), -PointF.PI/2, PointF.PI/2, 0x5bc1e3, 10, 0.01f);
+							Sample.INSTANCE.play(Assets.Sounds.GAS, 1f, 0.8f);
+
+							if (defaultAction.equals(AC_HEWELL)) WellWater.seed(cell, 1, WaterOfHealth.class, Dungeon.level);
+							else                                 WellWater.seed(cell, 1, WaterOfAwareness.class, Dungeon.level);
+						} else GLog.w(Messages.get(this, "no_well"));
+
+						return;
+					}
+					for (int i = 1-radius; i < radius; i++) {
+						for (int j = 1-radius; j < radius; j++) {
+							if (Dungeon.level.insideMap(cell + i*Dungeon.level.width() + j)){
+								Level.set(cell + i*Dungeon.level.width() + j, chosenTerrain);
+								GameScene.updateMap(cell + i*Dungeon.level.width() + j);
+							}
+						}
+					}
 					curUser.sprite.attack(cell);
-					Level.set(cell, chosenTerrain);
 					Sample.INSTANCE.play(Assets.Sounds.MINE);
 
-					GameScene.updateMap(cell);
 					Dungeon.level.buildFlagMaps();
 					Dungeon.observe();
 					AttackIndicator.updateState();
@@ -105,7 +139,7 @@ public class devPickaxe extends Item {
 					return Messages.get(this, "prompt");
 				}
 			});
-			defaultAction = AC_MINE;
+			defaultAction = action;
 		}
 		if (action.contains(AC_RESET)){
 			for (Mob m: Dungeon.level.mobs){
@@ -132,6 +166,21 @@ public class devPickaxe extends Item {
 		}
 	}
 
+	@Override
+	public boolean isIdentified() {
+		return true;
+	}
+
+	@Override
+	public boolean isUpgradable() {
+		return false;
+	}
+
+	@Override
+	public float weight(){
+		return 0;
+	}
+
 	private static class WndSelectTerrain extends Window {
 
 		private static final int MARGIN = 1;
@@ -140,16 +189,16 @@ public class devPickaxe extends Item {
 		public WndSelectTerrain(devPickaxe pickaxe){
 			super();
 
-			int width1 = 118;
+			int WIDTH = 120;
 
 			float posY = 2 * MARGIN;
-			float posX = 0;
+			float posX = 1;
 
 			RenderedTextBlock title =
 					PixelScene.renderTextBlock(Messages.titleCase(Messages.get(this, "choose_terrain")), 9);
 			title.hardlight(TITLE_COLOR);
-			title.setPos((width1-title.width())/2, posY);
-			title.maxWidth(width1 - MARGIN * 2);
+			title.setPos((WIDTH-title.width())/2, posY);
+			title.maxWidth(WIDTH - MARGIN * 2);
 			add(title);
 
 			posY = title.bottom() + 4*MARGIN;
@@ -162,13 +211,13 @@ public class devPickaxe extends Item {
 					image = new Image(Dungeon.level.waterTex());
 					image.scale.set(PixelScene.align(0.49f));
 				} else image = DungeonTerrainTilemap.tile(Dungeon.level.width() + 1, finalTerrain);
+
 				IconButton terrBtn = new IconButton(image){
 					@Override
 					protected void onClick() {
 						super.onClick();
 						pickaxe.chosenTerrain = finalTerrain;
 						chosenText.text(Messages.titleCase(Dungeon.level.tileName(pickaxe.chosenTerrain)));
-						chosenText.setPos((width1-chosenText.width())/2, chosenText.top());
 					}
 
 					@Override
@@ -179,8 +228,8 @@ public class devPickaxe extends Item {
 				};
 
 				add(terrBtn);
-				if (posX + 16 > width1){
-					posX = 0;
+				if (posX + 16 > WIDTH){
+					posX = 1;
 					posY += 17;
 				}
 				terrBtn.setRect(posX, posY, 16, 16);
@@ -188,28 +237,55 @@ public class devPickaxe extends Item {
 				posX += terrBtn.width() + MARGIN;
 			}
 
+			RedButton radiusButton = new RedButton(Messages.get(this, "radius_button", pickaxe.radius)) {
+				@Override
+				protected void onClick() {
+					Game.runOnRenderThread(() ->GameScene.show(new WndTextInput(
+							Messages.get(WndSelectTerrain.class, "title"), Messages.get(WndSelectTerrain.class, "desc"),
+							Integer.toString(pickaxe.radius),
+							Short.MAX_VALUE, false, Messages.get(WndSelectTerrain.class, "confirm"),
+							Messages.get(WndSelectTerrain.class, "cancel")) {
+						@Override
+						public void onSelect(boolean check, String text) {
+							if (check && text.matches("\\d+")) {
+								pickaxe.radius = Math.min(Integer.parseInt(text), 30);
+								text(Messages.get(WndSelectTerrain.class, "radius_button", pickaxe.radius));
+								AttackIndicator.updateState();
+								Dungeon.observe();
+							}
+						}
+					}));
+					super.onClick();
+				}
+			};
+			radiusButton.setSize(50, 14);
+			radiusButton.setPos(WIDTH - radiusButton.width(), posY + 17);
+			add(radiusButton);
+
 			chosenText = PixelScene.renderTextBlock(Messages.titleCase(Dungeon.level.tileName(pickaxe.chosenTerrain)), 9);
 			chosenText.hardlight(TITLE_COLOR);
-			chosenText.setPos((width1-chosenText.width())/2, posY + 19);
-			chosenText.maxWidth(width1 - MARGIN * 2);
+			chosenText.setPos(0, radiusButton.top() + 7 - chosenText.height()/2);
+			chosenText.maxWidth(WIDTH - MARGIN * 2);
 			add(chosenText);
 
-			resize(width1, (int)chosenText.bottom() + 2 * MARGIN);
+			resize(WIDTH, (int)radiusButton.bottom() + 2 * MARGIN);
 		}
 	}
 
 	private static final String TERRAIN = "terrain";
+	private static final String RADIUS  = "radius";
 
 	@Override
 	public void storeInBundle(Bundle bundle) {
 		super.storeInBundle(bundle);
 		bundle.put(TERRAIN, chosenTerrain);
+		bundle.put(RADIUS, radius);
 	}
 
 	@Override
 	public void restoreFromBundle(Bundle bundle) {
 		super.restoreFromBundle(bundle);
 		chosenTerrain = bundle.getInt(TERRAIN);
+		radius = bundle.getInt(RADIUS);
 	}
-
 }

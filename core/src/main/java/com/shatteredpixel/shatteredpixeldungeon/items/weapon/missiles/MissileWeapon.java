@@ -353,10 +353,10 @@ abstract public class MissileWeapon extends Weapon {
 	
 	public float durabilityPerUse(){
 		//classes that override durabilityPerUse can turn rounding off, to do their own rounding after more logic
-		return durabilityPerUse(true);
+		return durabilityPerUse(true, true);
 	}
 
-	protected float durabilityPerUse( boolean rounded){
+	protected float durabilityPerUse( boolean rounded, boolean level){
 		float usages = baseUses * (float)(Math.pow(3, level()));
 
 		//+50%/75% durability
@@ -480,12 +480,14 @@ abstract public class MissileWeapon extends Weapon {
 		String info = super.info();
 
 		int idLvl = levelKnown ? buffedLvl() : 0;
+		int str = STRReq(idLvl);
+		if (Dungeon.hero != null) idLvl += RingOfSharpshooting.levelDamageBonus(Dungeon.hero);
 
 		info += "\n\n" + Messages.get( MissileWeapon.class, "stats",
 				tier,
 				Math.round(augment.damageFactor(min(idLvl))),
 				Math.round(augment.damageFactor(max(idLvl))),
-				STRReq(idLvl));
+				str);
 
 		if (Dungeon.hero != null) {
 			if (levelKnown) {
@@ -527,8 +529,13 @@ abstract public class MissileWeapon extends Weapon {
 						(int) Math.ceil(MAX_DURABILITY / durabilityPerUse()));
 
 			} else info += " " + Messages.get(this, "unlimited_uses");
+		} else {
+			if (durabilityPerUse() > 0) {
+				info += " " + Messages.get(this, "unid_uses_left",
+						"?", (int) Math.ceil(MAX_DURABILITY / durabilityPerUse(true, false)));
 
-		} else info += " " + Messages.get(this, "unid_uses_left", "?", Integer.toString((int)baseUses));
+			} else info += " " + Messages.get(this, "unlimited_uses");
+		}
 		
 		return info;
 	}

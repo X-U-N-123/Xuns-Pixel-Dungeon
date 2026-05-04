@@ -165,7 +165,7 @@ public abstract class TippedDart extends Dart {
 
 	@Override
 	public float durabilityPerUse() {
-		float use = super.durabilityPerUse(false);
+		float use = super.durabilityPerUse(false, true);
 
 		if (Dungeon.hero != null) {
 			use /= (1 + Dungeon.hero.pointsInTalent(Talent.DURABLE_TIPS));

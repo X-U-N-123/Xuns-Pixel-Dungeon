@@ -57,7 +57,7 @@ public class CursedCoin extends Trinket {
         if (level <= -1){
             return 0;
         } else {
-            return 0.5f*(level+1);
+            return 0.75f*(level+1);
         }
     }
 

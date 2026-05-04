@@ -375,34 +375,31 @@ public class Blacksmith extends NPC {
 			smithRewards = new ArrayList<>();
 
 			smithRewards.add(Generator.random(
-					Generator.wepTiers[Random.chances(new float[]{0, 0, 7, 9, 2, 2}) - 1]));
+					Generator.wepTiers[Random.chances(new float[]{0, 0, 4, 5, 6, 5})]));
 			smithRewards.add(Generator.random(
-					Generator.wepTiers[Random.chances(new float[]{0, 0, 7, 9, 2, 2}) - 1]));
+					Generator.wepTiers[Random.chances(new float[]{0, 0, 4, 5, 6, 5})]));
 
 			ArrayList<Item> toUndo = new ArrayList<>();
 			while (smithRewards.get(0).getClass() == smithRewards.get(1).getClass()) {
 				if (useDecks)   toUndo.add(smithRewards.get(1));
 				smithRewards.remove(1);
 				smithRewards.add(Generator.random(
-						Generator.misTiers[Random.chances(new float[]{0, 0, 7, 9, 2, 2}) - 1]));
+						Generator.misTiers[Random.chances(new float[]{0, 0, 4, 5, 6, 5})]));
 			}
 
 			for (Item i : toUndo) Generator.undoDrop(i);
 
 			//35%:tier3, 45%:tier4, 10%:tier5, 10%:tier6
-			switch (Random.chances(new float[]{0, 0, 0, 7, 9, 2, 2})){
+			switch (Random.chances(new float[]{4, 5, 6, 5})){
 				default:
-				case 3: smithRewards.add(new MailArmor());    break;
-				case 4: smithRewards.add(new ScaleArmor());   break;
-				case 5: smithRewards.add(new PlateArmor());   break;
-				case 6: smithRewards.add(new LamellarArmor());break;
+				case 0: smithRewards.add(new MailArmor());    break;
+				case 1: smithRewards.add(new ScaleArmor());   break;
+				case 2: smithRewards.add(new PlateArmor());   break;
+				case 3: smithRewards.add(new LamellarArmor());break;
 			}
 			MissileWeapon m = (MissileWeapon)Generator.random(
-					Generator.misTiers[Random.chances(new float[]{0, 0, 7, 9, 2, 2}) - 1]);
+					Generator.misTiers[Random.chances(new float[]{0, 0, 4, 5, 6, 5})]);
 			//clear missile wep's starting properties
-			m.level(0);
-			m.enchant(null);
-			m.cursed = false;
 			m.levelKnown = false;
 			smithRewards.add(m);
 

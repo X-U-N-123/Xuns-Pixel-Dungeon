@@ -155,7 +155,7 @@ public class Antimatter extends MissileWeapon{
     }
 
     @Override
-    public float durabilityPerUse( boolean rounded){
+    public float durabilityPerUse(boolean rounded, boolean level){
         return MAX_DURABILITY;
     }
 }
