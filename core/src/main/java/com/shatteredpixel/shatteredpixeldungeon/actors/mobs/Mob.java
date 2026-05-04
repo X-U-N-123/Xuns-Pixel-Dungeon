@@ -340,7 +340,7 @@ public abstract class Mob extends Char {
 			}
 		}
 
-		//find a new enemy if..
+		//find a new enemy if...
 		boolean newEnemy = false;
 		//we have no enemy, or the current one is dead/missing
 		if ( enemy == null || !enemy.isAlive() || !Actor.chars().contains(enemy) || state == WANDERING) {
@@ -1193,27 +1193,23 @@ public abstract class Mob extends Char {
 		if (Dungeon.isChallenged(Challenges.X_U_NS_POWER)){
 			int inc = StoneofIntelligence.LootandExpinc();
 			int armor = Math.round(drRoll() * AscensionChallenge.statModifier(this));
-			if (this.buff(BrokenArmor.class) != null){
-				armor = 0;
-			}
+			if (buff(BrokenArmor.class) != null) armor = 0;
 			dev_desc = Messages.get(this, "dev_info", HP, HT, attackSkill(this), defenseSkill(this),
-				EXP, maxLvl + inc, damageRoll(), attackDelay(), armor, speed(), 1/timeScale(), getClass().getSimpleName());
+				EXP, maxLvl + inc, damageRoll(), attackDelay(), armor, speed(), getClass().getSimpleName());
 
 			dev_desc += "\n" + Messages.get(this, "property");
 			for (Property prop : properties().toArray(new Property[0])) dev_desc += Messages.get(this, prop.toString());
 
 			dev_desc += "\n" + Messages.get(this, "state");
-			if (this.state.equals(WANDERING))dev_desc += Messages.get(this, "wandering");
-			if (this.state.equals(SLEEPING)) dev_desc += Messages.get(this, "sleeping");
-			if (this.state.equals(HUNTING))  dev_desc += Messages.get(this, "hunting");
-			if (this.state.equals(FLEEING))  dev_desc += Messages.get(this, "fleeing");
-			if (this.state.equals(PASSIVE))  dev_desc += Messages.get(this, "passive");
+			if (state.equals(WANDERING))dev_desc += Messages.get(this, "wandering");
+			if (state.equals(SLEEPING)) dev_desc += Messages.get(this, "sleeping");
+			if (state.equals(HUNTING))  dev_desc += Messages.get(this, "hunting");
+			if (state.equals(FLEEING))  dev_desc += Messages.get(this, "fleeing");
+			if (state.equals(PASSIVE))  dev_desc += Messages.get(this, "passive");
 
 			dev_desc += "\n" + Messages.get(this, "alignment") + Messages.get(this, alignment.toString()) + "\n\n";
 		}
-		if (Dungeon.isChallenged(Challenges.CRAZY_LOOT) && plunderedItem != null){
-			plunder += "\n\n" + Messages.get(this, "plunder");
-		}
+		if (Dungeon.isChallenged(Challenges.CRAZY_LOOT) && plunderedItem != null) plunder += "\n\n" + Messages.get(this, "plunder");
 
 		return dev_desc + desc + plunder;
 	}

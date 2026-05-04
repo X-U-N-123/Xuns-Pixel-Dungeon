@@ -340,6 +340,7 @@ public class Armor extends EquipableItem {
 				detaching.image = ItemSpriteSheet.INTACT_SEAL;
 			}
 			if (detaching.canTransferGlyph()){
+				detaching.setGlyph(glyph);
 				inscribe(null);
 			} else {
 				detaching.setGlyph(null);

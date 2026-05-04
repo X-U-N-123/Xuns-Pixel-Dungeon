@@ -93,7 +93,10 @@ public class devPickaxe extends Item {
 	public void execute(Hero hero, String action) {
 
 		super.execute(hero, action);
-		if (action.equals(AC_SET)) GameScene.show(new WndSelectTerrain(this));
+		if (action.equals(AC_SET)) {
+			GameScene.show(new WndSelectTerrain(this));
+			defaultAction = AC_MINE;
+		}
 		if (action.equals(AC_MINE) || action.equals(AC_HEWELL) || action.equals(AC_AWWELL)){
 			GameScene.selectCell(new CellSelector.Listener() {
 				@Override

@@ -26,7 +26,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Daze;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Doom;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vulnerable;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Weakness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
@@ -72,8 +72,8 @@ public class PotionOfStrength extends Potion {
 	public static void exreciseDebuff(Hero hero){
         if (!Dungeon.isChallenged(Challenges.EXERCISES)) return;
 
-		if (hero.buff(Weakness.class) == null)        Buff.prolong(hero, Weakness.class,   2e+9f);
-		else if (hero.buff(Daze.class) == null)       Buff.prolong(hero, Daze.class,       2e+9f);
-        else                                          Buff.affect( hero, Doom.class);
+		if (hero.buff(Weakness.class) == null)  Buff.prolong(hero, Weakness.class,   1000f);
+		else if (hero.buff(Daze.class) == null) Buff.prolong(hero, Daze.class,       1000f);
+        else                                    Buff.prolong(hero, Vulnerable.class, 1000f);
 	}
 }

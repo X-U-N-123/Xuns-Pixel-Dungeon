@@ -21,6 +21,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -38,6 +40,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.HeroIcon;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 
@@ -52,8 +55,18 @@ public class DrapeOfRedemption extends ClericSpell {
 
     @Override
     public String desc() {
-        int quantity = 24 + 12 * Dungeon.hero.pointsInTalent(Talent.DRAPE_OF_REDEMPTION);
-        return Messages.get(this, "desc", quantity) +"\n\n"+ Messages.get(this, "charge_cost", (int)chargeUse(Dungeon.hero));
+        int max = 24 + 12 * hero.pointsInTalent(Talent.DRAPE_OF_REDEMPTION);
+
+        int amount = 0;
+        for (Char ch : Dungeon.level.mobs.toArray(new Mob[0]))
+            if (hero.fieldOfView[ch.pos])
+                if (ch.alignment != Char.Alignment.NEUTRAL && !(ch instanceof Hero)
+                    && !ch.isInvulnerable(DrapeOfRedemption.class)) amount ++;
+
+        int min = Math.round(max * amount / (float)(amount + 1));
+
+        return Messages.get(this, "desc", min, max)
+                + "\n\n" + Messages.get(this, "charge_cost", (int)chargeUse(hero));
     }
 
     @Override
@@ -68,27 +81,35 @@ public class DrapeOfRedemption extends ClericSpell {
 
     @Override
     public void onCast(HolyTome tome, Hero hero) {
-        int amount = 24 + 12 * Dungeon.hero.pointsInTalent(Talent.DRAPE_OF_REDEMPTION);
+        float max = 24 + 12 * Dungeon.hero.pointsInTalent(Talent.DRAPE_OF_REDEMPTION);
         ArrayList<Char> affectedChars = new ArrayList<>();
 
-        for (Char ch : Dungeon.level.mobs.toArray(new Mob[0])) {
+        for (Char ch : Dungeon.level.mobs.toArray(new Mob[0]))
             if (hero.fieldOfView[ch.pos])
-                if ((ch.alignment == Char.Alignment.ALLY && ch != hero)
-                || ch.alignment == Char.Alignment.ENEMY) affectedChars.add(ch);
-        }
+                if (ch.alignment != Char.Alignment.NEUTRAL && ch != hero
+                    && !ch.isInvulnerable(DrapeOfRedemption.class)) affectedChars.add(ch);
+        //either enemy, or ally
 
-        if (affectedChars.isEmpty()){
+        float min = Math.round(max * affectedChars.size() / (float)(affectedChars.size() + 1));
+
+        if (min == 0){
             GLog.w(Messages.get(ClericSpell.class, "no_target"));
             return;
         }
 
         hero.busy();
-        float amountForOne = (float)amount / affectedChars.size();
 
         int temp = 0;
         float temp2 = 0;
+        min /= affectedChars.size();
+        max /= affectedChars.size();
         for (Char ch : affectedChars) {
-            int realAmount = (int)amountForOne;
+
+            float amountForOne = Random.NormalFloat(min, max);
+            if (Char.hasProp(ch, Char.Property.DEMONIC) || Char.hasProp(ch, Char.Property.UNDEAD))
+                amountForOne = max;
+
+            int realAmount = Math.round(amountForOne);
             temp += realAmount;
             temp2 += amountForOne;
             if (temp2 >= 1 + temp) {
@@ -101,7 +122,7 @@ public class DrapeOfRedemption extends ClericSpell {
                 ch.HP += toHeal;
                 if (toHeal > 0) ch.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(toHeal), FloatingText.HEALING);
                 if (realAmount > toHeal) {
-                    Buff.affect(ch, Barrier.class).incShield(realAmount - toHeal);
+                    Buff.affect(ch, Barrier.class).setShield(realAmount - toHeal);
                     ch.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(realAmount - toHeal), FloatingText.SHIELDING);
                 }
             } else ch.damage(realAmount, DrapeOfRedemption.this); //damage enemies
@@ -113,5 +134,4 @@ public class DrapeOfRedemption extends ClericSpell {
         hero.spendAndNext(1f);
         onSpellCast(tome, hero);
     }
-
 }
