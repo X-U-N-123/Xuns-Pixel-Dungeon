@@ -27,9 +27,11 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.MagicalGem;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.SolidifiedMetal;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.WornLock;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.Maze;
@@ -105,15 +107,21 @@ public class SecretMazeRoom extends SecretRoom {
 			if (((Weapon)prize).hasCurseEnchant()){
 				((Weapon) prize).enchant(null);
 			}
-			if (Random.Float() < MagicalGem.wandReplaceChance()){
-				Wand w = (Wand)Generator.random(Generator.Category.WAND);
-				w.level(prize.level());
-				prize = w;
+			if (Random.Float() < SolidifiedMetal.missileReplaceChance()){
+				MissileWeapon m = (MissileWeapon)Generator.random(Generator.Category.MISSILE);
+				m.quantity(m.quantity() + prize.level());
+				m.enchant(((Weapon)prize).enchantment);
+				prize = m;
 			}
 		} else {
 			prize = Generator.randomArmor((Dungeon.depth / 5) + 1);
 			if (((Armor)prize).hasCurseGlyph()){
 				((Armor) prize).inscribe(null);
+			}
+			if (Random.Float() < MagicalGem.wandReplaceChance()){
+				Wand w = (Wand)Generator.random(Generator.Category.WAND);
+				w.level(prize.level());
+				prize = w;
 			}
 		}
 		prize.cursed = false;

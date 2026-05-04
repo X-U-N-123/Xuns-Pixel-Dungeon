@@ -28,9 +28,9 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.SacrificialFire;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
-import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.MagicalGem;
-import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.SolidifiedMetal;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
@@ -105,10 +105,11 @@ public class SacrificeRoom extends SpecialRoom {
 		}
 
 		Item reward = prize;
-		if (Random.Float() < MagicalGem.wandReplaceChance()){
-			Wand w = (Wand)Generator.random(Generator.Category.WAND);
-			w.level(prize.level());
-			reward = w;//replace it with a wand if hero has magical gem
+		if (Random.Float() < SolidifiedMetal.missileReplaceChance()){
+			MissileWeapon m = (MissileWeapon) Generator.random(Generator.Category.MISSILE);
+			m.quantity(m.quantity() + reward.level());
+			m.enchant(m.enchantment);//replace it with a group of missilw weapon if hero has magical gem
+			reward = m;
 		}
 		reward.cursed = reward.cursedKnown = true;
 

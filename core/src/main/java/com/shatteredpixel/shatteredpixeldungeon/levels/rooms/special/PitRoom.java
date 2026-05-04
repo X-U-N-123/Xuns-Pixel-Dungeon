@@ -28,6 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.CrystalKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.MagicalGem;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.SolidifiedMetal;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
@@ -76,23 +77,26 @@ public class PitRoom extends SpecialRoom {
 					mainLoot = Generator.random(Generator.Category.ARTIFACT);
 					break;
 				case 2:
-					Generator.Category cat = Generator.Category.WEAPON;
-					if (Random.Float() < MagicalGem.wandReplaceChance()) cat = Generator.Category.WAND;
-					mainLoot = Generator.random(Random.oneOf(cat, Generator.Category.ARMOR));
+					Generator.Category cat1 = Generator.Category.WEAPON;
+					if (Random.Float() < SolidifiedMetal.missileReplaceChance()) cat1 = Generator.Category.MISSILE;
+					Generator.Category cat2 = Generator.Category.ARMOR;
+					if (Random.Float() < MagicalGem.wandReplaceChance()) cat2 = Generator.Category.WAND;
+					mainLoot = Generator.random(Random.oneOf(cat1, cat2));
 					break;
 			}
 		} while ( mainLoot == null || Challenges.isItemBlocked(mainLoot));
+		mainLoot.cursedKnown = true;
 		level.drop(mainLoot, remains).setHauntedIfCursed().type = Heap.Type.SKELETON;
 		
 		int n = Random.IntRange( 1, 2 );
 		for (int i=0; i < n; i++) {
-			level.drop( prize( level ), remains ).setHauntedIfCursed();
+			level.drop( prize(), remains );
 		}
 
 		level.drop( new CrystalKey( Dungeon.depth ), remains );
 	}
 	
-	private static Item prize( Level level ) {
+	private static Item prize() {
 		return Generator.random( Random.oneOf(
 			Generator.Category.POTION,
 			Generator.Category.SCROLL,

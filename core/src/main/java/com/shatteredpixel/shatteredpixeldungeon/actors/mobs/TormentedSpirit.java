@@ -30,8 +30,10 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.MagicalGem;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.SolidifiedMetal;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.TormentedSpiritSprite;
 import com.watabou.noosa.audio.Sample;
@@ -64,15 +66,20 @@ public class TormentedSpirit extends Wraith {
 		if (Random.Int(2) == 0){
 			prize = Generator.randomWeapon(true);
 			((Weapon)prize).enchant();
-
+			if (Random.Float() < SolidifiedMetal.missileReplaceChance()){
+				MissileWeapon m = (MissileWeapon)Generator.random(Generator.Category.MISSILE);
+				m.quantity(m.quantity() + prize.level());
+				m.enchant(((Weapon)loot).enchantment);
+				prize = m;
+			}
+		} else {
+			prize = Generator.randomArmor();
+			((Armor) prize).inscribe();
 			if (Random.Float() < MagicalGem.wandReplaceChance()){
 				Wand w = (Wand)Generator.random(Generator.Category.WAND);
 				w.level(prize.level());
 				prize = w;
 			}
-		} else {
-			prize = Generator.randomArmor();
-			((Armor) prize).inscribe();
 		}
 		prize.cursed = false;
 		prize.cursedKnown = true;

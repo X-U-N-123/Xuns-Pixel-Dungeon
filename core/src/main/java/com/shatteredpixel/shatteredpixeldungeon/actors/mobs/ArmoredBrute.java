@@ -27,8 +27,11 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.LamellarArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.PlateArmor;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.MagicalGem;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ShieldedSprite;
@@ -62,10 +65,15 @@ public class ArmoredBrute extends Brute {
 	
 	@Override
 	public Item createLoot() {
-		if (Random.Int( 3 ) == 0) {
-			return new LamellarArmor().random();
+		Armor a = Random.Int( 3 ) == 0 ? new LamellarArmor() : new PlateArmor();
+		a.random();
+		if (Random.Float() < MagicalGem.wandReplaceChance()){
+			Wand w = (Wand)Generator.random(Generator.Category.WAND);
+			w.level(a.level());
+			if (a.hasGoodGlyph()) w.cursedKnown = true;
+			return w;
 		}
-		return new PlateArmor().random();
+		return a;
 	}
 	
 	//similar to regular brute rate, but deteriorates much slower. 60 turns to death total.

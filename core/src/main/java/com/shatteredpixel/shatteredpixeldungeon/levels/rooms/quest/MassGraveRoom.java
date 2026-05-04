@@ -27,8 +27,11 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLiquidFlame;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.CorpseDust;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.MagicalGem;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
@@ -84,7 +87,14 @@ public class MassGraveRoom extends SpecialRoom {
 		if (Random.Float() <= 0.3f) items.add(new Gold());
 		if (Random.Float() <= 0.3f) items.add(new Gold());
 		if (Random.Float() <= 0.6f) items.add(Generator.random());
-		if (Random.Float() <= 0.3f) items.add(Generator.randomArmor());
+		Item armorOrWand = Generator.randomArmor();
+		if (Random.Float() < MagicalGem.wandReplaceChance()){
+			Wand w = (Wand)Generator.random(Generator.Category.WAND);
+			w.level(armorOrWand.level());
+			if (((Armor) armorOrWand).hasGoodGlyph()) w.cursedKnown = true;
+			armorOrWand = w;
+		}
+		if (Random.Float() <= 0.3f) items.add(armorOrWand);
 
 		for (Item item : items){
 			int pos;

@@ -708,6 +708,7 @@ public class ItemSpriteSheet {
 	public static final int MAGICAL_GEM     = TRINKETS+19;
 	public static final int CURSED_COIN     = TRINKETS+20;
 	public static final int SPYGLASS        = TRINKETS+21;
+	public static final int SOLID_METAL     = TRINKETS+22;
 	static{
 		assignItemRect(RAT_SKULL,       16, 11);
 		assignItemRect(PARCHMENT_SCRAP, 10, 14);
@@ -731,6 +732,7 @@ public class ItemSpriteSheet {
 		assignItemRect(MAGICAL_GEM,     11, 9 );
 		assignItemRect(CURSED_COIN,     14, 14);
 		assignItemRect(SPYGLASS,        15, 15);
+		assignItemRect(SOLID_METAL,     8,  15);
 	}
 
 	private static final int SCROLLS        = xy(1, 13);  //16 slots

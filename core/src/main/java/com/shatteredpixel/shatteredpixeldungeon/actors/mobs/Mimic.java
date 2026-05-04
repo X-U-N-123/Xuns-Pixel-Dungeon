@@ -33,10 +33,14 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.MagicalGem;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.MimicTooth;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.SolidifiedMetal;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
@@ -342,14 +346,24 @@ public class Mimic extends Mob {
 					break;
 				case 2:
 					reward = Generator.randomArmor();
+					
+					if (Random.Float() < MagicalGem.wandReplaceChance()){
+						Wand w = (Wand)Generator.random(Generator.Category.WAND);
+						w.cursed = reward.cursed;
+						w.level(reward.level());
+						if (((Armor) reward).hasGoodGlyph()) w.cursedKnown = true;
+						reward = w;
+					}
 					break;
 				case 3:
 					reward = Generator.randomWeapon(!useDecks);
-					if (Random.Float() < MagicalGem.wandReplaceChance()){
-						Wand w = (Wand)Generator.random(Generator.Category.WAND);
-						w.level(reward.level());
-						w.cursed = reward.cursed;
-						reward = w;
+
+					if (Random.Float() < SolidifiedMetal.missileReplaceChance()){
+						MissileWeapon m = (MissileWeapon)Generator.random(Generator.Category.MISSILE);
+						m.quantity(m.quantity() + reward.level());
+						m.cursed = reward.cursed;
+						m.enchant(((Weapon)reward).enchantment);
+						reward = m;
 					}
 					break;
 				case 4:

@@ -23,9 +23,13 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.MysteryMeat;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.SolidifiedMetal;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Crabclaw;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CrabSprite;
 import com.watabou.utils.Random;
 
@@ -73,6 +77,13 @@ public class Crab extends Mob {
 		if (!Dungeon.LimitedDrops.CRAB_CLAW.dropped() && Random.Float() >= 0.5f){
 			i = new Crabclaw().random();
 			Dungeon.LimitedDrops.CRAB_CLAW.count++;
+		}
+		if (Random.Float() < SolidifiedMetal.missileReplaceChance()){
+			MissileWeapon m = (MissileWeapon) Generator.random(Generator.Category.MISSILE);
+			m.quantity(m.quantity() + i.level());
+			m.cursed = i.cursed;
+			m.enchant(((Weapon)i).enchantment);
+			i = m;
 		}
 		return i;
 	}

@@ -29,10 +29,13 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.IronKey;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.MagicalGem;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
 import com.watabou.utils.Point;
+import com.watabou.utils.Random;
 
 public class CryptRoom extends SpecialRoom {
 
@@ -68,10 +71,10 @@ public class CryptRoom extends SpecialRoom {
 			cy = top + 2;
 		}
 		
-		level.drop( prize( level ), cx + cy * level.width() ).type = Heap.Type.TOMB;
+		level.drop( prize(), cx + cy * level.width() ).type = Heap.Type.TOMB;
 	}
 	
-	private static Item prize( Level level ) {
+	private static Item prize() {
 		
 		//1 floor set higher than normal
 		Armor prize = Generator.randomArmor( (Dungeon.depth / 5) + 1);
@@ -92,6 +95,13 @@ public class CryptRoom extends SpecialRoom {
 			}
 		}
 		prize.cursed = prize.cursedKnown = true;
+
+		if (Random.Float() < MagicalGem.wandReplaceChance()){
+			Wand w = (Wand)Generator.random(Generator.Category.WAND);
+			w.level(prize.level());
+			w.cursed = true;
+			return w;
+		}
 		
 		return prize;
 	}

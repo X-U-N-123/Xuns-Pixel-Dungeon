@@ -80,6 +80,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.LiquidMetal;
 import com.shatteredpixel.shatteredpixeldungeon.items.LostBackpack;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.MasterThievesArmband;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.PhantomBomb;
@@ -92,6 +93,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.CursedCoin;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ExoticCrystals;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.MagicalGem;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ShardOfOblivion;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.SolidifiedMetal;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.StoneofIntelligence;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
@@ -1138,11 +1140,19 @@ public abstract class Mob extends Char {
 
 		}
 
-        if (Random.Float() < MagicalGem.wandReplaceChance() && item instanceof MeleeWeapon){
-            Wand w = (Wand)Generator.random(Generator.Category.WAND);
-            w.level(item.level());
-            w.cursed = item.cursed;
-            item = w;
+		if (Random.Float() < MagicalGem.wandReplaceChance() && item instanceof Armor){
+			Wand w = (Wand)Generator.random(Generator.Category.WAND);
+			w.level(item.level());
+			w.cursed = item.cursed;
+			if (((Armor) item).hasGoodGlyph()) w.cursedKnown = true;
+			item = w;
+		}
+        if (Random.Float() < SolidifiedMetal.missileReplaceChance() && item instanceof MeleeWeapon){
+            MissileWeapon m = (MissileWeapon) Generator.random(Generator.Category.MISSILE);
+			m.quantity(m.quantity() + item.level());
+			m.cursed = item.cursed;
+			m.enchant(((Weapon)item).enchantment);
+            item = m;
         }
 
 		return item;

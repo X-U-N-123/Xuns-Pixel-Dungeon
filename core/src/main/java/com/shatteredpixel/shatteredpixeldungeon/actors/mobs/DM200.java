@@ -27,8 +27,12 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ToxicGas;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.MagicalGem;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.SolidifiedMetal;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DM200Sprite;
@@ -84,19 +88,27 @@ public class DM200 extends Mob {
 	public Item createLoot() {
 		Dungeon.LimitedDrops.DM200_EQUIP.count++;
 		//uses probability tables for dwarf city
+		Item toDrop;
 		if (loot == Generator.Category.WEAPON){
-			Item loot = Generator.randomWeapon(4, true);
-
+			toDrop = Generator.randomWeapon(4, true);
+			if (Random.Float() < SolidifiedMetal.missileReplaceChance()){
+				MissileWeapon m = (MissileWeapon)Generator.random(Generator.Category.MISSILE);
+				m.quantity(m.quantity() + toDrop.level());
+				m.cursed = toDrop.cursed;
+				m.enchant(((Weapon)toDrop).enchantment);
+				toDrop = m;
+			}
+		} else {
+			toDrop = Generator.randomArmor(4);
 			if (Random.Float() < MagicalGem.wandReplaceChance()){
 				Wand w = (Wand)Generator.random(Generator.Category.WAND);
-				w.level(loot.level());
-				w.cursed = loot.cursed;
-				loot = w;
+				w.level(toDrop.level());
+				w.cursed = toDrop.cursed;
+				if (((Armor) toDrop).hasGoodGlyph()) w.cursedKnown = true;
+				toDrop = w;
 			}
-			return loot;
-		} else {
-			return Generator.randomArmor(4);
 		}
+		return toDrop;
 	}
 
 	private int ventCooldown = 0;

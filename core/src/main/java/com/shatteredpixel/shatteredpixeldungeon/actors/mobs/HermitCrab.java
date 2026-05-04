@@ -23,7 +23,13 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
+import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.MagicalGem;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.StoneofIntelligence;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.HermitCrabSprite;
+import com.watabou.utils.Random;
 
 public class HermitCrab extends Crab {
 
@@ -43,8 +49,16 @@ public class HermitCrab extends Crab {
 	public void rollToDropLoot() {
 		super.rollToDropLoot();
 
-		if (Dungeon.hero.lvl <= maxLvl + 2){
-			Dungeon.level.drop(Generator.randomArmor(), pos).sprite.drop();
+		if (Dungeon.hero.lvl <= maxLvl + 2 + StoneofIntelligence.LootandExpinc()){
+			Item toDrop = Generator.randomArmor();
+			if (Random.Float() < MagicalGem.wandReplaceChance()){
+				Wand w = (Wand)Generator.random(Generator.Category.WAND);
+				w.cursed = toDrop.cursed;
+				w.level(toDrop.level());
+				if (((Armor) toDrop).hasGoodGlyph()) w.cursedKnown = true;
+				toDrop = w;
+			}
+			Dungeon.level.drop(toDrop, pos).sprite.drop();
 		}
 	}
 

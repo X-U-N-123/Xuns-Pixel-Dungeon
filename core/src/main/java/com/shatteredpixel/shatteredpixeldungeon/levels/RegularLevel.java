@@ -41,6 +41,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.Torch;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.SupplyRation;
@@ -53,9 +54,12 @@ import com.shatteredpixel.shatteredpixeldungeon.items.keys.Key;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.CrackedSpyglass;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.MagicalGem;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.MimicTooth;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.SolidifiedMetal;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.TrinketCatalyst;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Document;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
 import com.shatteredpixel.shatteredpixeldungeon.levels.builders.Builder;
@@ -391,10 +395,18 @@ public abstract class RegularLevel extends Level {
 			Item toDrop = Generator.random();
 			if (toDrop == null) continue;
 			//Magical gem extra wand
-			if (Random.Float() < MagicalGem.wandReplaceChance() && toDrop instanceof MeleeWeapon){
+			if (Random.Float() < SolidifiedMetal.missileReplaceChance() && toDrop instanceof MeleeWeapon){
+				MissileWeapon m = (MissileWeapon)Generator.random(Generator.Category.MISSILE);
+				m.quantity(m.quantity() + toDrop.level());
+				m.cursed = toDrop.cursed;
+				m.enchant(((Weapon)toDrop).enchantment);
+				toDrop = m;
+			}
+			if (Random.Float() < MagicalGem.wandReplaceChance() && toDrop instanceof Armor){
 				Wand w = (Wand)Generator.random(Generator.Category.WAND);
 				w.level(toDrop.level());
 				w.cursed = toDrop.cursed;
+				if (((Armor) toDrop).hasGoodGlyph()) w.cursedKnown = true;
 				toDrop = w;
 			}
 
