@@ -1184,8 +1184,10 @@ public abstract class Mob extends Char {
 	public String info(){
 		String desc = description();
 
-		for (Buff b : buffs(ChampionEnemy.class)){
-			desc += "\n\n_" + Messages.titleCase(b.name()) + "_\n" + b.desc();
+		HashSet<ChampionEnemy> champion = buffs(ChampionEnemy.class);
+		if (!champion.isEmpty()) {
+			desc += "\n";
+			for (Buff b : champion) desc += "\n_" + Messages.titleCase(b.name()) + "_  " + b.desc();
 		}
 
 		String dev_desc = "";

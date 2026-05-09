@@ -78,6 +78,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DiscardedItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.MimicSprite;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.CustomTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTerrainTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTileSheet;
@@ -1688,23 +1689,25 @@ public class GameScene extends PixelScene {
 		if (o == Dungeon.hero){
 			GameScene.show( new WndHero() );
 		} else if ( o instanceof Mob && ((Mob) o).isActive() ){
-			GameScene.show(new WndInfoMob((Mob) o));
 			if (o instanceof Snake && !Document.ADVENTURERS_GUIDE.isPageRead(Document.GUIDE_SURPRISE_ATKS)){
 				GameScene.flashForDocument(Document.ADVENTURERS_GUIDE, Document.GUIDE_SURPRISE_ATKS);
 			}
+			if (o instanceof Mimic && !((Mimic) o).searched){
+				((Mimic) o).searched = true;
+				Sample.INSTANCE.play(Assets.Sounds.MIMIC);
+				GLog.w(Messages.get(Mimic.class, "reveal"));
+				if (((Mimic) o).alignment == Char.Alignment.NEUTRAL) ((MimicSprite)((Mimic) o).sprite).hideMimic((Char) o);
+			}
+			GameScene.show(new WndInfoMob((Mob) o));
 		} else if ( o instanceof Heap && !((Heap) o).isEmpty() ){
 			GameScene.show(new WndInfoItem((Heap)o));
 		} else if ( o instanceof Plant ){
 			GameScene.show( new WndInfoPlant((Plant) o) );
-			//plants can be harmful to trample, so let the player ID just by examine
-			Bestiary.setSeen(o.getClass());
 		} else if ( o instanceof Trap ){
 			GameScene.show( new WndInfoTrap((Trap) o));
-			//traps are often harmful to trigger, so let the player ID just by examine
-			Bestiary.setSeen(o.getClass());
-		} else {
-			GameScene.show( new WndMessage( Messages.get(GameScene.class, "dont_know") ) ) ;
-		}
+		} else GameScene.show( new WndMessage( Messages.get(GameScene.class, "dont_know") ) ) ;
+
+		if (o != null) Bestiary.setSeen(o.getClass());
 	}
 
 	

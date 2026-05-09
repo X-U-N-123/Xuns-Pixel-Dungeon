@@ -57,6 +57,7 @@ import java.util.Collection;
 public class Mimic extends Mob {
 	
 	private int level;
+	public boolean searched = false;
 	
 	{
 		spriteClass = MimicSprite.class;
@@ -77,6 +78,7 @@ public class Mimic extends Mob {
 	private static final String LEVEL	= "level";
 	private static final String ITEMS	= "items";
 	private static final String STEALTHY= "stealthy";
+	private static final String SEARCHED= "searched";
 	
 	@Override
 	public void storeInBundle( Bundle bundle ) {
@@ -84,6 +86,7 @@ public class Mimic extends Mob {
 		if (items != null) bundle.put( ITEMS, items );
 		bundle.put( LEVEL, level );
 		bundle.put( STEALTHY, stealthy );
+		bundle.put( SEARCHED, searched );
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -95,6 +98,9 @@ public class Mimic extends Mob {
 		level = bundle.getInt( LEVEL );
 		adjustStats(level);
 		stealthy = bundle.getBoolean(STEALTHY);
+		if (bundle.contains(SEARCHED)) {
+			searched = bundle.getBoolean(SEARCHED);
+		}
 		super.restoreFromBundle(bundle);
 		if (state != PASSIVE && alignment == Alignment.NEUTRAL){
 			alignment = Alignment.ENEMY;
@@ -116,7 +122,7 @@ public class Mimic extends Mob {
 
 	@Override
 	public String name() {
-		if (alignment == Alignment.NEUTRAL){
+		if (alignment == Alignment.NEUTRAL && !searched){
 			return Messages.get(Heap.class, "chest");
 		} else {
 			return super.name();
@@ -126,7 +132,7 @@ public class Mimic extends Mob {
 	@Override
 	public String description() {
 		if (alignment == Alignment.NEUTRAL){
-			if (MimicTooth.stealthyMimics()){
+			if (MimicTooth.stealthyMimics() && !searched){
 				return Messages.get(Heap.class, "chest_desc");
 			} else {
 				return Messages.get(Heap.class, "chest_desc") + "\n\n" + Messages.get(this, "hidden_hint");
@@ -155,6 +161,11 @@ public class Mimic extends Mob {
 		MimicSprite sprite = (MimicSprite) super.sprite();
 		if (alignment == Alignment.NEUTRAL) sprite.hideMimic(this);
 		return sprite;
+	}
+
+	@Override
+	public boolean heroShouldInteract(){
+		return super.heroShouldInteract() && !searched;
 	}
 
 	@Override
@@ -226,9 +237,8 @@ public class Mimic extends Mob {
 		}
 	}
 
-	//stealthy mimics have changes to visual behaviour that make them much harder to detect
 	public boolean stealthy(){
-		return stealthy;
+		return stealthy && !searched;
 	}
 
 	@Override

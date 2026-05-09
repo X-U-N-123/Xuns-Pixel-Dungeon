@@ -21,12 +21,12 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells;
 
+import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LifeLink;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.cleric.PowerOfMany;
@@ -34,6 +34,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HolyTome;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.ui.HeroIcon;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.watabou.noosa.audio.Sample;
 
 public class HolyChampion extends ClericSpell {
 
@@ -73,17 +75,11 @@ public class HolyChampion extends ClericSpell {
             hero.sprite.operate(hero.pos);
         }
 
-        if (ally == Stasis.getStasisAlly()){
-            LifeLink lifeLink = ally.buff(LifeLink.class);
-            if (lifeLink != null) lifeLink.clearTime();
-            ally.buff(LifeLinkSpell.LifeLinkSpellBuff.class).clearTime();
-        }
-
-        ChampionEnemy.GiveChampion((Mob)ally);
-        Buff.prolong(ally, HolyChampionTracker.class, 20*(hero.pointsInTalent(Talent.HOLY_CHAMPION)+1));
-
-        onSpellCast(tome, hero);
-
+        if (ally != null && ChampionEnemy.GiveChampion((Mob)ally)) {
+            Buff.prolong(ally, HolyChampionTracker.class, 20 * (hero.pointsInTalent(Talent.HOLY_CHAMPION) + 1));
+            onSpellCast(tome, hero);
+            Sample.INSTANCE.play(Assets.Sounds.CHARGEUP, 0.8f);
+        } else GLog.w(Messages.get(this, "no_champion"));
     }
 
     public static class HolyChampionTracker extends FlavourBuff {

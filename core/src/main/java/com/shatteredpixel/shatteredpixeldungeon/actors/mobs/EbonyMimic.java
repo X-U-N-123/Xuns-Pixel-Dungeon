@@ -67,7 +67,7 @@ public class EbonyMimic extends Mimic {
 
 	@Override
 	public boolean stealthy() {
-		return true;
+		return !searched;
 	}
 
 	public void stopHiding(){

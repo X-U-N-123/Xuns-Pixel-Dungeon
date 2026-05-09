@@ -38,9 +38,9 @@ public class Exhaustion extends FlavourBuff {
 
 	public static void stack(Hero hero) {
 		Exhaustion e = hero.buff(Exhaustion.class);
-		if (e == null) Buff.prolong(hero, Exhaustion.class, 2).level = 1;
+		if (e == null) Buff.prolong(hero, Exhaustion.class, 3).level = 1;
 		else {
-			Buff.prolong(hero, Exhaustion.class, (int)Math.pow(2, e.level) + 1);
+			Buff.prolong(hero, Exhaustion.class, e.level + 3);
 			e.level++;
 			if (e.level >= 4){
 				e.level = 2;

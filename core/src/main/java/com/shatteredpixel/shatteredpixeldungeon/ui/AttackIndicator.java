@@ -24,6 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon.ui;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDAction;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
@@ -117,7 +118,7 @@ public class AttackIndicator extends Tag {
 		int v = Dungeon.hero.visibleEnemies();
 		for (int i=0; i < v; i++) {
 			Mob mob = Dungeon.hero.visibleEnemy( i );
-			if ( Dungeon.hero.canAttack( mob) ) {
+			if ( Dungeon.hero.canAttack( mob) && !mob.isInvulnerable(Hero.class)) {
 				candidates.add( mob );
 			}
 		}

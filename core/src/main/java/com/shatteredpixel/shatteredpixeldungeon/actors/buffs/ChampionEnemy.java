@@ -130,7 +130,7 @@ public abstract class ChampionEnemy extends Buff {
 		}
 	}
 
-	public static void GiveChampion(Mob m){
+	public static boolean GiveChampion(Mob m){
 
 		ArrayList <Class<?extends ChampionEnemy>> Usablebuff = new ArrayList<>();
 		if(m.buff(Projecting.class) == null)   Usablebuff.add(Projecting.class);
@@ -144,14 +144,18 @@ public abstract class ChampionEnemy extends Buff {
 		if(m.buff(OozeEnemy.class) == null)    Usablebuff.add(OozeEnemy.class);
 		if(m.buff(Displacing.class) == null)   Usablebuff.add(Displacing.class);
 		if(m.buff(Shocking.class) == null)     Usablebuff.add(Shocking.class);
-		if(m.buff(Giant.class) == null && Usablebuff.isEmpty()) Usablebuff.add(Giant.class);
+		if(m.buff(Displacing.class) == null && Usablebuff.isEmpty()) Usablebuff.add(Displacing.class);
+		if(m.buff(Giant.class) == null && Usablebuff.isEmpty()
+				&& Dungeon.level.openSpace[m.pos]) Usablebuff.add(Giant.class);
 
 		if (!Usablebuff.isEmpty()){
 			Buff.affect(m, Usablebuff.get(Random.Int(Usablebuff.size())));
 			if (m.state != m.PASSIVE) {
 				m.state = m.WANDERING;
 			}
+			return true;
 		}
+		return false;
 	}
 
 	public static class Blazing extends ChampionEnemy {

@@ -53,7 +53,7 @@ public class MimicSprite extends MobSprite {
 		TextureFilm frames = new TextureFilm( texture, 16, 16 );
 
 		advancedHiding = new Animation( 1, true );
-		advancedHiding.frames( frames, 0+c);
+		advancedHiding.frames( frames, c);
 
 		hiding = new Animation( 1, true );
 		hiding.frames( frames, 1+c, 1+c, 1+c, 1+c, 1+c, 2+c);
@@ -82,7 +82,7 @@ public class MimicSprite extends MobSprite {
 	}
 
 	public void hideMimic(Char ch){
-		if (ch instanceof Mimic && ((Mimic) ch).stealthy()){
+		if (ch instanceof Mimic && ((Mimic) ch).stealthy() && !((Mimic) ch).searched){
 			play(advancedHiding);
 		} else {
 			play(hiding);
@@ -121,14 +121,16 @@ public class MimicSprite extends MobSprite {
 		@Override
 		public void hideMimic(Char ch) {
 			super.hideMimic(ch);
-			alpha(0.2f);
+			if (((Mimic)ch).searched) alpha(1f);
+			else                      alpha(0.2f);
 		}
 
 		@Override
 		public void resetColor() {
 			super.resetColor();
 			if (advancedHiding != null && curAnim == advancedHiding){
-				alpha(0.2f);
+				if (((Mimic)ch).searched) alpha(1f);
+				else                      alpha(0.2f);
 			}
 		}
 
