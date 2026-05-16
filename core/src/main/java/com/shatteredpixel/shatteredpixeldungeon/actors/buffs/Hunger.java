@@ -76,9 +76,15 @@ public class Hunger extends Buff implements Hero.Doom {
 
 			Hero hero = (Hero)target;
 
+			float hungerDelay = 1f;
+
+			if (target.buff(Shadows.class) != null){
+				hungerDelay *= 1.5f;
+			}
+
 			if (isStarving()) {
 
-				partialDamage += target.HT/1000f;
+				partialDamage += target.HT/(1000f * hungerDelay);
 
 				if (partialDamage > 1){
 					target.damage( (int)partialDamage, this);
@@ -86,17 +92,12 @@ public class Hunger extends Buff implements Hero.Doom {
 				}
 				
 			} else {
-
-				float hungerDelay = 1f;
-				if (target.buff(Shadows.class) != null){
-					hungerDelay *= 1.5f;
-				}
 				hungerDelay /= SaltCube.hungerGainMultiplier();
-				if (Dungeon.hero.hasTalent(Talent.STEALTH_METABOLISM) && Dungeon.hero.invisible > 0){
-					hungerDelay *= 1+Dungeon.hero.pointsInTalent(Talent.STEALTH_METABOLISM);
+				if (hero.hasTalent(Talent.STEALTH_METABOLISM) && target.invisible > 0){
+					hungerDelay *= 1+hero.pointsInTalent(Talent.STEALTH_METABOLISM);
 				}
-				if (Dungeon.hero.hasTalent(Talent.ASCETICISM) && Dungeon.hero.heroClass != HeroClass.CLERIC){
-					hungerDelay /= 1-Dungeon.hero.pointsInTalent(Talent.ASCETICISM)*0.2f* level/ STARVING;
+				if (hero.hasTalent(Talent.ASCETICISM) && hero.heroClass != HeroClass.CLERIC){
+					hungerDelay /= 1-hero.pointsInTalent(Talent.ASCETICISM)*0.2f* level/ STARVING;
 				}
 
 				float newLevel = level + (1f/hungerDelay);

@@ -44,8 +44,6 @@ public class Sheep extends NPC {
 		useParry = true;
 	}
 
-	private float lifespan;
-
 	@Override
 	protected boolean act() {
 		if (Dungeon.level.heroFOV[pos]){
@@ -63,7 +61,6 @@ public class Sheep extends NPC {
 	}
 
     public void initialize(float lifespan, boolean canDispel, boolean random){
-        this.lifespan = lifespan;
         spend( lifespan + (random ? Random.Float(-2, 2) : 0) );
         canDispelByInteract = canDispel;
     }
@@ -96,20 +93,17 @@ public class Sheep extends NPC {
 		return true;
 	}
 
-	private static final String LIFESPAN   = "lifespan";
     private static final String CAN_DISPEL = "can_dispel";
 
 	@Override
 	public void storeInBundle(Bundle bundle) {
 		super.storeInBundle(bundle);
-		bundle.put(LIFESPAN,   lifespan);
         bundle.put(CAN_DISPEL, canDispelByInteract);
 	}
 
 	@Override
 	public void restoreFromBundle(Bundle bundle) {
 		super.restoreFromBundle(bundle);
-		lifespan = bundle.getInt(LIFESPAN);
         if (bundle.contains(CAN_DISPEL)) canDispelByInteract = bundle.getBoolean(CAN_DISPEL);
 	}
 }

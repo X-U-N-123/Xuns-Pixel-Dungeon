@@ -32,6 +32,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Regeneration;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Shadows;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -235,6 +236,7 @@ public class WndHero extends WndTabbed {
 
 			if (hero.isStarving()) {
 				regenDelay = 1000f / hero.HT;
+				if (hero.buff(Shadows.class) != null) regenDelay *= 1.5f;
 				statSlot(Messages.get(this, "starvingdmg"), Messages.get(this, "turn", regenDelay));
 			} else statSlot(Messages.get(this, "regendly"), Messages.get(this, "turn", regenDelay));
 

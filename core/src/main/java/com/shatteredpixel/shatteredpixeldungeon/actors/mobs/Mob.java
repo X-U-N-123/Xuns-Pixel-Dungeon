@@ -938,7 +938,7 @@ public abstract class Mob extends Char {
 				Bestiary.setSeen(getClass());
 				Bestiary.countEncounter(getClass());
 
-				AscensionChallenge.processEnemyKill(this);
+				AscensionChallenge.processEnemyKill(this, true);
 
 				int exp = Dungeon.hero.lvl <= maxLvl + StoneofIntelligence.LootandExpinc() ? EXP : 0;
 

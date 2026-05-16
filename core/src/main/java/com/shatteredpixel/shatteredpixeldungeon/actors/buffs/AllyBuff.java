@@ -69,7 +69,7 @@ public abstract class AllyBuff extends Buff {
 			Bestiary.setSeen(enemy.getClass());
 			Bestiary.countEncounter(enemy.getClass());
 
-			AscensionChallenge.processEnemyKill(enemy);
+			AscensionChallenge.processEnemyKill(enemy, false);
 
 			int exp = hero.lvl <= enemy.maxLvl ? enemy.EXP + StoneofIntelligence.LootandExpinc() : 0;
 			if (exp > 0) {

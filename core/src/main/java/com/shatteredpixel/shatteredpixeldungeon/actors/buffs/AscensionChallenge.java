@@ -58,16 +58,13 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Shopkeeper;
 import com.shatteredpixel.shatteredpixeldungeon.items.Amulet;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
-import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.Image;
 import com.watabou.utils.Bundle;
-import com.watabou.utils.Point;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 public class AscensionChallenge extends Buff {
@@ -168,7 +165,7 @@ public class AscensionChallenge extends Buff {
 		return false;
 	}
 
-	public static void processEnemyKill(Char enemy){
+	public static void processEnemyKill(Char enemy, boolean intentional){
 		AscensionChallenge chal = Dungeon.hero.buff(AscensionChallenge.class);
 		if (chal == null) return;
 
@@ -199,7 +196,7 @@ public class AscensionChallenge extends Buff {
 		}
 		chal.stacks = Math.max(0, chal.stacks);
 		if (!chal.stacksLowered) {
-			chal.stacksLowered = true;
+			if (intentional) chal.stacksLowered = true;
 			GLog.p(Messages.get(AscensionChallenge.class, "weaken"));
 		} else if (chal.stacks < 8f && (int)(chal.stacks/2) != (int)(oldStacks/2f)){
 			GLog.p(Messages.get(AscensionChallenge.class, "weaken"));
@@ -270,24 +267,6 @@ public class AscensionChallenge extends Buff {
                         Level.set(i, Terrain.EMPTY, Dungeon.level);
                     }
 				}
-
-                ArrayList<Integer> clearCells = new ArrayList<>();
-
-                if (Dungeon.level instanceof RegularLevel){
-                    for (Point p : ((RegularLevel) Dungeon.level).room(Dungeon.level.exit()).getPoints()){
-                        clearCells.add(Dungeon.level.pointToCell(p));
-                    }
-                    for (Point p : ((RegularLevel) Dungeon.level).room(Dungeon.level.entrance()).getPoints()){
-                        clearCells.add(Dungeon.level.pointToCell(p));
-                    }
-                }
-
-                //underpass entrances near the entrance & exit are reset, to prevent escaping from the dungeon too fast
-                for (int i : clearCells){
-                    if (Dungeon.level.map[i] == Terrain.UNDERPASS){
-                        Level.set(i, Terrain.EMPTY, Dungeon.level);
-                    }
-                }
 
 				//clears any existing mobs from the level and adds one initial one
 				//this helps balance difficulty between levels with lots of mobs left, and ones with few
