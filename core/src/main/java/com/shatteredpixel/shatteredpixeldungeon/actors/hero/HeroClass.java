@@ -93,13 +93,13 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.BladeOfMimic;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.BoneSpike;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Cudgel;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dagger;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Gloves;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Rapier;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Shovel;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Woodsword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WornShortsword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.BoneFragment;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Clay;
@@ -356,13 +356,14 @@ public enum HeroClass {
 
     private static void initWraith(Hero hero ) {
 
-        (hero.belongings.weapon = new Woodsword()).identify();
+        (hero.belongings.weapon = new BoneSpike()).identify();
         hero.belongings.weapon.activate(hero);
 
-        BoneFragment bone = new BoneFragment();
-        bone.quantity(3).collect();
+        BoneFragment fragment = new BoneFragment();
+        fragment.quantity(3).collect();
 
-        Dungeon.quickslot.setSlot(0, bone);
+		Dungeon.quickslot.setSlot(0, hero.belongings.weapon);
+        Dungeon.quickslot.setSlot(1, fragment);
 
         new PotionOfToxicGas().identify();
         new ScrollOfRetribution().identify();

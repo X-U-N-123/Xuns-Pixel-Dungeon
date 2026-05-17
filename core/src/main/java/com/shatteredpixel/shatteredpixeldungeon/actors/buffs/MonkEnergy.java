@@ -662,7 +662,7 @@ public class MonkEnergy extends Buff implements ActionIndicator.Action {
 					@Override
 					protected boolean act() {
 						Buff.affect(hero, Recharging.class, 8f);
-						//2/3 turns of artifact recharging
+						//8 turns of artifact recharging
 						ArtifactRecharge recharge = Buff.affect(hero, ArtifactRecharge.class).extend(8f);
 						recharge.ignoreHornOfPlenty = false;
 						recharge.ignoreHolyTome = false;

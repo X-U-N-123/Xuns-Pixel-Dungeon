@@ -712,7 +712,7 @@ public abstract class Mob extends Char {
 		float delay = 1f;
 		if ( buff(Adrenaline.class) != null) delay /= 1.5f;
 		if ( hero != null && buff(Weakness.class) != null && alignment == Alignment.ENEMY )
-			delay *= 1f + hero.pointsInTalent(Talent.EVIL_NERF) * 0.1f;
+			delay *= 1f + hero.pointsInTalent(Talent.BLURING_BODY) * 0.1f;
 		return delay;
 	}
 	

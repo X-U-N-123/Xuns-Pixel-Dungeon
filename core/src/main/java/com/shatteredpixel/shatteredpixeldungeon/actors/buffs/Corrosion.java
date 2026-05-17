@@ -24,6 +24,9 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfCleansing;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfCorrosion;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
@@ -137,4 +140,11 @@ public class Corrosion extends Buff implements Hero.Doom {
 		GLog.n(Messages.get(this, "ondeath"));
 	}
 
+	@Override
+	public void detach() {
+		super.detach();
+		if (target instanceof Hero && ((Hero) target).heroClass == HeroClass.WRAITH)
+			Buff.affect(target, PotionOfCleansing.Cleanse.class,
+					5 * (1 + 0.2f*((Hero) target).pointsInTalent(Talent.WICKED_GROWTH)));
+	}
 }

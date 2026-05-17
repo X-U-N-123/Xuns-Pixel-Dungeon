@@ -259,11 +259,11 @@ public enum Talent {
 	EXPRESS_UNDERWAY(325, 4), MONITOR_BENEATH(326, 4), SLY_RABBIT(327, 4), GRENADE_COVER(328, 4),
 
     //Wraith T1
-    ANCESTRAL_TRIBUTE(336), BLOOD_INTUITION(337), TESTED_ANTIMAGIC(338), BURIAL_CEREMONY(339), FLEET_BARRIER(340),
+    ANCESTRAL_TRIBUTE(336), BLOOD_INTUITION(337), TESTED_ANTIMAGIC(338), BURIAL_CEREMONY(339), SAFE_PRICK(340),
     //Wraith T2
-    TEARING_MEAL(341), INSCRIBED_REGENERATION(342), EVIL_NERF(343), PSIONIC_BLAST(344), SCAPEGOAT(345), THROWN_EVIL(346),
+    TEARING_MEAL(341), INSCRIBED_REGENERATION(342), BLURING_BODY(343), PSIONIC_BLAST(344), SCAPEGOAT(345), THROWN_EVIL(346),
     //Wraith T3
-    VICIOUS_BETRAYAL(347, 3), CURSED_POWER(348, 3), BLURRING_BODY(349, 3),
+    VICIOUS_BETRAYAL(347, 3), CURSED_POWER(348, 3), WICKED_GROWTH(349, 3),
     //Incubus T3
     LULLABY(350, 3), SLEEPWALKING(351, 3), SLEEPING_IN(352, 3), WRONG_SIDE_OF_THE_BED(353, 3), NIGHTMARE_HAUNTING(354, 3),
 	//PlagueGod T3
@@ -1481,7 +1481,7 @@ public enum Talent {
 			enemy.sprite.emitter().burst( FlameParticle.FACTORY, 2 );
         }
 
-        if (enemy.HP <= enemy.HT * (0.2f + 0.3f * hero.pointsInTalent(BURIAL_CEREMONY)) && hero.hasTalent(BURIAL_CEREMONY)){
+        if (enemy.HP <= enemy.HT * (0.3f + 0.3f * hero.pointsInTalent(BURIAL_CEREMONY)) && hero.hasTalent(BURIAL_CEREMONY)){
             dmg ++;
         }
 
@@ -1577,7 +1577,7 @@ public enum Talent {
 				Collections.addAll(tierTalents, KEEN_MEAL, SECRET_FORESIGHT, TESTED_AWARENESS, HOME_ADVANTAGE, SAFE_SURVEY);
 				break;
             case WRAITH:
-                Collections.addAll(tierTalents, ANCESTRAL_TRIBUTE, BLOOD_INTUITION, TESTED_ANTIMAGIC, BURIAL_CEREMONY, FLEET_BARRIER);
+                Collections.addAll(tierTalents, ANCESTRAL_TRIBUTE, BLOOD_INTUITION, TESTED_ANTIMAGIC, BURIAL_CEREMONY, SAFE_PRICK);
                 break;
 		}
 		for (Talent talent : tierTalents){
@@ -1612,7 +1612,7 @@ public enum Talent {
 				Collections.addAll(tierTalents, PREPARING_MEAL, LIQUID_CLAIRVOYANCE, BARBED_WIRE, WINDING_PORCH, REKINDLED_EMBER, AGGRESSIVE_ROADBLOCK);
 				break;
             case WRAITH:
-                Collections.addAll(tierTalents, TEARING_MEAL, INSCRIBED_REGENERATION, EVIL_NERF, PSIONIC_BLAST, SCAPEGOAT, THROWN_EVIL);
+                Collections.addAll(tierTalents, TEARING_MEAL, INSCRIBED_REGENERATION, BLURING_BODY, PSIONIC_BLAST, SCAPEGOAT, THROWN_EVIL);
                 break;
 		}
 		for (Talent talent : tierTalents){
@@ -1647,7 +1647,7 @@ public enum Talent {
 				Collections.addAll(tierTalents, DEMOLITION, DIG_THE_WELL, CONVENIENT_SHOVEL);
 				break;
             case WRAITH:
-                Collections.addAll(tierTalents, VICIOUS_BETRAYAL, CURSED_POWER, BLURRING_BODY);
+                Collections.addAll(tierTalents, VICIOUS_BETRAYAL, CURSED_POWER, WICKED_GROWTH);
                 break;
 		}
 		for (Talent talent : tierTalents){
@@ -1808,8 +1808,12 @@ public enum Talent {
 
 	private static final HashMap<String, String> renamedTalents = new HashMap<>();
 	static{
+		//X_U_N v2.1.0
+		renamedTalents.put("BLURRING_BODY",             "WICKED_GROWTH");
+		renamedTalents.put("EVIL_NERF",                 "BLURING_BODY");
+		renamedTalents.put("FLEET_BARRIER",             "SAFE_PRICK");
 		//X_U_N v2.0.1
-		renamedTalents.put("BLOODLETTING",              "EVIL_NERF");
+		renamedTalents.put("BLOODLETTING",              "BLURING_BODY");
         //X_U_N v1.0.1
         renamedTalents.put("FARSIGHT_MEAL",             "PREPARING_MEAL");
         renamedTalents.put("FLUORESCENCE",              "SENSITIVE_PEDAL");

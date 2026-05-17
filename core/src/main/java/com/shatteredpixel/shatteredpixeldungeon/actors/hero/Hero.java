@@ -1914,12 +1914,10 @@ public class Hero extends Char {
             WandOfBlastWave.BlastWave.blast(pos, 4);
         }
 
-        //wraith ability
-        if (!(src instanceof Hunger) && !(src instanceof Viscosity.DeferedDamage)){
-            int dmgDecrease = 2 * pointsInTalent(Talent.BLURRING_BODY);
-            if (heroClass == HeroClass.WRAITH) dmgDecrease ++;
-            damage = Math.max(0, damage - Random.NormalIntRange(0, dmgDecrease));
-        }
+		if (hasTalent(Talent.SAFE_PRICK) && damage >= 5 && heroClass != HeroClass.WRAITH && buff(SafePrickCooldown.class) == null){
+			Buff.affect(this, Barrier.class).setShield(5);
+			Buff.affect(this, SafePrickCooldown.class, 50);
+		}
 
 		//unused, could be removed
 		CapeOfThorns.Thorns thorns = buff( CapeOfThorns.Thorns.class );
@@ -3037,6 +3035,12 @@ public class Hero extends Char {
 			super.restoreFromBundle(bundle);
 			invisGiven = bundle.getBoolean(GIVEN);
 		}
+	}
+
+	public static class SafePrickCooldown extends FlavourBuff {
+		public int icon() { return BuffIndicator.TIME; }
+		public void tintIcon(Image icon) { icon.hardlight(0.7f, 0f, 0f); }
+		public float iconFadePercent() { return Math.max(0, visualcooldown() / 25); }
 	}
 
 	@Override

@@ -24,6 +24,8 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 
@@ -51,6 +53,12 @@ public class Degrade extends FlavourBuff {
 		super.detach();
 		if (target == Dungeon.hero) ((Hero) target).updateHT(false);
 		Item.updateQuickslot();
+		if (target instanceof Hero && ((Hero) target).heroClass == HeroClass.WRAITH){
+			Buff.affect(target, ScrollEmpower.class).reset(
+					Math.round(1 + 0.2f*((Hero) target).pointsInTalent(Talent.WICKED_GROWTH)));
+			Buff.affect(target, EnhancedRings.class,
+					4 * (1 + 0.2f*((Hero) target).pointsInTalent(Talent.WICKED_GROWTH)));
+		}
 	}
 
 	//called in Item.buffedLevel()
@@ -76,5 +84,4 @@ public class Degrade extends FlavourBuff {
 	public float iconFadePercent() {
 		return (DURATION - visualcooldown())/DURATION;
 	}
-	
 }

@@ -27,6 +27,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Fire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Thief;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ElmoParticle;
@@ -252,4 +253,12 @@ public class Burning extends Buff implements Hero.Doom {
 		spend(time);
 		left -= time;
 	}//only used in sandstorm
+
+	@Override
+	public void detach() {
+		super.detach();
+		if (target instanceof Hero && ((Hero) target).heroClass == HeroClass.WRAITH)
+			Buff.affect(target, FireImbue.class).set(
+					1 + 5 * (1 + 0.2f*((Hero) target).pointsInTalent(Talent.WICKED_GROWTH)));
+	}
 }

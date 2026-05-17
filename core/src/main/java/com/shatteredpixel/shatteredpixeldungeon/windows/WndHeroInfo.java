@@ -36,7 +36,6 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.IconButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.TalentButton;
-import com.shatteredpixel.shatteredpixeldungeon.ui.TalentIcon;
 import com.shatteredpixel.shatteredpixeldungeon.ui.TalentsPane;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Image;
@@ -83,7 +82,7 @@ public class WndHeroInfo extends WndTabbed {
 				tabIcon = new ItemSprite(ItemSpriteSheet.SHOVEL, null);
 				break;
             case WRAITH:
-                tabIcon = new ItemSprite(ItemSpriteSheet.Woodsword, null);
+                tabIcon = new ItemSprite(ItemSpriteSheet.BONE_SPIKE, null);
                 break;
 		}
 
@@ -223,9 +222,9 @@ public class WndHeroInfo extends WndTabbed {
 							new ItemSprite(ItemSpriteSheet.SCROLL_ISAZ)};
 					break;
                 case WRAITH:
-                    icons = new Image[]{ new TalentIcon(Talent.BLURRING_BODY),
+                    icons = new Image[]{ new ItemSprite(ItemSpriteSheet.BONE_SPIKE),
                             new BuffIcon(BuffIndicator.WEAKNESS, true),
-                            new ItemSprite(ItemSpriteSheet.Woodsword),
+                            new ItemSprite(ItemSpriteSheet.BONE_FRAGMENT),
                             new ItemSprite(ItemSpriteSheet.SCROLL_ISAZ)};
                     break;
 			}

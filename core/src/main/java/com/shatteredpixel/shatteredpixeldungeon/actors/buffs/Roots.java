@@ -22,6 +22,9 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 
 public class Roots extends FlavourBuff {
@@ -47,6 +50,9 @@ public class Roots extends FlavourBuff {
 	public void detach() {
 		target.rooted = false;
 		super.detach();
+		if (target instanceof Hero && ((Hero) target).heroClass == HeroClass.WRAITH)
+			Buff.affect(target, Levitation.class,
+					5 * (1 + 0.2f*((Hero) target).pointsInTalent(Talent.WICKED_GROWTH)));
 	}
 	
 	@Override

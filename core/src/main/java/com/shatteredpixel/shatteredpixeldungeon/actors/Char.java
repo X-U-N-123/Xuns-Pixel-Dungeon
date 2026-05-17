@@ -39,7 +39,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ArcaneArmor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ArtifactRecharge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barkskin;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Berserk;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bless;
@@ -693,12 +692,6 @@ public abstract class Char extends Actor {
 					p.summon();
 					p.reduceCD(5*hero.pointsInTalent(Talent.FLEXIBLE_FOOTWORK));
 				}
-
-                if (hero.hasTalent(Talent.FLEET_BARRIER)){
-					int shieldToGive = Math.min(2, 1 + 2 * hero.pointsInTalent(Talent.FLEET_BARRIER) - hero.shielding());
-                    if (hero.shielding() <= 1 + 2 * hero.pointsInTalent(Talent.FLEET_BARRIER))
-						Buff.affect(hero, Barrier.class).incShield(shieldToGive);
-                }
 			}
 
             if (this instanceof Hero){
@@ -1490,7 +1483,11 @@ public abstract class Char extends Actor {
 	public float stealth() {
 		float stealth = Obfuscation.stealthBoost(this, glyphLevel(Obfuscation.class));
 
-		if (this instanceof Hero && ((Hero) this).subClass == HeroSubClass.INCUBUS) stealth += 2;
+		if (this instanceof Hero){
+			if (((Hero) this).subClass == HeroSubClass.INCUBUS) stealth += 2;
+
+			if (((Hero) this).heroClass != HeroClass.WRAITH) stealth += ((Hero) this).pointsInTalent(Talent.BLURING_BODY);
+		}
 
 		if (buff(ElixirOfConcealment.Conceal.class) != null) stealth += 4;
 

@@ -41,6 +41,10 @@ public class ShatteredPixelDungeon extends Game {
 		super( sceneClass == null ? WelcomeScene.class : sceneClass, platform );
 
 		com.watabou.utils.Bundle.addAlias(
+				com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.BoneSpike.class,
+				"com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Woodsword.class" );
+
+		com.watabou.utils.Bundle.addAlias(
 				com.shatteredpixel.shatteredpixeldungeon.items.bombs.StenchBomb.class,
 				"com.shatteredpixel.shatteredpixeldungeon.items.bombs.SmokeBomb.class" );
 

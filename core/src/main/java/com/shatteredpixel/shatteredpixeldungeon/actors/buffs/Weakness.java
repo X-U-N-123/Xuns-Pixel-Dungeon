@@ -21,6 +21,9 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 
 public class Weakness extends FlavourBuff {
@@ -40,5 +43,13 @@ public class Weakness extends FlavourBuff {
 	@Override
 	public float iconFadePercent() {
 		return Math.max(0, (DURATION - visualcooldown()) / DURATION);
+	}
+
+	@Override
+	public void detach() {
+		super.detach();
+		if (target instanceof Hero && ((Hero) target).heroClass == HeroClass.WRAITH)
+			Buff.affect(target, PhysicalEmpower.class).set(
+					Math.round((2 + ((Hero) target).lvl / 3f) * (1 + 0.2f*((Hero) target).pointsInTalent(Talent.WICKED_GROWTH))), 2);
 	}
 }

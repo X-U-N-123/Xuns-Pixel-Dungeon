@@ -159,6 +159,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.AssassinsBlad
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.BattleAxe;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Bayonet;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.BladeOfUnreal;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.BoneSpike;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Canopy;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Chainwhip;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Chixiao;
@@ -241,7 +242,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Whip;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Wicker;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Windblade;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Wolftailgrassspear;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Woodsword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WornShortsword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Zhouyi;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.ZhugeCrossbow;
@@ -512,10 +512,10 @@ public class Generator {
 					MechanicalArm.class,
 					Fork.class,
 					Cudgel.class,
-					Woodsword.class,
+					BoneSpike.class,    //Wraith's special wep
 					Shovel.class        //Explorer's special wep
 			};
-			WEP_T1.defaultProbs = new float[]{ 2, 0, 2, 2, 2, 2, 2, 2, 2, 0};
+			WEP_T1.defaultProbs = new float[]{ 2, 0, 2, 2, 2, 2, 2, 2, 0, 0};
 			WEP_T1.probs = WEP_T1.defaultProbs.clone();
 			
 			WEP_T2.classes = new Class<?>[]{//16 Weapons

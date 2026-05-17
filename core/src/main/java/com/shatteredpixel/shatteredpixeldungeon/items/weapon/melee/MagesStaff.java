@@ -90,7 +90,7 @@ public class MagesStaff extends MeleeWeapon {
 
 	@Override
 	public int max(int lvl) {
-		return  Math.round(3f*(tier+1)) +   //6 base damage, down from 10
+		return  Math.round(3.5f*(tier+1)) +   //6 base damage, down from 10
 				lvl*(tier+1);               //scaling unaffected
 	}
 
@@ -150,8 +150,7 @@ public class MagesStaff extends MeleeWeapon {
 				return;
 			}
 
-			if (cursed || hasCurseEnchant()) wand.cursed = true;
-			else                             wand.cursed = false;
+			wand.cursed = cursed || hasCurseEnchant();
 			wand.execute(hero, AC_ZAP);
 		}
 	}
@@ -183,7 +182,7 @@ public class MagesStaff extends MeleeWeapon {
 			if(defender.HP<=damage && defender.buff(Brute.BruteRage.class)==null && defender.buff(Ghoul.Revivetracker.class)==null){//preventting brute and ghoul
 				wand.partialCharge += 0.5f*Dungeon.hero.pointsInTalent(Talent.BATTLE_CHARGE);
 			}
-			ScrollOfRecharging.charge((Hero)attacker);
+			ScrollOfRecharging.charge(attacker);
 			wand.onHit(this, attacker, defender, damage);
 
 			if (Random.Float() <= 0.3f*Dungeon.hero.pointsInTalent(Talent.VARIED_MAGIC)) {

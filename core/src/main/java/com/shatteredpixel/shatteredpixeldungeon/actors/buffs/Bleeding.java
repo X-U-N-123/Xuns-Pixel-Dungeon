@@ -24,6 +24,9 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.HolyTrap;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DwarfKing;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Splash;
@@ -146,5 +149,13 @@ public class Bleeding extends Buff {
 	@Override
 	public String desc() {
 		return Messages.get(this, "desc", Math.round(level));
+	}
+
+	@Override
+	public void detach() {
+		super.detach();
+		if (target instanceof Hero && ((Hero) target).heroClass == HeroClass.WRAITH)
+			Buff.affect(target, Healing.class).setHeal(Math.round(3 + Math.round( ((Hero) target).lvl /2f )
+					* (1 + 0.2f*((Hero) target).pointsInTalent(Talent.WICKED_GROWTH))), 0, 1);
 	}
 }

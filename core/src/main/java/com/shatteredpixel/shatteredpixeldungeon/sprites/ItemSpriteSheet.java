@@ -248,7 +248,7 @@ public class ItemSpriteSheet {
     public static final int SHOVEL          = WEP_TIER1+10;
     public static final int WOOD_SHOVEL     = WEP_TIER1+11;
     public static final int WATER_SHOVEL    = WEP_TIER1+12;
-	public static final int Woodsword       = WEP_TIER1+14;
+	public static final int BONE_SPIKE      = WEP_TIER1+14;
 	public static final int MAGES_STAFF     = WEP_TIER1+15;
 	static{
 		assignItemRect(WORN_SHORTSWORD, 14, 14);
@@ -259,7 +259,7 @@ public class ItemSpriteSheet {
 		assignItemRect(MAGES_STAFF,     15, 16);
 		assignItemRect(MECH_ARM,        16, 16);
 		assignItemRect(Fork,            15, 15);
-		assignItemRect(Woodsword,       13, 13);
+		assignItemRect(BONE_SPIKE,      12, 13);
         assignItemRect(SHOVEL,          16, 16);
         assignItemRect(WOOD_SHOVEL,     16, 16);
         assignItemRect(WATER_SHOVEL,    16, 16);
