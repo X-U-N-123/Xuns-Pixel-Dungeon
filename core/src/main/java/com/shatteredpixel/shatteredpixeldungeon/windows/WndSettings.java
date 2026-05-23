@@ -23,6 +23,7 @@ package com.shatteredpixel.shatteredpixeldungeon.windows;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Chrome;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Languages;
@@ -997,11 +998,8 @@ public class WndSettings extends WndTabbed {
                 protected void onClick() {
                     super.onClick();
                     SPDSettings.useOldMusic(checked());
-                    if (ShatteredPixelDungeon.scene() instanceof GameScene)
-                        GameScene.show(new WndMessage( Messages.get(AudioTab.class, "exit")));
-                    else ShatteredPixelDungeon.scene().addToFront(
-                        new WndMessage( Messages.get(AudioTab.class, "exit"))
-                    );
+                    if (ShatteredPixelDungeon.scene() instanceof GameScene) Dungeon.level.playLevelMusic();
+                    else ShatteredPixelDungeon.scene().addToFront( new WndMessage( Messages.get(AudioTab.class, "exit")) );
                 }
             };
             chkUseOldMusic.checked(SPDSettings.useOldMusic());

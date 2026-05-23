@@ -111,6 +111,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Elemental;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GnollGeomancer;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Necromancer;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Parasite;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Tengu;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.MirrorImage;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.PrismaticImage;
@@ -1211,6 +1212,7 @@ public abstract class Char extends Actor {
 		NO_ARMOR_PHYSICAL_SOURCES.add(RockFallBuff.class);
         NO_ARMOR_PHYSICAL_SOURCES.add(Collapse.class);
 		NO_ARMOR_PHYSICAL_SOURCES.add(DM300.FallingRockBuff.class);
+		NO_ARMOR_PHYSICAL_SOURCES.add(Parasite.Parasitism.class);
 	}
 	
 	public void destroy() {

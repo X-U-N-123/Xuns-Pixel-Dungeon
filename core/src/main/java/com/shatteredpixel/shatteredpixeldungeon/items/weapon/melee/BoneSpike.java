@@ -99,7 +99,7 @@ public class BoneSpike extends MeleeWeapon {
 
             if (hero.hasTalent(Talent.BLURING_BODY) && hero.buff(SafePrickCooldown.class) == null){
                 Buff.affect(hero, Invisibility.class, 2f);
-                Buff.affect(hero, SafePrickCooldown.class, 99 - 25 * hero.pointsInTalent(Talent.BLURING_BODY));
+                Buff.affect(hero, SafePrickCooldown.class, 99 - 20 * hero.pointsInTalent(Talent.BLURING_BODY));
             }
 
             if (hero.hasTalent(Talent.SAFE_PRICK))

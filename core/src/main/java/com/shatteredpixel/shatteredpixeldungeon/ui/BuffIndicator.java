@@ -148,6 +148,7 @@ public class BuffIndicator extends Component {
 		public static final int EXHAUSTION_START = 94;
 	/*two extra icons for exhaustion
 	*/
+	public static final int PARASITE    = 98;
 
 	public static final int SIZE_SMALL  = 7;
 	public static final int SIZE_LARGE  = 16;

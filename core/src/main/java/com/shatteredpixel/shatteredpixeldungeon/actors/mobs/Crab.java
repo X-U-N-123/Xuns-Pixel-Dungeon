@@ -77,13 +77,14 @@ public class Crab extends Mob {
 		if (!Dungeon.LimitedDrops.CRAB_CLAW.dropped() && Random.Float() >= 0.5f){
 			i = new Crabclaw().random();
 			Dungeon.LimitedDrops.CRAB_CLAW.count++;
-		}
-		if (Random.Float() < SolidifiedMetal.missileReplaceChance()){
-			MissileWeapon m = (MissileWeapon) Generator.random(Generator.Category.MISSILE);
-			m.quantity(m.quantity() + i.level());
-			m.cursed = i.cursed;
-			m.enchant(((Weapon)i).enchantment);
-			i = m;
+
+			if (Random.Float() < SolidifiedMetal.missileReplaceChance()){
+				MissileWeapon m = (MissileWeapon) Generator.random(Generator.Category.MISSILE);
+				m.quantity(m.quantity() + i.level());
+				m.cursed = i.cursed;
+				m.enchant(((Weapon)i).enchantment);
+				i = m;
+			}
 		}
 		return i;
 	}

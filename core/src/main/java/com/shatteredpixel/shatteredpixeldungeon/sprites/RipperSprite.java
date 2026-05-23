@@ -28,9 +28,9 @@ import com.watabou.utils.Random;
 
 public class RipperSprite extends MobSprite {
 
-	private Animation stab;
-	private Animation prep;
-	private Animation leap;
+	protected Animation stab;
+	protected Animation prep;
+	protected Animation leap;
 
 	private boolean alt = Random.Int(2) == 0;
 
@@ -90,4 +90,35 @@ public class RipperSprite extends MobSprite {
 		super.onComplete( anim == stab ? attack : anim );
 	}
 
+	public static class ParasiteSprite extends RipperSprite {
+
+		public ParasiteSprite() {
+			super();
+
+			TextureFilm frames = new TextureFilm( texture, 15, 14 );
+
+			idle = new Animation( 4, true );
+			idle.frames( frames, 18, 17, 18, 19);
+
+			run = new Animation( 15, true );
+			run.frames( frames, 20, 21, 22, 23, 24, 25);
+
+			attack = new Animation( 12, false );
+			attack.frames( frames, 17, 26, 27, 26);
+
+			stab = new Animation( 12, false );
+			stab.frames( frames, 17, 26, 28, 26);
+
+			prep = new Animation( 1, true );
+			prep.frames( frames, 26);
+
+			leap = new Animation( 1, true );
+			leap.frames( frames, 29);
+
+			die = new Animation( 15, false );
+			die.frames( frames, 18, 30, 31, 32, 33);
+
+			play( idle );
+		}
+	}
 }

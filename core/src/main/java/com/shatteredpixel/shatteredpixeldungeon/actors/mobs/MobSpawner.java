@@ -266,11 +266,14 @@ public class MobSpawner extends Actor {
 
 		RARE_ALTS.put(Brute.class,          ArmoredBrute.class);
 		RARE_ALTS.put(DM200.class,          DM201.class);
+		//swapping to green shaman actually happens in Shaman.random
+		RARE_ALTS.put(Shaman.class,         Shaman.GreenShaman.class);
 
 		RARE_ALTS.put(Monk.class,           Senior.class);
 		//swapping to chaos elemental actually happens in Elemental.random
 		RARE_ALTS.put(Elemental.class,      Elemental.ChaosElemental.class);
 
 		RARE_ALTS.put(Scorpio.class,        Acidic.class);
+		RARE_ALTS.put(RipperDemon.class,    Parasite.class);
 	}
 }

@@ -134,6 +134,7 @@ public class Dungeon {
 		SHAMAN_WAND,
 		DM200_EQUIP,
 		GOLEM_EQUIP,
+		PARA_MISSILE,
 
 		//containers
 		VELVET_POUCH,

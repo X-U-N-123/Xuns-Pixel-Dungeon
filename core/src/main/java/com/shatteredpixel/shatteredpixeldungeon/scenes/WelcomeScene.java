@@ -256,11 +256,10 @@ public class WelcomeScene extends PixelScene {
 			Badges.loadGlobal();
 			Journal.loadGlobal();
 
-			//pre-unlock Explorer for those who already have a win
-			if (previousVersion <= ShatteredPixelDungeon.xun1_0_0){
-				if (Badges.isUnlocked(Badges.Badge.VICTORY) && !Badges.isUnlocked(Badges.Badge.UNLOCK_EXPLORER)){
-					Badges.unlock(Badges.Badge.UNLOCK_EXPLORER);
-				}
+			//pre-unlock Explorer and Wraith for those who already have a win
+			if (Badges.isUnlocked(Badges.Badge.VICTORY)){
+				if (!Badges.isUnlocked(Badges.Badge.UNLOCK_EXPLORER)) Badges.unlock(Badges.Badge.UNLOCK_EXPLORER);
+				if (!Badges.isUnlocked(Badges.Badge.UNLOCK_WRAITH))   Badges.unlock(Badges.Badge.UNLOCK_WRAITH);
 			}
 
 			try {
