@@ -49,6 +49,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DemonSpawner;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DwarfKing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.EbonyMimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Elemental;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Engineer;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Eye;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.FetidRat;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Ghoul;
@@ -72,6 +73,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.PhantomPiranha;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Piranha;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Pylon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Rat;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Resentment;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.RipperDemon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.RotHeart;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.RotLasher;
@@ -214,8 +216,8 @@ public enum Bestiary {
 		REGIONAL.addEntities(Rat.class, Snake.class, Gnoll.class, Swarm.class, Crab.class, Slime.class,
 				Skeleton.class, Thief.class, DM100.class, Guard.class, Necromancer.class,
 				Bat.class, Brute.class, Shaman.RedShaman.class, Shaman.BlueShaman.class, Shaman.PurpleShaman.class, Spinner.class, DM200.class,
-				Ghoul.class, Elemental.FireElemental.class, Elemental.FrostElemental.class, Elemental.ShockElemental.class, Warlock.class, Monk.class, Golem.class,
-				RipperDemon.class, DemonSpawner.class, Succubus.class, Eye.class, Scorpio.class);
+				Ghoul.class, Elemental.FireElemental.class, Elemental.FrostElemental.class, Elemental.ShockElemental.class, Warlock.class, Monk.class, Engineer.class, Golem.class,
+				RipperDemon.class, DemonSpawner.class, Succubus.class, Resentment.class, Eye.class, Scorpio.class);
 
 		BOSSES.addEntities(Goo.class,
 				Tengu.class,

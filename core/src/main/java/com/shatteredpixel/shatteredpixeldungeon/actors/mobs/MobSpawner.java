@@ -162,51 +162,58 @@ public class MobSpawner extends Actor {
 						Elemental.random(),
 						Warlock.class));
 			case 17:
-				//1x ghoul, 2x elemental, 1x warlock, 1x monk
+				//1x ghoul, 2x elemental, 1x warlock, 1x monk, 1x engineer
 				return new ArrayList<>(Arrays.asList(
 						Ghoul.class,
 						Elemental.random(), Elemental.random(),
 						Warlock.class,
-						Monk.class));
+						Monk.class,
+						Engineer.class));
 			case 18:
-				//1x ghoul, 1x elemental, 2x warlock, 2x monk, 1x golem
+				//1x ghoul, 1x elemental, 2x warlock, 2x monk, 1x golem, 1x engineer
 				return new ArrayList<>(Arrays.asList(
 						Ghoul.class,
 						Elemental.random(),
 						Warlock.class, Warlock.class,
 						Monk.class, Monk.class,
-						Golem.class));
+						Golem.class,
+						Engineer.class));
 			case 19: case 20:
-				//1x elemental, 2x warlock, 2x monk, 3x golem
+				//1x elemental, 2x warlock, 2x monk, 2x golem, 1x engineer
 				return new ArrayList<>(Arrays.asList(
 						Elemental.random(),
 						Warlock.class, Warlock.class,
 						Monk.class, Monk.class,
-						Golem.class, Golem.class, Golem.class));
+						Golem.class, Golem.class,
+						Engineer.class));
 
 			// Halls
 			case 21:
-				//2x succubus, 1x evil eye
-				return new ArrayList<>(Arrays.asList(
-						Succubus.class, Succubus.class,
-						Eye.class));
-			case 22:
-				//1x succubus, 1x evil eye
+				//1x succubus, 1x evil eye, 1x resentment
 				return new ArrayList<>(Arrays.asList(
 						Succubus.class,
-						Eye.class));
+						Eye.class,
+						Resentment.class));
+			case 22:
+				//1x succubus, 1x evil eye, 1x resentment
+				return new ArrayList<>(Arrays.asList(
+						Succubus.class,
+						Eye.class,
+						Resentment.class));
 			case 23:
-				//1x succubus, 2x evil eye, 1x scorpio
+				//1x succubus, 2x evil eye, 1x resentment, 1x scorpio
 				return new ArrayList<>(Arrays.asList(
 						Succubus.class,
 						Eye.class, Eye.class,
+						Resentment.class,
 						Scorpio.class));
 			case 24: case 25: case 26:
-				//1x succubus, 2x evil eye, 3x scorpio
+				//1x succubus, 2x evil eye, 1x resentment, 2x scorpio
 				return new ArrayList<>(Arrays.asList(
 						Succubus.class,
 						Eye.class, Eye.class,
-						Scorpio.class, Scorpio.class, Scorpio.class));
+						Scorpio.class, Scorpio.class,
+						Resentment.class));
 		}
 
 	}

@@ -46,7 +46,7 @@ public class Scorpio extends Mob {
 		viewDistance = Light.DISTANCE;
 		
 		EXP = 14;
-		maxLvl = 27;
+		maxLvl = 28;
 		
 		loot = Generator.Category.POTION;
 		lootChance = 0.5f;

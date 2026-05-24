@@ -46,7 +46,7 @@ public class Brute extends Mob {
 		defenseSkill = 15;
 		
 		EXP = 8;
-		maxLvl = 16;
+		maxLvl = 17;
 		
 		loot = Gold.class;
 		lootChance = 0.5f;

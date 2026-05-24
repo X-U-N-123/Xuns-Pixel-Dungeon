@@ -43,7 +43,7 @@ public class Monk extends Mob {
 		defenseSkill = 30;
 		
 		EXP = 11;
-		maxLvl = 21;
+		maxLvl = 23;
 		
 		loot = Food.class;
 		lootChance = 0.083f;

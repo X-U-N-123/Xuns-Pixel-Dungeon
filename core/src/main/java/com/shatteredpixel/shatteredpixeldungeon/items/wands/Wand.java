@@ -34,6 +34,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ArtifactRecharge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Daze;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Degrade;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Exhaustion;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
@@ -54,6 +55,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.mage.WildM
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.wraith.EvilUnfold;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.DivineSense;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.GuidingLight;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Resentment;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
@@ -284,6 +286,9 @@ public abstract class Wand extends Item {
 
 		EvilUnfold.Evil evil = Dungeon.hero.buff(EvilUnfold.Evil.class);
 		if (evil != null) dmg = evil.proc(target, dmg);
+
+		if (target instanceof Resentment) Buff.affect(target, Daze.class, 3f);
+		//a way to fight against it
 
 		return dmg;
 	}

@@ -34,6 +34,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Crab;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM100;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM200;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Elemental;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Engineer;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Eye;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Ghoul;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Gnoll;
@@ -43,6 +44,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Monk;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Necromancer;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Rat;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Resentment;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.RipperDemon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Scorpio;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Shaman;
@@ -94,10 +96,12 @@ public class AscensionChallenge extends Buff {
 		modifiers.put(Elemental.class,      1.67f);
 		modifiers.put(Warlock.class,        1.5f);
 		modifiers.put(Monk.class,           1.5f);
+		modifiers.put(Engineer.class,       1.4f);
 		modifiers.put(Golem.class,          1.33f);
 
 		modifiers.put(RipperDemon.class,    1.2f);
 		modifiers.put(Succubus.class,       1.2f);
+		modifiers.put(Resentment.class,     1.1f);
 		modifiers.put(Eye.class,            1.1f);
 		modifiers.put(Scorpio.class,        1.1f);
 	}

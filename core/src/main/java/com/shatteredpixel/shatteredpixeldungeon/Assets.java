@@ -305,6 +305,7 @@ public class Assets {
 		public static final String ELEMENTAL= "sprites/elemental.png";
 		public static final String MONK     = "sprites/monk.png";
 		public static final String WARLOCK  = "sprites/warlock.png";
+		public static final String ENGINEER = "sprites/engineer.png";
 		public static final String GOLEM    = "sprites/golem.png";
 		public static final String STATUE   = "sprites/statue.png";
 		public static final String SUCCUBUS = "sprites/succubus.png";
@@ -334,6 +335,7 @@ public class Assets {
 		public static final String PYLON    = "sprites/pylon.png";
 		public static final String DM200    = "sprites/dm200.png";
 		public static final String LOTUS    = "sprites/lotus.png";
+		public static final String RESENT   = "sprites/resentment.png";
 		public static final String NINJA_LOG        = "sprites/ninja_log.png";
 		public static final String SPIRIT_HAWK      = "sprites/spirit_hawk.png";
 		public static final String RED_SENTRY       = "sprites/red_sentry.png";

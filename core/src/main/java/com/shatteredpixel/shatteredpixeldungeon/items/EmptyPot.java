@@ -128,4 +128,16 @@ public class EmptyPot extends Item {
         }
     }
 
+    @Override
+    protected void onThrow( int cell ) {
+        Char bee = Actor.findChar(cell);
+        if (bee instanceof Bee){
+            bee.die(Hero.class);
+            Sample.INSTANCE.play( Assets.Sounds.BEE );
+            Catalog.countUse(EmptyPot.class);
+            Dungeon.level.drop(new Honeypot(), bee.pos).sprite.drop();
+
+        } else super.onThrow(cell);
+    }
+
 }
