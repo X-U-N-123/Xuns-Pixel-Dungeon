@@ -1,6 +1,50 @@
+[简体中文版](README_ZH-CN.md)
+
 # Xun's Pixel Dungeon
 
 Xun's Pixel Dungeon is an open-source traditional roguelike dungeon crawler with randomized levels and enemies, and hundreds of items to collect and use. It's based on the [source code of Shattered Pixel Dungeon](https://github.com/00-Evan/shattered-pixel-dungeon), by [00-Evan](https://shatteredpixel.com/).
+
+## Main Changes to Shattered PD:
+
+### Equipments:
+
+Many new weapons (including tier 6);
+
+Tier 6 armor;
+
+Each 2 new enchantments/glyphs and 1 new curse for weapon/armor;
+
+A new Wand which works like the wand of avalanche in originalPD, but has changed logic;
+
+A new Ring which increases hero's vision radius;
+
+A new artifact to replace ring of elements, which works like unstable spellbook in potions;
+
+7 new trinkets;
+
+A new extension bag used to hold foods;
+
+### Consumable items:
+
+5 new bombs;
+
+4 new brews, 6 new elixirs;
+
+11 new spells;
+
+Gem powder, which works like arcane resin in rings;
+
+### Adventure:
+
+2 new hero classes: Explorer and Wraith!
+
+5 new challenges;
+
+Developer mode;
+
+Some new Badges.
+
+*detailed change log: check Changelog.txt in releases.*
 
 Xun's Pixel Dungeon currently compiles for Android and Desktop platforms. You can find official releases of the game on:
 
