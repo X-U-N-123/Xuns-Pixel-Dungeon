@@ -47,6 +47,16 @@ public class Greatsword extends MeleeWeapon {
 	}
 
 	@Override
+	public int min(int lvl) {
+		return super.min(lvl) + tier + 1;
+	}
+
+	@Override
+	public int max(int lvl) {
+		return super.max(lvl) - tier - 1;
+	}
+
+	@Override
 	public String targetingPrompt() {
 		return Messages.get(this, "prompt");
 	}

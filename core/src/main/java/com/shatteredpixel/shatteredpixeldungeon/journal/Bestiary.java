@@ -65,6 +65,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Goo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GreatCrab;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Guard;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.HermitCrab;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Marlock;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.MissileTower;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Monk;
@@ -231,7 +232,7 @@ public enum Bestiary {
 		RARE.addEntities(Albino.class, GnollExile.class, HermitCrab.class, CausticSlime.class,
 				Bandit.class, SpectralNecromancer.class,
 				ArmoredBrute.class, DM201.class, Shaman.GreenShaman.class,
-				Elemental.ChaosElemental.class, Senior.class,
+				Elemental.ChaosElemental.class, Senior.class, Marlock.class,
 				Acidic.class, Parasite.class,
 				TormentedSpirit.class, PhantomPiranha.class, CrystalMimic.class, ArmoredStatue.class);
 

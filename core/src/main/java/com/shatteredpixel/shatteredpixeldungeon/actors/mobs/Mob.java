@@ -1202,14 +1202,8 @@ public abstract class Mob extends Char {
 			dev_desc += "\n" + Messages.get(this, "property");
 			for (Property prop : properties().toArray(new Property[0])) dev_desc += Messages.get(this, prop.toString());
 
-			dev_desc += "\n" + Messages.get(this, "state");
-			if (state.equals(WANDERING))dev_desc += Messages.get(this, "wandering");
-			if (state.equals(SLEEPING)) dev_desc += Messages.get(this, "sleeping");
-			if (state.equals(HUNTING))  dev_desc += Messages.get(this, "hunting");
-			if (state.equals(FLEEING))  dev_desc += Messages.get(this, "fleeing");
-			if (state.equals(PASSIVE))  dev_desc += Messages.get(this, "passive");
-
-			dev_desc += "\n" + Messages.get(this, "alignment") + Messages.get(this, alignment.toString()) + "\n\n";
+			dev_desc += "\n" + Messages.get(this, "state") + Messages.get(this, state.getClass().getSimpleName())
+					  + "\n" + Messages.get(this, "alignment") + Messages.get(this, alignment.toString()) + "\n\n";
 		}
 		if (Dungeon.isChallenged(Challenges.CRAZY_LOOT) && plunderedItem != null) plunder += "\n\n" + Messages.get(this, "plunder");
 

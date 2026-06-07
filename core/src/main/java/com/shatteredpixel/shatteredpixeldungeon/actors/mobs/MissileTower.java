@@ -24,8 +24,10 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Sleep;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TalismanOfForesight;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon.Enchantment;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Grim;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
@@ -47,7 +49,6 @@ public class MissileTower extends Mob {
 
 		properties.add(Property.INORGANIC);
 		properties.add(Property.IMMOVABLE);
-		properties.add(Property.STATIC);
 
 		useParry = true;
 
@@ -197,9 +198,14 @@ public class MissileTower extends Mob {
 
 			spend(1f);
 
-			if (alignment != Char.Alignment.ALLY) GLog.n(Messages.get(MissileTower.class, "load"));
-			if (Dungeon.hero.fieldOfView != null && Dungeon.hero.fieldOfView[pos])
-				Sample.INSTANCE.play(Assets.Sounds.UNLOCK);
+			if (alignment != Char.Alignment.ALLY) {
+				GLog.n(Messages.get(MissileTower.class, "load"));
+
+				Buff.affect(Dungeon.hero, TalismanOfForesight.CharAwareness.class, 1)
+						.charID = MissileTower.this.id();
+				Dungeon.observe();
+			}
+			if (Dungeon.hero.fieldOfView[pos]) Sample.INSTANCE.play(Assets.Sounds.UNLOCK);
 			((MissileTowerSprite)sprite).load(enemy.pos);
 
 			return true;

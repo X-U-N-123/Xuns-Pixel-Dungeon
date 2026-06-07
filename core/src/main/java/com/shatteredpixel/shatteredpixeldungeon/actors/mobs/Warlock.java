@@ -116,34 +116,38 @@ public class Warlock extends Mob implements Callback {
 		Invisibility.dispel(this);
 		Char enemy = this.enemy;
 		if (hit( this, enemy, true )) {
-			//TODO would be nice for this to work on ghost/statues too
-			if (enemy == Dungeon.hero && Random.Int( 2 ) == 0 && buff(MagicImmune.class) == null) {
-				Buff.prolong( enemy, Degrade.class, Degrade.DURATION );
-				Sample.INSTANCE.play( Assets.Sounds.DEGRADE );
-			}
-			
-			int dmg = Random.NormalIntRange( 12, 18 );
-			dmg = Math.round(dmg * AscensionChallenge.statModifier(this));
-
-			//logic for DK taking 1/2 damage from aggression stoned minions
-			if ( enemy.buff(StoneOfAggression.Aggression.class) != null
-					&& enemy.alignment == alignment
-					&& (Char.hasProp(enemy, Property.BOSS) || Char.hasProp(enemy, Property.MINIBOSS))){
-				dmg *= 0.5f;
-			}
-
-			if (buff(MagicImmune.class) == null) enemy.damage( dmg, new DarkBolt(this) );
-			
-			if (enemy == Dungeon.hero && !enemy.isAlive()) {
-				Badges.validateDeathFromEnemyMagic();
-				Dungeon.fail( this );
-				GLog.n( Messages.get(this, "bolt_kill") );
-			}
+			hitProc(enemy);
 		} else {
 			enemy.sprite.showStatus( CharSprite.NEUTRAL,  enemy.defenseVerb() );
 		}
 	}
-	
+
+	protected void hitProc(Char enemy) {
+		//TODO would be nice for this to work on ghost/statues too
+		if (enemy == Dungeon.hero && Random.Int( 2 ) == 0 && buff(MagicImmune.class) == null) {
+			Buff.prolong(enemy, Degrade.class, Degrade.DURATION );
+			Sample.INSTANCE.play( Assets.Sounds.DEGRADE );
+		}
+
+		int dmg = Random.NormalIntRange( 12, 18 );
+		dmg = Math.round(dmg * AscensionChallenge.statModifier(this));
+
+		//logic for DK taking 1/2 damage from aggression stoned minions
+		if ( enemy.buff(StoneOfAggression.Aggression.class) != null
+				&& enemy.alignment == alignment
+				&& (Char.hasProp(enemy, Property.BOSS) || Char.hasProp(enemy, Property.MINIBOSS))){
+			dmg *= 0.5f;
+		}
+
+		if (buff(MagicImmune.class) == null) enemy.damage( dmg, new DarkBolt(this) );
+
+		if (enemy == Dungeon.hero && !enemy.isAlive()) {
+			Badges.validateDeathFromEnemyMagic();
+			Dungeon.fail( this );
+			GLog.n( Messages.get(this, "bolt_kill") );
+		}
+	}
+
 	public void onZapComplete() {
 		zap();
 		next();

@@ -28,7 +28,6 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.MissileTower;
 import com.watabou.noosa.MovieClip;
 import com.watabou.noosa.TextureFilm;
-import com.watabou.utils.Callback;
 
 public class MissileTowerSprite extends MobSprite {
 
@@ -70,12 +69,7 @@ public class MissileTowerSprite extends MobSprite {
         turnTo( ch.pos , cell );
         play( cast );
         ((MissileSprite)parent.recycle( MissileSprite.class )).
-                reset( this, cell, ((MissileTower)ch).mis(), new Callback() {
-                    @Override
-                    public void call() {
-                        ch.onAttackComplete();
-                    }
-                } );
+                reset( this, cell, ((MissileTower)ch).mis(), () -> ch.onAttackComplete());
     }
 
     @Override
