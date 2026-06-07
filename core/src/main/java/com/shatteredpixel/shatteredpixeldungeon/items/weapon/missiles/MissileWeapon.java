@@ -80,6 +80,8 @@ abstract public class MissileWeapon extends Weapon {
 	
 	//used to reduce durability from the source weapon stack, rather than the one being thrown.
 	protected MissileWeapon parent;
+
+	public boolean inTower = false; //only used for visual effects
 	
 	@Override
 	public int min() {
@@ -271,27 +273,27 @@ abstract public class MissileWeapon extends Weapon {
 
 	@Override
 	public int proc(Char attacker, Char defender, int damage) {
-		if (attacker == Dungeon.hero && Random.Int(3) < Dungeon.hero.pointsInTalent(Talent.SHARED_ENCHANTMENT)){
-			SpiritBow bow = Dungeon.hero.belongings.getItem(SpiritBow.class);
-			if (bow != null && bow.enchantment != null && Dungeon.hero.buff(MagicImmune.class) == null) {
-				damage = bow.enchantment.proc(this, attacker, defender, damage);
+		if (attacker instanceof Hero){
+			if (Random.Int(3) < ((Hero) attacker).pointsInTalent(Talent.SHARED_ENCHANTMENT)){
+				SpiritBow bow = ((Hero) attacker).belongings.getItem(SpiritBow.class);
+				if (bow != null && bow.enchantment != null && attacker.buff(MagicImmune.class) == null)
+					damage = bow.enchantment.proc(this, attacker, defender, damage);
+			}
+
+			if ((Dungeon.level.map[defender.pos] == Terrain.FURROWED_GRASS
+					|| Dungeon.level.map[defender.pos] == Terrain.GRASS
+					|| Dungeon.level.map[defender.pos] ==Terrain.HIGH_GRASS)
+					&& ((Hero) attacker).heroClass != HeroClass.HUNTRESS
+					&& attacker.buff(SpiritBow.IvybindCooldown.class) == null
+					&& ((Hero) attacker).hasTalent(Talent.IVY_BIND)
+					&& !defender.isFlying()
+					&& !defender.properties().contains(Char.Property.IMMOVABLE)
+					&& !defender.properties().contains(Char.Property.STATIC)) {
+				Buff.affect(defender, Roots.class, 1 + 2*Dungeon.hero.pointsInTalent(Talent.IVY_BIND));
+				Sample.INSTANCE.play(Assets.Sounds.PLANT);
+				Buff.affect(attacker, SpiritBow.IvybindCooldown.class, 40);
 			}
 		}
-
-		if ((Dungeon.level.map[defender.pos] == Terrain.FURROWED_GRASS
-				|| Dungeon.level.map[defender.pos] == Terrain.GRASS
-				|| Dungeon.level.map[defender.pos] ==Terrain.HIGH_GRASS)
-				&& curUser.heroClass != HeroClass.HUNTRESS
-				&& Dungeon.hero.buff(SpiritBow.IvybindCooldown.class) == null
-				&& Dungeon.hero.hasTalent(Talent.IVY_BIND)
-				&& !defender.isFlying()
-                && !defender.properties().contains(Char.Property.IMMOVABLE)
-                && !defender.properties().contains(Char.Property.STATIC)) {
-			Buff.affect(defender, Roots.class, 1 + 2*Dungeon.hero.pointsInTalent(Talent.IVY_BIND));
-			Sample.INSTANCE.play(Assets.Sounds.PLANT);
-			Buff.affect(attacker, SpiritBow.IvybindCooldown.class, 40);
-		}
-
 		return super.proc(attacker, defender, damage);
 	}
 
@@ -547,12 +549,14 @@ abstract public class MissileWeapon extends Weapon {
 
 	private static final String SPAWNED = "spawned";
 	private static final String DURABILITY = "durability";
+	private static final String IN_TOWER = "intower";
 	
 	@Override
 	public void storeInBundle(Bundle bundle) {
 		super.storeInBundle(bundle);
 		bundle.put(SPAWNED, spawnedForEffect);
 		bundle.put(DURABILITY, durability);
+		bundle.put(IN_TOWER, inTower);
 	}
 	
 	private static boolean bundleRestoring = false;
@@ -564,6 +568,8 @@ abstract public class MissileWeapon extends Weapon {
 		bundleRestoring = false;
 		spawnedForEffect = bundle.getBoolean(SPAWNED);
 		durability = bundle.getFloat(DURABILITY);
+
+		if (bundle.contains(IN_TOWER)) inTower = bundle.getBoolean(IN_TOWER);
 	}
 
 	public static class PlaceHolder extends MissileWeapon {

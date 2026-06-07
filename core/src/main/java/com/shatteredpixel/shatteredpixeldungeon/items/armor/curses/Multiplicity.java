@@ -30,6 +30,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.Ratmogrify
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DwarfKing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Ghoul;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mimic;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.MissileTower;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Statue;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Thief;
@@ -81,7 +82,8 @@ public class Multiplicity extends Armor.Glyph {
 					//FIXME should probably have a mob property for this
 					if (!(toDuplicate instanceof Mob)
 							|| toDuplicate.properties().contains(Char.Property.BOSS) || toDuplicate.properties().contains(Char.Property.MINIBOSS)
-							|| toDuplicate instanceof Mimic || toDuplicate instanceof Statue || toDuplicate instanceof NPC) {
+							|| toDuplicate instanceof Mimic || toDuplicate instanceof Statue
+							|| toDuplicate instanceof NPC || toDuplicate instanceof MissileTower) {
 						m = Dungeon.level.createMob();
 					} else {
 						Actor.fixTime();

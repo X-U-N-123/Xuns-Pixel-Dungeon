@@ -40,6 +40,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Javelin;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Kunai;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Lancet;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.LightBoomerang;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Scorpiospike;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Shuriken;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingKnife;
@@ -120,7 +121,7 @@ public class MissileSprite extends ItemSprite implements Tweener.Listener {
 
 		ANGULAR_SPEEDS.put(GnollGeomancer.Boulder.class,   90);
 		
-		ANGULAR_SPEEDS.put(Boomerang.class,1440);
+		ANGULAR_SPEEDS.put(Boomerang.class,     1440);
 		ANGULAR_SPEEDS.put(HeavyBoomerang.class,1440);
 		ANGULAR_SPEEDS.put(LightBoomerang.class,1440);
 		ANGULAR_SPEEDS.put(Bolas.class,         1440);
@@ -191,6 +192,8 @@ public class MissileSprite extends ItemSprite implements Tweener.Listener {
 				|| item instanceof TenguSprite.TenguShuriken){
 			speed *= 1.5f;
 		}
+
+		if (item instanceof MissileWeapon && ((MissileWeapon) item).inTower) speed *= 1.5f;
 		
 		PosTweener tweener = new PosTweener( this, to, d.length() / speed );
 		tweener.listener = this;

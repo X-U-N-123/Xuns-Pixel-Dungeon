@@ -28,6 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.SacrificialFire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.WaterOfAwareness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.WaterOfHealth;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DemonSpawner;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.MissileTower;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Statue;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Blacksmith;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Ghost;
@@ -51,6 +52,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.GhostSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ImpSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.MissileTowerSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.RatKingSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ShopkeeperSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SpawnerSprite;
@@ -129,6 +131,7 @@ public class Notes {
 		WELL_OF_AWARENESS,
 		SACRIFICIAL_FIRE,
 		STATUE,
+		MIS_TOWER,
 
 		LOST_PACK,
 		BEACON_LOCATION,
@@ -190,6 +193,8 @@ public class Notes {
 					return Icons.get(Icons.SACRIFICE_ALTAR);
 				case STATUE:
 					return new Image(new StatueSprite());
+				case MIS_TOWER:
+					return new Image(new MissileTowerSprite());
 
 				case LOST_PACK:
 					return Icons.get(Icons.BACKPACK_LRG);
@@ -252,6 +257,7 @@ public class Notes {
 				case WELL_OF_AWARENESS: return Messages.get(WaterOfAwareness.class, "desc");
 				case SACRIFICIAL_FIRE:  return Messages.get(SacrificialFire.class, "desc");
 				case STATUE:            return Messages.get(Statue.class, "desc");
+				case MIS_TOWER:         return Messages.get(MissileTower.class, "desc");
 
 				case LOST_PACK:         return Messages.get(LostBackpack.class, "desc");
 				case BEACON_LOCATION:   return Messages.get(BeaconOfReturning.class, "desc");
