@@ -308,9 +308,7 @@ public class Hero extends Char {
 			strBonus += buff.boost();
 		}
 
-		if (hasTalent(Talent.STRONGMAN)){
-			strBonus += (int)Math.floor(STR * (0.04f + 0.05f*pointsInTalent(Talent.STRONGMAN)));
-		}
+		strBonus += pointsInTalent(Talent.STRONGMAN);
 
 		return STR + strBonus;
 	}

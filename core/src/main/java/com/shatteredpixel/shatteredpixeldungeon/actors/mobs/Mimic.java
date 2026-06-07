@@ -165,7 +165,7 @@ public class Mimic extends Mob {
 
 	@Override
 	public boolean heroShouldInteract(){
-		return super.heroShouldInteract() && !searched;
+		return super.heroShouldInteract() && (!searched || alignment == Alignment.ALLY);
 	}
 
 	@Override

@@ -112,7 +112,6 @@ public class WandOfCorruption extends Wand {
 	private static final HashMap<Class<? extends Buff>, Float> MAJOR_DEBUFFS = new HashMap<>();
 	static{
 		MAJOR_DEBUFFS.put(Amok.class,           3f);
-		MAJOR_DEBUFFS.put(Slow.class,           2f);
 		MAJOR_DEBUFFS.put(Hex.class,            2f);
 		MAJOR_DEBUFFS.put(Daze.class,           2f);
 		MAJOR_DEBUFFS.put(Paralysis.class,      1f);
@@ -124,6 +123,7 @@ public class WandOfCorruption extends Wand {
 		MAJOR_DEBUFFS.put(Corrosion.class,      0f);
 		MAJOR_DEBUFFS.put(Frost.class,          0f);
 		MAJOR_DEBUFFS.put(Doom.class,           0f);
+		MAJOR_DEBUFFS.put(Slow.class,           0f);
 	}
 	
 	@Override
@@ -180,7 +180,9 @@ public class WandOfCorruption extends Wand {
 				corruptEnemy( enemy );
 			} else {
 				float debuffChance = corruptingPower / enemyResist;
-				if (Random.Float() < debuffChance){
+				if (enemy.buff(Slow.class) == null){
+					Buff.append(enemy, Slow.class, 6 + buffedLvl()*3);
+				} else if (Random.Float() < debuffChance){
 					debuffEnemy( enemy, MAJOR_DEBUFFS);
 				} else {
 					debuffEnemy( enemy, MINOR_DEBUFFS);
