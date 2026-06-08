@@ -46,7 +46,7 @@ public class SolidifiedMetal extends Trinket {
 	}
 
 	public static float missileReplaceChance(){
-		return missileReplaceChance(trinketLevel(MagicalGem.class));
+		return missileReplaceChance(trinketLevel(SolidifiedMetal.class));
 	}
 
 	public static float missileReplaceChance(int level){

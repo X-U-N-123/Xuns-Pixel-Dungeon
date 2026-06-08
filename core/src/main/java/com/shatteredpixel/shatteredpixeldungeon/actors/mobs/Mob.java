@@ -1148,7 +1148,7 @@ public abstract class Mob extends Char {
 			item = w;
 		}
         if (Random.Float() < SolidifiedMetal.missileReplaceChance() && item instanceof MeleeWeapon){
-            MissileWeapon m = (MissileWeapon) Generator.random(Generator.Category.MISSILE);
+            MissileWeapon m = (MissileWeapon) Generator.random(Generator.misTiers[((MeleeWeapon) item).tier - 1]);
 			m.quantity(m.quantity() + item.level());
 			m.cursed = item.cursed;
 			m.enchant(((Weapon)item).enchantment);

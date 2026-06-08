@@ -396,14 +396,15 @@ public abstract class RegularLevel extends Level {
 
 			Item toDrop = Generator.random();
 			if (toDrop == null) continue;
-			//Magical gem extra wand
+			//Solidified metal extra missile
 			if (Random.Float() < SolidifiedMetal.missileReplaceChance() && toDrop instanceof MeleeWeapon){
-				MissileWeapon m = (MissileWeapon)Generator.random(Generator.Category.MISSILE);
+				MissileWeapon m = (MissileWeapon) Generator.random(Generator.misTiers[((MeleeWeapon) toDrop).tier - 1]);
 				m.quantity(m.quantity() + toDrop.level());
 				m.cursed = toDrop.cursed;
 				m.enchant(((Weapon)toDrop).enchantment);
 				toDrop = m;
 			}
+			//Magical gem extra wand
 			if (Random.Float() < MagicalGem.wandReplaceChance() && toDrop instanceof Armor){
 				Wand w = (Wand)Generator.random(Generator.Category.WAND);
 				w.level(toDrop.level());

@@ -106,7 +106,7 @@ public class SacrificeRoom extends SpecialRoom {
 
 		Item reward = prize;
 		if (Random.Float() < SolidifiedMetal.missileReplaceChance()){
-			MissileWeapon m = (MissileWeapon) Generator.random(Generator.Category.MISSILE);
+			MissileWeapon m = (MissileWeapon) Generator.random(Generator.misTiers[prize.tier - 1]);
 			m.quantity(m.quantity() + reward.level());
 			m.enchant(m.enchantment);//replace it with a group of missilw weapon if hero has magical gem
 			reward = m;

@@ -35,6 +35,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.MagicalGem;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.SolidifiedMetal;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.GolemSprite;
@@ -101,7 +102,7 @@ public class Golem extends Mob {
 		if (loot == Generator.Category.WEAPON){
 			toDrop = Generator.randomWeapon(5, true);
 			if (Random.Float() < SolidifiedMetal.missileReplaceChance()){
-				MissileWeapon m = (MissileWeapon)Generator.random(Generator.Category.MISSILE);
+				MissileWeapon m = (MissileWeapon) Generator.random(Generator.misTiers[((MeleeWeapon) toDrop).tier - 1]);
 				m.quantity(m.quantity() + toDrop.level());
 				m.cursed = toDrop.cursed;
 				m.enchant(((Weapon)toDrop).enchantment);

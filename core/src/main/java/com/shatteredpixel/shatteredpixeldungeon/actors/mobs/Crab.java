@@ -79,7 +79,7 @@ public class Crab extends Mob {
 			Dungeon.LimitedDrops.CRAB_CLAW.count++;
 
 			if (Random.Float() < SolidifiedMetal.missileReplaceChance()){
-				MissileWeapon m = (MissileWeapon) Generator.random(Generator.Category.MISSILE);
+				MissileWeapon m = (MissileWeapon) Generator.random(Generator.Category.MIS_T2);
 				m.quantity(m.quantity() + i.level());
 				m.cursed = i.cursed;
 				m.enchant(((Weapon)i).enchantment);

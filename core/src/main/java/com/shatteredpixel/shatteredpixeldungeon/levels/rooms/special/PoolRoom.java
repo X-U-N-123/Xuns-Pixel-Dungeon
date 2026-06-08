@@ -32,6 +32,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.MagicalGem;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.SolidifiedMetal;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
@@ -121,7 +122,7 @@ public class PoolRoom extends SpecialRoom {
 				((Weapon) prize).enchant(null);
 			}
 			if (Random.Float() < SolidifiedMetal.missileReplaceChance()){
-				MissileWeapon m = (MissileWeapon) Generator.random(Generator.Category.MISSILE);
+				MissileWeapon m = (MissileWeapon) Generator.random(Generator.misTiers[((MeleeWeapon) prize).tier - 1]);
 				m.quantity(m.quantity() + prize.level());
 				m.enchant(((Weapon) prize).enchantment);
 				prize = m;
