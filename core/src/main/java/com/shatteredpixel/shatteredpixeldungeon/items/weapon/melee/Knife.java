@@ -38,6 +38,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.AttackIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Callback;
+import com.watabou.utils.Random;
 
 public class Knife extends MeleeWeapon {
 
@@ -58,9 +59,22 @@ public class Knife extends MeleeWeapon {
     @Override
     public int proc(Char attacker, Char defender, int damage) {
         if (defender.buff(Cutabilitytracker.class) == null){
-            Buff.affect(defender, Bleeding.class).set(0.78f*damage);
+            Buff.affect(defender, Bleeding.class).set( augment.damageFactor((min() + 1) * Random.NormalFloat(1, 1.5f)) );
         }
         return super.proc( attacker, defender, damage );
+    }
+
+    @Override
+    public String statsInfo(){
+        if (isIdentified()){
+            return Messages.get(this, "stats_desc",
+                    Math.round(augment.damageFactor(min() + 1)),
+                    Math.round(augment.damageFactor((min() + 1) * 1.5f)));
+        } else {
+            return Messages.get(this, "typical_stats_desc",
+                    Math.round(augment.damageFactor(min(0) + 1)),
+                    Math.round(augment.damageFactor((min(0) + 1) * 1.5f)));
+        }
     }
 
     @Override
@@ -129,5 +143,4 @@ public class Knife extends MeleeWeapon {
     public String upgradeAbilityStat(int level) {return Integer.toString(4+level);}
 
     public static class Cutabilitytracker extends FlavourBuff {}
-
 }

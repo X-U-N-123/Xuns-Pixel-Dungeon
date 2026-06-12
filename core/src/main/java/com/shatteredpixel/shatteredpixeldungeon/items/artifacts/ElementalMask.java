@@ -100,8 +100,6 @@ public class ElementalMask extends Artifact {//will replace Ring of Elements
 
     private final ArrayList<Class> potions = new ArrayList<>();
 
-    private int rarePotionsRemain = 2;//prevent player from surviving forever by drinking PoH from this
-
     public ElementalMask() {
         super();
         setupPotions();
@@ -204,8 +202,7 @@ public class ElementalMask extends Artifact {//will replace Ring of Elements
 
         do {
             potion = Reflection.newInstance(Random.chances(UnstableBrew.potionChances));
-        } while ((potion instanceof PotionOfExperience && charge <= 1)
-        || ((potion instanceof PotionOfHealing || potion instanceof PotionOfExperience) && rarePotionsRemain <= 0));
+        } while ((potion instanceof PotionOfExperience && charge <= 1) || potion instanceof PotionOfHealing);
 
         potion.anonymize();
         curItem = potion;
@@ -214,7 +211,6 @@ public class ElementalMask extends Artifact {//will replace Ring of Elements
         fpotion = potion;
         charge --;
         if (potion instanceof PotionOfExperience) charge --;
-        if (potion instanceof PotionOfHealing || potion instanceof PotionOfExperience) rarePotionsRemain--;
 
         //if there are charges left and the potion has been given to the mask
         if ( charge > 0 && !potions.contains(potion.getClass())
@@ -325,7 +321,6 @@ public class ElementalMask extends Artifact {//will replace Ring of Elements
     @Override
     public Item upgrade() {
         chargeCap = (int)((level()+1)*0.6f)+2;
-        if (level() % 2 == 0)rarePotionsRemain ++;
 
         //for artifact transmutation.
         while (!potions.isEmpty() && potions.size() > (levelCap-1-level())) {
@@ -368,21 +363,15 @@ public class ElementalMask extends Artifact {//will replace Ring of Elements
             desc += "\n\n" + Messages.get(this, "desc_empowered");
         }
 
-        if (rarePotionsRemain <= 0) {
-            desc += "\n\n" + Messages.get(this, "desc_exhausted");
-        }
-
         return desc;
     }
 
     private static final String POTIONS =   "potions";
-    private static final String POHREMAIN =   "pohremain";
 
     @Override
     public void storeInBundle( Bundle bundle ) {
         super.storeInBundle(bundle);
         bundle.put( POTIONS, potions.toArray(new Class[potions.size()]) );
-        bundle.put(POHREMAIN, rarePotionsRemain);
     }
 
     @Override
@@ -394,7 +383,6 @@ public class ElementalMask extends Artifact {//will replace Ring of Elements
                 if (potion != null) potions.add(potion);
             }
         }
-        if (bundle.contains(POHREMAIN)) rarePotionsRemain = bundle.getInt(POHREMAIN);
         else for (int i = 0; i < 5;){
             upgrade();
             i++;

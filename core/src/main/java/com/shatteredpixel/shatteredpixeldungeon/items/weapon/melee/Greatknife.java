@@ -28,6 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.watabou.utils.Random;
 
 public class Greatknife extends MeleeWeapon {
 
@@ -48,9 +49,22 @@ public class Greatknife extends MeleeWeapon {
     @Override
     public int proc(Char attacker, Char defender, int damage) {
         if (defender.buff(Knife.Cutabilitytracker.class) == null){
-            Buff.affect(defender, Bleeding.class).set(0.66f*damage);
+            Buff.affect(defender, Bleeding.class).set( augment.damageFactor((min() + 1) * Random.NormalFloat(1, 1.5f)) );
         }
         return super.proc( attacker, defender, damage );
+    }
+
+    @Override
+    public String statsInfo(){
+        if (isIdentified()){
+            return Messages.get(this, "stats_desc",
+                    Math.round(augment.damageFactor(min() + 1)),
+                    Math.round(augment.damageFactor((min() + 1) * 1.5f)));
+        } else {
+            return Messages.get(this, "typical_stats_desc",
+                    Math.round(augment.damageFactor(min(0) + 1)),
+                    Math.round(augment.damageFactor((min(0) + 1) * 1.5f)));
+        }
     }
 
     @Override

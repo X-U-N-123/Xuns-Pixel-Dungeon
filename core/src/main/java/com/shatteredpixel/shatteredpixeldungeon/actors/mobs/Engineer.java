@@ -47,7 +47,7 @@ public class Engineer extends Mob {//专门恶心叠甲流 :)
 		loot = Generator.Category.SCROLL;
 		lootChance = 0.5f;
 
-		properties.add(Property.UNDEAD);
+		//根据情节，他们宁愿自杀也要保全自由意志，所以不带有亡灵属性
 
 		useParry = true;
 	}

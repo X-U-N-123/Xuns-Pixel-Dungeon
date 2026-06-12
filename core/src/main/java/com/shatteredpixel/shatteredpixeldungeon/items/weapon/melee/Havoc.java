@@ -41,9 +41,10 @@ public class Havoc extends MeleeWeapon {
 
     @Override
     public int proc(Char attacker, Char defender, int damage) {
-        if(defender.HP<=damage && defender.buff(Brute.BruteRage.class)==null && defender.buff(Ghoul.Revivetracker.class)==null){//preventting brute and ghoul
+        if(defender.HP <= damage && defender.buff(Brute.BruteRage.class) == null
+                && !(defender instanceof Ghoul && ((Ghoul) defender).timesDowned() > 0))//preventting brute and ghoul
             Enemieskilled++;
-        }
+
         return super.proc( attacker, defender, damage );
     }
 

@@ -286,16 +286,16 @@ public class Ghoul extends Mob {
 						return true;
 					}
 				}
-				ghoul.HP = Math.round(ghoul.HT/10f);
+				int toHeal = Math.max(Math.round(ghoul.HT/10f), 1);
+				ghoul.HP += toHeal;
 				ghoul.beingLifeLinked = false;
 				Actor.add(ghoul);
 				ghoul.timeToNow();
 				Dungeon.level.mobs.add(ghoul);
 				Dungeon.level.occupyCell( ghoul );
 				ghoul.sprite.idle();
-				ghoul.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(Math.round(ghoul.HT/10f)), FloatingText.HEALING);
+				ghoul.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(toHeal), FloatingText.HEALING);
 				super.detach();
-				Buff.affect(ghoul, Revivetracker.class);
 				return true;
 			}
 
@@ -373,5 +373,7 @@ public class Ghoul extends Mob {
 		}
 	}
 
-	public static class Revivetracker extends Buff{}
+	public int timesDowned(){
+		return timesDowned;
+	}
 }

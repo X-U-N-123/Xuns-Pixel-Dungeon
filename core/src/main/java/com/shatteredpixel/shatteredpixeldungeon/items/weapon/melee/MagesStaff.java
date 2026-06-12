@@ -179,9 +179,11 @@ public class MagesStaff extends MeleeWeapon {
 		if (wand != null &&
 				attacker instanceof Hero && ((Hero)attacker).subClass == HeroSubClass.BATTLEMAGE) {
 			if (wand.curCharges < wand.maxCharges) wand.partialCharge += 0.5f;
-			if(defender.HP<=damage && defender.buff(Brute.BruteRage.class)==null && defender.buff(Ghoul.Revivetracker.class)==null){//preventting brute and ghoul
+
+			if (defender.HP <= damage && defender.buff(Brute.BruteRage.class) == null
+					&& !(defender instanceof Ghoul && ((Ghoul) defender).timesDowned() > 0))//preventting brute and ghoul
 				wand.partialCharge += 0.5f*Dungeon.hero.pointsInTalent(Talent.BATTLE_CHARGE);
-			}
+
 			ScrollOfRecharging.charge(attacker);
 			wand.onHit(this, attacker, defender, damage);
 
