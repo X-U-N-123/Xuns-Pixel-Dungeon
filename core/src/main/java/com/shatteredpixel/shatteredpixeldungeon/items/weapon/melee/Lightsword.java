@@ -129,4 +129,8 @@ public class Lightsword extends MeleeWeapon{
         return Integer.toString(5+level);
     }
 
+    @Override
+    public String upgradeStat(int level){
+        return Integer.toString(3 + level);
+    }
 }

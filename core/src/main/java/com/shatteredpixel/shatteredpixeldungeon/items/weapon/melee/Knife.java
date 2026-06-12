@@ -37,7 +37,6 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.AttackIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
-import com.watabou.utils.Callback;
 import com.watabou.utils.Random;
 
 public class Knife extends MeleeWeapon {
@@ -58,9 +57,9 @@ public class Knife extends MeleeWeapon {
 
     @Override
     public int proc(Char attacker, Char defender, int damage) {
-        if (defender.buff(Cutabilitytracker.class) == null){
+        if (defender.buff(Cutabilitytracker.class) == null)
             Buff.affect(defender, Bleeding.class).set( augment.damageFactor((min() + 1) * Random.NormalFloat(1, 1.5f)) );
-        }
+
         return super.proc( attacker, defender, damage );
     }
 
@@ -106,27 +105,24 @@ public class Knife extends MeleeWeapon {
         }
         hero.belongings.abilityWeapon = null;
 
-        hero.sprite.attack(enemy.pos, new Callback() {
-            @Override
-            public void call() {
-                wep.beforeAbilityUsed(hero, enemy);
-                AttackIndicator.target(enemy);
-                Buff.affect(enemy, Cutabilitytracker.class, 0f);
-                if (hero.attack(enemy, 2, 0, Char.INFINITE_ACCURACY)){
-                    Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG);
-                }
+        hero.sprite.attack(enemy.pos, () -> {
+			wep.beforeAbilityUsed(hero, enemy);
+			AttackIndicator.target(enemy);
+			Buff.affect(enemy, Cutabilitytracker.class, 0f);
+			if (hero.attack(enemy, 2, 0, Char.INFINITE_ACCURACY)){
+				Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG);
+			}
 
-                Invisibility.dispel();
-                hero.spendAndNext(hero.attackDelay());
-                if (!enemy.isAlive()){
-                    wep.onAbilityKill(hero, enemy);
-                } else {
-                    Buff.prolong(enemy, Vulnerable.class, debuffDuration);
-                    Buff.prolong(enemy, Cripple.class, debuffDuration);
-                }
-                wep.afterAbilityUsed(hero);
-            }
-        });
+			Invisibility.dispel();
+			hero.spendAndNext(hero.attackDelay());
+			if (!enemy.isAlive()){
+				MeleeWeapon.onAbilityKill(hero, enemy);
+			} else {
+				Buff.prolong(enemy, Vulnerable.class, debuffDuration);
+				Buff.prolong(enemy, Cripple.class, debuffDuration);
+			}
+			wep.afterAbilityUsed(hero);
+		});
     }
 
     @Override
@@ -143,4 +139,10 @@ public class Knife extends MeleeWeapon {
     public String upgradeAbilityStat(int level) {return Integer.toString(4+level);}
 
     public static class Cutabilitytracker extends FlavourBuff {}
+
+    @Override
+    public String upgradeStat(int level){
+        return Math.round(augment.damageFactor(min() + 1)) + "-" +
+                Math.round(augment.damageFactor((min() + 1) * 1.5f));
+    }
 }

@@ -307,4 +307,9 @@ public class Shovel extends MeleeWeapon {
 			}
 		}
 	}
+
+    @Override
+    public String upgradeStat(int level){
+        return Float.toString(Math.round(5000f / (5 + level)) / 1000f);
+    }
 }

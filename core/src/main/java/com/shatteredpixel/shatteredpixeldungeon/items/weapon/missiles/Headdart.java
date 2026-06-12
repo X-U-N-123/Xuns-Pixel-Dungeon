@@ -87,4 +87,9 @@ public class Headdart extends MissileWeapon {
 			Math.round(augment.damageFactor(maxBleed(0))));
 		}
 	}
+
+	@Override
+	public String upgradeStat(int level){
+		return minBleed(level) + "-" + maxBleed(level);
+	}
 }

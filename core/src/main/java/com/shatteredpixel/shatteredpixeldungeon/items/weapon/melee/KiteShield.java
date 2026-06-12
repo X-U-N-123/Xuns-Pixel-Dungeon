@@ -135,4 +135,9 @@ public class KiteShield extends MeleeWeapon {
         image = ItemSpriteSheet.KITESHIELD_START + coatOfArms;
         updateQuickslot();
     }
+
+    @Override
+    public String upgradeStat(int level){
+        return "0-" + DRMax(level);
+    }
 }

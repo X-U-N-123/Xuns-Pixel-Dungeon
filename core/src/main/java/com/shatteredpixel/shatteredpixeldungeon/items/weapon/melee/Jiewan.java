@@ -92,4 +92,9 @@ public class Jiewan extends  MeleeWeapon {
         return Integer.toString(4+level);
     }
 
+    @Override
+    public String upgradeStat(int level){
+        return Math.round(augment.damageFactor(min() + 1)) + "-" +
+                Math.round(augment.damageFactor((min() + 1) * 1.5f));
+    }
 }

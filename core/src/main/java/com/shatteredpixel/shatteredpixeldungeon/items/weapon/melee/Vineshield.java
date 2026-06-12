@@ -84,4 +84,8 @@ public class Vineshield extends MeleeWeapon {
         return Integer.toString(6 + level);
     }
 
+    @Override
+    public String upgradeStat(int level){
+        return "0-" + DRMax(level);
+    }
 }

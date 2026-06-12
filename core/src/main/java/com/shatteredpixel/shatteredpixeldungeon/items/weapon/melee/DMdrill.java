@@ -228,4 +228,9 @@ public class DMdrill extends MeleeWeapon {
             }
         }
     }
+
+    @Override
+    public String upgradeStat(int level){
+        return Integer.toString(3 + level);
+    }
 }

@@ -92,4 +92,8 @@ public class Tomahawk extends MissileWeapon {
 		}
 	}
 
+	@Override
+	public String upgradeStat(int level){
+		return minBleed(level) + "-" + maxBleed(level);
+	}
 }

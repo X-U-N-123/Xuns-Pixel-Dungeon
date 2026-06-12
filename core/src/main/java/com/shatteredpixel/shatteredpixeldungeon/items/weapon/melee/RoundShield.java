@@ -140,4 +140,9 @@ public class RoundShield extends MeleeWeapon {
 			hasBlocked = bundle.getBoolean(BLOCKED);
 		}
 	}
+
+	@Override
+	public String upgradeStat(int level){
+		return "0-" + DRMax(level);
+	}
 }

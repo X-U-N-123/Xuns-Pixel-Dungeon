@@ -84,4 +84,8 @@ public class Canopy extends MeleeWeapon {
         return Integer.toString(2 + level);
     }
 
+    @Override
+    public String upgradeStat(int level){
+        return "0-" + DRMax(level);
+    }
 }

@@ -32,19 +32,9 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.MagicalInfusion;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Canopy;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Greatshield;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.KindOfCrossbow;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.KiteShield;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RoundShield;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Vineshield;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Windblade;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.BoneFragment;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Headdart;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Tomahawk;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Languages;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -76,7 +66,6 @@ public class WndUpgrade extends Window {
 	private boolean force;
 
 	private RedButton btnUpgrade;
-	private RedButton btnCancel;
 
 	public WndUpgrade( Item upgrader, Item toUpgrade, boolean force){
 
@@ -206,48 +195,6 @@ public class WndUpgrade extends Window {
 
 		// *** Various lines for stats, highlighting differences between current level and +1 ***
 
-		//physical damage
-		if (toUpgrade instanceof Weapon){
-			Weapon.Augment aug = ((Weapon) toUpgrade).augment;
-			bottom = fillFields(Messages.get(this, "damage"),
-					aug.damageFactor(((Weapon) toUpgrade).min(levelFrom)) + "-" + aug.damageFactor(((Weapon) toUpgrade).max(levelFrom)),
-					aug.damageFactor(((Weapon) toUpgrade).min(levelTo)) + "-" + aug.damageFactor(((Weapon) toUpgrade).max(levelTo)),
-					bottom);
-		}
-
-		if (toUpgrade instanceof KindOfCrossbow){
-			bottom = fillFields(Messages.get(this, "dart_damage"),
-					((KindOfCrossbow) toUpgrade).dartMin(levelFrom) + "-" + ((KindOfCrossbow) toUpgrade).dartMax(levelFrom),
-					((KindOfCrossbow) toUpgrade).dartMin(levelTo) + "-" + ((KindOfCrossbow) toUpgrade).dartMax(levelTo),
-					bottom);
-		}
-
-		if (toUpgrade instanceof Windblade){
-			bottom = fillFields(Messages.get(this, "rch"),
-					Integer.toString(levelFrom + 1),
-					Integer.toString(levelTo + 1),
-					bottom);
-		}
-
-		//bleeding (tomahawk, bone feagment and headdart)
-		if (toUpgrade instanceof Tomahawk){
-			bottom = fillFields(Messages.get(this, "bleeding"),
-					Math.round(((Tomahawk) toUpgrade).minBleed(levelFrom)) + "-" + Math.round(((Tomahawk) toUpgrade).maxBleed(levelFrom)),
-					Math.round(((Tomahawk) toUpgrade).minBleed(levelTo)) + "-" + Math.round(((Tomahawk) toUpgrade).maxBleed(levelTo)),
-					bottom);
-		}
-		if (toUpgrade instanceof BoneFragment){
-			bottom = fillFields(Messages.get(this, "bleeding"),
-					Math.round(((BoneFragment) toUpgrade).minBleed(levelFrom)) + "-" + Math.round(((BoneFragment) toUpgrade).maxBleed(levelFrom)),
-					Math.round(((BoneFragment) toUpgrade).minBleed(levelTo)) + "-" + Math.round(((BoneFragment) toUpgrade).maxBleed(levelTo)),
-					bottom);
-		}
-		if (toUpgrade instanceof Headdart){
-			bottom = fillFields(Messages.get(this, "bleeding"),
-					Math.round(((Headdart) toUpgrade).minBleed(levelFrom)) + "-" + Math.round(((Headdart) toUpgrade).maxBleed(levelFrom)),
-					Math.round(((Headdart) toUpgrade).minBleed(levelTo)) + "-" + Math.round(((Headdart) toUpgrade).maxBleed(levelTo)),
-					bottom);
-		}
 
 		if (Dungeon.hero != null && Dungeon.hero.heroClass == HeroClass.DUELIST
 				&& toUpgrade instanceof MeleeWeapon && ((MeleeWeapon) toUpgrade).upgradeAbilityStat(levelFrom) != null){
@@ -257,47 +204,31 @@ public class WndUpgrade extends Window {
 					bottom);
 		}
 
-		//blocking (armor and shields)
-		if (toUpgrade instanceof Armor){
-			Armor.Augment aug = ((Armor) toUpgrade).augment;
-			bottom = fillFields(Messages.get(this, "blocking"),
-					((Armor) toUpgrade).DRMin(levelFrom) + "-" + (((Armor) toUpgrade).DRMax(levelFrom)),
-					((Armor) toUpgrade).DRMin(levelTo) + "-" +  (((Armor) toUpgrade).DRMax(levelTo)),
-					bottom);
-		} else if (toUpgrade instanceof Vineshield){
-			bottom = fillFields(Messages.get(this, "blocking"),
-					0 + "-" + ((Vineshield) toUpgrade).DRMax(levelFrom),
-					0 + "-" + ((Vineshield) toUpgrade).DRMax(levelTo),
-					bottom);
-		} else if (toUpgrade instanceof RoundShield){
-			bottom = fillFields(Messages.get(this, "blocking"),
-					0 + "-" + ((RoundShield) toUpgrade).DRMax(levelFrom),
-					0 + "-" + ((RoundShield) toUpgrade).DRMax(levelTo),
-					bottom);
-		} else if (toUpgrade instanceof KiteShield){
-			bottom = fillFields(Messages.get(this, "blocking"),
-					0 + "-" + ((KiteShield) toUpgrade).DRMax(levelFrom),
-					0 + "-" + ((KiteShield) toUpgrade).DRMax(levelTo),
-					bottom);
-		} else if (toUpgrade instanceof Greatshield){
-			bottom = fillFields(Messages.get(this, "blocking"),
-					0 + "-" + ((Greatshield) toUpgrade).DRMax(levelFrom),
-					0 + "-" + ((Greatshield) toUpgrade).DRMax(levelTo),
-					bottom);
-		} else if (toUpgrade instanceof Canopy){
-			bottom = fillFields(Messages.get(this, "blocking"),
-					0 + "-" + ((Canopy) toUpgrade).DRMax(levelFrom),
-					0 + "-" + ((Canopy) toUpgrade).DRMax(levelTo),
-					bottom);
-		}
-
-		//weight (i.e. strength requirement)
 		if (toUpgrade instanceof Weapon){
+			//physical damage
+			Weapon.Augment aug = ((Weapon) toUpgrade).augment;
+			bottom = fillFields(Messages.get(this, "damage"),
+					aug.damageFactor(((Weapon) toUpgrade).min(levelFrom)) + "-" + aug.damageFactor(((Weapon) toUpgrade).max(levelFrom)),
+					aug.damageFactor(((Weapon) toUpgrade).min(levelTo)) + "-" + aug.damageFactor(((Weapon) toUpgrade).max(levelTo)),
+					bottom);
+			//Weapon stats
+			if (((Weapon) toUpgrade).upgradeStat(levelFrom) != null)
+				bottom = fillFields(Messages.get(toUpgrade, "upgrade_stat"),
+						((Weapon) toUpgrade).upgradeStat(levelFrom),
+						((Weapon) toUpgrade).upgradeStat(levelTo),
+						bottom);
+			//weight (i.e. strength requirement)
 			bottom = fillFields(Messages.get(this, "weight"),
 					Integer.toString((((Weapon) toUpgrade).STRReq(levelFrom))),
 					Integer.toString((((Weapon) toUpgrade).STRReq(levelTo))),
 					bottom);
 		} else if (toUpgrade instanceof Armor) {
+			//blocking
+			bottom = fillFields(Messages.get(this, "blocking"),
+					((Armor) toUpgrade).DRMin(levelFrom) + "-" + (((Armor) toUpgrade).DRMax(levelFrom)),
+					((Armor) toUpgrade).DRMin(levelTo) + "-" +  (((Armor) toUpgrade).DRMax(levelTo)),
+					bottom);
+			//weight (i.e. strength requirement)
 			bottom = fillFields(Messages.get(this, "weight"),
 					Integer.toString((((Armor) toUpgrade).STRReq(levelFrom))),
 					Integer.toString((((Armor) toUpgrade).STRReq(levelTo))),
@@ -495,15 +426,15 @@ public class WndUpgrade extends Window {
 		btnUpgrade.setRect(0, bottom+2*GAP, WIDTH/2f, 16);
 		add(btnUpgrade);
 
-		btnCancel = new RedButton(Messages.get(this, "back")){
+		RedButton btnCancel = new RedButton(Messages.get(this, "back")) {
 			@Override
 			protected void onClick() {
 				super.onClick();
 				hide();
 				if (upgrader instanceof ScrollOfUpgrade) {
 					((ScrollOfUpgrade) upgrader).reShowSelector(force);
-				} else if (upgrader instanceof MagicalInfusion){
-					((MagicalInfusion)upgrader).reShowSelector();
+				} else if (upgrader instanceof MagicalInfusion) {
+					((MagicalInfusion) upgrader).reShowSelector();
 				}
 			}
 
@@ -516,7 +447,7 @@ public class WndUpgrade extends Window {
 		btnUpgrade.icon(new ItemSprite(upgrader));
 		btnCancel.icon(Icons.EXIT.get());
 
-		bottom = (int)btnCancel.bottom();
+		bottom = (int) btnCancel.bottom();
 
 		resize(WIDTH, (int)bottom);
 

@@ -80,4 +80,9 @@ public class Greatshield extends MeleeWeapon {
 	public String upgradeAbilityStat(int level) {
 		return Integer.toString(3 + level);
 	}
+
+	@Override
+	public String upgradeStat(int level){
+		return "0-" + DRMax(level);
+	}
 }

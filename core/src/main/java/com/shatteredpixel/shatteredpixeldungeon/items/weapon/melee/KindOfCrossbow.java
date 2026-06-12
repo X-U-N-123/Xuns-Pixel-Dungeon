@@ -169,4 +169,9 @@ public class KindOfCrossbow extends MeleeWeapon {
 		}
 
 	}
+
+	@Override
+	public String upgradeStat(int level){
+		return dartMin(level) + "-" + dartMax(level);
+	}
 }

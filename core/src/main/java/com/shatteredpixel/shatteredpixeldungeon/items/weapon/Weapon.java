@@ -684,4 +684,8 @@ abstract public class Weapon extends KindOfWeapon {
 	public float weight(){
 		return STRReq() / 10f;
 	}
+
+	public String upgradeStat(int level){
+		return null;
+	}
 }
