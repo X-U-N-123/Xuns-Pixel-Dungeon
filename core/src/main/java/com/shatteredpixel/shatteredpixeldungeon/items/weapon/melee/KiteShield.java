@@ -26,17 +26,21 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.shatteredpixel.shatteredpixeldungeon.utils.Holiday;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class KiteShield extends MeleeWeapon {
 
     private int coatOfArms = 0;
     /*
-    0 for Xun's PD,   1 for Magic Ling PD,  2 for Shattered PD, 3 for Vanilla PD
-    4 for Darkest PD, 5 for Experienced PD, 6 for ARranged PD,  7 for Scorched PD
+    0 for Xun's PD,     1 for Magic Ling PD,    2 for Shattered PD,     3 for Vanilla PD
+    4 for Darkest PD,   5 for Summoning PD,     6 for ARranged PD,      7 for Scorched PD
+    8 for Sandbox PD,   9 for Pixel Towers,     10 for Transform PD,    11 for Devoted PD
+    12 for Rickroll
     */
     public static final String AC_SWITCH = "SWITCH";
 
@@ -59,6 +63,12 @@ public class KiteShield extends MeleeWeapon {
         ArrayList<String> actions = super.actions( hero );
         actions.add(AC_SWITCH);
         return actions;
+    }
+
+    @Override
+    public String defaultAction() {
+        if (!Objects.equals(super.defaultAction(), AC_ABILITY)) return AC_SWITCH;
+        else                                                    return super.defaultAction();
     }
 
     @Override
@@ -94,7 +104,8 @@ public class KiteShield extends MeleeWeapon {
 
         if (action.equals(AC_SWITCH)){
             coatOfArms++;
-            if (coatOfArms >= ItemSpriteSheet.coatOfArmsKind) coatOfArms = 0;
+            if (coatOfArms >= ItemSpriteSheet.coatOfArmsKind
+                    + (Holiday.getCurrentHoliday() == Holiday.APRIL_FOOLS ? 1 : 0)) coatOfArms = 0;
             Sample.INSTANCE.play(Assets.Sounds.MELD, 0.5f);
             image = ItemSpriteSheet.KITESHIELD_START + coatOfArms;
             updateQuickslot();

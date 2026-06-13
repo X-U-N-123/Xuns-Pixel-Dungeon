@@ -511,27 +511,20 @@ public class ItemSpriteSheet {
 		assignItemRect(SCORPIOSPIKE,    16, 16);
 	}
 
-	public static final int OTHER_WEP = xy(1, 9); //16 slots
+	public static final int OTHER_WEP = xy(1, 9); //8 slots
 	public static final int HIDDEN_BLADE         = OTHER_WEP +0;
 	public static final int HIDDEN_BLADE_LOCKED  = OTHER_WEP +1;
-    public static final int BLADE_OF_MIMIC       = OTHER_WEP +3;
-
-	public static final int BLADE_OF_REAL        = OTHER_WEP +6;
-	public static final int BLADE_OF_UNREAL      = OTHER_WEP +7;
-
-	public static final int KITESHIELD_START     = OTHER_WEP +8;
-		public static final int coatOfArmsKind = 8;//currently 8 kinds of coat of arms are usable
+    public static final int BLADE_OF_MIMIC       = OTHER_WEP +2;
+	public static final int BLADE_OF_REAL        = OTHER_WEP +3;
+	public static final int BLADE_OF_UNREAL      = OTHER_WEP +4;
 	static {
-		assignItemRect(HIDDEN_BLADE,    16, 16);
+		assignItemRect(HIDDEN_BLADE,       16, 16);
 		assignItemRect(HIDDEN_BLADE_LOCKED,16, 16);
 
-        assignItemRect(BLADE_OF_MIMIC,  15, 15);
+        assignItemRect(BLADE_OF_MIMIC,     15, 15);
 
-		assignItemRect(BLADE_OF_REAL,   15, 16);
-		assignItemRect(BLADE_OF_UNREAL, 15, 16);
-
-		for (int i = KITESHIELD_START; i < KITESHIELD_START + coatOfArmsKind; i++)
-			assignItemRect(i, 13, 16);
+		assignItemRect(BLADE_OF_REAL,      15, 16);
+		assignItemRect(BLADE_OF_UNREAL,    15, 16);
 	}
 
 	public static final int DARTS           = xy(17, 4);  //16 slots
@@ -553,7 +546,7 @@ public class ItemSpriteSheet {
 			assignItemRect(i, 15, 15);
 	}
 	
-	private static final int ARMOR          = xy(17, 9);  //16 slots
+	private static final int ARMOR          = xy(9, 9);  //24 slots
 	public static final int ARMOR_CLOTH     = ARMOR+0;
 	public static final int ARMOR_LEATHER   = ARMOR+1;
 	public static final int ARMOR_MAIL      = ARMOR+2;
@@ -1018,7 +1011,7 @@ public class ItemSpriteSheet {
 		assignItemRect(SHARD,   8 , 10);
 	}
 
-	private static final int BAGS       = xy(1, 19);  //16 slots
+	private static final int BAGS       = xy(1, 19);  //8 slots
 	public static final int WATERSKIN   = BAGS+0;
 	public static final int BACKPACK    = BAGS+1;
 	public static final int POUCH       = BAGS+2;
@@ -1038,7 +1031,7 @@ public class ItemSpriteSheet {
 		assignItemRect(FOOD_POCKET, 14, 15);
 	}
 
-	private static final int DOCUMENTS  = xy(17, 19);  //16 slots
+	private static final int DOCUMENTS  = xy(9, 19);  //8 slots
 	public static final int GUIDE_PAGE  = DOCUMENTS+0;
 	public static final int ALCH_PAGE   = DOCUMENTS+1;
 	public static final int SEWER_PAGE  = DOCUMENTS+2;
@@ -1054,6 +1047,13 @@ public class ItemSpriteSheet {
 		assignItemRect(CAVES_PAGE,  10, 11);
 		assignItemRect(CITY_PAGE,   10, 11);
 		assignItemRect(HALLS_PAGE,  10, 11);
+	}
+	public static final int KITESHIELD_START = xy(17, 19);
+		public static final int coatOfArmsKind = 12;
+		//currently 13 kinds of coat of arms(including a special one) are usable
+	static {
+		for (int i = KITESHIELD_START; i < KITESHIELD_START + coatOfArmsKind + 1; i++)
+			assignItemRect(i, 13, 16);
 	}
 	//lots of free slots
 	//for smaller 8x8 icons that often accompany an item sprite
