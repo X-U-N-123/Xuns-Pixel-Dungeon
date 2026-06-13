@@ -86,7 +86,7 @@ public class Blocking extends Weapon.Enchantment {
 		@Override
 		public void setShield(int shield) {
 			super.setShield(shield);
-			int lostLimit = 5;
+			int lostLimit = 8;
 			if (target instanceof Hero){
 				lostLimit *= (int)Math.pow(2, Dungeon.hero.pointsInTalent(Talent.SHIELDING));
 			}

@@ -29,7 +29,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Electricity;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Fire;
-import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Freezing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Adrenaline;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AllyBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Amok;
@@ -98,13 +97,13 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.ConeAOE;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.AttackIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.HeroIcon;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.audio.Sample;
-import com.watabou.utils.Callback;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
@@ -120,7 +119,7 @@ public class ElementalStrike extends ArmorAbility {
 	static {
         effectTypes.put(Alienating.class,   MagicMissile.FORCE_CONE);
 		effectTypes.put(Blazing.class,      MagicMissile.FIRE_CONE);
-		effectTypes.put(Chilling.class,     MagicMissile.FROST_CONE);
+		effectTypes.put(Chilling.class,     MagicMissile.SPARK_CONE);
 		effectTypes.put(Kinetic.class,      MagicMissile.FORCE_CONE);
 		effectTypes.put(Shocking.class,     MagicMissile.SPARK_CONE);
 		effectTypes.put(Blocking.class,     MagicMissile.WARD_CONE);
@@ -201,39 +200,37 @@ public class ElementalStrike extends ArmorAbility {
 		}
 
 		Weapon.Enchantment finalEnchantment = enchantment;
-		hero.sprite.attack(target, new Callback() {
-			@Override
-			public void call() {
+		hero.sprite.attack(target, () -> {
 
-				Char enemy = Actor.findChar(target);
+			Char enemy = Actor.findChar(target);
 
-				if (enemy != null) {
-					if (hero.isCharmedBy(enemy)) {
-						enemy = null;
-					} else if (enemy.alignment == hero.alignment) {
-						enemy = null;
-					} else if (!hero.canAttack(enemy)) {
-						enemy = null;
-					}
+			if (enemy != null) {
+				if (hero.isCharmedBy(enemy)) {
+					enemy = null;
+				} else if (enemy.alignment == hero.alignment) {
+					enemy = null;
+				} else if (!hero.canAttack(enemy)) {
+					enemy = null;
 				}
-
-				preAttackEffect(cone, hero, finalEnchantment);
-
-				if (enemy != null){
-					AttackIndicator.target(enemy);
-					oldEnemyPos = enemy.pos;
-					if (hero.attack(enemy, 1, 0, Char.INFINITE_ACCURACY)) {
-						Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG);
-					}
-				}
-
-				perCellEffect(cone, finalEnchantment);
-
-				perCharEffect(cone, hero, enemy, finalEnchantment);
-
-				Invisibility.dispel();
-				hero.spendAndNext(hero.attackDelay());
 			}
+
+			preAttackEffect(cone, hero, finalEnchantment);
+
+			if (enemy != null){
+				AttackIndicator.target(enemy);
+				oldEnemyPos = enemy.pos;
+				if (hero.attack(enemy, 1, 0, Char.INFINITE_ACCURACY)) {
+					Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG);
+				}
+			}
+
+			perCellEffect(cone, finalEnchantment);
+
+			Invisibility.dispel();
+
+			perCharEffect(cone, hero, enemy, finalEnchantment);
+
+			hero.spendAndNext(hero.attackDelay());
 		});
 
 		Sample.INSTANCE.play(Assets.Sounds.CHARGEUP);
@@ -325,12 +322,6 @@ public class ElementalStrike extends ArmorAbility {
 				GameScene.add(Blob.seed(cell, Math.round(8 * powerMulti), Fire.class));
 			}
 
-		//*** Chilling ***
-		} else if (ench instanceof Chilling){
-			for (int cell : cone.cells) {
-				GameScene.add(Blob.seed(cell, Math.round(8 * powerMulti), Freezing.class));
-			}
-
 		//*** Shocking ***
 		} else if (ench instanceof Shocking){
 			for (int cell : cone.cells) {
@@ -417,7 +408,11 @@ public class ElementalStrike extends ArmorAbility {
 				hero.buff(Kinetic.ConservedDamage.class).detach();
 			}
 
-		//*** Blooming ***
+			//*** Chilling ***
+		} else if (ench instanceof Chilling){
+			Buff.affect(hero, Swiftthistle.TimeBubble.class).reset(2 * affected.size());
+
+			//*** Blooming ***
 		} else if (ench instanceof Blooming){
 			for (Char ch : affected){
 				Buff.affect(ch, Roots.class, Math.round(6f*powerMulti));
@@ -653,5 +648,4 @@ public class ElementalStrike extends ArmorAbility {
 	public Talent[] talents() {
 		return new Talent[]{Talent.ELEMENTAL_REACH, Talent.STRIKING_FORCE, Talent.DIRECTED_POWER, Talent.RECHARGING_STRIKE, Talent.HEROIC_ENERGY};
 	}
-
 }

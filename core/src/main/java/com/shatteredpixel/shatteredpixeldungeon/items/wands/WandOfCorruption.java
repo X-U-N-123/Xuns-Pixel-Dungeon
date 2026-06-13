@@ -94,12 +94,12 @@ public class WandOfCorruption extends Wand {
 		MINOR_DEBUFFS.put(Weakness.class,       2f);
 		MINOR_DEBUFFS.put(Vulnerable.class,     2f);
 		MINOR_DEBUFFS.put(BrokenArmor.class,    2f);
-		MINOR_DEBUFFS.put(Vertigo.class,        2f);
 		MINOR_DEBUFFS.put(Cripple.class,        1f);
 		MINOR_DEBUFFS.put(Roots.class,          1f);
 		MINOR_DEBUFFS.put(Blindness.class,      1f);
 		MINOR_DEBUFFS.put(Terror.class,         1f);
 
+		MINOR_DEBUFFS.put(Vertigo.class,        0f);
 		MINOR_DEBUFFS.put(Chill.class,          0f);
 		MINOR_DEBUFFS.put(Ooze.class,           0f);
 		MINOR_DEBUFFS.put(Drowsy.class,         0f);
@@ -112,18 +112,18 @@ public class WandOfCorruption extends Wand {
 	private static final HashMap<Class<? extends Buff>, Float> MAJOR_DEBUFFS = new HashMap<>();
 	static{
 		MAJOR_DEBUFFS.put(Amok.class,           3f);
-		MAJOR_DEBUFFS.put(Hex.class,            2f);
+		MAJOR_DEBUFFS.put(Slow.class,           2f);
 		MAJOR_DEBUFFS.put(Daze.class,           2f);
 		MAJOR_DEBUFFS.put(Paralysis.class,      1f);
 
 		MAJOR_DEBUFFS.put(Dread.class,          0f);
+		MAJOR_DEBUFFS.put(Hex.class,            0f);
 		MAJOR_DEBUFFS.put(Charm.class,          0f);
 		MAJOR_DEBUFFS.put(MagicalSleep.class,   0f);
 		MAJOR_DEBUFFS.put(SoulMark.class,       0f);
 		MAJOR_DEBUFFS.put(Corrosion.class,      0f);
 		MAJOR_DEBUFFS.put(Frost.class,          0f);
 		MAJOR_DEBUFFS.put(Doom.class,           0f);
-		MAJOR_DEBUFFS.put(Slow.class,           0f);
 	}
 	
 	@Override
@@ -180,8 +180,8 @@ public class WandOfCorruption extends Wand {
 				corruptEnemy( enemy );
 			} else {
 				float debuffChance = corruptingPower / enemyResist;
-				if (enemy.buff(Slow.class) == null){
-					Buff.append(enemy, Slow.class, 6 + buffedLvl()*3);
+				if (enemy.buff(Vertigo.class) == null && !enemy.isImmune(Vertigo.class)){
+					Buff.append(enemy, Vertigo.class, 6 + buffedLvl() * 3);
 				} else if (Random.Float() < debuffChance){
 					debuffEnemy( enemy, MAJOR_DEBUFFS);
 				} else {
