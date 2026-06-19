@@ -589,7 +589,6 @@ public class DM300 extends Mob {
 		}
 
 		Badges.validateBossSlain();
-		Badges.validateEngineer(cause);
 
 		if (Statistics.qualifiedForBossChallengeBadge){
 			Badges.validateBossChallengeCompleted();

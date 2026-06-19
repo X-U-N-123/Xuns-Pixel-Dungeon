@@ -123,7 +123,6 @@ public class Dungeon {
 		//Demon spawners are already limited in their spawnrate, no need to limit their health drops
 		//alchemy
 		COOKING_HP,
-		BLANDFRUIT_SEED,
 
 		//Other limited enemy drops
 		SLIME_WEP,

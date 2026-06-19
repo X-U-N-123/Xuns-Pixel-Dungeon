@@ -22,7 +22,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.items;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hypnosis;
@@ -79,12 +78,6 @@ public class TengusMask extends Item {
 			GameScene.show( new WndChooseSubclass( this, hero ) );
 			
 		}
-	}
-	
-	@Override
-	public boolean doPickUp(Hero hero, int pos) {
-		Badges.validateMastery();
-		return super.doPickUp( hero, pos );
 	}
 	
 	@Override

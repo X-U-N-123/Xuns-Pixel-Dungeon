@@ -229,28 +229,6 @@ public enum HeroClass {
         if (Dungeon.isChallenged(Challenges.NO_RETURN)) Buff.affect(hero, Collapse.class);
 	}
 
-	public Badges.Badge masteryBadge() {
-		switch (this) {
-			case WARRIOR:
-				return Badges.Badge.MASTERY_WARRIOR;
-			case MAGE:
-				return Badges.Badge.MASTERY_MAGE;
-			case ROGUE:
-				return Badges.Badge.MASTERY_ROGUE;
-			case HUNTRESS:
-				return Badges.Badge.MASTERY_HUNTRESS;
-			case DUELIST:
-				return Badges.Badge.MASTERY_DUELIST;
-			case CLERIC:
-				return Badges.Badge.MASTERY_CLERIC;
-			case EXPLORER:
-				return Badges.Badge.MASTERY_EXPLORER;
-            case WRAITH:
-                return Badges.Badge.MASTERY_WRAITH;
-		}
-		return null;
-	}
-
 	private static void initWarrior( Hero hero ) {
 		(hero.belongings.weapon = new WornShortsword()).identify();
 		ThrowingStone stones = new ThrowingStone();

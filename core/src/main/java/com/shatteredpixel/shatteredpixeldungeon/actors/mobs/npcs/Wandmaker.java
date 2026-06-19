@@ -129,12 +129,7 @@ public class Wandmaker extends NPC {
 			}
 
 			if (item != null) {
-				Game.runOnRenderThread(new Callback() {
-					@Override
-					public void call() {
-						GameScene.show( new WndWandmaker( Wandmaker.this, item ) );
-					}
-				});
+				Game.runOnRenderThread(() -> GameScene.show( new WndWandmaker( Wandmaker.this, item ) ));
 			} else {
 				String msg;
 				switch(Quest.type){
@@ -162,32 +157,7 @@ public class Wandmaker extends NPC {
 			String msg2 = "";
 
 			if (Dungeon.hero.buff(HeroDisguise.class) != null) msg1 += Messages.get(this, "intro_mita");
-			else switch(Dungeon.hero.heroClass){
-				case WARRIOR:
-					msg1 += Messages.get(this, "intro_warrior");
-					break;
-				case ROGUE:
-					msg1 += Messages.get(this, "intro_rogue");
-					break;
-				case MAGE:
-					msg1 += Messages.get(this, "intro_mage", Messages.titleCase(Dungeon.hero.name()));
-					break;
-				case HUNTRESS:
-					msg1 += Messages.get(this, "intro_huntress");
-					break;
-				case DUELIST:
-					msg1 += Messages.get(this, "intro_duelist");
-					break;
-				case CLERIC:
-					msg1 += Messages.get(this, "intro_cleric");
-					break;
-				case EXPLORER:
-					msg1 += Messages.get(this, "intro_explorer");
-					break;
-                case WRAITH:
-                    msg1 += Messages.get(this, "intro_wraith");
-                    break;
-			}
+			else msg1 += Messages.get(this, "intro_" + Dungeon.hero.heroClass.toString());
 
 			msg1 += Messages.get(this, "intro_1");
 

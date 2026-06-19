@@ -58,6 +58,9 @@ public class BoneSpike extends MeleeWeapon {
         hitSoundPitch = 1.1f;
 
         tier = 1;
+
+        unique = true;
+        bones = false;
     }
 
     @Override

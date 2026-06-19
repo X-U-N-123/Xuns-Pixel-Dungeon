@@ -21,7 +21,6 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs;
 
-import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
@@ -129,7 +128,6 @@ public class RatKing extends NPC {
 			if (Dungeon.hero.belongings.armor() == null){
 				yell( Messages.get(RatKing.class, "crown_clothes") );
 			} else {
-				Badges.validateRatmogrify();
 				Game.runOnRenderThread(new Callback() {
 					@Override
 					public void call() {

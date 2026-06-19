@@ -35,7 +35,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Pickaxe;
 import com.shatteredpixel.shatteredpixeldungeon.items.remains.RemainsItem;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.DMdrill;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Ripperclaw;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Bestiary;
@@ -67,15 +66,6 @@ public class Badges {
 	}
 
 	public enum Badge {
-		MASTERY_WARRIOR,
-		MASTERY_MAGE,
-		MASTERY_ROGUE,
-		MASTERY_HUNTRESS,
-		MASTERY_DUELIST,
-		MASTERY_CLERIC,
-		MASTERY_EXPLORER,
-        MASTERY_WRAITH,
-		FOUND_RATMOGRIFY,
 
 		//bronze
 		UNLOCK_MAGE                 ( 1 ),
@@ -179,7 +169,6 @@ public class Badges {
 		RESEARCHER_3                ( 85, BadgeType.JOURNAL ),
 		GAMES_PLAYED_3              ( 86, BadgeType.GLOBAL ),
 		HIGH_SCORE_3                ( 87 ),
-		ENGINEER                    ( 88 ),
 
 		//platinum
 		MANY_BUFFS                  ( 96 ),
@@ -993,43 +982,6 @@ public class Badges {
 		}
 	}
 	
-	public static void validateMastery() {
-		
-		Badge badge = null;
-		switch (Dungeon.hero.heroClass) {
-			case WARRIOR:
-				badge = Badge.MASTERY_WARRIOR;
-				break;
-			case MAGE:
-				badge = Badge.MASTERY_MAGE;
-				break;
-			case ROGUE:
-				badge = Badge.MASTERY_ROGUE;
-				break;
-			case HUNTRESS:
-				badge = Badge.MASTERY_HUNTRESS;
-				break;
-			case DUELIST:
-				badge = Badge.MASTERY_DUELIST;
-				break;
-			case CLERIC:
-				badge = Badge.MASTERY_CLERIC;
-				break;
-			case EXPLORER:
-				badge = Badge.MASTERY_EXPLORER;
-				break;
-            case WRAITH:
-                badge = Badge.MASTERY_WRAITH;
-                break;
-		}
-		
-		unlock(badge);
-	}
-
-	public static void validateRatmogrify(){
-		unlock(Badge.FOUND_RATMOGRIFY);
-	}
-	
 	public static void validateMageUnlock(){
 		if (Statistics.upgradesUsed >= 1 && !isUnlocked(Badge.UNLOCK_MAGE)){
 			displayBadge( Badge.UNLOCK_MAGE );
@@ -1128,15 +1080,6 @@ public class Badges {
 			Badge badge = Badge.REFUTATION;
 			local.add( badge );
 			displayBadge( badge );
-		}
-	}
-
-	public static void validateEngineer(Object cause){
-		if (cause == Dungeon.hero &&
-		Dungeon.hero.belongings.attackingWeapon() instanceof DMdrill
-		&& Dungeon.hero.belongings.attackingWeapon().level() >= 12){
-			local.add( Badge.ENGINEER );
-			displayBadge(Badge.ENGINEER);
 		}
 	}
 
@@ -1365,7 +1308,6 @@ public class Badges {
 			{Badge.BOSS_SLAIN_1, Badge.BOSS_CHALLENGE_1},
 			{Badge.BOSS_SLAIN_2, Badge.BOSS_CHALLENGE_2},
 			{Badge.BOSS_SLAIN_3, Badge.BOSS_CHALLENGE_3},
-			{Badge.BOSS_SLAIN_3, Badge.ENGINEER},
 			{Badge.BOSS_SLAIN_4, Badge.BOSS_CHALLENGE_4},
 			{Badge.VICTORY,      Badge.BOSS_CHALLENGE_5},
 			{Badge.VICTORY,      Badge.TAKING_THE_MICK},
