@@ -32,6 +32,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.EquipableItem;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClassArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
@@ -274,6 +275,14 @@ public class WndBlacksmith extends Window {
 						first = btnItem2.item();
 						second = btnItem1.item();
 					}
+					if (btnItem1.item() instanceof ClassArmor && btnItem2.item() instanceof Armor){
+						first = btnItem1.item();
+						second = btnItem2.item();
+					}
+					if (btnItem2.item() instanceof ClassArmor && btnItem1.item() instanceof Armor){
+						first = btnItem2.item();
+						second = btnItem1.item();
+					}
 
 					Sample.INSTANCE.play( Assets.Sounds.EVOKE );
 					ScrollOfUpgrade.upgrade( Dungeon.hero );
@@ -357,6 +366,12 @@ public class WndBlacksmith extends Window {
 					|| (item2 instanceof MagesStaff && ((MagesStaff)item2).wandClass() == item1.getClass())){
 						btnReforge.enable(true);
 
+					//class armor and the same tier of armor can reforge
+					} else if (((item1 instanceof ClassArmor && item2 instanceof Armor)
+							|| (item2 instanceof ClassArmor && item1 instanceof Armor))
+							&& ((Armor)item1).tier == ((Armor) item2).tier && item1 != item2){
+						btnReforge.enable(true);
+
 					//both of the same type
 					} else if (item1.getClass() != item2.getClass()) {
 						btnReforge.enable(false);
@@ -390,7 +405,7 @@ public class WndBlacksmith extends Window {
 		public boolean itemSelectable(Item item) {
 			return item.isUpgradable()
 					&& item.isIdentified() && !item.cursed
-					&& ((item instanceof MeleeWeapon && !((Weapon) item).enchantHardened)
+					&& ((item instanceof Weapon && !((Weapon) item).enchantHardened)
 					|| (item instanceof Armor && !((Armor) item).glyphHardened));
 		}
 

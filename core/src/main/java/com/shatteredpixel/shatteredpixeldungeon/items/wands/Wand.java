@@ -874,45 +874,35 @@ public abstract class Wand extends Item {
 						CursedWand.cursedZap(curWand,
 								curUser,
 								new Ballistica(curUser.pos, target, Ballistica.MAGIC_BOLT),
-								new Callback() {
-									@Override
-									public void call() {
-										curWand.wandUsed();
-									}
-								});
+								curWand::wandUsed);
 					} else {
-						curWand.fx(shot, new Callback() {
-							public void call() {
-								curWand.onZap(shot);
+						curWand.fx(shot, () -> {
+							curWand.onZap(shot);
 
-								if (curWand.charger != null
-								&& curWand.charger.target == Dungeon.hero
-								&& !Dungeon.hero.belongings.contains(curWand)){//inside the staff
-									int highestLvl = -1;
-									//apply the magic charge buff if we have another wand in inventory of a lower level, or already have the buff
-									for (Wand w : Dungeon.hero.belongings.getAllItems(Wand.class)){
-										highestLvl = Math.max(highestLvl, w.level());
-									}
-									if (0 <= highestLvl && highestLvl < curWand.level() && curUser.subClass == HeroSubClass.SWITCHER){
-										Switch s = Buff.prolong(curUser, Switch.class, Switch.DURATION);
-										s.setup(curWand);
-										s.staffLevel = curWand.level();
-									}
+							if (curWand.charger != null
+							&& curWand.charger.target == Dungeon.hero
+							&& !Dungeon.hero.belongings.contains(curWand)){//inside the staff
+								int highestLvl = -1;
+								//apply the magic charge buff if we have another wand in inventory of a lower level, or already have the buff
+								for (Wand w : Dungeon.hero.belongings.getAllItems(Wand.class)){
+									highestLvl = Math.max(highestLvl, w.level());
 								}
-								if (Random.Float() < WondrousResin.extraCurseEffectChance()){
-									WondrousResin.forcePositive = true;
-									CursedWand.cursedZap(curWand,
-											curUser,
-											new Ballistica(curUser.pos, target, Ballistica.MAGIC_BOLT), new Callback() {
-												@Override
-												public void call() {
-													WondrousResin.forcePositive = false;
-													curWand.wandUsed();
-												}
-											});
-								} else {
-									curWand.wandUsed();
+								if (0 <= highestLvl && highestLvl < curWand.level() && curUser.subClass == HeroSubClass.SWITCHER){
+									Switch s = Buff.prolong(curUser, Switch.class, Switch.DURATION);
+									s.setup(curWand);
+									s.staffLevel = curWand.level();
 								}
+							}
+							if (Random.Float() < WondrousResin.extraCurseEffectChance()){
+								WondrousResin.forcePositive = true;
+								CursedWand.cursedZap(curWand,
+										curUser,
+										new Ballistica(curUser.pos, target, Ballistica.MAGIC_BOLT), () -> {
+											WondrousResin.forcePositive = false;
+											curWand.wandUsed();
+										});
+							} else {
+								curWand.wandUsed();
 							}
 						});
 
