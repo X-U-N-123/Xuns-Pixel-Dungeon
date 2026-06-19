@@ -98,5 +98,4 @@ public abstract class RemainsItem extends Item {
                 return new ResidualRemain();
 		}
 	}
-
 }

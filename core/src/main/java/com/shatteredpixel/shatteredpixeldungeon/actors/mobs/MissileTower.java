@@ -49,6 +49,7 @@ public class MissileTower extends Mob {
 
 		properties.add(Property.INORGANIC);
 		properties.add(Property.IMMOVABLE);
+		properties.add(Property.MECHANICAL);
 
 		useParry = true;
 

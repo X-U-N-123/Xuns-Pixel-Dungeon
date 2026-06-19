@@ -286,7 +286,7 @@ public class v3_X_Changes {
 		changes.hardlight(CharSprite.POSITIVE);
 		changeInfos.add(changes);
 
-		changes.addButton( new ChangeButton(HeroSprite.avatar(HeroClass.CLERIC, 6), "Cleric Buffs",
+		changes.addButton( new ChangeButton(HeroSprite.avatar(HeroClass.CLERIC, 7), "Cleric Buffs",
 				"Overall the Cleric is doing well following their initial release. Their winrate is low currently, but they are also very popular so I expect some of that is people still figuring them out. For the moment I'm focusing on multiple targeted buffs to specific Cleric mechanics that are weaker vs. others.\n" +
 				"\n" +
 				"**Base class:**\n" +
@@ -318,7 +318,7 @@ public class v3_X_Changes {
 		changes.hardlight(CharSprite.NEGATIVE);
 		changeInfos.add(changes);
 
-		changes.addButton( new ChangeButton(HeroSprite.avatar(HeroClass.CLERIC, 6), "Cleric Nerfs",
+		changes.addButton( new ChangeButton(HeroSprite.avatar(HeroClass.CLERIC, 7), "Cleric Nerfs",
 				"A few Cleric mechanics are standouts in terms of power though, so I am scaling some of those back:\n" +
 				"\n" +
 				"**- Searing Light** dmg down to +3/+5 from +4/+6\n" +
@@ -432,7 +432,7 @@ public class v3_X_Changes {
 				"\n" +
 				"**The Paladin** is focused on melee spell combat and defensive power. Their effects most strongly synergize with weapons and armor."));
 
-		changes.addButton( new ChangeButton(HeroSprite.avatar(HeroClass.CLERIC, 6), "Cleric Armor Abilities",
+		changes.addButton( new ChangeButton(HeroSprite.avatar(HeroClass.CLERIC, 7), "Cleric Armor Abilities",
 				"**The Cleric has three lategame armor abilities as well!**\n" +
 				"\n" +
 				"**Ascended Form** grants the Cleric access to new spells, extra attack ranged, and shielding whenever they cast spells.\n" +

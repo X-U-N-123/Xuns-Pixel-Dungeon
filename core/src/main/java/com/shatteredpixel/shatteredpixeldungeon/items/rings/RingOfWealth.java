@@ -27,24 +27,18 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.CounterBuff;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
-import com.shatteredpixel.shatteredpixeldungeon.items.ArcaneResin;
-import com.shatteredpixel.shatteredpixeldungeon.items.EnergyCrystal;
-import com.shatteredpixel.shatteredpixeldungeon.items.GemPowder;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.Honeypot;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
-import com.shatteredpixel.shatteredpixeldungeon.items.LiquidMetal;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfExperience;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.UnstableBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.ExoticPotion;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfDivineInspiration;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTransmutation;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ExoticScroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfMetamorphosis;
-import com.shatteredpixel.shatteredpixeldungeon.items.spells.UnstableSpell;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfEnchantment;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ExoticCrystals;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
@@ -213,20 +207,19 @@ public class RingOfWealth extends Ring {
 	}
 
 	private static Item genLowValueConsumable(){
-		switch (Random.Int(5)){
+		switch (Random.Int(4)){
 			case 0: default:
 				Item i = new Gold().random();
 				return i.quantity(i.quantity()/2);
 			case 1: return Generator.randomUsingDefaults(Generator.Category.STONE);
 			case 2: return Generator.randomUsingDefaults(Generator.Category.POTION);
 			case 3: return Generator.randomUsingDefaults(Generator.Category.SCROLL);
-			case 4: return new EnergyCrystal(Random.IntRange(3, 6));
 		}
 	}
 
 	private static Item genMidValueConsumable(){
 		Item i;
-		switch (Random.Int(7)){
+		switch (Random.Int(5)){
 			case 0: default:
 				i = genLowValueConsumable();
 				return i.quantity(i.quantity()*2);
@@ -244,15 +237,13 @@ public class RingOfWealth extends Ring {
 				} else {
 					return Reflection.newInstance(i.getClass());
 				}
-			case 3: return Random.Int(2) == 0 ? new UnstableBrew() : new UnstableSpell();
-			case 4: return new Bomb();
-			case 5: return new Honeypot();
-			case 6: return new LiquidMetal().quantity(Random.IntRange( 1 + Dungeon.depth, 3 + Dungeon.depth * 2 ));
+			case 3: return new Bomb();
+			case 4: return new Honeypot();
 		}
 	}
 
 	private static Item genHighValueConsumable(){
-		switch (Random.Int(6)){
+		switch (Random.Int(4)){
 			case 0: default:
 				Item i = genMidValueConsumable();
 				if (i instanceof Bomb){
@@ -263,8 +254,6 @@ public class RingOfWealth extends Ring {
 			case 1: return new StoneOfEnchantment();
 			case 2: return Random.Float() < ExoticCrystals.consumableExoticChance() ? new PotionOfDivineInspiration() : new PotionOfExperience();
 			case 3: return Random.Float() < ExoticCrystals.consumableExoticChance() ? new ScrollOfMetamorphosis() : new ScrollOfTransmutation();
-			case 4: return new ArcaneResin();
-			case 5: return new GemPowder();
 		}
 	}
 

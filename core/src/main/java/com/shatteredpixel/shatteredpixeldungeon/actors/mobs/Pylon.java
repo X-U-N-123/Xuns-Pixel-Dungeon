@@ -61,6 +61,7 @@ public class Pylon extends Mob {
 		properties.add(Property.ELECTRIC);
 		properties.add(Property.IMMOVABLE);
 		properties.add(Property.STATIC);
+		properties.add(Property.MECHANICAL);
 
 		state = PASSIVE;
 		alignment = Alignment.NEUTRAL;
