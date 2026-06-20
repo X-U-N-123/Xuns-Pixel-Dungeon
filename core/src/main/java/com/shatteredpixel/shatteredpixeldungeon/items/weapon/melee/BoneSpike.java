@@ -106,7 +106,7 @@ public class BoneSpike extends MeleeWeapon {
             }
 
             if (hero.hasTalent(Talent.SAFE_PRICK))
-                Buff.affect(hero, Barrier.class).setShield(1 + 2 * hero.pointsInTalent(Talent.SAFE_PRICK));
+                Buff.affect(hero, Barrier.class).setShield(2 * hero.pointsInTalent(Talent.SAFE_PRICK));
 
             Buff.affect(hero, PrickCooldown.class, 14);
 

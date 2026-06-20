@@ -1912,8 +1912,8 @@ public class Hero extends Char {
             WandOfBlastWave.BlastWave.blast(pos, 4);
         }
 
-		if (hasTalent(Talent.SAFE_PRICK) && damage >= 5 && heroClass != HeroClass.WRAITH && buff(SafePrickCooldown.class) == null){
-			Buff.affect(this, Barrier.class).setShield(5);
+		if (hasTalent(Talent.SAFE_PRICK) && damage >= 4 && heroClass != HeroClass.WRAITH && buff(SafePrickCooldown.class) == null){
+			Buff.affect(this, Barrier.class).setShield(2 * pointsInTalent(Talent.SAFE_PRICK));
 			Buff.affect(this, SafePrickCooldown.class, 50);
 		}
 

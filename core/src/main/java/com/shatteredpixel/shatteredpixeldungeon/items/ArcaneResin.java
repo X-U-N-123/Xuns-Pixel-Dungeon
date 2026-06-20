@@ -154,7 +154,8 @@ public class ArcaneResin extends Item {
 			return ingredients.size() == 1
 					&& ingredients.get(0) instanceof Wand
 					&& ingredients.get(0).isIdentified()
-					&& !ingredients.get(0).cursed;
+					&& !ingredients.get(0).cursed
+					&& !ingredients.get(0).unique;
 		}
 
 		@Override

@@ -112,7 +112,7 @@ public class Poison extends Buff implements Hero.Doom {
 				switch (((Hero) target).pointsInTalent(Talent.HOMEMADE_DRUG)){
 					case 1: break;
 					case 2: case 3:
-						if (left < 2 * ((Hero) target).pointsInTalent(Talent.HOMEMADE_DRUG)) left += TICK;
+						if (left < ((Hero) target).pointsInTalent(Talent.HOMEMADE_DRUG)) left += TICK;
 						break;
 					default:
 						left -= TICK;

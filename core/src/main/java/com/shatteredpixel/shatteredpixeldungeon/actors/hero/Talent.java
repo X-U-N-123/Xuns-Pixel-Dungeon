@@ -336,27 +336,27 @@ public enum Talent {
 		//barrier to a max of 3/5
 		if (hero.hasTalent(SAFE_SURVEY)){
 			Barrier barrier = Buff.affect(hero, Barrier.class);
-			if (barrier.shielding() < 1 + 2*hero.pointsInTalent(SAFE_SURVEY)) {
+			if (barrier.shielding() < 2*hero.pointsInTalent(SAFE_SURVEY)) {
 				barrier.incShield(1);
-			} else if (barrier.shielding() == 1 + 2*hero.pointsInTalent(SAFE_SURVEY)){
+			} else if (barrier.shielding() == 2*hero.pointsInTalent(SAFE_SURVEY)){
 				barrier.incShield(0); //resets barrier decay
 			}
 		}
 	}
 
 	public static class NaturesaidTracker extends Buff {
-		float barrierInc = 0.5f;
+		float barrierInc = 0.67f;
 
 		@Override
 		public boolean act() {
 			boolean HeroposTerr = Dungeon.level.map[Dungeon.hero.pos] == Terrain.HIGH_GRASS
 					|| Dungeon.level.map[Dungeon.hero.pos] == Terrain.GRASS
 					|| Dungeon.level.map[Dungeon.hero.pos] == Terrain.FURROWED_GRASS;
-			//barrier every 2/1 turns, to a max of 3/5
+			//barrier every 3/2 turns, to a max of 3/5
 			if (((Hero)target).hasTalent(NATURES_AID) && HeroposTerr){
 				Barrier barrier = Buff.affect(target, Barrier.class);
 				if (barrier.shielding() < 1 + 2*((Hero)target).pointsInTalent(NATURES_AID)) {
-					barrierInc += 0.5f * ((Hero) target).pointsInTalent(NATURES_AID);
+					barrierInc += 1f / (4 - ((Hero) target).pointsInTalent(NATURES_AID));
 				}
 				if (barrierInc >= 1){
 					barrierInc = 0;
