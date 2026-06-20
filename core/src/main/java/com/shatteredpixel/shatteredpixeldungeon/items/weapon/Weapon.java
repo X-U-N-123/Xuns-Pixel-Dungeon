@@ -96,8 +96,8 @@ abstract public class Weapon extends KindOfWeapon {
 		DAMAGE  (1.5f, 5/3f),
 		NONE	(1.0f, 1f);
 
-		private float damageFactor;
-		private float delayFactor;
+		private final float damageFactor;
+		private final float delayFactor;
 
 		Augment(float dmg, float dly){
 			damageFactor = dmg;
@@ -329,17 +329,16 @@ abstract public class Weapon extends KindOfWeapon {
 		int reach = RCH;
         Combo combo = owner.buff(Combo.class);
 
-		if (owner instanceof Hero && RingOfForce.fightingUnarmed((Hero) owner)){
-			reach = 1; //brawlers stance benefits from enchantments, but not innate reach
-			if (Dungeon.hero.pointsInTalent(Talent.FAR_STANDOFF) >= 3
-                && combo != null && combo.getComboCount() >= 20){
-				reach ++;
+			if (RingOfForce.fightingUnarmed((Hero) owner)){
+				reach = 1; //brawlers stance benefits from enchantments, but not innate reach
+				if (Dungeon.hero.pointsInTalent(Talent.FAR_STANDOFF) >= 3
+						&& combo != null && combo.getComboCount() >= 20){
+					reach ++;
+				}
+				if (!RingOfForce.unarmedGetsWeaponEnchantment((Hero) owner)){
+					return reach;
+				}
 			}
-			if (!RingOfForce.unarmedGetsWeaponEnchantment((Hero) owner)){
-				return reach;
-			}
-		}
-		if (owner instanceof Hero) {
 			if (owner.buff(AscendedForm.AscendBuff.class) != null){
 				reach += 2;
 			}
@@ -348,7 +347,7 @@ abstract public class Weapon extends KindOfWeapon {
 				reach ++;
 			}
 			if (owner.buff(Smite.SmiteTracker.class) != null && Dungeon.hero.pointsInTalent(Talent.ENHANCED_SMITE) > 2){
-				reach += 1;
+				reach ++;
 			}
 		}
 		if (hasEnchant(Projecting.class, owner)){
@@ -579,9 +578,7 @@ abstract public class Weapon extends KindOfWeapon {
 			}
 
 			if (attacker.buff(Talent.SpiritBladesTracker.class) != null
-					&& ((Hero)attacker).pointsInTalent(Talent.SPIRIT_BLADES) == 4){
-				multi += 0.1f;
-			}
+					&& ((Hero)attacker).pointsInTalent(Talent.SPIRIT_BLADES) == 4) multi += 0.1f;
 			if (attacker.buff(Talent.StrikingWaveTracker.class) != null
 					&& ((Hero)attacker).pointsInTalent(Talent.STRIKING_WAVE) == 4){
 				multi += 0.2f;

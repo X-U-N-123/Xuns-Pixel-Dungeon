@@ -36,7 +36,6 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.BlastParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SmokeParticle;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Blazing;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
@@ -208,13 +207,6 @@ public class WandOfFireblast extends DamageWand {
 
 			Sample.INSTANCE.play( Assets.Sounds.BLAST );
 
-		}
-	}
-
-	public static class FireBlastOnHit extends Blazing {
-		@Override
-		protected float procChanceMultiplier(Char attacker) {
-			return Wand.procChanceMultiplier(attacker);
 		}
 	}
 

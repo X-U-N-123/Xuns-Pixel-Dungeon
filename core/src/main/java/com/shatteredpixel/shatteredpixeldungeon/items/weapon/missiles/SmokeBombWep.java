@@ -76,12 +76,12 @@ public class SmokeBombWep extends MissileWeapon {
 
 		Dungeon.level.pressCell(cell);
 
-		int centerVolume = 20;
+		int centerVolume = 15;
 		for (int i : PathFinder.NEIGHBOURS8){
 			if (!Dungeon.level.solid[cell+i]){
-				GameScene.add( Blob.seed( cell+i, 20, SmokeScreen.class ) );
+				GameScene.add( Blob.seed( cell+i, 15, SmokeScreen.class ) );
 			} else {
-				centerVolume += 20;
+				centerVolume += 15;
 			}
 		}
 		GameScene.add( Blob.seed( cell, centerVolume, SmokeScreen.class ) );

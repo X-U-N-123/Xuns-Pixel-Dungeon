@@ -101,14 +101,14 @@ public class Hypnosis extends Buff implements ActionIndicator.Action {
                     GLog.w(Messages.get(this, "invalid_char"));
                     return;
                 }
-                if (((Mob) c).state == ((Mob) c).SLEEPING) Buff.affect(c, MagicalSleep.class);
-                else                                       ((Mob) c).state = ((Mob) c).SLEEPING;
+                Buff.affect(c, MagicalSleep.class);
+
                 Sample.INSTANCE.play(Assets.Sounds.LULLABY);
                 c.sprite.centerEmitter().start( Speck.factory( Speck.NOTE ), 0.3f, 5 );
 
                 ActionIndicator.clearAction();
                 timeToNow();
-                spend(75f);
+                spend(80f);
                 prepared = false;
                 BuffIndicator.refreshHero();
                 target.next();
