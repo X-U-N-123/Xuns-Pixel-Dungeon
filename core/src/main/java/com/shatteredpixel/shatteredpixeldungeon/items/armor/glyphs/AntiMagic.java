@@ -162,9 +162,9 @@ public class AntiMagic extends Armor.Glyph {
 		if (level == -1){
 			return 0;
 		} else {
-			return Random.NormalIntRange(
-					Math.round(level * genericProcChanceMultiplier(owner)),
-					Math.round((3 + (level * 1.5f)) * genericProcChanceMultiplier(owner)));
+			return Math.round(Random.NormalFloat(
+					level                * genericProcChanceMultiplier(owner),
+					(5 + (level * 2.5f)) * genericProcChanceMultiplier(owner) ));
 		}
 	}
 

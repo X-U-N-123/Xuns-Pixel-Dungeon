@@ -1913,7 +1913,9 @@ public class Hero extends Char {
         }
 
 		if (hasTalent(Talent.SAFE_PRICK) && damage >= 4 && heroClass != HeroClass.WRAITH && buff(SafePrickCooldown.class) == null){
-			Buff.affect(this, Barrier.class).setShield(2 * pointsInTalent(Talent.SAFE_PRICK));
+			int shield = 2 * pointsInTalent(Talent.SAFE_PRICK);
+			Buff.affect(this, Barrier.class).setShield(shield);
+			sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(shield), FloatingText.SHIELDING);
 			Buff.affect(this, SafePrickCooldown.class, 50);
 		}
 

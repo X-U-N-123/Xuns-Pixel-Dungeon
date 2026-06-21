@@ -36,8 +36,10 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vulnerable;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Weakness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
+import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.watabou.noosa.Image;
@@ -105,8 +107,11 @@ public class BoneSpike extends MeleeWeapon {
                 Buff.affect(hero, SafePrickCooldown.class, 99 - 20 * hero.pointsInTalent(Talent.BLURING_BODY));
             }
 
-            if (hero.hasTalent(Talent.SAFE_PRICK))
-                Buff.affect(hero, Barrier.class).setShield(2 * hero.pointsInTalent(Talent.SAFE_PRICK));
+            if (hero.hasTalent(Talent.SAFE_PRICK)) {
+                int shield = 2 * hero.pointsInTalent(Talent.SAFE_PRICK);
+                Buff.affect(hero, Barrier.class).setShield(shield);
+                hero.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(shield), FloatingText.SHIELDING);
+            }
 
             Buff.affect(hero, PrickCooldown.class, 14);
 
