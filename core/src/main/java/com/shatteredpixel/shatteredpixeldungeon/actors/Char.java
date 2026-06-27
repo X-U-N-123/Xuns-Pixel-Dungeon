@@ -75,6 +75,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Phantom;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.PhysicalEmpower;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Poison;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Preparation;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Pulse;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Regeneration;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RockFallBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ShieldBuff;
@@ -124,6 +125,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle
 import com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal;
 import com.shatteredpixel.shatteredpixeldungeon.items.Dewdrop;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
+import com.shatteredpixel.shatteredpixeldungeon.items.KindOfWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.Waterskin;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.curses.Bulk;
@@ -135,7 +137,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Obfuscation;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Potential;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Swiftness;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Viscosity;
-import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ChaliceOfBlood;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ElementalMask;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
@@ -693,6 +694,8 @@ public abstract class Char extends Actor {
 					p.summon();
 					p.reduceCD(5*hero.pointsInTalent(Talent.FLEXIBLE_FOOTWORK));
 				}
+				if (((Hero) enemy).belongings.armor.modify == Armor.Modification.DEFLECTION)
+					((Hero) enemy).belongings.armor.decreaseModDurability();
 			}
 
             if (this instanceof Hero){
@@ -1168,7 +1171,7 @@ public abstract class Char extends Actor {
 			if (src instanceof Burning)                                   icon = FloatingText.BURNING;
 			if (src instanceof HeatBrew)                                  icon = FloatingText.HEAT;
 			if (src instanceof Electricity)                               icon = FloatingText.SHOCKING;
-			if (src instanceof Bleeding || src instanceof ChaliceOfBlood) icon = FloatingText.BLEEDING;
+			if (src instanceof Bleeding)                                  icon = FloatingText.BLEEDING;
 			if (src instanceof ToxicGas)                                  icon = FloatingText.TOXIC;
 			if (src instanceof Corrosion)                                 icon = FloatingText.CORROSION;
 			if (src instanceof Poison)                                    icon = FloatingText.POISON;
@@ -1176,6 +1179,7 @@ public abstract class Char extends Actor {
 			if (src instanceof Viscosity.DeferedDamage)                   icon = FloatingText.DEFERRED;
 			if (src instanceof Corruption)                                icon = FloatingText.CORRUPTION;
 			if (src instanceof AscensionChallenge)                        icon = FloatingText.AMULET;
+			if (src instanceof Pulse)                                     icon = FloatingText.PULSE;
 
 			sprite.showStatusWithIcon(CharSprite.NEGATIVE, Integer.toString(dmg + shielded), icon);
 		}
@@ -1213,6 +1217,7 @@ public abstract class Char extends Actor {
         NO_ARMOR_PHYSICAL_SOURCES.add(Collapse.class);
 		NO_ARMOR_PHYSICAL_SOURCES.add(DM300.FallingRockBuff.class);
 		NO_ARMOR_PHYSICAL_SOURCES.add(Parasite.Parasitism.class);
+		NO_ARMOR_PHYSICAL_SOURCES.add(KindOfWeapon.BattleModule.class);
 	}
 	
 	public void destroy() {

@@ -310,6 +310,9 @@ public class Hero extends Char {
 
 		strBonus += pointsInTalent(Talent.STRONGMAN);
 
+		if (belongings.armor != null
+				&& belongings.armor.modify == Armor.Modification.EXOSKELETON) strBonus ++;
+
 		return STR + strBonus;
 	}
 

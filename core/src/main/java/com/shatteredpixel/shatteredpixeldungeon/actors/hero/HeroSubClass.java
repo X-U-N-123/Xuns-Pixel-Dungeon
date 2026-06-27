@@ -62,7 +62,9 @@ public enum HeroSubClass {
 
     INCUBUS(HeroIcon.INCUBUS),
 	PLAGUEGOD(HeroIcon.PLAGUEGOD),
-	SOULHANDLER(HeroIcon.SOULHANDLER);
+	SOULHANDLER(HeroIcon.SOULHANDLER),
+
+	CRAFTSMAN(HeroIcon.CRAFTSMAN);
 
 	final int icon;
 

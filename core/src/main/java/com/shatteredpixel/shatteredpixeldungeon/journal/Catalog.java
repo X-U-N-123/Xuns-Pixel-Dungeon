@@ -36,6 +36,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.Honeypot;
 import com.shatteredpixel.shatteredpixeldungeon.items.KingsCrown;
 import com.shatteredpixel.shatteredpixeldungeon.items.LiquidMetal;
+import com.shatteredpixel.shatteredpixeldungeon.items.MetalPart;
 import com.shatteredpixel.shatteredpixeldungeon.items.Stylus;
 import com.shatteredpixel.shatteredpixeldungeon.items.TengusMask;
 import com.shatteredpixel.shatteredpixeldungeon.items.Torch;
@@ -113,6 +114,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.remains.BowFragment;
 import com.shatteredpixel.shatteredpixeldungeon.items.remains.BrokenHilt;
 import com.shatteredpixel.shatteredpixeldungeon.items.remains.BrokenStaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.remains.CloakScrap;
+import com.shatteredpixel.shatteredpixeldungeon.items.remains.RemainTool;
 import com.shatteredpixel.shatteredpixeldungeon.items.remains.ResidualRemain;
 import com.shatteredpixel.shatteredpixeldungeon.items.remains.SealShard;
 import com.shatteredpixel.shatteredpixeldungeon.items.remains.ShovelScrap;
@@ -291,13 +293,12 @@ public enum Catalog {
 
 		MISC_CONSUMABLES.addItems( Gold.class, EnergyCrystal.class, Dewdrop.class,
 				IronKey.class, GoldenKey.class, CrystalKey.class, SkeletonKey.class,
-				TrinketCatalyst.class, Stylus.class, Torch.class, Honeypot.class, EmptyPot.class, Ankh.class, DoorPlank.class,
+				TrinketCatalyst.class, Stylus.class, Torch.class, Honeypot.class, EmptyPot.class, Ankh.class, DoorPlank.class, MetalPart.class,
 				CorpseDust.class, Embers.class, CeremonialCandle.class, DarkGold.class, DwarfToken.class,
 				GooBlob.class, TengusMask.class, MetalShard.class, KingsCrown.class,
 				LiquidMetal.class, ArcaneResin.class, GemPowder.class,
 				SealShard.class, BrokenStaff.class, CloakScrap.class, BowFragment.class,
-                BrokenHilt.class, TornPage.class, ShovelScrap.class, ResidualRemain.class);
-
+                BrokenHilt.class, TornPage.class, ShovelScrap.class, ResidualRemain.class, RemainTool.class);
 	}
 
 	//old badges for pre-2.5

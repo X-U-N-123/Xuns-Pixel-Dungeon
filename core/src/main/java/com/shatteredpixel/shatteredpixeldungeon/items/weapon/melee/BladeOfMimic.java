@@ -269,8 +269,10 @@ public class BladeOfMimic extends MeleeWeapon { //copied from Magic Ling Pixel D
 
     @Override
     public int STRReq(int lvl) {
+        int baseSTR = 8 + tier * 2;
+        if (modify == Modification.PNEUMATICS) baseSTR ++;
         lvl = Math.max(0, lvl);
-        return (use_default_strength?(2*tier+8):(s_str_req)) - (int) (Math.sqrt(8 * lvl + 1) - 1) / 2;
+        return (use_default_strength ? baseSTR : s_str_req) - (int) (Math.sqrt(8 * lvl + 1) - 1) / 2;
     }
 
     @Override

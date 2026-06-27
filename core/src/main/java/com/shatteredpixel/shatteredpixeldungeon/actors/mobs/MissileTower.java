@@ -206,7 +206,7 @@ public class MissileTower extends Mob {
 						.charID = MissileTower.this.id();
 				Dungeon.observe();
 			}
-			if (Dungeon.hero.fieldOfView[pos]) Sample.INSTANCE.play(Assets.Sounds.UNLOCK);
+			if (Dungeon.level.heroFOV[pos]) Sample.INSTANCE.play(Assets.Sounds.UNLOCK);
 			((MissileTowerSprite)sprite).load(enemy.pos);
 
 			return true;

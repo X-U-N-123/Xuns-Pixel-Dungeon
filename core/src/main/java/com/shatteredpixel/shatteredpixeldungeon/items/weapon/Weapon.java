@@ -197,8 +197,15 @@ abstract public class Weapon extends KindOfWeapon {
 				}
 			}
 		}
-
-		return damage;
+		if ((modify == Modification.LONG_HANDLE && !Dungeon.level.adjacent(attacker.pos, defender.pos))
+				|| (modify == Modification.CONDUCTIVE && enchantment != null)
+				|| modify == Modification.BATTLE_MODULE
+				|| modify == Modification.PNEUMATICS)
+			decreaseModDurability();
+		if (modify == Modification.BATTLE_MODULE){
+			defender.damage(Math.round(damage/2f), BattleModule.class);
+		}
+		return super.proc(attacker, defender, damage);
 	}
 	
 	public void onHeroGainExp( float levelPercent, Hero hero ){
@@ -294,6 +301,8 @@ abstract public class Weapon extends KindOfWeapon {
 			ACC /= 5;
 		}
 
+		if (modify == Modification.PNEUMATICS) ACC *= 1.25f;
+
 		return encumbrance > 0 ? (float)(ACC / Math.pow( 1.5, encumbrance )) : ACC;
 	}
 	
@@ -310,6 +319,8 @@ abstract public class Weapon extends KindOfWeapon {
 				delay *= Math.pow( 1.2, encumbrance );
 			}
 		}
+		if (modify == Modification.BATTLE_MODULE) delay *= 1.5f;
+		if (modify == Modification.PNEUMATICS)    delay *= 0.625f;
 
 		return delay;
 	}
@@ -327,7 +338,10 @@ abstract public class Weapon extends KindOfWeapon {
 	@Override
 	public int reachFactor(Char owner) {
 		int reach = RCH;
-        Combo combo = owner.buff(Combo.class);
+		if (modify == Modification.LONG_HANDLE) reach ++;
+
+		if (owner instanceof Hero) {
+			Combo combo = owner.buff(Combo.class);
 
 			if (RingOfForce.fightingUnarmed((Hero) owner)){
 				reach = 1; //brawlers stance benefits from enchantments, but not innate reach
@@ -363,14 +377,16 @@ abstract public class Weapon extends KindOfWeapon {
 
 	public abstract int STRReq(int lvl);
 
-	protected static int STRReq(int tier, int lvl){
+	protected int STRReq(int tier, int lvl){
+		int baseSTR = 8 + tier * 2;
+		if (modify == Modification.PNEUMATICS) baseSTR ++;
 		lvl = Math.max(0, lvl);
 		if (Dungeon.isChallenged(Challenges.EXERCISES)){
 			//in challenge, strength req decreases at +1,+4,+9,+16,etc.
-			return (8 + tier * 2) - (int)Math.sqrt(lvl);
+			return baseSTR - (int)Math.sqrt(lvl);
 		}
 		//strength req decreases at +1,+3,+6,+10,etc.
-		return (8 + tier * 2) - (int)(Math.sqrt(8 * lvl + 1) - 1)/2;
+		return baseSTR - (int)(Math.sqrt(8 * lvl + 1) - 1)/2;
 	}
 
 	@Override
@@ -421,6 +437,17 @@ abstract public class Weapon extends KindOfWeapon {
 		} else {
 			return enchantment != null && (cursedKnown || !enchantment.curse()) ? enchantment.name(super.name()) : super.name();
 		}
+	}
+
+	@Override
+	public String info() {
+		String info = super.info();
+
+		if (modify != null){
+			info += "\n\n" + Messages.get(this, "has_modify", modify.title(), modDurability) + modify.desc();
+		}
+
+		return info;
 	}
 	
 	@Override
@@ -580,9 +607,10 @@ abstract public class Weapon extends KindOfWeapon {
 			if (attacker.buff(Talent.SpiritBladesTracker.class) != null
 					&& ((Hero)attacker).pointsInTalent(Talent.SPIRIT_BLADES) == 4) multi += 0.1f;
 			if (attacker.buff(Talent.StrikingWaveTracker.class) != null
-					&& ((Hero)attacker).pointsInTalent(Talent.STRIKING_WAVE) == 4){
-				multi += 0.2f;
-			}
+					&& ((Hero)attacker).pointsInTalent(Talent.STRIKING_WAVE) == 4) multi += 0.2f;
+			if (attacker instanceof Hero
+					&& ((Hero) attacker).belongings.attackingWeapon() != null
+					&& ((Hero) attacker).belongings.attackingWeapon().modify == Modification.CONDUCTIVE) multi *= 2f;
 
 			return multi;
 		}

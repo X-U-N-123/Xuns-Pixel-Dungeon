@@ -125,6 +125,9 @@ abstract public class ClassArmor extends Armor {
             case WRAITH:
                 classArmor = new WraithArmor();
                 break;
+			case ENGINEER:
+				classArmor = new EngineerArmor();
+				break;
 		}
 		
 		classArmor.level(armor.trueLevel());

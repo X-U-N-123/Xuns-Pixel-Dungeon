@@ -260,6 +260,7 @@ public class WelcomeScene extends PixelScene {
 			if (Badges.isUnlocked(Badges.Badge.VICTORY)){
 				if (!Badges.isUnlocked(Badges.Badge.UNLOCK_EXPLORER)) Badges.unlock(Badges.Badge.UNLOCK_EXPLORER);
 				if (!Badges.isUnlocked(Badges.Badge.UNLOCK_WRAITH))   Badges.unlock(Badges.Badge.UNLOCK_WRAITH);
+				if (!Badges.isUnlocked(Badges.Badge.UNLOCK_ENGINEER)) Badges.unlock(Badges.Badge.UNLOCK_ENGINEER);
 			}
 
 			try {

@@ -31,6 +31,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Transmuting;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
@@ -38,13 +39,56 @@ import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.BArray;
+import com.watabou.utils.Bundle;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
 abstract public class KindOfWeapon extends EquipableItem {
 
+	public enum Modification{
+		LONG_HANDLE, //only for melee
+		SHARP_BLADE,
+		SMOG_ATTACH, //only for thrown
+		CONDUCTIVE,
+		BATTLE_MODULE,
+		PNEUMATICS;
+
+		public int partCost(){
+			switch (this){
+				case LONG_HANDLE:     return 3;
+				case SMOG_ATTACH:     return 3;
+				case SHARP_BLADE:     return 4;
+				case CONDUCTIVE:      return 5;
+				case BATTLE_MODULE:   return 8;
+				case PNEUMATICS:      return 8;
+				default:              return 0;
+			}
+		}
+
+		public int maxDurability(){
+			switch (this){
+				case LONG_HANDLE:
+				case SMOG_ATTACH:     return 15;
+				case SHARP_BLADE:
+				case BATTLE_MODULE:
+				case PNEUMATICS:
+				case CONDUCTIVE:
+				default:              return 25;
+			}
+		}
+
+		public String title(){return Messages.get(Modification.class, toString());}
+		public String desc() {return Messages.get(Modification.class, this + "_desc");}
+
+		public boolean craftsman(){
+			return this == BATTLE_MODULE || this == PNEUMATICS;
+		}
+	}
+
 	protected String hitSound = Assets.Sounds.HIT;
 	protected float hitSoundPitch = 1f;
+	public Modification modify = null;
+	public int modDurability = 0;
 	
 	@Override
 	public void execute(Hero hero, String action) {
@@ -242,10 +286,16 @@ abstract public class KindOfWeapon extends EquipableItem {
 	abstract public int max(int lvl);
 
 	public int damageRoll( Char owner ) {
+		int min = min();
+		if (modify == Modification.SHARP_BLADE) {
+			min = min() + Math.round(0.4f * (max() - min()));
+			decreaseModDurability();
+		}
+
 		if (owner instanceof Hero){
-			return Hero.heroDamageIntRange(min(), max());
+			return Hero.heroDamageIntRange(min, max());
 		} else {
-			return Random.NormalIntRange(min(), max());
+			return Random.NormalIntRange(min, max());
 		}
 	}
 	
@@ -288,5 +338,42 @@ abstract public class KindOfWeapon extends EquipableItem {
 	public void hitSound( float pitch ){
 		Sample.INSTANCE.play(hitSound, 1, pitch * hitSoundPitch);
 	}
-	
+
+	public void decreaseModDurability(){
+		modDurability = Math.max(modDurability - 1, 0);
+		if (modDurability <= 0) modify(null);
+	}
+
+	public void modify(Modification mod){
+		modify = mod;
+		if (mod == null){
+			modDurability = 0;
+			GLog.n(Messages.get(this, "modify_break"));
+		} else {
+			modDurability = mod.maxDurability();
+
+			Sample.INSTANCE.play(Assets.Sounds.UNLOCK);
+			Transmuting.show(curUser, this, this);
+			curUser.sprite.operate(curUser.pos);
+		}
+	}
+
+	public static class BattleModule{} //only used to mark damage
+
+	private static final String MODIFY = "modify";
+	private static final String MODDURA = "mod_dura";
+
+	@Override
+	public void storeInBundle( Bundle bundle ) {
+		super.storeInBundle(bundle);
+		if (modify != null) bundle.put(MODIFY, modify);
+		bundle.put(MODDURA, modDurability);
+	}
+
+	@Override
+	public void restoreFromBundle( Bundle bundle ) {
+		super.restoreFromBundle(bundle);
+		if (bundle.contains(MODIFY)) modify = bundle.getEnum(MODIFY, Modification.class);
+		modDurability = bundle.getInt(MODDURA);
+	}
 }

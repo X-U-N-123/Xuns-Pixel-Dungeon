@@ -43,10 +43,12 @@ import com.shatteredpixel.shatteredpixeldungeon.items.stones.Runestone;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.Trinket;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.BladeOfMimic;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.BladeOfUnreal;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.BoneSpike;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MultiTool;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Shovel;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Dart;
@@ -74,7 +76,8 @@ public class ScrollOfTransmutation extends InventoryScroll {
 		//all melee weapons, except pickaxe when in a mining level
 		if (item instanceof MeleeWeapon){
 			return !(item instanceof Pickaxe && Dungeon.level instanceof MiningLevel)
-                && !(item instanceof Shovel) && !(item instanceof BladeOfUnreal) && !(item instanceof BoneSpike);
+                && !(item instanceof Shovel) && !(item instanceof BladeOfUnreal) && !(item instanceof BoneSpike)
+					&& !(item instanceof BladeOfMimic) && !(item instanceof MultiTool);
 
 		//all missile weapons except untipped darts
 		} else if (item instanceof MissileWeapon){

@@ -26,6 +26,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Momentum;
@@ -180,7 +181,8 @@ abstract public class MissileWeapon extends Weapon {
 		return level() == item.level() && getClass() == item.getClass()
 				&& enchantment == ((MissileWeapon) item).enchantment
 				&& enchantHardened == ((MissileWeapon) item).enchantHardened
-				&& curseInfusionBonus == ((MissileWeapon) item).curseInfusionBonus;
+				&& curseInfusionBonus == ((MissileWeapon) item).curseInfusionBonus
+				&& modify == ((MissileWeapon) item).modify;
 	}
 	
 	@Override
@@ -339,6 +341,14 @@ abstract public class MissileWeapon extends Weapon {
 				}
 			}
 			Dungeon.level.drop( this, cell ).sprite.drop();
+		}
+		if (modify == Modification.SMOG_ATTACH){
+			Char ch = Actor.findChar(cell);
+			if (ch != null && ch.alignment != Char.Alignment.ALLY && !ch.isImmune(Blindness.class)){
+				Buff.affect(ch, Blindness.class, 5f);
+				decreaseModDurability();
+			}
+			Sample.INSTANCE.play(Assets.Sounds.BLAST);
 		}
 	}
 	

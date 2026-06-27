@@ -22,7 +22,9 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels.traps;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
@@ -79,6 +81,9 @@ public class FlockTrap extends Trap {
 					t.reveal();
 					Bestiary.setSeen(t.getClass());
 					Bestiary.countEncounter(t.getClass());
+
+					Statistics.trapsActivated ++;
+					Badges.validateEngineerUnlock();
 					t.activate();
 				}
 				Dungeon.level.occupyCell(sheep);

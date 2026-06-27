@@ -56,10 +56,16 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.wraith.Evi
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.DivineSense;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.GuidingLight;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Resentment;
+import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.effects.SpellSprite;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Transmuting;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.BlastParticle;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SmokeParticle;
+import com.shatteredpixel.shatteredpixeldungeon.items.ArcaneResin;
+import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TalismanOfForesight;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
@@ -92,6 +98,43 @@ import java.util.ArrayList;
 
 public abstract class Wand extends Item {
 
+	public enum Modification {
+		STATIC_CHARGE,
+		SPARROW,
+		PRISM,
+		REPEATING,
+		DISINTEGRATING;
+
+		public int partCost(){
+			switch (this){
+				case STATIC_CHARGE:
+				case SPARROW:
+				case PRISM:
+				case REPEATING:      return 5;
+				case DISINTEGRATING: return 10;
+				default:             return 0;
+			}
+		}
+
+		public int maxDurability(){
+			switch (this){
+				case PRISM:
+				case REPEATING:
+				case DISINTEGRATING:
+				case STATIC_CHARGE:  return 15;
+				case SPARROW:
+				default:             return 25;
+			}
+		}
+
+		public String title(){return Messages.get(Modification.class, toString());}
+		public String desc() {return Messages.get(Modification.class, this + "_desc");}
+
+		public boolean craftsman(){
+			return this == REPEATING || this == DISINTEGRATING;
+		}
+	}
+
 	public static final String AC_ZAP	= "ZAP";
 
 	private static final float TIME_TO_ZAP	= 1f;
@@ -112,9 +155,11 @@ public abstract class Wand extends Item {
 	private float availableUsesToID = USES_TO_ID/2f;
 
 	protected int collisionProperties = Ballistica.MAGIC_BOLT;
+
+	public Modification modify = null;
+	public int modDurability = 0;
 	
 	{
-		defaultAction = AC_ZAP;
 		usesTargeting = true;
 		bones = true;
 	}
@@ -122,11 +167,15 @@ public abstract class Wand extends Item {
 	@Override
 	public ArrayList<String> actions( Hero hero ) {
 		ArrayList<String> actions = super.actions( hero );
-		if (curCharges > 0 || !curChargeKnown) {
+		if ((curCharges > 0 || !curChargeKnown) && modify != Modification.DISINTEGRATING)
 			actions.add( AC_ZAP );
-		}
 
 		return actions;
+	}
+
+	//can be overridden if default action is variable
+	public String defaultAction(){
+		return modify == Modification.DISINTEGRATING ? AC_THROW : AC_ZAP;
 	}
 	
 	@Override
@@ -134,7 +183,7 @@ public abstract class Wand extends Item {
 
 		super.execute( hero, action );
 
-		if (action.equals( AC_ZAP )) {
+		if (action.equals( AC_ZAP ) && modify != Modification.DISINTEGRATING) {
 			
 			curUser = hero;
 			curItem = this;
@@ -289,8 +338,42 @@ public abstract class Wand extends Item {
 
 		if (target instanceof Resentment) Buff.affect(target, Daze.class, 3f);
 		//a way to fight against it
+		if (w.modify == Modification.PRISM) dmg += Math.round(dmg * 0.25f);
 
 		return dmg;
+	}
+
+	@Override
+	protected void onThrow( int cell ) {
+		Item toDrop = this;
+		if (modify == Modification.DISINTEGRATING){
+			Invisibility.dispel();
+			for (int i : PathFinder.NEIGHBOURS9) {
+				Char ch = Actor.findChar(i + cell);
+				if (ch != null){
+					ch.damage(Random.IntRange(5 + curCharges, 15 + curCharges * 5), Disintegrating.class);
+					if (!ch.isAlive() && ch == Dungeon.hero) {
+						Badges.validateDeathFromFriendlyMagic();
+						Dungeon.fail( Disintegrating.class );
+						GLog.n( Messages.get( this, "disint_kill") );
+					}
+					curCharges = 0;
+				}
+				if (Dungeon.level.heroFOV[i + cell]) {
+					CellEmitter.get(i).burst(SmokeParticle.FACTORY, 4);
+				}
+			}
+			if (Dungeon.level.heroFOV[cell]){
+				Sample.INSTANCE.play(Assets.Sounds.BLAST);
+				CellEmitter.center(cell).burst(BlastParticle.FACTORY, 20);
+			}
+			decreaseModDurability();
+			if (modDurability <= 0) toDrop = new ArcaneResin().quantity(2 * (trueLevel() + 1));
+			Heap heap = Dungeon.level.drop( toDrop, cell );
+			if (!heap.isEmpty()) {
+				heap.sprite.drop( cell );
+			}
+		}
 	}
 
 	@Override
@@ -353,6 +436,10 @@ public abstract class Wand extends Item {
 			desc += "\n\n" + Messages.get(Wand.class, "cursed");
 		} else if (!isIdentified() && cursedKnown){
 			desc += "\n\n" + Messages.get(Wand.class, "not_cursed");
+		}
+
+		if (modify != null){
+			desc += "\n\n" + Messages.get(this, "has_modify", modify.title(), modDurability) + modify.desc();
 		}
 
 		if (Dungeon.hero != null && Dungeon.hero.subClass == HeroSubClass.BATTLEMAGE){
@@ -629,6 +716,15 @@ public abstract class Wand extends Item {
 		if (Dungeon.hero.pointsInTalent(Talent.PLAGUE_EUCHARIST) >= 2
 				&& gas != null && gas.volume > 0 && gas.cur[Dungeon.hero.pos] > 0) timeModifier /= 1.12f;
 
+		if (modify == Modification.SPARROW) {
+			timeModifier *= 0.4f;
+			decreaseModDurability();
+		}
+		if (modify == Modification.PRISM) {
+			timeModifier *= 1.5f;
+			decreaseModDurability();
+		}
+
 		curUser.spendAndNext(TIME_TO_ZAP * timeModifier);
 	}
 	
@@ -688,6 +784,8 @@ public abstract class Wand extends Item {
 	private static final String PARTIALCHARGE       = "partialCharge";
 	private static final String CURSE_INFUSION_BONUS= "curse_infusion_bonus";
 	private static final String RESIN_BONUS         = "resin_bonus";
+	private static final String MODIFY          	= "modify";
+	private static final String DURABILITY			= "durability";
 
 	@Override
 	public void storeInBundle( Bundle bundle ) {
@@ -699,6 +797,8 @@ public abstract class Wand extends Item {
 		bundle.put( PARTIALCHARGE , partialCharge );
 		bundle.put( CURSE_INFUSION_BONUS, curseInfusionBonus );
 		bundle.put( RESIN_BONUS, resinBonus );
+		if (modify != null) bundle.put( MODIFY, modify);
+		bundle.put( DURABILITY, modDurability);
 	}
 	
 	@Override
@@ -714,6 +814,8 @@ public abstract class Wand extends Item {
 		curCharges = bundle.getInt( CUR_CHARGES );
 		curChargeKnown = bundle.getBoolean( CUR_CHARGE_KNOWN );
 		partialCharge = bundle.getFloat( PARTIALCHARGE );
+		modDurability = bundle.getInt(DURABILITY);
+		if (bundle.contains(MODIFY)) modify = bundle.getEnum(MODIFY, Modification.class);
 	}
 	
 	@Override
@@ -810,7 +912,7 @@ public abstract class Wand extends Item {
 					QuickSlotButton.target(Actor.findChar(cell));
 				
 				if (curWand.tryToZap(curUser, target)) {
-					
+
 					curUser.busy();
 
 					if (Random.Float() < curUser.pointsInTalent(Talent.MAGICAL_VENT) / 3f){
@@ -826,89 +928,13 @@ public abstract class Wand extends Item {
 						GameScene.add( Blob.seed( gasPos, 15, ToxicGas.class ) );
 					}
 
-					//backup barrier logic
-					//This triggers before the wand zap, mostly so the barrier helps vs skeletons
-					if (curUser.hasTalent(Talent.BACKUP_BARRIER)
-							&& curWand.curCharges <= curWand.chargesPerCast()
-							&& curWand.charger != null && curWand.charger.target == curUser){
-
-						//regular. If hero owns wand but it isn't in belongings it must be in the staff
-						if (curUser.heroClass == HeroClass.MAGE && !curUser.belongings.contains(curWand)){
-							//grants 3/5 shielding
-							int shieldToGive = 1 + 2 * Dungeon.hero.pointsInTalent(Talent.BACKUP_BARRIER);
-							Buff.affect(Dungeon.hero, Barrier.class).setShield(shieldToGive);
-							Dungeon.hero.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(shieldToGive), FloatingText.SHIELDING);
-
-						//metamorphed. Triggers if wand is highest level hero has
-						} else if (curUser.heroClass != HeroClass.MAGE) {
-							boolean highest = true;
-							for (Item i : curUser.belongings.getAllItems(Wand.class)){
-								if (i.level() > curWand.level()){
-									highest = false;
-								}
-							}
-							if (highest){
-								//grants 3/5 shielding
-								int shieldToGive = 1 + 2 * Dungeon.hero.pointsInTalent(Talent.BACKUP_BARRIER);
-								Buff.affect(Dungeon.hero, Barrier.class).setShield(shieldToGive);
-								Dungeon.hero.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(shieldToGive), FloatingText.SHIELDING);
-							}
-						}
-					}
-
-					if (curUser.hasTalent(Talent.RESERVED_ENERGY)
-							&& curWand.curCharges <= curWand.chargesPerCast()
-							&& curWand.charger != null && curWand.charger.target == curUser
-							&& curUser.buff(Wand.ReservedenergyCooldown.class) == null && curWand.curChargeKnown){
-						curWand.curCharges = Math.min(3 , curWand.maxCharges+1);
-						Sample.INSTANCE.play( Assets.Sounds.CHARGEUP );
-						ScrollOfRecharging.charge(curUser);
-						SpellSprite.show(curUser, SpellSprite.CHARGE);
-						Buff.affect(curUser, ReservedenergyCooldown.class, 110 - 30f*(curUser.pointsInTalent(Talent.RESERVED_ENERGY)));
-					}
-
-					if (curWand.cursed){
-						if (!curWand.cursedKnown){
-							GLog.n(Messages.get(Wand.class, "curse_discover", curWand.name()));
-						}
-						CursedWand.cursedZap(curWand,
-								curUser,
-								new Ballistica(curUser.pos, target, Ballistica.MAGIC_BOLT),
-								curWand::wandUsed);
-					} else {
-						curWand.fx(shot, () -> {
-							curWand.onZap(shot);
-
-							if (curWand.charger != null
-							&& curWand.charger.target == Dungeon.hero
-							&& !Dungeon.hero.belongings.contains(curWand)){//inside the staff
-								int highestLvl = -1;
-								//apply the magic charge buff if we have another wand in inventory of a lower level, or already have the buff
-								for (Wand w : Dungeon.hero.belongings.getAllItems(Wand.class)){
-									highestLvl = Math.max(highestLvl, w.level());
-								}
-								if (0 <= highestLvl && highestLvl < curWand.level() && curUser.subClass == HeroSubClass.SWITCHER){
-									Switch s = Buff.prolong(curUser, Switch.class, Switch.DURATION);
-									s.setup(curWand);
-									s.staffLevel = curWand.level();
-								}
-							}
-							if (Random.Float() < WondrousResin.extraCurseEffectChance()){
-								WondrousResin.forcePositive = true;
-								CursedWand.cursedZap(curWand,
-										curUser,
-										new Ballistica(curUser.pos, target, Ballistica.MAGIC_BOLT), () -> {
-											WondrousResin.forcePositive = false;
-											curWand.wandUsed();
-										});
-							} else {
-								curWand.wandUsed();
-							}
-						});
-
-					}
+					curWand.shot(target, shot);
 					curWand.cursedKnown = true;
-					
+
+					if (curWand.modify == Modification.REPEATING && curWand.tryToZap(curUser, target)) {
+						curWand.shot(target, shot);
+						curWand.decreaseModDurability();
+					}
 				}
 				
 			}
@@ -920,6 +946,91 @@ public abstract class Wand extends Item {
 		}
 	};
 	
+	private void shot(Integer target, Ballistica shot) {
+
+		//backup barrier logic
+		//This triggers before the wand zap, mostly so the barrier helps vs skeletons
+		if (curUser.hasTalent(Talent.BACKUP_BARRIER)
+				&& curCharges <= chargesPerCast()
+				&& charger != null && charger.target == curUser){
+
+			//regular. If hero owns wand but it isn't in belongings it must be in the staff
+			if (curUser.heroClass == HeroClass.MAGE && !curUser.belongings.contains(this)){
+				//grants 3/5 shielding
+				int shieldToGive = 1 + 2 * Dungeon.hero.pointsInTalent(Talent.BACKUP_BARRIER);
+				Buff.affect(Dungeon.hero, Barrier.class).setShield(shieldToGive);
+				Dungeon.hero.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(shieldToGive), FloatingText.SHIELDING);
+
+			//metamorphed. Triggers if wand is highest level hero has
+			} else if (curUser.heroClass != HeroClass.MAGE) {
+				boolean highest = true;
+				for (Item i : curUser.belongings.getAllItems(Wand.class)){
+					if (i.level() > level()){
+						highest = false;
+					}
+				}
+				if (highest){
+					//grants 3/5 shielding
+					int shieldToGive = 1 + 2 * Dungeon.hero.pointsInTalent(Talent.BACKUP_BARRIER);
+					Buff.affect(Dungeon.hero, Barrier.class).setShield(shieldToGive);
+					Dungeon.hero.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(shieldToGive), FloatingText.SHIELDING);
+				}
+			}
+		}
+
+		if (curUser.hasTalent(Talent.RESERVED_ENERGY)
+				&& curCharges <= chargesPerCast()
+				&& charger != null && charger.target == curUser
+				&& curUser.buff(ReservedenergyCooldown.class) == null && curChargeKnown){
+			curCharges = Math.min(3 , maxCharges+1);
+			Sample.INSTANCE.play( Assets.Sounds.CHARGEUP );
+			ScrollOfRecharging.charge(curUser);
+			SpellSprite.show(curUser, SpellSprite.CHARGE);
+			Buff.affect(curUser, ReservedenergyCooldown.class, 110 - 30f*(curUser.pointsInTalent(Talent.RESERVED_ENERGY)));
+		}
+
+		if (cursed){
+			if (!cursedKnown){
+				GLog.n(Messages.get(Wand.class, "curse_discover", name()));
+			}
+			CursedWand.cursedZap(this,
+					curUser,
+					new Ballistica(curUser.pos, target, Ballistica.MAGIC_BOLT),
+					this::wandUsed);
+		} else {
+			fx(shot, () -> {
+				onZap(shot);
+
+				if (charger != null
+				&& charger.target == Dungeon.hero
+				&& !Dungeon.hero.belongings.contains(this)){//inside the staff
+					int highestLvl = -1;
+					//apply the magic charge buff if we have another wand in inventory of a lower level, or already have the buff
+					for (Wand w : Dungeon.hero.belongings.getAllItems(Wand.class)){
+						highestLvl = Math.max(highestLvl, w.level());
+					}
+					if (0 <= highestLvl && highestLvl < level() && curUser.subClass == HeroSubClass.SWITCHER){
+						Switch s = Buff.prolong(curUser, Switch.class, Switch.DURATION);
+						s.setup(this);
+						s.staffLevel = level();
+					}
+				}
+				if (Random.Float() < WondrousResin.extraCurseEffectChance()){
+					WondrousResin.forcePositive = true;
+					CursedWand.cursedZap(this,
+							curUser,
+							new Ballistica(curUser.pos, target, Ballistica.MAGIC_BOLT), () -> {
+								WondrousResin.forcePositive = false;
+								wandUsed();
+							});
+				} else {
+					wandUsed();
+				}
+			});
+
+		}
+	}
+
 	public class Charger extends Buff {
 		
 		private static final float BASE_CHARGE_DELAY = 10f;
@@ -951,6 +1062,8 @@ public abstract class Wand extends Item {
 				partialCharge--;
 				curCharges++;
 				updateQuickslot();
+				if (modify == Modification.STATIC_CHARGE && target.buff(Recharging.class) == null)
+					decreaseModDurability();
 			}
 			
 			if (curCharges == maxCharges){
@@ -987,6 +1100,8 @@ public abstract class Wand extends Item {
 			}
 
             if (cursed && Dungeon.hero.hasTalent(Talent.CURSED_POWER)) turnsToCharge /= 1.1f;
+
+			if (modify == Modification.STATIC_CHARGE) turnsToCharge /= 2f;
 
 			if (Regeneration.regenOn())
 				partialCharge += (1f/turnsToCharge) * RingOfEnergy.wandChargeMultiplier(target);
@@ -1032,4 +1147,26 @@ public abstract class Wand extends Item {
 	public float weight(){
 		return 0.3f;
 	}
+
+	public void decreaseModDurability(){
+		modDurability = Math.max(modDurability - 1, 0);
+		if (modDurability <= 0) modify(null);
+	}
+
+	public void modify(Modification mod){
+		if (modify == Modification.DISINTEGRATING && mod != Modification.DISINTEGRATING) return;
+		modify = mod;
+		if (mod == null){
+			modDurability = 0;
+			GLog.n(Messages.get(this, "modify_break"));
+		} else {
+			modDurability = mod.maxDurability();
+
+			Sample.INSTANCE.play(Assets.Sounds.UNLOCK);
+			Transmuting.show(curUser, this, this);
+			curUser.sprite.operate(curUser.pos);
+		}
+	}
+
+	public static class Disintegrating{}
 }

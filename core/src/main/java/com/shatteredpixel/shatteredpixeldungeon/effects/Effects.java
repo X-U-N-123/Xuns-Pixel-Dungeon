@@ -26,7 +26,7 @@ import com.watabou.noosa.Image;
 
 public class Effects {
 
-	public enum  Type {
+	public enum Type {
 		RIPPLE,
 		LIGHTNING,
 		WOUND,
@@ -35,7 +35,8 @@ public class Effects {
 		ETHEREAL_CHAIN,
 		DEATH_RAY,
 		LIGHT_RAY,
-		HEALTH_RAY
+		HEALTH_RAY,
+		PULSE
 	}
 	
 	public static Image get( Type type ) {
@@ -67,6 +68,9 @@ public class Effects {
 				break;
 			case HEALTH_RAY:
 				icon.frame(icon.texture.uvRect(16, 30, 32, 38));
+				break;
+			case PULSE:
+				icon.frame(icon.texture.uvRect(0,  25, 9,  33));
 				break;
 		}
 		return icon;

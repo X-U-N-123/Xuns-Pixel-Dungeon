@@ -27,6 +27,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClericArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.DuelistArmor;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.EngineerArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ExplorerArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.HuntressArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.LamellarArmor;
@@ -209,9 +210,9 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Longrunicblad
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Longsword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Mace;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MechanicalArm;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Miaoblade;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MultiTool;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Nunchaku;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Quarterstaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Rake;
@@ -509,13 +510,13 @@ public class Generator {
 					Dagger.class,
 					Gloves.class,
 					Rapier.class,
-					MechanicalArm.class,
+					MultiTool.class,      //Engineer's special wep
 					Fork.class,
 					Cudgel.class,
 					BoneSpike.class,    //Wraith's special wep
 					Shovel.class        //Explorer's special wep
 			};
-			WEP_T1.defaultProbs = new float[]{ 2, 0, 2, 2, 2, 2, 2, 2, 0, 0};
+			WEP_T1.defaultProbs = new float[]{ 2, 0, 2, 2, 2, 0, 2, 2, 0, 0};
 			WEP_T1.probs = WEP_T1.defaultProbs.clone();
 			
 			WEP_T2.classes = new Class<?>[]{//16 Weapons
@@ -638,9 +639,10 @@ public class Generator {
 					DuelistArmor.class,
 					ClericArmor.class,
 					ExplorerArmor.class,
-                    WraithArmor.class
+                    WraithArmor.class,
+					EngineerArmor.class
 			};
-			ARMOR.probs = new float[]{ 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0};
+			ARMOR.probs = new float[]{ 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 			
 			//see Generator.randomMissile
 			MISSILE.classes = new Class<?>[]{};

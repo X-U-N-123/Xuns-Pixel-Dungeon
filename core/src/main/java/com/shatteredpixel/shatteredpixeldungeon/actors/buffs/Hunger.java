@@ -151,8 +151,11 @@ public class Hunger extends Buff implements Hero.Doom {
 
 		float oldLevel = level;
 
+		if (Dungeon.hero.hasTalent(Talent.EAT_LITTLE_AND_OFTEN))
+			energy *= 1.05f + 0.1f * Dungeon.hero.pointsInTalent(Talent.EAT_LITTLE_AND_OFTEN);
+
 		level -= energy;
-		if (level < 0 && !overrideLimits) {
+		if (level < 0 && !overrideLimits && !Dungeon.hero.hasTalent(Talent.EAT_LITTLE_AND_OFTEN)) {
 			level = 0;
 		} else if (level > STARVING) {
 			float excess = level - STARVING;

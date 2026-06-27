@@ -71,6 +71,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.SpellSprite;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.FlameParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.LeafParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal;
+import com.shatteredpixel.shatteredpixeldungeon.items.EnergyCrystal;
 import com.shatteredpixel.shatteredpixeldungeon.items.EquipableItem;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
@@ -276,6 +277,11 @@ public enum Talent {
 	BUFFED_NERF(369, 4), ARMY_OF_DEATH(370, 4), STRANGLING(371, 4), IMMORTAL_EVIL(372, 4),
 	//GhostWander T4
     FACE_TO_FACE_FRIGHT(373, 4), SOUL_VANISHING(374, 4), FEAR_SPREADING(375, 4), SOULFREE_GHOST(376, 4),
+
+	//Engineer T1
+	EAT_LITTLE_AND_OFTEN(384), FINE_INTUITION(385), TESTED_MAINTENANCE(386), GENERAL_DISARM(387), PULSE_ENERGY(388),
+	//Engineer T2
+	TOILSOME_MEAL(389), INSCRIBED_ACCESSORY(390),
 
     //universal T4
 	HEROIC_ENERGY(41, 4), //See icon() and title() for special logic for this one
@@ -841,6 +847,26 @@ public enum Talent {
         if (hero.hasTalent(TESTED_ANTIMAGIC)){
             Buff.affect(hero, MagicImmune.class, 1 + hero.pointsInTalent(TESTED_ANTIMAGIC));
         }
+		if (hero.hasTalent(TESTED_MAINTENANCE)){
+			if (hero.heroClass != HeroClass.ENGINEER)
+				new EnergyCrystal(1 + hero.pointsInTalent(TESTED_MAINTENANCE)).collect();
+
+			if (hero.belongings.weapon() != null && hero.belongings.weapon().modify != null){
+				hero.belongings.weapon().modDurability += 1 + hero.pointsInTalent(TESTED_MAINTENANCE);
+			}
+			if (hero.belongings.armor() != null && hero.belongings.armor().modify != null){
+				switch (hero.belongings.armor().modify){
+					case CONDUCTIVE:
+						hero.belongings.armor().modDurability += 5 * (1 + hero.pointsInTalent(TESTED_MAINTENANCE));
+						break;
+					case EXPLOSIVE:
+						if (Random.Int(10) != 0) break;
+					default:
+						hero.belongings.armor().modDurability += 1 + hero.pointsInTalent(TESTED_MAINTENANCE);
+						break;
+				}
+			}
+		}
 	}
 
 	public static void onTalentUpgraded( Hero hero, Talent talent ){
@@ -1485,6 +1511,10 @@ public enum Talent {
             dmg ++;
         }
 
+		if (hero.hasTalent(Talent.GENERAL_DISARM) && hero.heroClass != HeroClass.ENGINEER
+				&& Dungeon.level.map[hero.pos] == Terrain.INACTIVE_TRAP)
+			dmg += Random.IntRange(hero.pointsInTalent(GENERAL_DISARM), 2);
+
         TearingMealTracker tear = hero.buff(TearingMealTracker.class);
 
 		if (tear != null && !enemy.isImmune(Bleeding.class)){
@@ -1579,6 +1609,9 @@ public enum Talent {
             case WRAITH:
                 Collections.addAll(tierTalents, ANCESTRAL_TRIBUTE, BLOOD_INTUITION, TESTED_ANTIMAGIC, BURIAL_CEREMONY, SAFE_PRICK);
                 break;
+			case ENGINEER:
+				Collections.addAll(tierTalents, EAT_LITTLE_AND_OFTEN, FINE_INTUITION, TESTED_MAINTENANCE, GENERAL_DISARM, PULSE_ENERGY);
+				break;
 		}
 		for (Talent talent : tierTalents){
 			if (replacements.containsKey(talent)){
@@ -1614,6 +1647,9 @@ public enum Talent {
             case WRAITH:
                 Collections.addAll(tierTalents, TEARING_MEAL, INSCRIBED_REGENERATION, BLURING_BODY, PSIONIC_BLAST, SCAPEGOAT, THROWN_EVIL);
                 break;
+			/*case ENGINEER:
+				Collections.addAll(tierTalents);
+				break;*/
 		}
 		for (Talent talent : tierTalents){
 			if (replacements.containsKey(talent)){
@@ -1649,6 +1685,9 @@ public enum Talent {
             case WRAITH:
                 Collections.addAll(tierTalents, VICIOUS_BETRAYAL, CURSED_POWER, WICKED_GROWTH);
                 break;
+			/*case ENGINEER:
+				Collections.addAll(tierTalents, VICIOUS_BETRAYAL, CURSED_POWER, WICKED_GROWTH);
+				break;*/
 		}
 		for (Talent talent : tierTalents){
 			if (replacements.containsKey(talent)){

@@ -22,7 +22,9 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.spells;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
@@ -102,6 +104,9 @@ public class ReclaimTrap extends TargetedSpell {
 			t.pos = bolt.collisionPos;
 			t.reclaimed = true;
 			Bestiary.countEncounter(t.getClass());
+
+			Statistics.trapsActivated ++;
+			Badges.validateEngineerUnlock();
 			t.activate();
 			
 		}

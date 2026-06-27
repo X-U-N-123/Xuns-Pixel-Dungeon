@@ -18,7 +18,7 @@ allprojects {
         appPackageName = 'com.xun.xunspixeldungeon'
 
         appVersionCode = 881
-        appVersionName = '2.1.2'
+        appVersionName = '3.0.0_b1'
 
         appJavaCompatibility = JavaVersion.VERSION_1_8
 

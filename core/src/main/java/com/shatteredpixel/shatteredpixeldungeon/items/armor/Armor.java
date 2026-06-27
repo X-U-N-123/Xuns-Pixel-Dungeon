@@ -21,10 +21,12 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.armor;
 
+import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
@@ -39,7 +41,11 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.BodyForm;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.HolyWard;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.LifeLinkSpell;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.PrismaticImage;
+import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Transmuting;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.BlastParticle;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SmokeParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal;
 import com.shatteredpixel.shatteredpixeldungeon.items.EquipableItem;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
@@ -71,7 +77,9 @@ import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfArcana;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ParchmentScrap;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ShardOfOblivion;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
+import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSprite;
@@ -79,9 +87,11 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
+import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.utils.Bundlable;
 import com.watabou.utils.Bundle;
+import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 import com.watabou.utils.Reflection;
 
@@ -97,8 +107,8 @@ public class Armor extends EquipableItem {
 		DEFENSE (-2f, 1f),
 		NONE	(0f   ,  0f);
 		
-		private float evasionFactor;
-		private float defenceFactor;
+		private final float evasionFactor;
+		private final float defenceFactor;
 		
 		Augment(float eva, float df){
 			evasionFactor = eva;
@@ -113,6 +123,43 @@ public class Armor extends EquipableItem {
 			return Math.round((2 + level) * defenceFactor);
 		}
 	}
+
+	public enum Modification {
+		WEAKNESS_ENHANCE,
+		EXPLOSIVE,
+		CONDUCTIVE,
+		DEFLECTION,
+		EXOSKELETON;
+
+		public int partCost(){
+			switch (this){
+				case WEAKNESS_ENHANCE:return 4;
+				case EXPLOSIVE:       return 2;
+				case CONDUCTIVE:      return 5;
+				case DEFLECTION:      return 5;
+				case EXOSKELETON:     return 10;
+				default:              return 0;
+			}
+		}
+
+		public int maxDurability(){
+			switch (this){
+				case EXPLOSIVE:       return 1;
+				case CONDUCTIVE:      return 150;
+				case DEFLECTION:return 15;
+				case EXOSKELETON:     return 30;
+				case WEAKNESS_ENHANCE:
+				default:              return 25;
+			}
+		}
+
+		public String title(){return Messages.get(Modification.class, toString());}
+		public String desc() {return Messages.get(Modification.class, this + "_desc");}
+
+		public boolean craftsman(){
+			return this == DEFLECTION || this == EXOSKELETON;
+		}
+	}
 	
 	public Augment augment = Augment.NONE;
 	
@@ -120,6 +167,9 @@ public class Armor extends EquipableItem {
 	public boolean glyphHardened = false;
 	public boolean curseInfusionBonus = false;
 	public boolean masteryPotionBonus = false;
+	public Modification modify = null;
+	public int modDurability = 0;
+	public ConductiveLoot loot = null;
 	
 	protected BrokenSeal seal;
 	
@@ -141,6 +191,8 @@ public class Armor extends EquipableItem {
 	private static final String MASTERY_POTION_BONUS = "mastery_potion_bonus";
 	private static final String SEAL            = "seal";
 	private static final String AUGMENT			= "augment";
+	private static final String MODIFY          = "modify";
+	private static final String DURABILITY		= "durability";
 
 	@Override
 	public void storeInBundle( Bundle bundle ) {
@@ -153,6 +205,8 @@ public class Armor extends EquipableItem {
 		bundle.put( MASTERY_POTION_BONUS, masteryPotionBonus );
 		bundle.put( SEAL, seal);
 		bundle.put( AUGMENT, augment);
+		if (modify != null) bundle.put( MODIFY, modify);
+		bundle.put( DURABILITY, modDurability);
 	}
 
 	@Override
@@ -165,8 +219,10 @@ public class Armor extends EquipableItem {
 		curseInfusionBonus = bundle.getBoolean( CURSE_INFUSION_BONUS );
 		masteryPotionBonus = bundle.getBoolean( MASTERY_POTION_BONUS );
 		seal = (BrokenSeal)bundle.get(SEAL);
+		modDurability = bundle.getInt(DURABILITY);
 		
 		augment = bundle.getEnum(AUGMENT, Augment.class);
+		if (bundle.contains(MODIFY)) modify = bundle.getEnum(MODIFY, Modification.class);
 	}
 
 	@Override
@@ -304,6 +360,13 @@ public class Armor extends EquipableItem {
 	@Override
 	public void activate(Char ch) {
 		if (seal != null) Buff.affect(ch, BrokenSeal.WarriorShield.class).setArmor(this);
+		
+		if (loot != null){
+			if (loot.target != null) loot.detach();
+			loot = null;
+		}
+		loot = new ConductiveLoot();
+		loot.attachTo(ch);
 	}
 
 	public void affixSeal(BrokenSeal seal){
@@ -365,6 +428,11 @@ public class Armor extends EquipableItem {
 			BrokenSeal.WarriorShield sealBuff = hero.buff(BrokenSeal.WarriorShield.class);
 			if (sealBuff != null) sealBuff.setArmor(null);
 
+			if (loot != null) {
+				if (loot.target != null) loot.detach();
+				loot = null;
+			}
+
 			return true;
 
 		} else {
@@ -402,15 +470,13 @@ public class Armor extends EquipableItem {
 
 	public int DRMin(int lvl){
 		if (Dungeon.isChallenged(Challenges.NO_ARMOR)){
-			return 0;
+			lvl = 0;
 		}
 
 		int max = DRMax(lvl);
-		if (lvl >= max){
-			return (lvl - max);
-		} else {
-			return lvl;
-		}
+		if (modify == Modification.WEAKNESS_ENHANCE)
+			lvl += Math.round((max - lvl) * 0.4f);
+		return Math.min(lvl, max);
 	}
 	
 	public float evasionFactor( Char owner, float evasion ){
@@ -428,6 +494,8 @@ public class Armor extends EquipableItem {
 				evasion += momentum.evasionBonus(((Hero) owner).lvl, Math.max(0, -aEnc));
 			}
 		}
+
+		if (modify == Modification.DEFLECTION) evasion *= 1.5f;
 		
 		return evasion + augment.evasionFactor(buffedLvl());
 	}
@@ -438,6 +506,8 @@ public class Armor extends EquipableItem {
 			int aEnc = STRReq() - ((Hero) owner).STR();
 			if (aEnc > 0) speed /= Math.pow(1.2, aEnc);
 		}
+
+		if (modify == Modification.EXOSKELETON) speed *= 1.25f;
 		
 		return speed;
 		
@@ -540,24 +610,50 @@ public class Armor extends EquipableItem {
 			}
 			damage = Math.max(damage, 0);
 		}
-		
-		if (!levelKnown && defender == Dungeon.hero) {
-			float uses = Math.min( availableUsesToID, Talent.itemIDSpeedFactor(Dungeon.hero, this) );
-			availableUsesToID -= uses;
-			usesLeftToID -= uses;
-			if (usesLeftToID <= 0) {
-				if (ShardOfOblivion.passiveIDDisabled()){
-					if (usesLeftToID > -1){
-						GLog.p(Messages.get(ShardOfOblivion.class, "identify_ready"), name());
+
+		if (defender == Dungeon.hero){
+			if (!levelKnown) {
+				float uses = Math.min( availableUsesToID, Talent.itemIDSpeedFactor(Dungeon.hero, this) );
+				availableUsesToID -= uses;
+				usesLeftToID -= uses;
+				if (usesLeftToID <= 0) {
+					if (ShardOfOblivion.passiveIDDisabled()){
+						if (usesLeftToID > -1){
+							GLog.p(Messages.get(ShardOfOblivion.class, "identify_ready"), name());
+						}
+						setIDReady();
+					} else {
+						identify();
+						GLog.p(Messages.get(Armor.class, "identify"));
+						Badges.validateItemLevelAquired(this);
 					}
-					setIDReady();
-				} else {
-					identify();
-					GLog.p(Messages.get(Armor.class, "identify"));
-					Badges.validateItemLevelAquired(this);
 				}
 			}
 		}
+
+		if (modify == Modification.EXPLOSIVE){
+			for (int i : PathFinder.NEIGHBOURS8) {
+				Char ch = Actor.findChar(defender.pos + i);
+				if (ch != null && ch.alignment != defender.alignment){
+					ch.damage(tier * 2 + Random.IntRange(0, level() * 5), Explosive.class);
+					//trace a ballistica to our target (which will also extend past them)
+					Ballistica trajectory = new Ballistica(defender.pos, ch.pos, Ballistica.STOP_TARGET);
+					//trim it to just be the part that goes past them
+					trajectory = new Ballistica(trajectory.collisionPos, trajectory.path.get(trajectory.path.size() - 1), Ballistica.PROJECTILE);
+					//knock them back along that ballistica
+					WandOfBlastWave.throwChar(ch, trajectory, 2, false, true, defender);
+				}
+			}
+			if (Dungeon.level.heroFOV[defender.pos]){
+				Sample.INSTANCE.play(Assets.Sounds.BLAST);
+				CellEmitter.center(defender.pos).burst(BlastParticle.FACTORY, 20);
+				CellEmitter.get(defender.pos).burst(SmokeParticle.FACTORY, 5);
+			}
+		}
+		if (modify == Modification.EXPLOSIVE
+				|| modify == Modification.WEAKNESS_ENHANCE
+				|| modify == Modification.EXOSKELETON)
+			decreaseModDurability();
 		
 		return damage;
 	}
@@ -638,6 +734,10 @@ public class Armor extends EquipableItem {
 		if (seal != null) {
 			info += "\n\n" + Messages.get(Armor.class, "seal_attached", seal.maxShield(tier, level()));
 		}
+
+		if (modify != null){
+			info += "\n\n" + Messages.get(this, "has_modify", modify.title(), modDurability) + modify.desc();
+		}
 		
 		return info;
 	}
@@ -697,15 +797,17 @@ public class Armor extends EquipableItem {
 		return req;
 	}
 
-	protected static int STRReq(int tier, int lvl){
+	protected int STRReq(int tier, int lvl){
 		lvl = Math.max(0, lvl);
+		int baseSTR = 8 + tier * 2;
+		if (modify == Modification.EXOSKELETON) baseSTR --;
 
 		if (Dungeon.isChallenged(Challenges.EXERCISES)){
 			//in challenge, strength req decreases at +1,+4,+9,+16,etc.
-			return (8 + tier * 2) - (int)Math.sqrt(lvl);
+			return baseSTR - (int)Math.sqrt(lvl);
 		}
 		//strength req decreases at +1,+3,+6,+10,etc.
-		return (8 + tier * 2) - (int)(Math.sqrt(8 * lvl + 1) - 1)/2;
+		return baseSTR - (int)(Math.sqrt(8 * lvl + 1) - 1)/2;
 	}
 	
 	@Override
@@ -827,14 +929,19 @@ public class Armor extends EquipableItem {
 		public static float genericProcChanceMultiplier( Char defender ){
 			float multi = RingOfArcana.enchantPowerMultiplier(defender);
 
-			if (defender == Dungeon.hero && Dungeon.hero.hasTalent(Talent.BARBED_WIRE) && Dungeon.hero.heroClass != HeroClass.EXPLORER){
-				multi *= 1f + 0.1f * Dungeon.hero.pointsInTalent(Talent.BARBED_WIRE);
-			}
 
 			if (Dungeon.hero.alignment == defender.alignment
 					&& Dungeon.hero.buff(AuraOfProtection.AuraBuff.class) != null
 					&& (Dungeon.level.distance(defender.pos, Dungeon.hero.pos) <= 2 || defender.buff(LifeLinkSpell.LifeLinkSpellBuff.class) != null)){
 				multi += 0.25f + 0.25f*Dungeon.hero.pointsInTalent(Talent.AURA_OF_PROTECTION);
+			}
+
+			if (defender instanceof Hero){
+				if (((Hero) defender).belongings.armor() != null
+						&& ((Hero) defender).belongings.armor().modify == Modification.CONDUCTIVE) multi *= 2f;
+
+				if (((Hero) defender).hasTalent(Talent.BARBED_WIRE) && ((Hero) defender).heroClass != HeroClass.EXPLORER)
+					multi *= 1f + 0.1f * ((Hero) defender).pointsInTalent(Talent.BARBED_WIRE);
 			}
 
 			return multi;
@@ -939,4 +1046,55 @@ public class Armor extends EquipableItem {
 	public float unidWeight(){
 		return 0.2f * (tier + 4);
 	}
+
+	public void decreaseModDurability(){
+		modDurability = Math.max(modDurability - 1, 0);
+		if (modDurability <= 0) modify(null);
+	}
+
+	public void modify(Modification mod){
+		modify = mod;
+		if (mod == null){
+			modDurability = 0;
+			GLog.n(Messages.get(this, "modify_break"));
+		} else {
+			modDurability = mod.maxDurability();
+
+			Sample.INSTANCE.play(Assets.Sounds.UNLOCK);
+			Transmuting.show(curUser, this, this);
+			curUser.sprite.operate(curUser.pos);
+		}
+	}
+
+	public class ConductiveLoot extends Buff {
+
+		{
+			revivePersists = true;
+			actPriority = HERO_PRIO + 1;
+		}
+
+		@Override
+		public boolean attachTo( Char target ) {
+			if (super.attachTo( target )) {
+				//if we're loading in and the hero has partially spent a turn, delay for 1 turn
+				if (target instanceof Hero && Dungeon.hero == null && cooldown() == 0 && target.cooldown() > 0) {
+					spend(TICK);
+				}
+				return true;
+			}
+			return false;
+		}
+
+		@Override
+		public boolean act() {
+			if (Armor.this.isEquipped(Dungeon.hero)
+					&& Armor.this.modify == Modification.CONDUCTIVE && Armor.this.glyph != null)
+				Armor.this.decreaseModDurability();
+
+			spendConstant(1);
+			return true;
+		}
+
+	}
+	public static class Explosive{}
 }

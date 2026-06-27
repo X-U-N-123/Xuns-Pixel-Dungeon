@@ -62,7 +62,7 @@ public class DMdrill extends MeleeWeapon {
     public float accuracyFactor(Char owner, Char target) {
         DMcombo dmcombo = owner.buff(DMcombo.class);
         if (dmcombo != null) {
-            return (float)Math.pow(1.1f, dmcombo.Getcount());
+            return (float)Math.pow(1.1f, dmcombo.Getcount()) * super.accuracyFactor(owner, target);
         } else {
             return super.accuracyFactor(owner, target);
         }

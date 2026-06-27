@@ -26,6 +26,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.HolyLance;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GnollGeomancer;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.KindOfCrossbow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Bolas;
@@ -159,6 +160,8 @@ public class MissileSprite extends ItemSprite implements Tweener.Listener {
 				break;
 			}
 		}
+		if (item instanceof Wand && ((Wand) item).modify == Wand.Modification.DISINTEGRATING)
+			angularSpeed = 0;
 		
 		angle = 135 - (float)(Math.atan2( d.x, d.y ) / Math.PI * 180);
 		
@@ -184,17 +187,16 @@ public class MissileSprite extends ItemSprite implements Tweener.Listener {
 				&& (Dungeon.hero.belongings.weapon() instanceof KindOfCrossbow
 				|| Dungeon.hero.belongings.secondWep() instanceof KindOfCrossbow)){
 			speed *= 3f;
-			
+
 		} else if (item instanceof ThrowingStone && Dungeon.hero.hasTalent(Talent.FLYING_LOCUST_STONE)){
 			speed *= 2f;
+
 		} else if (item instanceof SpiritBow.SpiritArrow
 				|| item instanceof ScorpioSprite.ScorpioShot
-				|| item instanceof TenguSprite.TenguShuriken){
+				|| item instanceof TenguSprite.TenguShuriken
+				|| (item instanceof MissileWeapon && ((MissileWeapon) item).inTower)){
 			speed *= 1.5f;
 		}
-
-		if (item instanceof MissileWeapon && ((MissileWeapon) item).inTower) speed *= 1.5f;
-		
 		PosTweener tweener = new PosTweener( this, to, d.length() / speed );
 		tweener.listener = this;
 		parent.add( tweener );

@@ -22,6 +22,8 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Identification;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
@@ -65,6 +67,7 @@ public class ScrollOfDivination extends ExoticScroll {
 		
 		ArrayList<Item> IDed = new ArrayList<>();
 		int left = 4;
+		if (Dungeon.hero.pointsInTalent(Talent.FINE_INTUITION) >= 2) left += 2;
 		
 		float[] baseProbs = new float[]{2, 2, 1};
 		float[] probs = baseProbs.clone();

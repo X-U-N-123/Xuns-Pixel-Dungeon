@@ -96,6 +96,8 @@ public abstract class RemainsItem extends Item {
 				return new ShovelScrap();
             case WRAITH:
                 return new ResidualRemain();
+			case ENGINEER:
+				return new RemainTool();
 		}
 	}
 }

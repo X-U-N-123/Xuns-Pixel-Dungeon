@@ -87,7 +87,7 @@ public class StoneOfIntuition extends InventoryStone {
 		return text;
 	}
 
-	public static class IntuitionUseTracker extends Buff {{ revivePersists = true; }};
+	public static class IntuitionUseTracker extends Buff {{ revivePersists = true; }}
 	
 	private static Class curGuess = null;
 
@@ -115,6 +115,7 @@ public class StoneOfIntuition extends InventoryStone {
 				protected void onClick() {
 					super.onClick();
 					useAnimation();
+					boolean consume = true;
 					if (item.getClass() == curGuess){
 						if (item instanceof Ring){
 							((Ring) item).setKnown();
@@ -123,16 +124,19 @@ public class StoneOfIntuition extends InventoryStone {
 						}
 						GLog.p( Messages.get(WndGuess.class, "correct") );
 						curUser.sprite.parent.add( new Identification( curUser.sprite.center().offset( 0, -16 ) ) );
+						if (Dungeon.hero.hasTalent(Talent.FINE_INTUITION)) consume = false;
 					} else {
 						GLog.w( Messages.get(WndGuess.class, "incorrect") );
 					}
 					if (!anonymous) {
 						Catalog.countUse(StoneOfIntuition.class);
-						if (curUser.buff(IntuitionUseTracker.class) == null) {
-							Buff.affect(curUser, IntuitionUseTracker.class);
-						} else {
-							curItem.detach(curUser.belongings.backpack);
-							curUser.buff(IntuitionUseTracker.class).detach();
+						if (consume){
+							if (curUser.buff(IntuitionUseTracker.class) == null) {
+								Buff.affect(curUser, IntuitionUseTracker.class);
+							} else {
+								curItem.detach(curUser.belongings.backpack);
+								curUser.buff(IntuitionUseTracker.class).detach();
+							}
 						}
 						Talent.onRunestoneUsed(curUser, curUser.pos, StoneOfIntuition.class);
 					}

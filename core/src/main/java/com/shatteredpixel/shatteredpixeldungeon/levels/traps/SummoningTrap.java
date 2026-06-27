@@ -21,7 +21,9 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.levels.traps;
 
+import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
@@ -108,6 +110,9 @@ public class SummoningTrap extends Trap {
 				t.reveal();
 				Bestiary.setSeen(t.getClass());
 				Bestiary.countEncounter(t.getClass());
+
+				Statistics.trapsActivated ++;
+				Badges.validateEngineerUnlock();
 				t.activate();
 			}
 			ScrollOfTeleportation.appear(mob, mob.pos);

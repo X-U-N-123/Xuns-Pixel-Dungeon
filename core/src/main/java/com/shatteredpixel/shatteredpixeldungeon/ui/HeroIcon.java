@@ -41,27 +41,28 @@ public class HeroIcon extends Image {
 	public static final int BERSERKER   = 0;
 	public static final int GLADIATOR   = 1;
 	public static final int GUARD       = 2;
-	public static final int BATTLEMAGE  = 4;
-	public static final int WARLOCK     = 5;
-	public static final int SWITCHER    = 6;
-	public static final int ASSASSIN    = 8;
-	public static final int FREERUNNER  = 9;
-	public static final int NINJA       = 10;
-	public static final int SNIPER      = 12;
-	public static final int WARDEN      = 13;
-	public static final int SCOUT       = 14;
-	public static final int CHAMPION    = 16;
-	public static final int MONK        = 17;
-	public static final int PHANTOM     = 18;
-	public static final int PRIEST      = 20;
-	public static final int PALADIN     = 21;
-	public static final int PREACHER    = 22;
-	public static final int WAVECHASER  = 24;
-	public static final int TRAPPER     = 25;
-	public static final int ROCKSY      = 26;
-    public static final int INCUBUS     = 28;
-	public static final int PLAGUEGOD   = 29;
-	public static final int SOULHANDLER = 30;
+	public static final int BATTLEMAGE  = 3;
+	public static final int WARLOCK     = 4;
+	public static final int SWITCHER    = 5;
+	public static final int ASSASSIN    = 6;
+	public static final int FREERUNNER  = 7;
+	public static final int NINJA       = 8;
+	public static final int SNIPER      = 9;
+	public static final int WARDEN      = 10;
+	public static final int SCOUT       = 11;
+	public static final int CHAMPION    = 12;
+	public static final int MONK        = 13;
+	public static final int PHANTOM     = 14;
+	public static final int PRIEST      = 15;
+	public static final int PALADIN     = 16;
+	public static final int PREACHER    = 17;
+	public static final int WAVECHASER  = 18;
+	public static final int TRAPPER     = 19;
+	public static final int ROCKSY      = 20;
+    public static final int INCUBUS     = 21;
+	public static final int PLAGUEGOD   = 22;
+	public static final int SOULHANDLER = 23;
+	public static final int CRAFTSMAN   = 24;
 
     //abilities
 	public static final int HEROIC_LEAP     = 48;
@@ -125,10 +126,10 @@ public class HeroIcon extends Image {
 	public static final int HOLY_CHAMPION   = 111;
 	public static final int HOLY_REGENERATION = 112;
 	public static final int MIMIC_FORM      = 113;
-	public static final int PUNISHMENT      = 115;
-	public static final int HOLY_DRAPE      = 116;
-	public static final int BOOKPAGE        = 117;
-	public static final int HOLY_IMAGE      = 118;
+	public static final int PUNISHMENT      = 114;
+	public static final int HOLY_DRAPE      = 115;
+	public static final int BOOKPAGE        = 116;
+	public static final int HOLY_IMAGE      = 117;
 
 	//all cleric spells have a separate icon with no background for the action indicator
 	public static final int SPELL_ACTION_OFFSET      = 48;
@@ -148,6 +149,7 @@ public class HeroIcon extends Image {
     public static final int HYPNOSIS        = 187;
 	public static final int ACID            = 188;
 	public static final int SOUL            = 189;
+	public static final int PULSE           = 190;
 
 	public HeroIcon(HeroSubClass subCls){
 		super( Assets.Interfaces.HERO_ICONS );

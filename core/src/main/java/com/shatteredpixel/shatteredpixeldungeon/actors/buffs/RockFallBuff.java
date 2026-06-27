@@ -288,7 +288,7 @@ public class RockFallBuff extends Buff implements ActionIndicator.Action {
 
                         if (!ch.isAlive() && ch == Dungeon.hero) {
                             Badges.validateDeathFromFriendlyMagic();
-                            Dungeon.fail( ch.buffs(RockFallBuff.class) );
+                            Dungeon.fail( RockFallBuff.this );
                             GLog.n( Messages.get( GnollGeomancer.class, "rock_kill") );
                         }
                     } else Dungeon.level.pressCell(rockPath.collisionPos);

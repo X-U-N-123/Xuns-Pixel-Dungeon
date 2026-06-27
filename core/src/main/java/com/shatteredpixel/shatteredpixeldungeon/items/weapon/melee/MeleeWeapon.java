@@ -360,8 +360,8 @@ public class MeleeWeapon extends Weapon {
 
 		//the mage's staff, shovel and blade of unreal has no ability as it they only be gained by the mage, explorer, ninja or wraith
 		if (Dungeon.hero != null && Dungeon.hero.heroClass == HeroClass.DUELIST
-			&& !(this instanceof MagesStaff || this instanceof BladeOfUnreal
-            || this instanceof Shovel || this instanceof BladeOfMimic || this instanceof BoneSpike)){
+			&& !(this instanceof MagesStaff || this instanceof BladeOfUnreal || this instanceof Shovel
+				|| this instanceof BladeOfMimic || this instanceof BoneSpike || this instanceof MultiTool)){
 			info += "\n\n" + abilityInfo();
 		}
 		
