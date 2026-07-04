@@ -117,7 +117,7 @@ public class Underpass extends ArmorAbility {
                 if (i == Terrain.UNDERPASS) exitAmount++;
             }
 
-            if (exitAmount < 2 + hero.pointsInTalent(Talent.SLY_RABBIT)){
+            if (exitAmount < 3 + hero.pointsInTalent(Talent.SLY_RABBIT)){
                 armor.charge -= chargeUse(hero);
                 Level.set(hero.pos, Terrain.UNDERPASS);
                 GameScene.updateMap(hero.pos);
@@ -136,7 +136,7 @@ public class Underpass extends ArmorAbility {
     public float chargeUse( Hero hero ) {
         float chargeUse = super.chargeUse(hero);
         if (Dungeon.level.map[hero.pos] != Terrain.UNDERPASS){
-            chargeUse *= 2 - 0.4f * hero.pointsInTalent(Talent.SLY_RABBIT);
+            chargeUse *= 0.4f - 0.1f * hero.pointsInTalent(Talent.SLY_RABBIT);
         }
         return chargeUse;
     }
@@ -198,7 +198,7 @@ public class Underpass extends ArmorAbility {
         BuffIndicator.refreshHero();
 
         if (Random.Float() <= hero.pointsInTalent(Talent.GRENADE_COVER) / 4f)
-            new Bomb().explode(oldPos);
+            new Bomb.ConjuredBomb().explode(oldPos);
 
         hero.checkVisibleMobs();
 

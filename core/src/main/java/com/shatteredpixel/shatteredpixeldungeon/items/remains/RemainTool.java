@@ -22,19 +22,11 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.remains;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.items.EnergyCrystal;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MultiTool;
-import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
-import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
-import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
-import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
-import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
 
 public class RemainTool extends RemainsItem {
@@ -44,27 +36,9 @@ public class RemainTool extends RemainsItem {
 	}
 
 	@Override
-	public void execute(Hero hero, String action) {
-		super.execute(hero, action);
-		if (action.equals(AC_USE)){
-			if (Dungeon.level.map[hero.pos] == Terrain.INACTIVE_TRAP){
-				hero.sprite.operate(hero.pos);
-
-				Catalog.countUse(getClass());
-				doEffect(hero);
-
-				hero.spendAndNext(Actor.TICK);
-				detach(hero.belongings.backpack);
-			} else GLog.w(Messages.get(MultiTool.class, "no_trap"));
-		}
-	}
-
-	@Override
 	protected void doEffect(Hero hero) {
-		Level.set(hero.pos, Terrain.EMPTY);
-		Sample.INSTANCE.play(Assets.Sounds.UNLOCK);
-		hero.spendAndNext(2f);
 		new EnergyCrystal(3).collect();
+		Sample.INSTANCE.play(Assets.Sounds.ITEM);
 		hero.sprite.showStatusWithIcon( CharSprite.POSITIVE, "3", FloatingText.ENERGY );
 	}
 }
