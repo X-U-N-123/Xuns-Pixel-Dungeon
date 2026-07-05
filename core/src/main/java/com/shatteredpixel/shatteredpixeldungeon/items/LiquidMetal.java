@@ -23,7 +23,13 @@ package com.shatteredpixel.shatteredpixeldungeon.items;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Splash;
@@ -38,8 +44,10 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndBag;
+import com.watabou.noosa.Image;
 import com.watabou.noosa.audio.Sample;
 
 import java.util.ArrayList;
@@ -82,6 +90,20 @@ public class LiquidMetal extends Item {
 
 	@Override
 	protected void onThrow( int cell ) {
+		boolean consume = false;
+
+		Char ch = Actor.findChar(cell);
+		if (ch != null && ch.alignment != Char.Alignment.ALLY && Dungeon.hero.heroClass != HeroClass.ENGINEER
+			&& Dungeon.hero.buff(RemoteDestructionCD.class) == null)
+			if ((Char.hasProp(ch, Char.Property.MECHANICAL) && Dungeon.hero.hasTalent(Talent.REMOTE_DESTRUCTION))
+					|| (Char.hasProp(ch, Char.Property.INORGANIC) && Dungeon.hero.pointsInTalent(Talent.REMOTE_DESTRUCTION) >= 2)){
+				Sample.INSTANCE.play(Assets.Sounds.HIT);
+				Buff.affect(ch, Cripple.class, 8);
+				consume = true;
+				Buff.prolong(Dungeon.hero, RemoteDestructionCD.class, 100);
+			}
+		if (consume) return;
+
 		if (Dungeon.level.map[cell] == Terrain.WELL || Dungeon.level.pit[cell]) {
 
 			super.onThrow( cell );
@@ -234,5 +256,10 @@ public class LiquidMetal extends Item {
 	@Override
 	public float weight(){
 		return 0.03f * quantity();
+	}
+
+	public static class RemoteDestructionCD extends FlavourBuff{
+		public int icon() { return BuffIndicator.TIME; }
+		public void tintIcon(Image icon) { icon.hardlight(0.4f, 0.4f, 0.4f); }
 	}
 }

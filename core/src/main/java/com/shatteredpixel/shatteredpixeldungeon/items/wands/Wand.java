@@ -41,6 +41,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LostInventory;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MindVision;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Momentum;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Recharging;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Regeneration;
@@ -51,6 +52,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.engineer.ForceField;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.mage.WildMagic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.wraith.EvilUnfold;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.DivineSense;
@@ -67,6 +69,8 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SmokeParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.ArcaneResin;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.MetalPart;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Viscosity;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TalismanOfForesight;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.MagicalHolster;
@@ -76,6 +80,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ShardOfOblivion;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.WondrousResin;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Projecting;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MultiTool;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector;
@@ -330,15 +335,28 @@ public abstract class Wand extends Item {
 				Buff.prolong(target, Blindness.class, 4f);
 			}
 		}
+		if (Random.Int(3) < Dungeon.hero.pointsInTalent(Talent.RESONANT_SENSING)
+				&& Dungeon.hero.heroClass != HeroClass.ENGINEER)
+			Buff.prolong(Dungeon.hero, MindVision.class, 1f);
+
+		if (Dungeon.hero.hasTalent(Talent.IONIZING_RADIATION) && Dungeon.hero.heroClass != HeroClass.ENGINEER) {
+			Viscosity.DeferedDamage deferred = Buff.affect(target, Viscosity.DeferedDamage.class);
+			deferred.extend(Dungeon.hero.lvl * Dungeon.hero.pointsInTalent(Talent.IONIZING_RADIATION) / 4f);
+		}
 
 		dmg += Math.round(dmg * Statistics.elixirManaDrunk * 0.1f);
 
 		EvilUnfold.Evil evil = Dungeon.hero.buff(EvilUnfold.Evil.class);
 		if (evil != null) dmg = evil.proc(target, dmg);
 
-		if (target instanceof Resentment) Buff.affect(target, Daze.class, 3f);
+		if (target instanceof Resentment) Buff.affect(target, Daze.class, 4f);
 		//a way to fight against it
 		if (w.modify == Modification.PRISM) dmg += Math.round(dmg * 0.25f);
+		MultiTool tool = Dungeon.hero.belongings.getItem(MultiTool.class);
+		if (tool != null && tool.wandModify == Modification.PRISM
+				&& Dungeon.hero.pointsInTalent(Talent.MULTI_MODIFY) >= 3){
+			dmg += Math.round(dmg * 0.25f);
+		}
 
 		return dmg;
 	}
@@ -637,6 +655,13 @@ public abstract class Wand extends Item {
 		
 		curCharges -= cursed ? 1 : chargesPerCast();
 
+		if (modify != null && curUser.hasTalent(Talent.FAVORITE_WORK))
+			partialCharge += curUser.pointsInTalent(Talent.FAVORITE_WORK) / 12f;
+		if (partialCharge >= 1){
+			curCharges ++;
+			partialCharge --;
+		}
+
 		Switch buff1 = curUser.buff(Switch.class);
 		float timeModifier = 1f;
 		//remove magic charge at a higher priority, if we are benefiting from it are and not the
@@ -723,6 +748,17 @@ public abstract class Wand extends Item {
 		if (modify == Modification.PRISM) {
 			timeModifier *= 1.5f;
 			decreaseModDurability();
+		}
+		MultiTool tool = Dungeon.hero.belongings.getItem(MultiTool.class);
+		if (tool != null && Dungeon.hero.pointsInTalent(Talent.MULTI_MODIFY) >= 3){
+			if (tool.wandModify == Modification.SPARROW){
+				timeModifier *= 0.4f;
+				tool.decreaseWandModDura();
+			}
+			if (tool.wandModify == Modification.PRISM){
+				timeModifier *= 1.5f;
+				tool.decreaseWandModDura();
+			}
 		}
 
 		curUser.spendAndNext(TIME_TO_ZAP * timeModifier);
@@ -935,6 +971,13 @@ public abstract class Wand extends Item {
 						curWand.shot(target, shot);
 						curWand.decreaseModDurability();
 					}
+					MultiTool tool = Dungeon.hero.belongings.getItem(MultiTool.class);
+					if (tool != null && tool.wandModify == Modification.REPEATING
+							&& Dungeon.hero.pointsInTalent(Talent.MULTI_MODIFY) >= 3
+							&& curWand.tryToZap(curUser, target)){
+						curWand.shot(target, shot);
+						tool.decreaseWandModDura();
+					}
 				}
 				
 			}
@@ -1062,8 +1105,15 @@ public abstract class Wand extends Item {
 				partialCharge--;
 				curCharges++;
 				updateQuickslot();
-				if (modify == Modification.STATIC_CHARGE && target.buff(Recharging.class) == null)
-					decreaseModDurability();
+				if (target.buff(Recharging.class) == null){
+					if (modify == Modification.STATIC_CHARGE)
+						decreaseModDurability();
+					MultiTool tool = Dungeon.hero.belongings.getItem(MultiTool.class);
+					if (tool != null && tool.wandModify == Modification.STATIC_CHARGE
+							&& Dungeon.hero.pointsInTalent(Talent.MULTI_MODIFY) >= 3){
+						tool.decreaseWandModDura();
+					}
+				}
 			}
 			
 			if (curCharges == maxCharges){
@@ -1102,6 +1152,11 @@ public abstract class Wand extends Item {
             if (cursed && Dungeon.hero.hasTalent(Talent.CURSED_POWER)) turnsToCharge /= 1.1f;
 
 			if (modify == Modification.STATIC_CHARGE) turnsToCharge /= 2f;
+			MultiTool tool = Dungeon.hero.belongings.getItem(MultiTool.class);
+			if (tool != null && tool.wandModify == Modification.STATIC_CHARGE
+					&& Dungeon.hero.pointsInTalent(Talent.MULTI_MODIFY) >= 3){
+				turnsToCharge /= 2f;
+			}
 
 			if (Regeneration.regenOn())
 				partialCharge += (1f/turnsToCharge) * RingOfEnergy.wandChargeMultiplier(target);
@@ -1149,22 +1204,45 @@ public abstract class Wand extends Item {
 	}
 
 	public void decreaseModDurability(){
-		modDurability = Math.max(modDurability - 1, 0);
+		if (Dungeon.hero.buff(ForceField.Field.class) == null
+				|| Random.Int(4) >= Dungeon.hero.pointsInTalent(Talent.REPAIR_ABILITY))
+			modDurability = Math.max(modDurability - 1, 0);
 		if (modDurability <= 0) modify(null);
 	}
 
 	public void modify(Modification mod){
+		boolean activeRepair = modify == mod && Dungeon.hero.hasTalent(Talent.ACTIVE_REPAIR);
 		if (modify == Modification.DISINTEGRATING && mod != Modification.DISINTEGRATING) return;
 		modify = mod;
 		if (mod == null){
 			modDurability = 0;
 			GLog.n(Messages.get(this, "modify_break"));
+			float chance = Dungeon.hero.pointsInTalent(Talent.PART_RECYCLING) / 2f;
+			while (Random.Float() < chance){
+				MetalPart part = new MetalPart();
+				if (!part.collect()) Dungeon.level.drop(part, Dungeon.hero.pos).sprite.drop();
+				chance --;
+			}
+			if (Dungeon.hero.pointsInTalent(Talent.KINETIC_FRAGMENT) >= 3){
+				Buff.affect(Dungeon.hero, Recharging.class, 5);
+				ScrollOfRecharging.charge(Dungeon.hero);
+			}
 		} else {
-			modDurability = mod.maxDurability();
+			if (!activeRepair)
+				modDurability = 0;
+
+			float duraToInc = mod.maxDurability() * (1 + 0.15f * Dungeon.hero.pointsInTalent(Talent.DURABLE_MODIFIES));
+			if (Dungeon.hero.pointsInTalent(Talent.ACTIVE_REPAIR) >= 2 && activeRepair) duraToInc *= 1.2f;
+			modDurability += Math.round(duraToInc);
 
 			Sample.INSTANCE.play(Assets.Sounds.UNLOCK);
 			Transmuting.show(curUser, this, this);
 			curUser.sprite.operate(curUser.pos);
+
+			if (Dungeon.hero.pointsInTalent(Talent.ACTIVE_REPAIR) >= 3 && activeRepair){
+				MetalPart part = new MetalPart();
+				if (!part.collect()) Dungeon.level.drop(part, Dungeon.hero.pos).sprite.drop();
+			}
 		}
 	}
 

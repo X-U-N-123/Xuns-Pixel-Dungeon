@@ -21,10 +21,12 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
 
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDAction;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
@@ -271,6 +273,12 @@ public class BladeOfMimic extends MeleeWeapon { //copied from Magic Ling Pixel D
     public int STRReq(int lvl) {
         int baseSTR = 8 + tier * 2;
         if (modify == Modification.PNEUMATICS) baseSTR ++;
+        MultiTool tool = Dungeon.hero.belongings.getItem(MultiTool.class);
+        if (tool != null && tool.modify == Modification.PNEUMATICS
+                && Dungeon.hero.hasTalent(Talent.MULTI_MODIFY)
+                && isEquipped(Dungeon.hero)){
+            baseSTR ++;
+        }
         lvl = Math.max(0, lvl);
         return (use_default_strength ? baseSTR : s_str_req) - (int) (Math.sqrt(8 * lvl + 1) - 1) / 2;
     }

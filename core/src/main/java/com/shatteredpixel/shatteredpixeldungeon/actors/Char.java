@@ -94,6 +94,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.cleric.PowerOfMany;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.duelist.Challenge;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.engineer.ForceField;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.explorer.Sandstorm;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.rogue.DeathMark;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.Endure;
@@ -170,6 +171,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.BladeOfUnreal
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.DMdrill;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Darkgoldsword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MultiTool;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sickle;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.ShockingDart;
@@ -696,6 +698,12 @@ public abstract class Char extends Actor {
 				}
 				if (((Hero) enemy).belongings.armor.modify == Armor.Modification.DEFLECTION)
 					((Hero) enemy).belongings.armor.decreaseModDurability();
+
+				MultiTool tool = Dungeon.hero.belongings.getItem(MultiTool.class);
+				if (tool != null && tool.armorModify == Armor.Modification.DEFLECTION
+						&& Dungeon.hero.pointsInTalent(Talent.MULTI_MODIFY) >= 2){
+					tool.decreaseArmorModDura();
+				}
 			}
 
             if (this instanceof Hero){
@@ -847,6 +855,9 @@ public abstract class Char extends Actor {
 				damage = hero.belongings.armor().proc( enemy, this, damage );
 			}
 		}
+
+		ForceField.Field field = buff(ForceField.Field.class);
+		if (field != null) damage = field.hit(damage);
 
 		return damage;
 	}

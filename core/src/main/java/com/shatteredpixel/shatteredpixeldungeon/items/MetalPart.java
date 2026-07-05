@@ -21,12 +21,19 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items;
 
+import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MultiTool;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -39,6 +46,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndBag;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.watabou.noosa.Game;
+import com.watabou.noosa.audio.Sample;
 
 import java.util.ArrayList;
 
@@ -104,6 +112,8 @@ public class MetalPart extends Item {
 		}
 	};
 
+	private static boolean multi = true;
+
 	public static class WndModify extends Window {
 
 		private static final int WIDTH_P = 120;
@@ -126,10 +136,61 @@ public class MetalPart extends Item {
 			pos = title.bottom() + 3*MARGIN;
 
 			if (item instanceof KindOfWeapon){
-				for (KindOfWeapon.Modification mod : KindOfWeapon.Modification.values()) {
+				if (item instanceof MultiTool && Dungeon.hero.pointsInTalent(Talent.MULTI_MODIFY) >= 2 && multi){
+					RedButton wepBtn = new RedButton(Messages.get(this, "wep"), 8) {
+						@Override
+						protected void onClick() {
+							super.onClick();
+							hide();
+							multi = false;
+							GameScene.show(new WndModify(item, part));
+						}
+					};
+					wepBtn.icon(new ItemSprite(ItemSpriteSheet.WEAPON_HOLDER));
+					wepBtn.leftJustify = true;
+					wepBtn.setSize(width, wepBtn.reqHeight());
+					wepBtn.setRect(0, pos, width, wepBtn.reqHeight());
+					add(wepBtn);
+					pos = wepBtn.bottom() + MARGIN;
+
+					Armor a = new Armor(0);
+					RedButton armorBtn = new RedButton(Messages.get(this, "armor"), 8) {
+						@Override
+						protected void onClick() {
+							super.onClick();
+							hide();
+							GameScene.show(new WndModify(a, part));
+						}
+					};
+					armorBtn.icon(new ItemSprite(ItemSpriteSheet.ARMOR_HOLDER));
+					armorBtn.leftJustify = true;
+					armorBtn.setSize(width, armorBtn.reqHeight());
+					armorBtn.setRect(0, pos, width, armorBtn.reqHeight());
+					add(armorBtn);
+					pos = armorBtn.bottom() + MARGIN;
+
+					if (Dungeon.hero.pointsInTalent(Talent.MULTI_MODIFY) >= 3){
+						Wand w = new Wand.PlaceHolder();
+						RedButton wandBtn = new RedButton(Messages.get(this, "wand"), 8) {
+							@Override
+							protected void onClick() {
+								super.onClick();
+								hide();
+								GameScene.show(new WndModify(w, part));
+							}
+						};
+						wandBtn.icon(new ItemSprite(ItemSpriteSheet.WAND_HOLDER));
+						wandBtn.leftJustify = true;
+						wandBtn.setSize(width, wandBtn.reqHeight());
+						wandBtn.setRect(0, pos, width, wandBtn.reqHeight());
+						add(wandBtn);
+						pos = wandBtn.bottom() + MARGIN;
+					}
+
+				} else for (KindOfWeapon.Modification mod : KindOfWeapon.Modification.values()) {
 
 					RedButton modBtn = new RedButton("_" + Messages.titleCase(mod.title())
-							+ " " + Messages.get(this, "cost", mod.partCost()) + ":_ "
+							+ " " + Messages.get(this, "cost", mod.partCost(), mod.maxDurability()) + ":_ "
 							+ mod.desc(), 6){
 						@Override
 						protected void onClick() {
@@ -154,17 +215,21 @@ public class MetalPart extends Item {
 						pos = modBtn.bottom() + MARGIN;
 					}
 				}
+				multi = true;
 			} else if (item instanceof Armor){
 				for (Armor.Modification mod : Armor.Modification.values()) {
 
 					RedButton modBtn = new RedButton("_" + Messages.titleCase(mod.title())
-							+ " " + Messages.get(this, "cost", mod.partCost()) + ":_ "
+							+ " " + Messages.get(this, "cost", mod.partCost(), mod.maxDurability()) + ":_ "
 							+ mod.desc(), 6){
 						@Override
 						protected void onClick() {
 							super.onClick();
 							hide();
 							((Armor) item).modify(mod);
+							if (((Armor) item).tier == 0){
+								Dungeon.hero.belongings.getItem(MultiTool.class).modify(mod);
+							}
 							part.quantity(part.quantity() - mod.partCost());
 							if (part.quantity() <= 0)
 								part.detachAll(curUser.belongings.backpack);
@@ -185,7 +250,7 @@ public class MetalPart extends Item {
 				for (Wand.Modification mod : Wand.Modification.values()) {
 
 					RedButton modBtn = new RedButton("_" + Messages.titleCase(mod.title())
-							+ " " + Messages.get(this, "cost", mod.partCost()) + ":_ "
+							+ " " + Messages.get(this, "cost", mod.partCost(), mod.maxDurability()) + ":_ "
 							+ mod.desc(), 6) {
 						@Override
 						protected void onClick() {
@@ -229,6 +294,9 @@ public class MetalPart extends Item {
 								);
 							} else {
 								((Wand) item).modify(mod);
+								if (item instanceof Wand.PlaceHolder){
+									Dungeon.hero.belongings.getItem(MultiTool.class).modify(mod);
+								}
 								part.quantity(part.quantity() - mod.partCost());
 								if (part.quantity() <= 0)
 									part.detachAll(curUser.belongings.backpack);
@@ -250,5 +318,20 @@ public class MetalPart extends Item {
 			}
 			resize(width, (int)pos);
 		}
+	}
+
+	@Override
+	protected void onThrow( int cell ) {
+		boolean consume = false;
+
+		Char ch = Actor.findChar(cell);
+		if (ch != null && ch.alignment != Char.Alignment.ALLY)
+			if ((Char.hasProp(ch, Char.Property.MECHANICAL) && Dungeon.hero.hasTalent(Talent.REMOTE_DESTRUCTION))
+					|| (Char.hasProp(ch, Char.Property.INORGANIC) && Dungeon.hero.pointsInTalent(Talent.REMOTE_DESTRUCTION) >= 2)){
+				Sample.INSTANCE.play(Assets.Sounds.HIT);
+				Buff.affect(ch, Cripple.class, 7);
+				consume = true;
+			}
+		if (!consume) super.onThrow(cell);
 	}
 }

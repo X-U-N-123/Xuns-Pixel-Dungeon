@@ -27,11 +27,14 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.PhysicalEmpower;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.engineer.ForceField;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Transmuting;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MultiTool;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
@@ -291,6 +294,12 @@ abstract public class KindOfWeapon extends EquipableItem {
 			min = min() + Math.round(0.4f * (max() - min()));
 			decreaseModDurability();
 		}
+		MultiTool tool = Dungeon.hero.belongings.getItem(MultiTool.class);
+		if (tool != null && tool.modify == Modification.SHARP_BLADE && tool != this
+				&& Dungeon.hero.hasTalent(Talent.MULTI_MODIFY)){
+			min = min() + Math.round(0.4f * (max() - min()));
+			decreaseModDurability();
+		}
 
 		if (owner instanceof Hero){
 			return Hero.heroDamageIntRange(min, max());
@@ -340,21 +349,43 @@ abstract public class KindOfWeapon extends EquipableItem {
 	}
 
 	public void decreaseModDurability(){
-		modDurability = Math.max(modDurability - 1, 0);
+		if (Dungeon.hero.buff(ForceField.Field.class) == null
+				|| Random.Int(4) >= Dungeon.hero.pointsInTalent(Talent.REPAIR_ABILITY))
+			modDurability = Math.max(modDurability - 1, 0);
 		if (modDurability <= 0) modify(null);
 	}
 
 	public void modify(Modification mod){
+		boolean activeRepair = modify == mod && Dungeon.hero.hasTalent(Talent.ACTIVE_REPAIR);
 		modify = mod;
 		if (mod == null){
 			modDurability = 0;
 			GLog.n(Messages.get(this, "modify_break"));
+			float chance = Dungeon.hero.pointsInTalent(Talent.PART_RECYCLING) / 2f;
+			while (Random.Float() < chance){
+				MetalPart part = new MetalPart();
+				if (!part.collect()) Dungeon.level.drop(part, Dungeon.hero.pos).sprite.drop();
+				chance --;
+			}
+			if (Dungeon.hero.hasTalent(Talent.KINETIC_FRAGMENT)){
+				Buff.affect(Dungeon.hero, PhysicalEmpower.class).set((int)(Dungeon.hero.lvl * 0.5f), 2);
+			}
 		} else {
-			modDurability = mod.maxDurability();
+			if (!activeRepair)
+				modDurability = 0;
+
+			float duraToInc = mod.maxDurability() * (1 + 0.15f * Dungeon.hero.pointsInTalent(Talent.DURABLE_MODIFIES));
+			if (Dungeon.hero.pointsInTalent(Talent.ACTIVE_REPAIR) >= 2 && activeRepair) duraToInc *= 1.2f;
+			modDurability += Math.round(duraToInc);
 
 			Sample.INSTANCE.play(Assets.Sounds.UNLOCK);
 			Transmuting.show(curUser, this, this);
 			curUser.sprite.operate(curUser.pos);
+
+			if (Dungeon.hero.pointsInTalent(Talent.ACTIVE_REPAIR) >= 3 && activeRepair){
+				MetalPart part = new MetalPart();
+				if (!part.collect()) Dungeon.level.drop(part, Dungeon.hero.pos).sprite.drop();
+			}
 		}
 	}
 

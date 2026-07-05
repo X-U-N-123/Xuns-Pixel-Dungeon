@@ -42,6 +42,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HornOfPlenty;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Berry;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfRegrowth;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Bestiary;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
@@ -221,8 +222,21 @@ public abstract class Plant implements Bundlable {
 					foodVal *= 0.67f;
 					GLog.n( Messages.get(Hunger.class, "cursedhorn") );
 				}
+				
+				float timeToEat = 1f;
 
-				Buff.affect(hero, Hunger.class).satisfy(foodVal);
+				if (hero.hasTalent(Talent.IRON_STOMACH)
+						|| hero.hasTalent(Talent.ENERGIZING_MEAL)
+						|| hero.hasTalent(Talent.MYSTICAL_MEAL)
+						|| hero.hasTalent(Talent.INVIGORATING_MEAL)
+						|| hero.hasTalent(Talent.FOCUSED_MEAL)
+						|| hero.hasTalent(Talent.ENLIGHTENING_MEAL)
+						|| hero.hasTalent(Talent.PREPARING_MEAL)
+						|| hero.hasTalent(Talent.TEARING_MEAL))
+					timeToEat = 0;
+
+				if (hero.hasTalent(Talent.TOILSOME_MEAL)) Buff.append(hero, Food.ToilsomeMealTracker.class, timeToEat).foodVal = foodVal;
+				else Buff.affect(hero, Hunger.class).satisfy(foodVal);
 				GLog.i( Messages.get(Berry.class, "eat_msg") );
 
 				hero.sprite.operate( hero.pos );
@@ -231,16 +245,9 @@ public abstract class Plant implements Bundlable {
 				Sample.INSTANCE.play( Assets.Sounds.EAT );
 				Sample.INSTANCE.play( Assets.Sounds.PLANT );
 
-				if (!(Dungeon.hero.hasTalent(Talent.IRON_STOMACH)
-				|| Dungeon.hero.hasTalent(Talent.ENERGIZING_MEAL)
-				|| Dungeon.hero.hasTalent(Talent.MYSTICAL_MEAL)
-				|| Dungeon.hero.hasTalent(Talent.INVIGORATING_MEAL)
-				|| Dungeon.hero.hasTalent(Talent.FOCUSED_MEAL)
-				|| Dungeon.hero.hasTalent(Talent.ENLIGHTENING_MEAL)
-				|| Dungeon.hero.hasTalent(Talent.PREPARING_MEAL)
-				|| Dungeon.hero.hasTalent(Talent.TEARING_MEAL)))
-					hero.spend(Actor.TICK);
-
+				if (hero.hasTalent(Talent.TOILSOME_MEAL)) hero.next();
+				else hero.spend(timeToEat);
+				
 				Statistics.foodEaten++;
 				Badges.validateFoodEaten();
 

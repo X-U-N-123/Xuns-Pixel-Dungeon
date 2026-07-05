@@ -126,6 +126,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TalismanOfForesi
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.WornKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.MagicalHolster;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
 import com.shatteredpixel.shatteredpixeldungeon.items.journal.Guidebook;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.CrystalKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.GoldenKey;
@@ -165,6 +166,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.KindOfCrossbo
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.LightFlail;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MultiTool;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Quarterstaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RoundShield;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sai;
@@ -312,6 +314,12 @@ public class Hero extends Char {
 
 		if (belongings.armor != null
 				&& belongings.armor.modify == Armor.Modification.EXOSKELETON) strBonus ++;
+
+		MultiTool tool = Dungeon.hero.belongings.getItem(MultiTool.class);
+		if (tool != null && tool.armorModify == Armor.Modification.EXOSKELETON
+				&& Dungeon.hero.pointsInTalent(Talent.MULTI_MODIFY) >= 2){
+			strBonus ++;
+		}
 
 		return STR + strBonus;
 	}
@@ -1767,14 +1775,12 @@ public class Hero extends Char {
 				}
 			}
 		}
-		
+
+		if (damage > 0 && hasTalent(Talent.BLADE_OF_ANGER)){
+			Berserk berserk = Buff.affect(this, Berserk.class);
+			berserk.damage((int)(damage*pointsInTalent(Talent.BLADE_OF_ANGER)*0.3f));
+		}
 		switch (subClass) {
-        case BERSERKER:
-            if (damage > 0 && hasTalent(Talent.BLADE_OF_ANGER)){
-                Berserk berserk = Buff.affect(this, Berserk.class);
-                berserk.damage((int)(damage*pointsInTalent(Talent.BLADE_OF_ANGER)*0.3f));
-            }
-            break;
         case NINJA:
             if (enemy instanceof Mob && ((Mob) enemy).surprisedBy(this) && buff(NinjaInvisCooldown.class) == null)
                 Buff.affect(this, NinjaInvisCooldown.class, 25f);
@@ -1813,6 +1819,9 @@ public class Hero extends Char {
 		default: break;
 		}
 
+		if (pointsInTalent(Talent.TOILSOME_MEAL) < 2)
+			for ( Buff b : buffs(Food.ToilsomeMealTracker.class)) b.detach();
+
 		return damage;
 	}
 
@@ -1841,6 +1850,9 @@ public class Hero extends Char {
 		if (rockArmor != null) {
 			damage = rockArmor.absorb(damage);
 		}
+
+		if (pointsInTalent(Talent.TOILSOME_MEAL) < 2)
+			for ( Buff b : buffs(Food.ToilsomeMealTracker.class)) b.detach();
 
 		return super.defenseProc( enemy, damage );
 	}

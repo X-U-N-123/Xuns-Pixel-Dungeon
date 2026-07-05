@@ -30,13 +30,13 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Collapse;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Pulse;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.ArmorAbility;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.Ratmogrify;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.cleric.AscendedForm;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.cleric.PowerOfMany;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.cleric.Trinity;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.duelist.Challenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.duelist.ElementalStrike;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.duelist.Feint;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.engineer.ForceField;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.explorer.OpticalCamou;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.explorer.Sandstorm;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.explorer.Underpass;
@@ -405,7 +405,7 @@ public enum HeroClass {
             case WRAITH:
                 return new ArmorAbility[]{new Transfusion(), new EvilUnfold(), new GhostWander()};
 			case ENGINEER:
-				return new ArmorAbility[]{new Ratmogrify()};
+				return new ArmorAbility[]{new ForceField()};
 		}
 	}
 

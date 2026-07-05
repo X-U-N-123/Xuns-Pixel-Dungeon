@@ -26,7 +26,9 @@ import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
@@ -37,8 +39,10 @@ import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HornOfPlenty;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.Bundle;
 
 import java.util.ArrayList;
 
@@ -84,7 +88,8 @@ public class Food extends Item {
 			SpellSprite.show( hero, SpellSprite.FOOD );
 			eatSFX();
 			
-			hero.spend( eatingTime() );
+			if (hero.hasTalent(Talent.TOILSOME_MEAL)) hero.next();
+			else hero.spend( eatingTime() );
 
 			Talent.onFoodEaten(hero, energy, this);
 			
@@ -125,7 +130,8 @@ public class Food extends Item {
 			GLog.n( Messages.get(Hunger.class, "cursedhorn") );
 		}
 
-		Buff.affect(hero, Hunger.class).satisfy(foodVal);
+		if (hero.hasTalent(Talent.TOILSOME_MEAL)) Buff.append(hero, ToilsomeMealTracker.class, eatingTime()).foodVal = foodVal;
+		else Buff.affect(hero, Hunger.class).satisfy(foodVal);
 	}
 	
 	@Override
@@ -141,5 +147,57 @@ public class Food extends Item {
 	@Override
 	public int value() {
 		return 10 * quantity;
+	}
+
+	public static class ToilsomeMealTracker extends FlavourBuff {
+
+		{
+			actPriority = HERO_PRIO + 1;
+		}
+
+		private static final int DURATION = 3;
+
+		public float foodVal;
+
+		@Override
+		public String desc() {
+			return Messages.get(this, "desc" + ((Hero)target).pointsInTalent(Talent.TOILSOME_MEAL), dispTurns());
+		}
+
+		@Override
+		public int icon() {
+			return BuffIndicator.SPELL_FOOD;
+		}
+
+		@Override
+		public String iconTextDisplay() {
+			return Integer.toString((int)cooldown());
+		}
+
+		@Override
+		public float iconFadePercent() {
+			return Math.max(0, (DURATION - cooldown()) / DURATION);
+		}
+
+		@Override
+		public void detach() {
+			super.detach();
+			if (target instanceof Hero && cooldown() <= 0 && Actor.curActorPriority() <= actPriority)
+				Buff.affect(target, Hunger.class).satisfy(foodVal);
+		}
+
+		private static final String FOODVAL = "food_val";
+
+		@Override
+		public void storeInBundle(Bundle bundle) {
+			super.storeInBundle(bundle);
+			bundle.put(FOODVAL, foodVal);
+		}
+
+		@Override
+		public void restoreFromBundle(Bundle bundle){
+			super.restoreFromBundle(bundle);
+			foodVal = bundle.getFloat(FOODVAL);
+		}
 	}
 }

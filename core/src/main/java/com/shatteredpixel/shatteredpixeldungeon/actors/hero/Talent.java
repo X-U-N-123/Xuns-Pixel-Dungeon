@@ -50,6 +50,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicalSight;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MonkEnergy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.PhysicalEmpower;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Poison;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Pulse;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Recharging;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RevealedArea;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Roots;
@@ -281,9 +282,15 @@ public enum Talent {
 	//Engineer T1
 	EAT_LITTLE_AND_OFTEN(384), FINE_INTUITION(385), TESTED_MAINTENANCE(386), GENERAL_DISARM(387), PULSE_ENERGY(388),
 	//Engineer T2
-	TOILSOME_MEAL(389), INSCRIBED_ACCESSORY(390),
+	TOILSOME_MEAL(389), IONIC_LIQUID(390), STRONG_PULSE(391), RESONANT_SENSING(392), APART_ANYTHING(393), REMOTE_DESTRUCTION(394),
+	//Engineer T3
+	DURABLE_MODIFIES(395, 3), ELECTRONIC_REPAIR(396, 3), IONIZING_RADIATION(397, 3),
+	//Craftsman T3
+	ACTIVE_REPAIR(398, 3), MULTI_MODIFY(399, 3), PART_RECYCLING(400, 3), FAVORITE_WORK(401, 3), KINETIC_FRAGMENT(402, 3),
+	//ForceField T4
+	MECHANICAL_REFINEMENT(413, 4), MOMENTUM_TRANSFORM(414, 4), ACTIVE_DEFENSE(415, 4), REPAIR_ABILITY(416, 4),
 
-    //universal T4
+	//universal T4
 	HEROIC_ENERGY(41, 4), //See icon() and title() for special logic for this one
 	//Ratmogrify T4
 	RATSISTANCE(507, 4), RATLOMACY(508, 4), RATFORCEMENTS(509, 4), ENRATGEMENT(510, 4);
@@ -1307,6 +1314,18 @@ public enum Talent {
 			Sample.INSTANCE.play( Assets.Sounds.TELEPORT );
 			GameScene.updateFog();
 		}
+		if (hero.hasTalent(IONIC_LIQUID)){
+			Pulse pulse = hero.buff(Pulse.class);
+			if (pulse != null) {
+				pulse.decreaseCD(Math.round((5 + 10 * hero.pointsInTalent(IONIC_LIQUID)) * factor));
+				ActionIndicator.refresh();
+			} else {
+				//3/5 turns of recharging
+				Buff.prolong( hero, Recharging.class, (1 + 2*hero.pointsInTalent(IONIC_LIQUID)) * factor );
+				ScrollOfRecharging.charge( hero );
+				SpellSprite.show(hero, SpellSprite.CHARGE);
+			}
+		}
 	}
 
 	public static void onScrollUsed( Hero hero, int pos, float factor, Class<?extends Item> cls ){
@@ -1647,9 +1666,9 @@ public enum Talent {
             case WRAITH:
                 Collections.addAll(tierTalents, TEARING_MEAL, INSCRIBED_REGENERATION, BLURING_BODY, PSIONIC_BLAST, SCAPEGOAT, THROWN_EVIL);
                 break;
-			/*case ENGINEER:
-				Collections.addAll(tierTalents);
-				break;*/
+			case ENGINEER:
+				Collections.addAll(tierTalents, TOILSOME_MEAL, IONIC_LIQUID, STRONG_PULSE, RESONANT_SENSING, APART_ANYTHING, REMOTE_DESTRUCTION);
+				break;
 		}
 		for (Talent talent : tierTalents){
 			if (replacements.containsKey(talent)){
@@ -1685,9 +1704,9 @@ public enum Talent {
             case WRAITH:
                 Collections.addAll(tierTalents, VICIOUS_BETRAYAL, CURSED_POWER, WICKED_GROWTH);
                 break;
-			/*case ENGINEER:
-				Collections.addAll(tierTalents, VICIOUS_BETRAYAL, CURSED_POWER, WICKED_GROWTH);
-				break;*/
+			case ENGINEER:
+				Collections.addAll(tierTalents, DURABLE_MODIFIES, ELECTRONIC_REPAIR, IONIZING_RADIATION);
+				break;
 		}
 		for (Talent talent : tierTalents){
 			if (replacements.containsKey(talent)){
@@ -1787,6 +1806,9 @@ public enum Talent {
 				break;
 			case SOULHANDLER:
 				Collections.addAll(tierTalents, IMMEDIATE_USE, VENGEFUL_SPIRIT, SOUL_CAGING, DEVOUR_SURGING, OVERFLOW);
+				break;
+			case CRAFTSMAN:
+				Collections.addAll(tierTalents, ACTIVE_REPAIR, MULTI_MODIFY, PART_RECYCLING, FAVORITE_WORK, KINETIC_FRAGMENT);
 				break;
 		}
 		for (Talent talent : tierTalents){

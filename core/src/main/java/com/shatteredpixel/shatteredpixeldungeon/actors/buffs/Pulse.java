@@ -27,11 +27,16 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
+import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.effects.PulseEffect;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SparkParticle;
+import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Viscosity;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TalismanOfForesight;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MultiTool;
+import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector;
@@ -57,7 +62,9 @@ public class Pulse extends Buff implements ActionIndicator.Action {
     }
 
     private int CD = 0;
-    private static final int debuffTurn = 4;
+    private static int debuffTurn(){
+        return 5 + Dungeon.hero.pointsInTalent(Talent.STRONG_PULSE);
+    }
 
     private int min(){
         return 3 + ((Hero)target).lvl / 4;
@@ -81,7 +88,7 @@ public class Pulse extends Buff implements ActionIndicator.Action {
     }
 
     public String desc(){
-        return Messages.get(this, "desc", min(), max(), debuffTurn, CD);
+        return Messages.get(this, "desc", min(), max(), debuffTurn(), CD);
     }
 
     private static final String COOLDOWN = "cd";
@@ -154,7 +161,7 @@ public class Pulse extends Buff implements ActionIndicator.Action {
                     return;
                 }
 
-                CD += 61;
+                //CD += 51;
                 ActionIndicator.refresh();
                 target.sprite.attack(cell);
 
@@ -182,14 +189,33 @@ public class Pulse extends Buff implements ActionIndicator.Action {
 
 					ch.damage(Math.round(damage), Pulse.this);
 
-					if (Char.hasProp(ch, Char.Property.MECHANICAL))     Buff.prolong(ch, Amok.class, debuffTurn);
-					else if (Char.hasProp(ch, Char.Property.INORGANIC)) Buff.prolong(ch, Vertigo.class, debuffTurn);
-					else                                                Buff.prolong(ch, Paralysis.class, debuffTurn);
+                    if (((Hero)target).hasTalent(Talent.IONIZING_RADIATION)){
+                        Viscosity.DeferedDamage deferred = Buff.affect(ch, Viscosity.DeferedDamage.class);
+                        deferred.extend(damage * ((Hero)target).pointsInTalent(Talent.IONIZING_RADIATION) / 2f);
+                    }
+
+					if (Char.hasProp(ch, Char.Property.MECHANICAL))     Buff.prolong(ch, Amok.class, debuffTurn());
+					else if (Char.hasProp(ch, Char.Property.INORGANIC)) Buff.prolong(ch, Vertigo.class, debuffTurn());
+					else                                                Buff.prolong(ch, Paralysis.class, debuffTurn());
+
+                    if (((Hero) target).hasTalent(Talent.RESONANT_SENSING))
+                        Buff.append(target, TalismanOfForesight.CharAwareness.class,
+                            6 + 6 * ((Hero) target).pointsInTalent(Talent.RESONANT_SENSING)).charID = ch.id();
 				} else {
                     target.sprite.parent.add(
                         new PulseEffect(target.sprite.center(), DungeonTilemap.tileCenterToWorld(bolt.collisionPos))
                     );
 					Dungeon.level.pressCell(bolt.collisionPos);
+
+                    int repairCost = 5 - ((Hero) target).pointsInTalent(Talent.ELECTRONIC_REPAIR);
+                    if (Dungeon.level.map[bolt.collisionPos] == Terrain.INACTIVE_TRAP
+                            && repairCost < 5 && Dungeon.energy >= repairCost
+                            && Dungeon.level.traps.get(bolt.collisionPos) != null){
+                        Dungeon.level.traps.get(bolt.collisionPos).fix();
+                        Dungeon.energy -= repairCost;
+                        Item.updateQuickslot();
+                    }
+                    CellEmitter.center(bolt.collisionPos).burst(SparkParticle.FACTORY, 4);
 				}
                 Sample.INSTANCE.play(Assets.Sounds.RAY, 0.6f);
 				((Hero)target).spendAndNext(1f);

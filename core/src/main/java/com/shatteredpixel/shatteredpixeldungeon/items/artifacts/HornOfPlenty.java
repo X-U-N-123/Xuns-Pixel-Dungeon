@@ -130,6 +130,20 @@ public class HornOfPlenty extends Artifact {
 			satietyPerCharge /= 3;
 		}
 
+		float timeToEat = Food.TIME_TO_EAT;
+
+		if (Dungeon.hero.hasTalent(Talent.IRON_STOMACH)
+				|| Dungeon.hero.hasTalent(Talent.ENERGIZING_MEAL)
+				|| Dungeon.hero.hasTalent(Talent.MYSTICAL_MEAL)
+				|| Dungeon.hero.hasTalent(Talent.INVIGORATING_MEAL)
+				|| Dungeon.hero.hasTalent(Talent.FOCUSED_MEAL)
+				|| Dungeon.hero.hasTalent(Talent.ENLIGHTENING_MEAL)
+				|| Dungeon.hero.hasTalent(Talent.PREPARING_MEAL)
+				|| Dungeon.hero.hasTalent(Talent.TEARING_MEAL))
+			timeToEat -= 2;
+
+		if (hero.hasTalent(Talent.TOILSOME_MEAL)) Buff.append(hero, Food.ToilsomeMealTracker.class, timeToEat)
+				.foodVal = satietyPerCharge * chargesToUse;
 		Buff.affect(hero, Hunger.class).satisfy(satietyPerCharge * chargesToUse);
 
 		Statistics.foodEaten++;
@@ -143,18 +157,8 @@ public class HornOfPlenty extends Artifact {
 		Sample.INSTANCE.play(Assets.Sounds.EAT);
 		GLog.i( Messages.get(this, "eat") );
 
-		if (Dungeon.hero.hasTalent(Talent.IRON_STOMACH)
-				|| Dungeon.hero.hasTalent(Talent.ENERGIZING_MEAL)
-				|| Dungeon.hero.hasTalent(Talent.MYSTICAL_MEAL)
-				|| Dungeon.hero.hasTalent(Talent.INVIGORATING_MEAL)
-				|| Dungeon.hero.hasTalent(Talent.FOCUSED_MEAL)
-				|| Dungeon.hero.hasTalent(Talent.ENLIGHTENING_MEAL)
-				|| Dungeon.hero.hasTalent(Talent.PREPARING_MEAL)
-                || Dungeon.hero.hasTalent(Talent.TEARING_MEAL)){
-			hero.spend(Food.TIME_TO_EAT - 2);
-		} else {
-			hero.spend(Food.TIME_TO_EAT);
-		}
+		if (Dungeon.hero.hasTalent(Talent.TOILSOME_MEAL)) hero.next();
+		else hero.spend(timeToEat);
 
 		Talent.onFoodEaten(hero, satietyPerCharge * chargesToUse, this);
 

@@ -27,6 +27,8 @@ import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Degrade;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Belongings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
@@ -40,6 +42,7 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndUpgrade;
+import com.watabou.utils.Random;
 
 public class ScrollOfUpgrade extends InventoryScroll {
 	
@@ -83,6 +86,9 @@ public class ScrollOfUpgrade extends InventoryScroll {
 			boolean wasHardened = w.enchantHardened;
 			boolean hadCursedEnchant = w.hasCurseEnchant();
 			boolean hadGoodEnchant = w.hasGoodEnchant();
+			if (Random.Int(4) < curUser.pointsInTalent(Talent.DURABLE_MODIFIES)
+					&& curUser.heroClass != HeroClass.ENGINEER)
+				((Weapon) item).enchantHardened = true;
 
 			item = w.upgrade();
 
@@ -103,6 +109,10 @@ public class ScrollOfUpgrade extends InventoryScroll {
 			boolean wasHardened = a.glyphHardened;
 			boolean hadCursedGlyph = a.hasCurseGlyph();
 			boolean hadGoodGlyph = a.hasGoodGlyph();
+
+			if (Random.Int(4) < curUser.pointsInTalent(Talent.DURABLE_MODIFIES)
+					&& curUser.heroClass != HeroClass.ENGINEER)
+				((Armor) item).glyphHardened = true;
 
 			item = a.upgrade();
 

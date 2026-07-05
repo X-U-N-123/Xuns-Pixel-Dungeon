@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.weapon;
 
+import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -30,6 +31,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Berserk;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Combo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.cleric.AscendedForm;
@@ -39,6 +41,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.HolyWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.Smite;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.KindOfWeapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.LiquidMetal;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfArcana;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfForce;
@@ -71,12 +74,14 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Shocki
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Unstable;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Vampiric;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MultiTool;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RunicBlade;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Scimitar;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundlable;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
@@ -86,6 +91,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 abstract public class Weapon extends KindOfWeapon {
+
+	protected static final String AC_SMELT        = "smelt";
 
 	public float    ACC = 1f;	// Accuracy modifier
 	public float	DLY	= 1f;	// Speed modifier
@@ -197,14 +204,25 @@ abstract public class Weapon extends KindOfWeapon {
 				}
 			}
 		}
+		MultiTool tool = Dungeon.hero.belongings.getItem(MultiTool.class);
+		if (modify == Modification.BATTLE_MODULE){
+			defender.damage(Math.round(damage/2f), BattleModule.class);
+		}
+		if (tool != null && tool.modify == Modification.BATTLE_MODULE){
+			defender.damage(Math.round(damage/2f), BattleModule.class);
+		}
 		if ((modify == Modification.LONG_HANDLE && !Dungeon.level.adjacent(attacker.pos, defender.pos))
 				|| (modify == Modification.CONDUCTIVE && enchantment != null)
 				|| modify == Modification.BATTLE_MODULE
 				|| modify == Modification.PNEUMATICS)
 			decreaseModDurability();
-		if (modify == Modification.BATTLE_MODULE){
-			defender.damage(Math.round(damage/2f), BattleModule.class);
-		}
+
+		if (tool != null && tool != this && Dungeon.hero.hasTalent(Talent.MULTI_MODIFY)
+				&& ((tool.modify == Modification.LONG_HANDLE && !Dungeon.level.adjacent(attacker.pos, defender.pos))
+				|| (tool.modify == Modification.CONDUCTIVE && enchantment != null)
+				|| tool.modify == Modification.BATTLE_MODULE
+				|| tool.modify == Modification.PNEUMATICS))
+			tool.decreaseModDurability();
 		return super.proc(attacker, defender, damage);
 	}
 	
@@ -270,6 +288,34 @@ abstract public class Weapon extends KindOfWeapon {
 	}
 
 	@Override
+	public ArrayList<String> actions(Hero hero) {
+		ArrayList<String> actions = super.actions(hero);
+		if (hero.hasTalent(Talent.APART_ANYTHING) && hero.heroClass != HeroClass.ENGINEER
+				&& !this.unique
+				&& !isEquipped(hero) && cursedKnown && !cursed && !hasCurseEnchant())
+			actions.add(AC_SMELT);
+		return actions;
+	}
+
+	@Override
+	public void execute(Hero hero, String action) {
+		super.execute(hero, action);
+		if (action.equals(AC_SMELT)){
+			LiquidMetal metal = new LiquidMetal();
+			int quantity = (int)Math.pow(2, level()) * (tier + 1) * 3;
+			if (enchantment != null) quantity = Math.round(quantity * 1.5f);
+			if (hero.pointsInTalent(Talent.APART_ANYTHING) >= 2) quantity = Math.round(quantity * 1.67f);
+
+			metal.quantity(quantity);
+			if (!metal.collect()) Dungeon.level.drop(metal, hero.pos).sprite.drop();
+
+			detach(hero.belongings.backpack);
+			hero.sprite.operate(hero.pos);
+			Sample.INSTANCE.play(Assets.Sounds.EVOKE);
+		}
+	}
+
+	@Override
 	public Item identify(boolean byHero) {
 		if (enchantment != null && byHero && Dungeon.hero != null && Dungeon.hero.isAlive()){
 			Catalog.setSeen(enchantment.getClass());
@@ -290,18 +336,25 @@ abstract public class Weapon extends KindOfWeapon {
 	public float accuracyFactor(Char owner, Char target) {
 		
 		int encumbrance = 0;
+
+		float ACC = this.ACC;
 		
 		if( owner instanceof Hero ){
 			encumbrance = STRReq() - ((Hero)owner).STR();
+			if (modify != null && ((Hero) owner).hasTalent(Talent.FAVORITE_WORK))
+				ACC *= 1 + ((Hero) owner).pointsInTalent(Talent.FAVORITE_WORK) / 12f;
 		}
-
-		float ACC = this.ACC;
 
 		if (owner.buff(Wayward.WaywardBuff.class) != null && enchantment instanceof Wayward){
 			ACC /= 5;
 		}
 
 		if (modify == Modification.PNEUMATICS) ACC *= 1.25f;
+		MultiTool tool = Dungeon.hero.belongings.getItem(MultiTool.class);
+		if (tool != null && tool.modify == Modification.PNEUMATICS && tool != this
+				&& Dungeon.hero.hasTalent(Talent.MULTI_MODIFY)){
+			ACC *= 1.25f;
+		}
 
 		return encumbrance > 0 ? (float)(ACC / Math.pow( 1.5, encumbrance )) : ACC;
 	}
@@ -319,7 +372,12 @@ abstract public class Weapon extends KindOfWeapon {
 				delay *= Math.pow( 1.2, encumbrance );
 			}
 		}
-		if (modify == Modification.BATTLE_MODULE) delay *= 1.5f;
+		MultiTool tool = Dungeon.hero.belongings.getItem(MultiTool.class);
+		if (tool != null && tool != this && Dungeon.hero.hasTalent(Talent.MULTI_MODIFY)){
+			if (tool.modify == Modification.BATTLE_MODULE) delay *= 1.25f;
+			if (tool.modify == Modification.PNEUMATICS)    delay *= 0.625f;
+		}
+		if (modify == Modification.BATTLE_MODULE) delay *= 1.25f;
 		if (modify == Modification.PNEUMATICS)    delay *= 0.625f;
 
 		return delay;
@@ -339,6 +397,11 @@ abstract public class Weapon extends KindOfWeapon {
 	public int reachFactor(Char owner) {
 		int reach = RCH;
 		if (modify == Modification.LONG_HANDLE) reach ++;
+		MultiTool tool = Dungeon.hero.belongings.getItem(MultiTool.class);
+		if (tool != null && tool.modify == Modification.LONG_HANDLE && tool != this
+				&& Dungeon.hero.hasTalent(Talent.MULTI_MODIFY)){
+			reach ++;
+		}
 
 		if (owner instanceof Hero) {
 			Combo combo = owner.buff(Combo.class);
@@ -380,6 +443,12 @@ abstract public class Weapon extends KindOfWeapon {
 	protected int STRReq(int tier, int lvl){
 		int baseSTR = 8 + tier * 2;
 		if (modify == Modification.PNEUMATICS) baseSTR ++;
+		MultiTool tool = Dungeon.hero.belongings.getItem(MultiTool.class);
+		if (tool != null && tool.modify == Modification.PNEUMATICS && tool != this
+				&& Dungeon.hero.hasTalent(Talent.MULTI_MODIFY)
+				&& isEquipped(Dungeon.hero)){
+			baseSTR ++;
+		}
 		lvl = Math.max(0, lvl);
 		if (Dungeon.isChallenged(Challenges.EXERCISES)){
 			//in challenge, strength req decreases at +1,+4,+9,+16,etc.
@@ -608,9 +677,16 @@ abstract public class Weapon extends KindOfWeapon {
 					&& ((Hero)attacker).pointsInTalent(Talent.SPIRIT_BLADES) == 4) multi += 0.1f;
 			if (attacker.buff(Talent.StrikingWaveTracker.class) != null
 					&& ((Hero)attacker).pointsInTalent(Talent.STRIKING_WAVE) == 4) multi += 0.2f;
-			if (attacker instanceof Hero
-					&& ((Hero) attacker).belongings.attackingWeapon() != null
-					&& ((Hero) attacker).belongings.attackingWeapon().modify == Modification.CONDUCTIVE) multi *= 2f;
+			if (attacker instanceof Hero && ((Hero) attacker).belongings.attackingWeapon() != null){
+				if (((Hero) attacker).belongings.attackingWeapon().modify == Modification.CONDUCTIVE) multi *= 2f;
+
+				MultiTool tool = ((Hero) attacker).belongings.getItem(MultiTool.class);
+				if (tool != null && tool.modify == Modification.CONDUCTIVE
+						&& ((Hero) attacker).belongings.attackingWeapon() != tool
+						&& Dungeon.hero.hasTalent(Talent.MULTI_MODIFY)){
+					multi *= 2f;
+				}
+			}
 
 			return multi;
 		}

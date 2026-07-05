@@ -45,7 +45,6 @@ public class MissileTower extends Mob {
 		spriteClass = MissileTowerSprite.class;
 
 		EXP = 0;
-		state = WANDERING;
 
 		properties.add(Property.INORGANIC);
 		properties.add(Property.IMMOVABLE);
@@ -54,6 +53,7 @@ public class MissileTower extends Mob {
 		useParry = true;
 
 		WANDERING = new Wandering();
+		state = WANDERING;
 
 		viewDistance = 12;
 	}
@@ -180,7 +180,7 @@ public class MissileTower extends Mob {
 		immunities.add(Sleep.class);
 	}
 
-	protected class Wandering extends Mob.Wandering {
+	private class Wandering extends Mob.Wandering {
 
 		@Override
 		public boolean act( boolean enemyInFOV, boolean justAlerted ) {

@@ -28,6 +28,8 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Bestiary;
+import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
+import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
@@ -115,6 +117,12 @@ public abstract class Trap implements Bundlable {
 	public void disarm(){
 		active = false;
 		Dungeon.level.disarmTrap(pos);
+	}
+
+	public void fix(){
+		active = true;
+		Level.set(pos, Terrain.TRAP);
+		GameScene.updateMap(pos);
 	}
 
 	//returns the depth value the trap should use for determining its power

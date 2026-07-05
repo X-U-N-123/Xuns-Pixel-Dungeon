@@ -65,31 +65,33 @@ public class HeroIcon extends Image {
 	public static final int CRAFTSMAN   = 24;
 
     //abilities
-	public static final int HEROIC_LEAP     = 48;
-	public static final int SHOCKWAVE       = 49;
-	public static final int ENDURE          = 50;
-	public static final int ELEMENTAL_BLAST = 51;
-	public static final int WILD_MAGIC      = 52;
-	public static final int WARP_BEACON     = 53;
-	public static final int SMOKE_BOMB      = 54;
-	public static final int DEATH_MARK      = 55;
-	public static final int SHADOW_CLONE    = 56;
-	public static final int SPECTRAL_BLADES = 57;
-	public static final int NATURES_POWER   = 58;
-	public static final int SPIRIT_HAWK     = 59;
-	public static final int CHALLENGE       = 60;
-	public static final int ELEMENTAL_STRIKE= 61;
-	public static final int FEINT           = 62;
-	public static final int ASCENDED_FORM   = 63;
-	public static final int TRINITY         = 64;
-	public static final int POWER_OF_MANY   = 65;
-	public static final int RATMOGRIFY      = 66;
-	public static final int OPTIMAL_CAMOU   = 67;
-	public static final int SANDSTORM       = 68;
-	public static final int UNDERPASS       = 69;
-	public static final int LIFELOAN        = 70;
-	public static final int EVILUNFOLD      = 71;
-    public static final int GHOSTWANDER     = 72;
+	public static final int HEROIC_LEAP     = 40;
+	public static final int SHOCKWAVE       = 41;
+	public static final int ENDURE          = 42;
+	public static final int ELEMENTAL_BLAST = 43;
+	public static final int WILD_MAGIC      = 44;
+	public static final int WARP_BEACON     = 45;
+	public static final int SMOKE_BOMB      = 46;
+	public static final int DEATH_MARK      = 47;
+	public static final int SHADOW_CLONE    = 48;
+	public static final int SPECTRAL_BLADES = 49;
+	public static final int NATURES_POWER   = 50;
+	public static final int SPIRIT_HAWK     = 51;
+	public static final int CHALLENGE       = 52;
+	public static final int ELEMENTAL_STRIKE= 53;
+	public static final int FEINT           = 54;
+	public static final int ASCENDED_FORM   = 55;
+	public static final int TRINITY         = 56;
+	public static final int POWER_OF_MANY   = 57;
+	public static final int OPTIMAL_CAMOU   = 58;
+	public static final int SANDSTORM       = 59;
+	public static final int UNDERPASS       = 60;
+	public static final int LIFELOAN        = 61;
+	public static final int EVILUNFOLD      = 62;
+    public static final int GHOSTWANDER     = 63;
+	public static final int FORCE_FIELD     = 64;
+
+	public static final int RATMOGRIFY      = 79;
 
 	//cleric spells
 	public static final int GUIDING_LIGHT   = 80;

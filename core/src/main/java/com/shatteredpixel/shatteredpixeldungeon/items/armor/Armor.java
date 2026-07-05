@@ -28,6 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Momentum;
@@ -35,6 +36,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.engineer.ForceField;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.rogue.ShadowClone;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.AuraOfProtection;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.BodyForm;
@@ -42,6 +44,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.HolyWard;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.LifeLinkSpell;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.PrismaticImage;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
+import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Transmuting;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.BlastParticle;
@@ -49,6 +52,8 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SmokeParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal;
 import com.shatteredpixel.shatteredpixeldungeon.items.EquipableItem;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.LiquidMetal;
+import com.shatteredpixel.shatteredpixeldungeon.items.MetalPart;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.curses.AntiEntropy;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.curses.Bulk;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.curses.Corrosion;
@@ -78,10 +83,12 @@ import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfArcana;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ParchmentScrap;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ShardOfOblivion;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MultiTool;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
@@ -101,6 +108,7 @@ import java.util.Arrays;
 public class Armor extends EquipableItem {
 
 	protected static final String AC_DETACH       = "DETACH";
+	protected static final String AC_SMELT        = "smelt";
 	
 	public enum Augment {
 		EVASION (2f , -1f),
@@ -238,6 +246,10 @@ public class Armor extends EquipableItem {
 	public ArrayList<String> actions(Hero hero) {
 		ArrayList<String> actions = super.actions(hero);
 		if (seal != null) actions.add(AC_DETACH);
+		else if (hero.hasTalent(Talent.APART_ANYTHING) && hero.heroClass != HeroClass.ENGINEER
+				&& !(this instanceof ClassArmor)
+				&& !isEquipped(hero) && cursedKnown && !cursed && !hasCurseGlyph())
+			actions.add(AC_SMELT);
 		return actions;
 	}
 
@@ -254,6 +266,19 @@ public class Armor extends EquipableItem {
 				Dungeon.level.drop(detaching, hero.pos);
 			}
 			updateQuickslot();
+		}
+		if (action.equals(AC_SMELT)){
+			LiquidMetal metal = new LiquidMetal();
+			int quantity = (int)Math.pow(2, level()) * (tier + 1) * 3;
+			if (glyph != null) quantity = Math.round(quantity * 1.5f);
+			if (hero.pointsInTalent(Talent.APART_ANYTHING) >= 2) quantity = Math.round(quantity * 1.67f);
+
+			metal.quantity(quantity);
+			if (!metal.collect()) Dungeon.level.drop(metal, hero.pos).sprite.drop();
+
+			detach(hero.belongings.backpack);
+			hero.sprite.operate(hero.pos);
+			Sample.INSTANCE.play(Assets.Sounds.EVOKE);
 		}
 	}
 
@@ -476,6 +501,11 @@ public class Armor extends EquipableItem {
 		int max = DRMax(lvl);
 		if (modify == Modification.WEAKNESS_ENHANCE)
 			lvl += Math.round((max - lvl) * 0.4f);
+		MultiTool tool = Dungeon.hero.belongings.getItem(MultiTool.class);
+		if (tool != null && tool.armorModify == Modification.WEAKNESS_ENHANCE
+				&& Dungeon.hero.pointsInTalent(Talent.MULTI_MODIFY) >= 2){
+			lvl += Math.round((max - lvl) * 0.4f);
+		}
 		return Math.min(lvl, max);
 	}
 	
@@ -493,9 +523,16 @@ public class Armor extends EquipableItem {
 			if (momentum != null){
 				evasion += momentum.evasionBonus(((Hero) owner).lvl, Math.max(0, -aEnc));
 			}
+			if (modify != null && ((Hero) owner).hasTalent(Talent.FAVORITE_WORK))
+				evasion *= 1 + ((Hero) owner).pointsInTalent(Talent.FAVORITE_WORK) / 12f;
 		}
 
 		if (modify == Modification.DEFLECTION) evasion *= 1.5f;
+		MultiTool tool = Dungeon.hero.belongings.getItem(MultiTool.class);
+		if (tool != null && tool.armorModify == Modification.DEFLECTION
+				&& Dungeon.hero.pointsInTalent(Talent.MULTI_MODIFY) >= 2){
+			evasion *= 1.5f;
+		}
 		
 		return evasion + augment.evasionFactor(buffedLvl());
 	}
@@ -508,6 +545,11 @@ public class Armor extends EquipableItem {
 		}
 
 		if (modify == Modification.EXOSKELETON) speed *= 1.25f;
+		MultiTool tool = Dungeon.hero.belongings.getItem(MultiTool.class);
+		if (tool != null && tool.armorModify == Modification.EXOSKELETON
+				&& Dungeon.hero.pointsInTalent(Talent.MULTI_MODIFY) >= 2){
+			speed *= 1.25f;
+		}
 		
 		return speed;
 		
@@ -632,32 +674,48 @@ public class Armor extends EquipableItem {
 		}
 
 		if (modify == Modification.EXPLOSIVE){
-			for (int i : PathFinder.NEIGHBOURS8) {
-				Char ch = Actor.findChar(defender.pos + i);
-				if (ch != null && ch.alignment != defender.alignment){
-					ch.damage(tier * 2 + Random.IntRange(0, level() * 5), Explosive.class);
-					//trace a ballistica to our target (which will also extend past them)
-					Ballistica trajectory = new Ballistica(defender.pos, ch.pos, Ballistica.STOP_TARGET);
-					//trim it to just be the part that goes past them
-					trajectory = new Ballistica(trajectory.collisionPos, trajectory.path.get(trajectory.path.size() - 1), Ballistica.PROJECTILE);
-					//knock them back along that ballistica
-					WandOfBlastWave.throwChar(ch, trajectory, 2, false, true, defender);
-				}
-			}
-			if (Dungeon.level.heroFOV[defender.pos]){
-				Sample.INSTANCE.play(Assets.Sounds.BLAST);
-				CellEmitter.center(defender.pos).burst(BlastParticle.FACTORY, 20);
-				CellEmitter.get(defender.pos).burst(SmokeParticle.FACTORY, 5);
-			}
+			explosiveProc(defender);
+		}
+		MultiTool tool = Dungeon.hero.belongings.getItem(MultiTool.class);
+		if (tool != null && tool.armorModify == Modification.EXPLOSIVE
+				&& Dungeon.hero.pointsInTalent(Talent.MULTI_MODIFY) >= 2){
+			explosiveProc(defender);
 		}
 		if (modify == Modification.EXPLOSIVE
 				|| modify == Modification.WEAKNESS_ENHANCE
 				|| modify == Modification.EXOSKELETON)
 			decreaseModDurability();
+
+		if (tool != null && Dungeon.hero.pointsInTalent(Talent.MULTI_MODIFY) >= 2
+				&& (modify == Modification.EXPLOSIVE
+				|| modify == Modification.WEAKNESS_ENHANCE
+				|| modify == Modification.EXOSKELETON)){
+			tool.decreaseArmorModDura();
+		}
 		
 		return damage;
 	}
-	
+
+	private void explosiveProc(Char defender) {
+		for (int i : PathFinder.NEIGHBOURS8) {
+			Char ch = Actor.findChar(defender.pos + i);
+			if (ch != null && ch.alignment != defender.alignment){
+				ch.damage(tier * 2 + Random.IntRange(0, level() * 5), Explosive.class);
+				//trace a ballistica to our target (which will also extend past them)
+				Ballistica trajectory = new Ballistica(defender.pos, ch.pos, Ballistica.STOP_TARGET);
+				//trim it to just be the part that goes past them
+				trajectory = new Ballistica(trajectory.collisionPos, trajectory.path.get(trajectory.path.size() - 1), Ballistica.PROJECTILE);
+				//knock them back along that ballistica
+				WandOfBlastWave.throwChar(ch, trajectory, 2, false, true, defender);
+			}
+		}
+		if (Dungeon.level.heroFOV[defender.pos]){
+			Sample.INSTANCE.play(Assets.Sounds.BLAST);
+			CellEmitter.center(defender.pos).burst(BlastParticle.FACTORY, 20);
+			CellEmitter.get(defender.pos).burst(SmokeParticle.FACTORY, 5);
+		}
+	}
+
 	@Override
 	public void onHeroGainExp(float levelPercent, Hero hero) {
 		levelPercent *= Talent.itemIDSpeedFactor(hero, this);
@@ -802,6 +860,12 @@ public class Armor extends EquipableItem {
 		int baseSTR = 8 + tier * 2;
 		if (modify == Modification.EXOSKELETON) baseSTR --;
 
+		MultiTool tool = Dungeon.hero.belongings.getItem(MultiTool.class);
+		if (tool != null && tool.armorModify == Modification.WEAKNESS_ENHANCE
+				&& Dungeon.hero.pointsInTalent(Talent.MULTI_MODIFY) >= 2){
+			baseSTR --;
+		}
+
 		if (Dungeon.isChallenged(Challenges.EXERCISES)){
 			//in challenge, strength req decreases at +1,+4,+9,+16,etc.
 			return baseSTR - (int)Math.sqrt(lvl);
@@ -940,6 +1004,12 @@ public class Armor extends EquipableItem {
 				if (((Hero) defender).belongings.armor() != null
 						&& ((Hero) defender).belongings.armor().modify == Modification.CONDUCTIVE) multi *= 2f;
 
+				MultiTool tool = Dungeon.hero.belongings.getItem(MultiTool.class);
+				if (tool != null && tool.armorModify == Modification.CONDUCTIVE
+						&& Dungeon.hero.pointsInTalent(Talent.MULTI_MODIFY) >= 2){
+					multi *= 2f;
+				}
+
 				if (((Hero) defender).hasTalent(Talent.BARBED_WIRE) && ((Hero) defender).heroClass != HeroClass.EXPLORER)
 					multi *= 1f + 0.1f * ((Hero) defender).pointsInTalent(Talent.BARBED_WIRE);
 			}
@@ -1048,21 +1118,44 @@ public class Armor extends EquipableItem {
 	}
 
 	public void decreaseModDurability(){
-		modDurability = Math.max(modDurability - 1, 0);
+		if (Dungeon.hero.buff(ForceField.Field.class) == null
+				|| Random.Int(4) >= Dungeon.hero.pointsInTalent(Talent.REPAIR_ABILITY))
+			modDurability = Math.max(modDurability - 1, 0);
 		if (modDurability <= 0) modify(null);
 	}
 
 	public void modify(Modification mod){
+		boolean activeRepair = modify == mod && Dungeon.hero.hasTalent(Talent.ACTIVE_REPAIR);
 		modify = mod;
 		if (mod == null){
 			modDurability = 0;
 			GLog.n(Messages.get(this, "modify_break"));
+			float chance = Dungeon.hero.pointsInTalent(Talent.PART_RECYCLING) / 2f;
+			while (Random.Float() < chance){
+				MetalPart part = new MetalPart();
+				if (!part.collect()) Dungeon.level.drop(part, Dungeon.hero.pos).sprite.drop();
+				chance --;
+			}
+			if (Dungeon.hero.pointsInTalent(Talent.KINETIC_FRAGMENT) >= 2){
+				Buff.affect(Dungeon.hero, Barrier.class).setShield(Dungeon.hero.lvl);
+				Dungeon.hero.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(Dungeon.hero.lvl), FloatingText.SHIELDING);
+			}
 		} else {
-			modDurability = mod.maxDurability();
+			if (!activeRepair)
+				modDurability = 0;
+
+			float duraToInc = mod.maxDurability() * (1 + 0.15f * Dungeon.hero.pointsInTalent(Talent.DURABLE_MODIFIES));
+			if (Dungeon.hero.pointsInTalent(Talent.ACTIVE_REPAIR) >= 2 && activeRepair) duraToInc *= 1.2f;
+			modDurability += Math.round(duraToInc);
 
 			Sample.INSTANCE.play(Assets.Sounds.UNLOCK);
 			Transmuting.show(curUser, this, this);
 			curUser.sprite.operate(curUser.pos);
+
+			if (Dungeon.hero.pointsInTalent(Talent.ACTIVE_REPAIR) >= 3 && activeRepair){
+				MetalPart part = new MetalPart();
+				if (!part.collect()) Dungeon.level.drop(part, Dungeon.hero.pos).sprite.drop();
+			}
 		}
 	}
 
