@@ -25,6 +25,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Wraith;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Shopkeeper;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
@@ -36,6 +37,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.ChargrilledMeat;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.FrozenCarpaccio;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.MysteryMeat;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.Tribute;
 import com.shatteredpixel.shatteredpixeldungeon.items.journal.DocumentPage;
 import com.shatteredpixel.shatteredpixeldungeon.items.journal.Guidebook;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
@@ -85,9 +87,19 @@ public class Heap implements Bundlable {
 		switch (type) {
 		case TOMB:
 			Wraith.spawnAround( hero.pos );
+			if (Dungeon.LimitedDrops.ANCESTRAL.count < 1 + Dungeon.hero.pointsInTalent(Talent.ANCESTRAL_TRIBUTE)
+					&& Dungeon.hero.hasTalent(Talent.ANCESTRAL_TRIBUTE)){
+				items.add(new Tribute());
+				Dungeon.LimitedDrops.ANCESTRAL.count ++;
+			}
 			break;
 		case REMAINS:
 		case SKELETON:
+			if (Dungeon.LimitedDrops.ANCESTRAL.count < 1 + Dungeon.hero.pointsInTalent(Talent.ANCESTRAL_TRIBUTE)
+					&& Dungeon.hero.hasTalent(Talent.ANCESTRAL_TRIBUTE)){
+				items.add(new Tribute());
+				Dungeon.LimitedDrops.ANCESTRAL.count ++;
+			}
 			CellEmitter.center( pos ).start(Speck.factory(Speck.RATTLE), 0.1f, 3);
 			break;
 		default:

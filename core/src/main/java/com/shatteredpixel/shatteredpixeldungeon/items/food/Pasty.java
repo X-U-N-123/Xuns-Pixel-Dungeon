@@ -155,7 +155,7 @@ public class Pasty extends Food {
 				break;
 			case DRAGON_BOAT:
 				// bless hero for 40 turns
-				Buff.affect(hero, Bless.class, 40f);
+				Buff.affect(hero, Bless.class, 10f);
 				new Flare( 6, 32 ).color(0xFFFF00, true).show( hero.sprite, 2f );
 				if (Random.Float() < 0.5f){
 					GLog.i( Messages.get(this, "sweet") );
@@ -192,7 +192,7 @@ public class Pasty extends Food {
 				hero.earnExp(expToGive, PotionOfExperience.class);
 				break;
 			case MID_AUTUMN:
-				Buff.affect(hero, Invisibility.class, 10f);
+				Buff.affect(hero, Invisibility.class, 5f);
 				break;
 			case HALLOWEEN:
 				//heals for 5% max hp, min of 3

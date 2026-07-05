@@ -75,7 +75,7 @@ public class Chill extends FlavourBuff {
 	public void detach() {
 		super.detach();
 		if (target instanceof Hero && ((Hero) target).heroClass == HeroClass.WRAITH)
-			Buff.affect(target, Adrenaline.class,
+			Buff.affect(target, FrostImbue.class,
 					5 * (1 + 0.2f*((Hero) target).pointsInTalent(Talent.WICKED_GROWTH)));
 	}
 }

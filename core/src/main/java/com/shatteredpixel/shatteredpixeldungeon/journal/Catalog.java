@@ -74,6 +74,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.food.PhantomMeat;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.SmallRation;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.StewedMeat;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.SupplyRation;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.Tribute;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.CrystalKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.GoldenKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.IronKey;
@@ -265,9 +266,10 @@ public enum Catalog {
 
 		STONES.addItems(Generator.Category.STONE.classes);
 
-		FOOD.addItems( Food.class, Pasty.class, MysteryMeat.class, ChargrilledMeat.class,
-				StewedMeat.class, FrozenCarpaccio.class, SmallRation.class, Berry.class,
-				SupplyRation.class, Blandfruit.class, PhantomMeat.class, MeatPie.class );
+		FOOD.addItems( Food.class, Pasty.class,
+				MysteryMeat.class, ChargrilledMeat.class, StewedMeat.class, FrozenCarpaccio.class,
+				SmallRation.class, Berry.class, SupplyRation.class, Tribute.class,
+				Blandfruit.class, PhantomMeat.class, MeatPie.class );
 
 		EXOTIC_POTIONS.addItems(ExoticPotion.exoToReg.keySet().toArray(new Class[0]));
 

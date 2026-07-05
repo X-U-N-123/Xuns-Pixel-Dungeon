@@ -29,7 +29,6 @@ import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AcidRain;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Adrenaline;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ArtifactRecharge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
@@ -1174,10 +1173,6 @@ public enum Talent {
             } else Buff.affect(Dungeon.hero, Swiftthistle.TimeBubble.class)
                     .reset(hero.pointsInTalent(PREPARING_MEAL) - 1); // effectively 2/3 turn of time bubble
 		}
-
-        if (hero.hasTalent(ANCESTRAL_TRIBUTE))
-            Buff.affect(hero, Adrenaline.class, 2 * hero.pointsInTalent(ANCESTRAL_TRIBUTE) + hero.cooldown() + 0.5f);
-		// effectively 3/5 turn of adrenaline
 
         if (hero.hasTalent(TEARING_MEAL)) Buff.affect(hero, TearingMealTracker.class);
 	}
