@@ -161,7 +161,7 @@ public class Pulse extends Buff implements ActionIndicator.Action {
                     return;
                 }
 
-                //CD += 51;
+                CD += 51;
                 ActionIndicator.refresh();
                 target.sprite.attack(cell);
 

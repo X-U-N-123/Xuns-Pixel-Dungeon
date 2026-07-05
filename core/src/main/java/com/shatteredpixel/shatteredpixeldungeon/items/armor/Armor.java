@@ -501,10 +501,12 @@ public class Armor extends EquipableItem {
 		int max = DRMax(lvl);
 		if (modify == Modification.WEAKNESS_ENHANCE)
 			lvl += Math.round((max - lvl) * 0.4f);
-		MultiTool tool = Dungeon.hero.belongings.getItem(MultiTool.class);
-		if (tool != null && tool.armorModify == Modification.WEAKNESS_ENHANCE
-				&& Dungeon.hero.pointsInTalent(Talent.MULTI_MODIFY) >= 2){
-			lvl += Math.round((max - lvl) * 0.4f);
+		if (Dungeon.hero != null){
+			MultiTool tool = Dungeon.hero.belongings.getItem(MultiTool.class);
+			if (tool != null && tool.armorModify == Modification.WEAKNESS_ENHANCE
+					&& Dungeon.hero.pointsInTalent(Talent.MULTI_MODIFY) >= 2) {
+				lvl += Math.round((max - lvl) * 0.4f);
+			}
 		}
 		return Math.min(lvl, max);
 	}
@@ -860,10 +862,12 @@ public class Armor extends EquipableItem {
 		int baseSTR = 8 + tier * 2;
 		if (modify == Modification.EXOSKELETON) baseSTR --;
 
-		MultiTool tool = Dungeon.hero.belongings.getItem(MultiTool.class);
-		if (tool != null && tool.armorModify == Modification.WEAKNESS_ENHANCE
-				&& Dungeon.hero.pointsInTalent(Talent.MULTI_MODIFY) >= 2){
-			baseSTR --;
+		if (Dungeon.hero != null){
+			MultiTool tool = Dungeon.hero.belongings.getItem(MultiTool.class);
+			if (tool != null && tool.armorModify == Modification.WEAKNESS_ENHANCE
+					&& Dungeon.hero.pointsInTalent(Talent.MULTI_MODIFY) >= 2) {
+				baseSTR--;
+			}
 		}
 
 		if (Dungeon.isChallenged(Challenges.EXERCISES)){

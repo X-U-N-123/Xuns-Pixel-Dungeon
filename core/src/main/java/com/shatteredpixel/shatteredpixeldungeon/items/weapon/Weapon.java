@@ -443,11 +443,13 @@ abstract public class Weapon extends KindOfWeapon {
 	protected int STRReq(int tier, int lvl){
 		int baseSTR = 8 + tier * 2;
 		if (modify == Modification.PNEUMATICS) baseSTR ++;
-		MultiTool tool = Dungeon.hero.belongings.getItem(MultiTool.class);
-		if (tool != null && tool.modify == Modification.PNEUMATICS && tool != this
-				&& Dungeon.hero.hasTalent(Talent.MULTI_MODIFY)
-				&& isEquipped(Dungeon.hero)){
-			baseSTR ++;
+		if (Dungeon.hero != null){
+			MultiTool tool = Dungeon.hero.belongings.getItem(MultiTool.class);
+			if (tool != null && tool.modify == Modification.PNEUMATICS && tool != this
+					&& Dungeon.hero.hasTalent(Talent.MULTI_MODIFY)
+					&& isEquipped(Dungeon.hero)) {
+				baseSTR++;
+			}
 		}
 		lvl = Math.max(0, lvl);
 		if (Dungeon.isChallenged(Challenges.EXERCISES)){
