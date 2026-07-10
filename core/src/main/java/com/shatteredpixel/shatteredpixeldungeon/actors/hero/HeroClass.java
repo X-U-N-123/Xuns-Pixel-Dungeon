@@ -127,7 +127,7 @@ public enum HeroClass {
 	CLERIC( HeroSubClass.PRIEST, HeroSubClass.PALADIN, HeroSubClass.PREACHER),
 	EXPLORER( HeroSubClass.WAVECHASER, HeroSubClass.TRAPPER, HeroSubClass.ROCKSY),
     WRAITH( HeroSubClass.INCUBUS, HeroSubClass.PLAGUEGOD, HeroSubClass.SOULHANDLER ),
-	ENGINEER( HeroSubClass.CRAFTSMAN);
+	ENGINEER( HeroSubClass.CRAFTSMAN, HeroSubClass.HACKER);
 
 	private HeroSubClass[] subClasses;
 

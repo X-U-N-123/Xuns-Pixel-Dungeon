@@ -25,8 +25,12 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Electricity;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.effects.PulseEffect;
@@ -34,6 +38,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SparkParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Viscosity;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TalismanOfForesight;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfSirensSong;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MultiTool;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
@@ -46,19 +51,22 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ActionIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.HeroIcon;
+import com.shatteredpixel.shatteredpixeldungeon.ui.InventoryPane;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndInfoBuff;
 import com.watabou.noosa.BitmapText;
 import com.watabou.noosa.Visual;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
+import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
+
+import java.util.ArrayList;
 
 public class Pulse extends Buff implements ActionIndicator.Action {
 
     {
         revivePersists = true;
-
     }
 
     private int CD = 0;
@@ -144,6 +152,7 @@ public class Pulse extends Buff implements ActionIndicator.Action {
             GameScene.show(new WndInfoBuff(this));
             return;
         }
+        InventoryPane.useTargeting();
 
         GameScene.selectCell(new CellSelector.Listener() {
             @Override
@@ -155,7 +164,12 @@ public class Pulse extends Buff implements ActionIndicator.Action {
             public void onSelect(Integer cell) {
                 if (cell == null) return;
 
-                Ballistica bolt = new Ballistica(target.pos, cell, Ballistica.PROJECTILE);
+                int properties = Ballistica.STOP_TARGET | Ballistica.STOP_SOLID;
+                if (((Hero)target).hasTalent(Talent.DIFFRACTION))
+                    properties |= Ballistica.IGNORE_SOFT_SOLID;
+                if (((Hero)target).pointsInTalent(Talent.DIFFRACTION) < 2)
+                    properties |= Ballistica.STOP_CHARS;
+                Ballistica bolt = new Ballistica(target.pos, cell, properties);
                 if (bolt.collisionPos == target.pos){
                     GLog.w(Messages.get(Wand.class, "self_target"));
                     return;
@@ -171,11 +185,20 @@ public class Pulse extends Buff implements ActionIndicator.Action {
                     target.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(shield), FloatingText.SHIELDING);
                 }
 
-				Char ch = Actor.findChar(bolt.collisionPos);
-				if (ch != null){
-                    target.sprite.parent.add(
-                        new PulseEffect(target.sprite.center(), ch.sprite.center())
-                    );
+                ArrayList<Integer> affected = new ArrayList<>();
+				affected.add(bolt.collisionPos);
+                if (((Hero) target).subClass == HeroSubClass.HACKER)
+                    for (int g : PathFinder.NEIGHBOURS8)
+                        affected.add(bolt.collisionPos + g);
+                if (((Hero)target).pointsInTalent(Talent.DIFFRACTION) >= 3)
+                    for (int h : bolt.path)
+                        if (affected.contains(h)) break;
+                        else affected.add(h);
+
+                Char ch;
+				for (int i : affected){
+                    ch = Actor.findChar(i);
+                    if (ch == null || ch.alignment == Char.Alignment.ALLY) continue;
 
 					float damage = Random.NormalFloat(min(), max());
 
@@ -187,24 +210,40 @@ public class Pulse extends Buff implements ActionIndicator.Action {
 					}
 					ch.sprite.flash();
 
-					ch.damage(Math.round(damage), Pulse.this);
+                    float random = Random.Float();
+                    if (((Hero)target).hasTalent(Talent.CHARISMA)) random /= 1.75f;
 
-                    if (((Hero)target).hasTalent(Talent.IONIZING_RADIATION)){
-                        Viscosity.DeferedDamage deferred = Buff.affect(ch, Viscosity.DeferedDamage.class);
-                        deferred.extend(damage * ((Hero)target).pointsInTalent(Talent.IONIZING_RADIATION) / 2f);
+                    if (random < 0.15f && ((Hero)target).subClass == HeroSubClass.HACKER
+                            && Char.hasProp(ch, Char.Property.INORGANIC)){
+                        for (Buff buff : ch.buffs()) if (buff.type == Buff.buffType.NEGATIVE) buff.detach();
+                        AllyBuff.affectAndLoot((Mob)ch, (Hero)target, ScrollOfSirensSong.Enthralled.class);
+
+                    } else if (random < ((Hero)target).pointsInTalent(Talent.DARK_MAGIC) / 15f
+                            && (Char.hasProp(ch, Char.Property.UNDEAD) || Char.hasProp(ch, Char.Property.DEMONIC))) {
+                        for (Buff buff : ch.buffs()) if (buff.type == Buff.buffType.NEGATIVE) buff.detach();
+                        AllyBuff.affectAndLoot((Mob)ch, (Hero)target, ScrollOfSirensSong.Enthralled.class);
+
+                    } else {
+                        ch.damage(Math.round(damage), Pulse.this);
+
+                        if (((Hero) target).hasTalent(Talent.IONIZING_RADIATION)) {
+                            Viscosity.DeferedDamage deferred = Buff.affect(ch, Viscosity.DeferedDamage.class);
+                            deferred.extend(damage * ((Hero) target).pointsInTalent(Talent.IONIZING_RADIATION) / 2f);
+                        }
+
+                        if (((Hero) target).subClass == HeroSubClass.HACKER)Buff.prolong(ch, Hex.class, debuffTurn());
+					    if (Char.hasProp(ch, Char.Property.MECHANICAL))     Buff.prolong(ch, Amok.class, debuffTurn());
+					    else if (Char.hasProp(ch, Char.Property.INORGANIC)) Buff.prolong(ch, Vertigo.class, debuffTurn());
+					    else                                                Buff.prolong(ch, Paralysis.class, debuffTurn());
                     }
-
-					if (Char.hasProp(ch, Char.Property.MECHANICAL))     Buff.prolong(ch, Amok.class, debuffTurn());
-					else if (Char.hasProp(ch, Char.Property.INORGANIC)) Buff.prolong(ch, Vertigo.class, debuffTurn());
-					else                                                Buff.prolong(ch, Paralysis.class, debuffTurn());
+                    if (((Hero)target).hasTalent(Talent.BACKFIRE))
+                        CD = Math.max(CD - (1 + 2 * ((Hero)target).pointsInTalent(Talent.BACKFIRE)), 0);
 
                     if (((Hero) target).hasTalent(Talent.RESONANT_SENSING))
                         Buff.append(target, TalismanOfForesight.CharAwareness.class,
                             6 + 6 * ((Hero) target).pointsInTalent(Talent.RESONANT_SENSING)).charID = ch.id();
-				} else {
-                    target.sprite.parent.add(
-                        new PulseEffect(target.sprite.center(), DungeonTilemap.tileCenterToWorld(bolt.collisionPos))
-                    );
+				}
+                if (Actor.findChar(bolt.collisionPos) == null){
 					Dungeon.level.pressCell(bolt.collisionPos);
 
                     int repairCost = 5 - ((Hero) target).pointsInTalent(Talent.ELECTRONIC_REPAIR);
@@ -217,6 +256,17 @@ public class Pulse extends Buff implements ActionIndicator.Action {
                     }
                     CellEmitter.center(bolt.collisionPos).burst(SparkParticle.FACTORY, 4);
 				}
+                target.sprite.parent.add(
+                        new PulseEffect(target.sprite.center(), DungeonTilemap.tileCenterToWorld(bolt.collisionPos))
+                );
+
+                if (((Hero)target).hasTalent(Talent.ELECTRIC_CHARGE))
+                    for (int i : PathFinder.NEIGHBOURS9) {
+                        if (!Dungeon.level.solid[bolt.collisionPos + i])
+                            GameScene.add(Blob.seed(bolt.collisionPos + i,
+                                    1 + ((Hero)target).pointsInTalent(Talent.ELECTRIC_CHARGE), Electricity.class));
+                    }
+
                 Sample.INSTANCE.play(Assets.Sounds.RAY, 0.6f);
 				((Hero)target).spendAndNext(1f);
 			}

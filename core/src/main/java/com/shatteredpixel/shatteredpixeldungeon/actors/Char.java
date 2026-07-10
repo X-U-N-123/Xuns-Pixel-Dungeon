@@ -151,6 +151,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRetributio
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfPsionicBlast;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfSirensSong;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAggression;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.FerretTuft;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
@@ -1265,6 +1266,17 @@ public abstract class Char extends Actor {
 	}
 	
 	public void die( Object src ) {
+		if (hero.pointsInTalent(Talent.CHARISMA) >= 2 && this instanceof Mob && alignment == Alignment.ENEMY
+				&& src instanceof Char && ((Char) src).buff(ScrollOfSirensSong.Enthralled.class) != null
+				&& Random.Int(5) == 0 && !isImmune(ScrollOfSirensSong.Enthralled.class)){
+
+			for (Buff buff : buffs()) if (buff.type == Buff.buffType.NEGATIVE) buff.detach();
+
+			AllyBuff.affectAndLoot((Mob)this, hero, ScrollOfSirensSong.Enthralled.class);
+			HP = HT;
+			sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(HT), FloatingText.HEALING);
+			return;
+		}
         BarricadeCurse.BarricadeTracker tracker = buff(BarricadeCurse.BarricadeTracker.class);
         Barricade barricade = null;
         if (tracker != null && !(this instanceof Barricade)){
@@ -1297,7 +1309,8 @@ public abstract class Char extends Actor {
 
 		int point = hero.pointsInTalent(Talent.ORGANIC_FERTILIZER);
 		if (point > 0 && Dungeon.level.heroFOV[pos] && alignment != Alignment.ALLY){
-			if (Dungeon.level.map[pos] == Terrain.EMBERS || Dungeon.level.map[pos] == Terrain.EMPTY || Dungeon.level.map[pos] == Terrain.EMPTY_DECO || Dungeon.level.map[pos] == Terrain.WATER){
+			if (Dungeon.level.map[pos] == Terrain.EMBERS || Dungeon.level.map[pos] == Terrain.EMPTY
+					|| Dungeon.level.map[pos] == Terrain.EMPTY_DECO || Dungeon.level.map[pos] == Terrain.WATER){
 				Level.set(pos, Terrain.GRASS);//+1
 				if (point >= 3) {
 					OrganicGrass(pos);//+3

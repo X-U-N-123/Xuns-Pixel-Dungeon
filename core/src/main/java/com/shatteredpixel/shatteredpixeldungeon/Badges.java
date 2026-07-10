@@ -219,6 +219,7 @@ public class Badges {
 		BOSS_SLAIN_3_PLAGUEGOD,
 		BOSS_SLAIN_3_SOULHANDLER,
 		BOSS_SLAIN_3_CRAFTSMAN,
+		BOSS_SLAIN_3_HACKER,
 		BOSS_SLAIN_3_ALL_SUBCLASSES ( 104, BadgeType.GLOBAL ),
 		BOSS_CHALLENGE_3            ( 105 ),
 		BOSS_CHALLENGE_4            ( 106 ),
@@ -889,6 +890,7 @@ public class Badges {
 		thirdBossSubclassBadges.put(HeroSubClass.PLAGUEGOD, Badge.BOSS_SLAIN_3_PLAGUEGOD);
 		thirdBossSubclassBadges.put(HeroSubClass.SOULHANDLER, Badge.BOSS_SLAIN_3_SOULHANDLER);
 		thirdBossSubclassBadges.put(HeroSubClass.CRAFTSMAN, Badge.BOSS_SLAIN_3_CRAFTSMAN);
+		thirdBossSubclassBadges.put(HeroSubClass.HACKER, Badge.BOSS_SLAIN_3_HACKER);
 	}
 	
 	public static void validateBossSlain() {

@@ -71,7 +71,6 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.SpellSprite;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.FlameParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.LeafParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal;
-import com.shatteredpixel.shatteredpixeldungeon.items.EnergyCrystal;
 import com.shatteredpixel.shatteredpixeldungeon.items.EquipableItem;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
@@ -85,6 +84,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfIdentify;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMagicMapping;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRecharging;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfSirensSong;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.Runestone;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfIntuition;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ShardOfOblivion;
@@ -286,6 +286,8 @@ public enum Talent {
 	DURABLE_MODIFIES(395, 3), ELECTRONIC_REPAIR(396, 3), IONIZING_RADIATION(397, 3),
 	//Craftsman T3
 	ACTIVE_REPAIR(398, 3), MULTI_MODIFY(399, 3), PART_RECYCLING(400, 3), FAVORITE_WORK(401, 3), KINETIC_FRAGMENT(402, 3),
+	//Hacker T3
+	BACKFIRE(403, 3), DIFFRACTION(404, 3), ELECTRIC_CHARGE(405, 3), DARK_MAGIC(406, 3), CHARISMA(407, 3),
 	//ForceField T4
 	MECHANICAL_REFINEMENT(413, 4), MOMENTUM_TRANSFORM(414, 4), ACTIVE_DEFENSE(415, 4), REPAIR_ABILITY(416, 4),
 
@@ -854,8 +856,13 @@ public enum Talent {
             Buff.affect(hero, MagicImmune.class, 1 + hero.pointsInTalent(TESTED_ANTIMAGIC));
         }
 		if (hero.hasTalent(TESTED_MAINTENANCE)){
-			if (hero.heroClass != HeroClass.ENGINEER)
-				new EnergyCrystal(1 + hero.pointsInTalent(TESTED_MAINTENANCE)).collect();
+			if (hero.heroClass != HeroClass.ENGINEER) {
+				int quantity = 1 + hero.pointsInTalent(TESTED_MAINTENANCE);
+				Dungeon.energy += quantity;
+				//TODO track energy collected maybe? We do already track recipes crafted though..
+				Sample.INSTANCE.play(Assets.Sounds.ITEM);
+				hero.sprite.showStatusWithIcon( 0x44CCFF, Integer.toString(quantity), FloatingText.ENERGY );
+			}
 
 			if (hero.belongings.weapon() != null && hero.belongings.weapon().modify != null){
 				hero.belongings.weapon().modDurability += 1 + hero.pointsInTalent(TESTED_MAINTENANCE);
@@ -992,6 +999,16 @@ public enum Talent {
 		if (talent == ACID_RAIN) {
 			AcidRain acid = Buff.affect(hero, AcidRain.class);
 			if (hero.pointsInTalent(talent) == 1) ActionIndicator.setAction(acid);
+		}
+
+		if (talent == CHARISMA && hero.pointsInTalent(talent) >= 3) {
+			for (Mob m : Dungeon.level.mobs.toArray(new Mob[0])) {
+				ScrollOfSirensSong.Enthralled buff = m.buff(ScrollOfSirensSong.Enthralled.class);
+				if (buff != null){
+					buff.timeToNow();
+					buff.spendToWhole();
+				}
+			}
 		}
 	}
 
@@ -1804,6 +1821,9 @@ public enum Talent {
 				break;
 			case CRAFTSMAN:
 				Collections.addAll(tierTalents, ACTIVE_REPAIR, MULTI_MODIFY, PART_RECYCLING, FAVORITE_WORK, KINETIC_FRAGMENT);
+				break;
+			case HACKER:
+				Collections.addAll(tierTalents, BACKFIRE, DIFFRACTION, ELECTRIC_CHARGE, DARK_MAGIC, CHARISMA);
 				break;
 		}
 		for (Talent talent : tierTalents){

@@ -63,6 +63,7 @@ public class HeroIcon extends Image {
 	public static final int PLAGUEGOD   = 22;
 	public static final int SOULHANDLER = 23;
 	public static final int CRAFTSMAN   = 24;
+	public static final int HACKER      = 25;
 
     //abilities
 	public static final int HEROIC_LEAP     = 40;

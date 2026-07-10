@@ -28,7 +28,9 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AllyBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Charm;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector;
@@ -38,6 +40,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.Bundle;
 
 public class ScrollOfSirensSong extends ExoticScroll {
 	
@@ -138,6 +141,40 @@ public class ScrollOfSirensSong extends ExoticScroll {
 		@Override
 		public int icon() {
 			return BuffIndicator.HEART;
+		}
+
+		private float buildToHeal = 0f;
+
+		@Override
+		public boolean act() {
+			if (Dungeon.hero.pointsInTalent(Talent.CHARISMA) < 3) return super.act();
+			buildToHeal += target.HT/100f;
+
+			int heal = (int) buildToHeal;
+			buildToHeal -= heal;
+			heal = Math.min(heal, target.HT - target.HP);
+			if (heal > 0) {
+				target.HP += heal;
+				target.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(heal), FloatingText.HEALING);
+			}
+
+			spend(TICK);
+
+			return true;
+		}
+
+		private static final String TOHEAL = "toheal";
+
+		@Override
+		public void storeInBundle(Bundle bundle){
+			super.storeInBundle(bundle);
+			bundle.put(TOHEAL, buildToHeal);
+		}
+
+		@Override
+		public void restoreFromBundle(Bundle bundle){
+			super.restoreFromBundle(bundle);
+			buildToHeal = bundle.getFloat(TOHEAL);
 		}
 	}
 	
