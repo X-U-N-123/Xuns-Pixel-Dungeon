@@ -291,14 +291,14 @@ abstract public class KindOfWeapon extends EquipableItem {
 	public int damageRoll( Char owner ) {
 		int min = min();
 		if (modify == Modification.SHARP_BLADE) {
-			min = min() + Math.round(0.4f * (max() - min()));
+			min = min() + Math.round(0.5f * (max() - min()));
 			decreaseModDurability();
 		}
 		MultiTool tool = Dungeon.hero.belongings.getItem(MultiTool.class);
 		if (tool != null && tool.modify == Modification.SHARP_BLADE && tool != this
 				&& Dungeon.hero.hasTalent(Talent.MULTI_MODIFY)){
-			min = min() + Math.round(0.4f * (max() - min()));
-			decreaseModDurability();
+			min = min() + Math.round(0.5f * (max() - min()));
+			tool.decreaseModDurability();
 		}
 
 		if (owner instanceof Hero){

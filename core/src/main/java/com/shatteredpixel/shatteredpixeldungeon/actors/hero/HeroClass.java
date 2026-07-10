@@ -447,6 +447,8 @@ public enum HeroClass {
 				return Assets.Splashes.DUELIST;
 			case CLERIC:
 				return Assets.Splashes.CLERIC;
+			case EXPLORER:
+				return Assets.Splashes.EXPLORER;
 			default:
 				return Assets.Splashes.NEW_HERO;
 		}

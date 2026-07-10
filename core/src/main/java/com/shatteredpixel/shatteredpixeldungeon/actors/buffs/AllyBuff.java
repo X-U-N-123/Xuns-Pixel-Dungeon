@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
@@ -62,6 +63,8 @@ public abstract class AllyBuff extends Buff {
 
 		if (enemy.buff(buffCls) != null && wasEnemy){
 			enemy.rollToDropLoot();
+			if (enemy.plunderedItem != null)
+				Dungeon.level.drop(enemy.plunderedItem, enemy.pos).sprite.drop();
 
 			Statistics.enemiesSlain++;
 			Badges.validateMonstersSlain();

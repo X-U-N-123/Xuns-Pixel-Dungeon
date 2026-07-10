@@ -17,8 +17,8 @@ allprojects {
         appName = 'Xun’s Pixel Dungeon'
         appPackageName = 'com.xun.xunspixeldungeon'
 
-        appVersionCode = 881
-        appVersionName = '3.0.0_b1'
+        appVersionCode = 882
+        appVersionName = '3.0.0_b2'
 
         appJavaCompatibility = JavaVersion.VERSION_1_8
 
