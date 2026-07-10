@@ -37,6 +37,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.duelist.Ch
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.duelist.ElementalStrike;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.duelist.Feint;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.engineer.ForceField;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.engineer.SummoningBeacon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.explorer.OpticalCamou;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.explorer.Sandstorm;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.explorer.Underpass;
@@ -405,7 +406,7 @@ public enum HeroClass {
             case WRAITH:
                 return new ArmorAbility[]{new Transfusion(), new EvilUnfold(), new GhostWander()};
 			case ENGINEER:
-				return new ArmorAbility[]{new ForceField()};
+				return new ArmorAbility[]{new ForceField(), new SummoningBeacon()};
 		}
 	}
 

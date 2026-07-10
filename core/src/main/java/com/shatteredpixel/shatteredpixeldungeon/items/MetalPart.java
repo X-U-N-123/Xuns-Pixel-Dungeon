@@ -61,6 +61,8 @@ public class MetalPart extends Item {
 
 	private static final String AC_MODIFY = "modify";
 
+	private static MultiTool tool = null;
+
 	@Override
 	public ArrayList<String> actions(Hero hero ) {
 		ArrayList<String> actions = super.actions( hero );
@@ -159,6 +161,7 @@ public class MetalPart extends Item {
 						protected void onClick() {
 							super.onClick();
 							hide();
+							tool = (MultiTool)item;
 							GameScene.show(new WndModify(a, part));
 						}
 					};
@@ -176,6 +179,7 @@ public class MetalPart extends Item {
 							protected void onClick() {
 								super.onClick();
 								hide();
+								tool = (MultiTool)item;
 								GameScene.show(new WndModify(w, part));
 							}
 						};
@@ -227,9 +231,9 @@ public class MetalPart extends Item {
 							super.onClick();
 							hide();
 							((Armor) item).modify(mod);
-							if (((Armor) item).tier == 0){
-								Dungeon.hero.belongings.getItem(MultiTool.class).modify(mod);
-							}
+							if (((Armor) item).tier == 0)
+								tool.modify(mod);
+
 							part.quantity(part.quantity() - mod.partCost());
 							if (part.quantity() <= 0)
 								part.detachAll(curUser.belongings.backpack);
@@ -294,9 +298,9 @@ public class MetalPart extends Item {
 								);
 							} else {
 								((Wand) item).modify(mod);
-								if (item instanceof Wand.PlaceHolder){
-									Dungeon.hero.belongings.getItem(MultiTool.class).modify(mod);
-								}
+								if (item instanceof Wand.PlaceHolder)
+									tool.modify(mod);
+
 								part.quantity(part.quantity() - mod.partCost());
 								if (part.quantity() <= 0)
 									part.detachAll(curUser.belongings.backpack);

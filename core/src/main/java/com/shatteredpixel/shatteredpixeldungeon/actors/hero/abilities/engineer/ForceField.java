@@ -112,7 +112,7 @@ public class ForceField extends ArmorAbility {
 
 		@Override
 		public void tintIcon(Image icon) {
-			icon.hardlight(0x2364BC);
+			icon.hardlight(0x3287CA);
 		}
 
 		@Override
