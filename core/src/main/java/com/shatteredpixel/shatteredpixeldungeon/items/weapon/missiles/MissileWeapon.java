@@ -178,8 +178,17 @@ abstract public class MissileWeapon extends Weapon {
 	}
 
 	public boolean isSimilar( Item item ) {
-		return level() == item.level() && getClass() == item.getClass()
-				&& enchantment == ((MissileWeapon) item).enchantment
+		if (level() != item.level() && getClass() != item.getClass()) return false;
+
+		boolean enchSame;
+		if ((enchantment == null && ((Weapon) item).enchantment != null)
+				||(enchantment != null && ((Weapon) item).enchantment == null))
+			enchSame = false;
+		else if (enchantment == null && ((Weapon) item).enchantment == null){
+			enchSame = true;
+		} else enchSame = enchantment.getClass() == ((Weapon) item).enchantment.getClass();
+
+		return enchSame
 				&& enchantHardened == ((MissileWeapon) item).enchantHardened
 				&& curseInfusionBonus == ((MissileWeapon) item).curseInfusionBonus
 				&& modify == ((MissileWeapon) item).modify;

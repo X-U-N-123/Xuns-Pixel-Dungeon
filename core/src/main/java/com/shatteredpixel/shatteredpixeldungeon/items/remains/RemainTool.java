@@ -22,10 +22,10 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.remains;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
-import com.shatteredpixel.shatteredpixeldungeon.items.EnergyCrystal;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.watabou.noosa.audio.Sample;
 
@@ -37,8 +37,12 @@ public class RemainTool extends RemainsItem {
 
 	@Override
 	protected void doEffect(Hero hero) {
-		new EnergyCrystal(3).collect();
+		Dungeon.energy += 3;
+		//TODO track energy collected maybe? We do already track recipes crafted though..
+
+		GameScene.pickUp( this, hero.pos );
+
 		Sample.INSTANCE.play(Assets.Sounds.ITEM);
-		hero.sprite.showStatusWithIcon( CharSprite.POSITIVE, "3", FloatingText.ENERGY );
+		hero.sprite.showStatusWithIcon( 0x44CCFF, "3", FloatingText.ENERGY );
 	}
 }

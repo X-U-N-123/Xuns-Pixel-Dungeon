@@ -374,13 +374,13 @@ public class WandOfWarding extends Wand {
 			//always hits
 			int dmg = Hero.heroDamageIntRange( 2 + wandLevel, 8 + 4*wandLevel );
 			Char enemy = this.enemy;
-			enemy.damage( dmg, this );
 			Wand w = null;
 			if (Dungeon.hero.belongings.getItem(MagesStaff.class) != null)
 				w = Dungeon.hero.belongings.getItem(MagesStaff.class).wand();
 			if (enemy.isAlive()){
 				Wand.wandProc(enemy, wandLevel, 1, dmg, w);
 			}
+			enemy.damage( dmg, this );
 
 			if (!enemy.isAlive() && enemy == Dungeon.hero) {
 				Badges.validateDeathFromFriendlyMagic();

@@ -89,6 +89,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
+import com.shatteredpixel.shatteredpixeldungeon.ui.InventoryPane;
 import com.shatteredpixel.shatteredpixeldungeon.ui.QuickSlotButton;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.Image;
@@ -185,6 +186,8 @@ public abstract class Wand extends Item {
 	
 	@Override
 	public void execute( Hero hero, String action ) {
+		if (action.equals( AC_ZAP ) && modify == Modification.DISINTEGRATING)
+			InventoryPane.useTargeting();
 
 		super.execute( hero, action );
 
@@ -351,7 +354,7 @@ public abstract class Wand extends Item {
 
 		if (target instanceof Resentment) Buff.affect(target, Daze.class, 4f);
 		//a way to fight against it
-		if (w.modify == Modification.PRISM) dmg += Math.round(dmg * 0.25f);
+		if (w != null && w.modify == Modification.PRISM) dmg += Math.round(dmg * 0.25f);
 		MultiTool tool = Dungeon.hero.belongings.getItem(MultiTool.class);
 		if (tool != null && tool.wandModify == Modification.PRISM
 				&& Dungeon.hero.pointsInTalent(Talent.MULTI_MODIFY) >= 3){
@@ -391,7 +394,7 @@ public abstract class Wand extends Item {
 			if (!heap.isEmpty()) {
 				heap.sprite.drop( cell );
 			}
-		}
+		} else super.onThrow(cell);
 	}
 
 	@Override

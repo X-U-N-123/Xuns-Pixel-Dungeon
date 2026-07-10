@@ -69,9 +69,8 @@ public class Parasite extends RipperDemon {
 	@Override
 	protected void doLeap(Char leapVictim, int endPos){
 		if (leapVictim != null && alignment != leapVictim.alignment){
-			if (hit(this, leapVictim, Char.INFINITE_ACCURACY, false)
-					&& leapVictim.buff(Parasitism.class) == null) {
-				Buff.affect(leapVictim, Parasitism.class).parasite = this;
+			if (hit(this, leapVictim, Char.INFINITE_ACCURACY, false)) {
+				Buff.append(leapVictim, Parasitism.class).parasite = this;
 
 				Doom d = buff(Doom.class);
 				Actor.remove(this);
