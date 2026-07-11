@@ -95,6 +95,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.cleric.PowerOfMany;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.duelist.Challenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.engineer.ForceField;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.engineer.SummoningBeacon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.explorer.Sandstorm;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.rogue.DeathMark;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.Endure;
@@ -1230,6 +1231,7 @@ public abstract class Char extends Actor {
 		NO_ARMOR_PHYSICAL_SOURCES.add(DM300.FallingRockBuff.class);
 		NO_ARMOR_PHYSICAL_SOURCES.add(Parasite.Parasitism.class);
 		NO_ARMOR_PHYSICAL_SOURCES.add(KindOfWeapon.BattleModule.class);
+		NO_ARMOR_PHYSICAL_SOURCES.add(SummoningBeacon.class);
 	}
 	
 	public void destroy() {

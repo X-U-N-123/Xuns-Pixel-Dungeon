@@ -48,10 +48,12 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.shatteredpixel.shatteredpixeldungeon.tiles.CustomTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndBag;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
+import com.watabou.utils.Point;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
@@ -130,7 +132,22 @@ public class MultiTool extends MeleeWeapon {
         if (action.equals(AC_DISARM)){
             if (Dungeon.level.map[hero.pos] == Terrain.INACTIVE_TRAP ||
                     (Dungeon.level.map[hero.pos] == Terrain.PEDESTAL && hero.hasTalent(Talent.APART_ANYTHING))){
+
+                //if a custom tilemap is over that cell, then no trap here (mostly in DM-300 level)
+                for (CustomTilemap cust : Dungeon.level.customTiles){
+                    Point custPoint = new Point(Dungeon.level.cellToPoint(hero.pos));
+                    custPoint.x -= cust.tileX;
+                    custPoint.y -= cust.tileY;
+                    if (custPoint.x >= 0 && custPoint.y >= 0
+                            && custPoint.x < cust.tileW && custPoint.y < cust.tileH){
+                        if (cust.image(custPoint.x, custPoint.y) != null){
+                            GLog.w(Messages.get(this, "no_trap"));
+                            return;
+                        }
+                    }
+                }
                 Level.set(hero.pos, Terrain.EMPTY);
+                Dungeon.level.traps.remove( hero.pos );
                 GameScene.updateMap( hero.pos );
 
                 MetalPart part = new MetalPart();

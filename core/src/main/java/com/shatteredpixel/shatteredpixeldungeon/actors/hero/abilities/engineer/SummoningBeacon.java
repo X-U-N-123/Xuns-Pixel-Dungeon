@@ -40,6 +40,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClassArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfSirensSong;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.RatSkull;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.ui.HeroIcon;
 import com.watabou.noosa.audio.Sample;
@@ -56,19 +57,16 @@ public class SummoningBeacon extends ArmorAbility {
 
 		hero.sprite.operate(hero.pos);
 		Sample.INSTANCE.play(Assets.Sounds.TELEPORT);
-		ArrayList<Integer> spawnPoints = new ArrayList<>();
+		ArrayList<Integer> nonOpenSpawnPoints = new ArrayList<>();
+		ArrayList<Integer> openSpawnPoints = new ArrayList<>();
 
 		ArrayList<Mob> machines = new ArrayList<>(Arrays.asList(
 				new DM100(), new DM100(),
 				new DM200(), new DM200(),
-				new DM201(), new DM201(),
 				new Golem(), new Golem())
 		);
 		for (int i = 0; i < hero.pointsInTalent(Talent.POWERED_DEVICE); i++) {
 			machines.add(new DM200());
-			machines.add(new DM201());
-			machines.add(new DM201());
-			machines.add(new Golem());
 			machines.add(new Golem());
 			machines.add(new Golem());
 		}
@@ -77,13 +75,14 @@ public class SummoningBeacon extends ArmorAbility {
 			int p = hero.pos + PathFinder.NEIGHBOURS8[i];
 
 			Char ch = Actor.findChar( p );
-			if (ch != null){
+			if (ch != null && ch.alignment != Char.Alignment.ALLY){
 				if (hero.hasTalent(Talent.VIOLENT_LEAP))
 					ch.damage(Random.IntRange(5 + 5 * hero.pointsInTalent(Talent.VIOLENT_LEAP),
 							5 + 10 * hero.pointsInTalent(Talent.VIOLENT_LEAP)), this);
 
 			} else if (Dungeon.level.passable[p]) {
-				spawnPoints.add( p );
+				if (Dungeon.level.openSpace[p]) openSpawnPoints.add(p);
+				else nonOpenSpawnPoints.add(p);
 			}
 		}
 
@@ -95,21 +94,33 @@ public class SummoningBeacon extends ArmorAbility {
 		}
 
 		Random.shuffle(machines);
-		while (machinesToSapwn > 0 && spawnPoints.size() > 0) {
-			int index = Random.index( spawnPoints );
+		while (machinesToSapwn > 0 && !machines.isEmpty()
+				&& (!nonOpenSpawnPoints.isEmpty() || !openSpawnPoints.isEmpty())) {
 
 			Mob mob = machines.remove(0);
-			mob.alignment = Char.Alignment.ALLY;
+			if (Random.Float() < 1 / 50f * RatSkull.exoticChanceMultiplier() && mob instanceof DM200)
+				mob = new DM201();
+
+			int pos;
+			Random.shuffle(nonOpenSpawnPoints);
+			Random.shuffle(openSpawnPoints);
+			if (Char.hasProp(mob, Char.Property.LARGE) && !openSpawnPoints.isEmpty()) {
+				pos = openSpawnPoints.remove(0);
+			} else if (!nonOpenSpawnPoints.isEmpty()){
+				pos = nonOpenSpawnPoints.remove(0);
+			} else {
+				machinesToSapwn ++;
+				continue;
+			}
+
 			mob.state = mob.HUNTING;
 			Buff.affect(mob, AscensionChallenge.AscensionBuffBlocker.class);
 			GameScene.add( mob );
-			ScrollOfTeleportation.appear( mob, spawnPoints.get( index ) );
+			ScrollOfTeleportation.appear( mob, pos );
 			Buff.affect(mob, ScrollOfSirensSong.Enthralled.class);
-			if (hero.hasTalent(Talent.VIOLENT_LEAP))
+			if (hero.hasTalent(Talent.ASSAULT))
 				Buff.affect(mob, Adrenaline.class, hero.pointsInTalent(Talent.ASSAULT) * 3f + 0.67f);
 			//act priority problem
-
-			spawnPoints.remove( index );
 			machinesToSapwn--;
 		}
 

@@ -90,6 +90,9 @@ public class Uptier extends InventorySpell {
             ((Armor) result).masteryPotionBonus = ((Armor) item).masteryPotionBonus;
             ((Armor) result).augment = ((Armor) item).augment;
             ((Armor) result).glyphHardened = ((Armor) item).glyphHardened;
+            ((Armor) result).modify = ((Armor) item).modify;
+            ((Armor) result).modDurability = ((Armor) item).modDurability;
+            
             BrokenSeal seal = ((Armor) item).checkSeal();
             if (seal != null) {
                 ((Armor) result).affixSeal(seal);
@@ -117,6 +120,8 @@ public class Uptier extends InventorySpell {
             ((Weapon) result).masteryPotionBonus = ((Weapon) item).masteryPotionBonus;
             ((Weapon) result).augment = ((Weapon) item).augment;
             ((Weapon) result).enchantHardened = ((Weapon) item).enchantHardened;
+            ((Weapon) result).modify = ((Weapon) item).modify;
+            ((Weapon) result).modDurability = ((Weapon) item).modDurability;
         }
 
         result.levelKnown = item.levelKnown;

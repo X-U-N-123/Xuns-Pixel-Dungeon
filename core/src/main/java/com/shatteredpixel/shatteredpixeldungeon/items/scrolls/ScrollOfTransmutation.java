@@ -260,6 +260,8 @@ public class ScrollOfTransmutation extends InventoryScroll {
 		n.cursed = w.cursed;
 		n.augment = w.augment;
 		n.enchantHardened = w.enchantHardened;
+		n.modify = w.modify;
+		n.modDurability = w.modDurability;
 		
 		return n;
 		
@@ -345,6 +347,8 @@ public class ScrollOfTransmutation extends InventoryScroll {
 		n.cursed = w.cursed;
 		n.curseInfusionBonus = w.curseInfusionBonus;
 		n.resinBonus = w.resinBonus;
+		n.modify = w.modify;
+		n.modDurability = w.modDurability;
 
 		n.curCharges =  w.curCharges;
 		n.updateLevel();

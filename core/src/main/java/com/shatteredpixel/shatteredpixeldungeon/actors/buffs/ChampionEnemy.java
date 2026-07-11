@@ -205,9 +205,7 @@ public abstract class ChampionEnemy extends Buff {
 		@Override
 		public void onAttackProc(Char enemy) {
 			if (Dungeon.level.water[enemy.pos]) {
-				Buff.prolong(enemy, Chill.class, 5f);
-			} else {
-				Buff.prolong(enemy, Chill.class, 3f);
+				Buff.prolong(enemy, Chill.class, 4f);
 			}
 		}
 
@@ -216,10 +214,10 @@ public abstract class ChampionEnemy extends Buff {
 			//don't trigger when killed by being knocked into a pit
 			if (target.isFlying() || !Dungeon.level.pit[target.pos]) {
 				for (int i : PathFinder.NEIGHBOURS9) {
-					if (!Dungeon.level.solid[target.pos + i]) {
+					if (Dungeon.level.water[target.pos + i]) {
 						GameScene.add(Blob.seed(target.pos + i, 2, Freezing.class));
-						if (Dungeon.level.water[target.pos + i] && Actor.findChar(target.pos + i) != null){
-							Buff.affect(Actor.findChar(target.pos + i), Frost.class, 5f);
+						if (Actor.findChar(target.pos + i) != null){
+							Buff.affect(Actor.findChar(target.pos + i), Frost.class, 4f);
 						}
 					}
 				}
@@ -511,7 +509,7 @@ public abstract class ChampionEnemy extends Buff {
 
 		@Override
 		public void onAttackProc(Char enemy) {
-			ScrollOfTeleportation.teleportChar(target, this.getClass());
+			ScrollOfTeleportation.teleportChar(target, getClass());
 		}
 	}
 
@@ -524,8 +522,8 @@ public abstract class ChampionEnemy extends Buff {
 
 		@Override
 		public void onAttackProc(Char enemy) {
-			if (Random.Float() < 0.2f) {
-				Buff.affect(enemy, Paralysis.class, 2f);
+			if (Random.Float() < 0.2f && enemy.buff(Paralysis.class) == null) {
+				Buff.affect(enemy, Paralysis.class, 1f);
 			}
 		}
 
@@ -534,7 +532,7 @@ public abstract class ChampionEnemy extends Buff {
 			//don't trigger when killed by being knocked into a pit
 			if (target.isFlying() || !Dungeon.level.pit[target.pos]) {
 				for (int i : PathFinder.NEIGHBOURS9) {
-					if (!Dungeon.level.solid[target.pos + i]) {
+					if (Dungeon.level.water[target.pos + i]) {
 						GameScene.add(Blob.seed(target.pos + i, 4, Electricity.class));
 					}
 				}
