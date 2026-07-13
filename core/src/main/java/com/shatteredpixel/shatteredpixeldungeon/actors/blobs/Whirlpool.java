@@ -24,9 +24,6 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.blobs;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Roots;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Piranha;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BlobEmitter;
@@ -34,6 +31,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.particles.WhirlpoolParti
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.watabou.utils.BArray;
 import com.watabou.utils.PathFinder;
 
 public class Whirlpool extends Blob {
@@ -64,31 +62,30 @@ public class Whirlpool extends Blob {
                 continue;
             }
 
-            //throws other chars around the center.
-            for (int i : PathFinder.NEIGHBOURS9){
-                Char ch = Actor.findChar(k + i);
+            int maxRange = Dungeon.hero.hasTalent(Talent.UNDERCURRENT) ? 2 : 1;
+            int throwDist = Dungeon.hero.pointsInTalent(Talent.UNDERCURRENT) >= 2 ? 2 : 1;
+            PathFinder.buildDistanceMap( k, BArray.not( Dungeon.level.solid, null ), maxRange);
 
-                if (ch == null) continue;
+            for (int i = 0; i < Dungeon.level.length(); i++)
+                if (PathFinder.distance[i] < Integer.MAX_VALUE){
+                    Char ch = Actor.findChar(i);
 
-                if ((ch.isFlying() && Dungeon.hero.pointsInTalent(Talent.UNDERCURRENT) < 3)
-                        || ch.alignment == Char.Alignment.ALLY || Char.hasProp(ch, Char.Property.IMMOVABLE))
-                    continue;
+                    if (ch == null || (ch.isFlying() && Dungeon.hero.pointsInTalent(Talent.UNDERCURRENT) < 3)
+                            || ch.alignment == Char.Alignment.ALLY || Char.hasProp(ch, Char.Property.IMMOVABLE))
+                        continue;
 
-                if (i == 0){
-                    if (Dungeon.hero.hasTalent(Talent.DROWNING) && !(ch instanceof Piranha))
-                        ch.damage(Math.round(Dungeon.hero.lvl * Dungeon.hero.pointsInTalent(Talent.DROWNING) / 3f), this);
-                    continue;
+                    if (i == k){
+                        if (Dungeon.hero.hasTalent(Talent.DROWNING) && !(ch instanceof Piranha))
+                            ch.damage(Math.round(Dungeon.hero.lvl * Dungeon.hero.pointsInTalent(Talent.DROWNING) / 3f), this);
+                        continue;
+                    }
+
+                    //throws other chars around the center.
+                    throwDist = Math.min(throwDist, PathFinder.distance[i]);
+                    Ballistica trajectory = new Ballistica(i, k, Ballistica.MAGIC_BOLT);
+                    WandOfBlastWave.throwChar(ch, trajectory, throwDist, false, true, this);
+
                 }
-
-				Ballistica trajectory = new Ballistica(k + i, k, Ballistica.MAGIC_BOLT);
-				WandOfBlastWave.throwChar(ch, trajectory, 1, false, true, this);
-
-                switch (Dungeon.hero.pointsInTalent(Talent.UNDERCURRENT)){
-                    case 3: case 2: Buff.prolong(ch, Cripple.class, 2);
-                    case 1: Buff.prolong(ch, Roots.class, 1);
-                    default: break;
-                }
-			}
         }
     }
 

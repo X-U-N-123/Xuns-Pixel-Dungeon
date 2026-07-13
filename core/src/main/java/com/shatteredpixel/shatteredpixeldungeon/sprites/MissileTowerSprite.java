@@ -25,7 +25,9 @@
 package com.shatteredpixel.shatteredpixeldungeon.sprites;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.MissileTower;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.watabou.noosa.MovieClip;
 import com.watabou.noosa.TextureFilm;
 
@@ -77,7 +79,7 @@ public class MissileTowerSprite extends MobSprite {
 
         super.onComplete( anim );
 
-        if (anim == load) play(ready);
+        if (anim == load) ready();
     }
 
     public void load(int cell){
@@ -86,8 +88,40 @@ public class MissileTowerSprite extends MobSprite {
     }
 
     @Override
+    public void idle() {
+        if (ch == null) play (idle);
+        else linkVisuals(ch);
+    }
+
+    public void ready() {
+        play (ready);
+    }
+
+    @Override
+    public void linkVisuals(Char ch) {
+        super.linkVisuals(ch);
+        if (((Mob)ch).state == ((Mob)ch).HUNTING) {
+            ready();
+            if (((Mob)ch).enemy() != null) turnTo(ch.pos, ((Mob)ch).enemy().pos);
+        } else play(idle);
+
+    }
+
+    @Override
+    public void move(int from, int to) {
+        linkVisuals(ch);
+        super.move(from, to);
+        linkVisuals(ch);
+    }
+
+    @Override
     public void showLost() {
         super.showLost();
-        idle();
+        play(idle);
+    }
+
+    @Override
+    public int blood() {
+        return 0xFF966400;
     }
 }
