@@ -142,6 +142,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Viscosity;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ElementalMask;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
+import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.devShield;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.HeatBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfConcealment;
@@ -1142,15 +1143,19 @@ public abstract class Char extends Actor {
 			}
 		}
 
-		if (HP < 0 && src instanceof Char && alignment == Alignment.ENEMY){
-			if (((Char) src).buff(Kinetic.KineticTracker.class) != null){
+		if (HP < 0 && (src instanceof Char || src instanceof Bomb || src instanceof Wand)
+				&& alignment == Alignment.ENEMY){
+			Char ch;
+			if (src instanceof Char) ch = (Char) src;
+			else ch = hero;
+			if (ch.buff(Kinetic.KineticTracker.class) != null){
 				int dmgToAdd = -HP;
-				dmgToAdd -= ((Char) src).buff(Kinetic.KineticTracker.class).conservedDamage;
-				dmgToAdd = Math.round(dmgToAdd * Weapon.Enchantment.genericProcChanceMultiplier((Char) src));
+				dmgToAdd -= ch.buff(Kinetic.KineticTracker.class).conservedDamage;
+				dmgToAdd = Math.round(dmgToAdd * Weapon.Enchantment.genericProcChanceMultiplier(ch));
 				if (dmgToAdd > 0) {
-					Buff.affect((Char) src, Kinetic.ConservedDamage.class).setBonus(dmgToAdd);
+					Buff.affect(ch, Kinetic.ConservedDamage.class).setBonus(dmgToAdd);
 				}
-				((Char) src).buff(Kinetic.KineticTracker.class).detach();
+				ch.buff(Kinetic.KineticTracker.class).detach();
 			}
 		}
 		
@@ -1176,6 +1181,11 @@ public abstract class Char extends Actor {
 					&& hero.buff(MonkEnergy.MonkAbility.UnarmedAbilityTracker.class) != null){
 				icon = FloatingText.PHYS_DMG_NO_BLOCK;
 			}
+
+			//special case for monk using unarmed abilities
+			if (src instanceof Bomb && ((Bomb) src).grenadierThrown()
+					&& hero.subClass == HeroSubClass.GRENADIER && alignment != Alignment.ALLY)
+				icon = FloatingText.PHYS_DMG_NO_BLOCK;
 
 			if (src instanceof Hunger)                                    icon = FloatingText.HUNGER;
 			if (src instanceof Chill || src instanceof Frost)             icon = FloatingText.FROST;

@@ -31,6 +31,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
+import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MultiTool;
@@ -43,6 +44,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndBag;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.watabou.noosa.Game;
@@ -105,12 +107,46 @@ public class MetalPart extends Item {
 		@Override
 		public boolean itemSelectable(Item item) {
 			return item instanceof KindOfWeapon || item instanceof Armor
-					|| (item instanceof Wand && ((Wand) item).modify != Wand.Modification.DISINTEGRATING);
+					|| (item instanceof Wand && ((Wand) item).modify != Wand.Modification.DISINTEGRATING)
+					|| (item instanceof MetalPart && curUser.subClass == HeroSubClass.GRENADIER)
+					|| (item instanceof Bomb && curUser.hasTalent(Talent.ADDED_POWDER));
 		}
 
 		@Override
 		public void onSelect( Item item ) {
-			if (item != null) GameScene.show(new WndModify(item, MetalPart.this));
+			if (item == null) return;
+			if (item instanceof MetalPart){
+				if (item.quantity() < 3){
+					GLog.w(Messages.get(this, "no_enough_part"));
+					return;
+				}
+				item.quantity(item.quantity() - 3);
+
+				item = new Bomb();
+				if (curUser.pointsInTalent(Talent.ADDED_POWDER) >= 3) item.upgrade();
+				if (!item.collect()) Dungeon.level.drop(item, curUser.pos).sprite.drop();
+
+				updateQuickslot();
+				curUser.sprite.operate(curUser.pos);
+				Sample.INSTANCE.play(Assets.Sounds.UNLOCK);
+				curUser.spendAndNext(1);
+			} else if (item instanceof Bomb) {
+				if (item.level() < 1
+						|| (item.level() < 3 && curUser.pointsInTalent(Talent.ADDED_POWDER) >= 2)){
+					Item upgrade;
+					if (item.quantity == 1) item.upgrade();
+					else {
+						upgrade = item.split(1).upgrade();
+						if (!upgrade.collect()) Dungeon.level.drop(item, curUser.pos).sprite.drop();
+					}
+					detach(curUser.belongings.backpack);
+					curUser.spendAndNext(1);
+
+					curUser.sprite.operate(curUser.pos);
+					updateQuickslot();
+					Sample.INSTANCE.play(Assets.Sounds.UNLOCK);
+				} else GLog.w(Messages.get(this, "max_lvl"));
+			} else GameScene.show(new WndModify(item, MetalPart.this));
 		}
 	};
 

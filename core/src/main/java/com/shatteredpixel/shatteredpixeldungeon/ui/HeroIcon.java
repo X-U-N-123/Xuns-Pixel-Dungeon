@@ -35,35 +35,9 @@ public class HeroIcon extends Image {
 	private static final int SIZE = 16;
 
 	//transparent icon
-	public static final int NONE    = 255;
+	public static final int NONE    = 0;
 
-	//subclasses
-	public static final int BERSERKER   = 0;
-	public static final int GLADIATOR   = 1;
-	public static final int GUARD       = 2;
-	public static final int BATTLEMAGE  = 3;
-	public static final int WARLOCK     = 4;
-	public static final int SWITCHER    = 5;
-	public static final int ASSASSIN    = 6;
-	public static final int FREERUNNER  = 7;
-	public static final int NINJA       = 8;
-	public static final int SNIPER      = 9;
-	public static final int WARDEN      = 10;
-	public static final int SCOUT       = 11;
-	public static final int CHAMPION    = 12;
-	public static final int MONK        = 13;
-	public static final int PHANTOM     = 14;
-	public static final int PRIEST      = 15;
-	public static final int PALADIN     = 16;
-	public static final int PREACHER    = 17;
-	public static final int WAVECHASER  = 18;
-	public static final int TRAPPER     = 19;
-	public static final int ROCKSY      = 20;
-    public static final int INCUBUS     = 21;
-	public static final int PLAGUEGOD   = 22;
-	public static final int SOULHANDLER = 23;
-	public static final int CRAFTSMAN   = 24;
-	public static final int HACKER      = 25;
+	//subclasses, defined by their ordinal
 
     //abilities
 	public static final int HEROIC_LEAP     = 40;
@@ -160,7 +134,7 @@ public class HeroIcon extends Image {
 		if (film == null){
 			film = new TextureFilm(texture, SIZE, SIZE);
 		}
-		frame(film.get(subCls.icon()));
+		frame(film.get(subCls.ordinal()));
 	}
 
 	public HeroIcon(ArmorAbility abil){

@@ -39,6 +39,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.MagicalHolster;
+import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfSharpshooting;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.CursedWand;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
@@ -269,6 +270,7 @@ abstract public class MissileWeapon extends Weapon {
 			}
 		}
         thrownEvilProc(cell);
+		Buff.detach(curUser, Bomb.BallisticaCalcTracker.class);
 	}
 
     public static void thrownEvilProc(int cell){
@@ -307,6 +309,9 @@ abstract public class MissileWeapon extends Weapon {
 				Sample.INSTANCE.play(Assets.Sounds.PLANT);
 				Buff.affect(attacker, SpiritBow.IvybindCooldown.class, 40);
 			}
+			int points = ((Hero) attacker).pointsInTalent(Talent.BALLISTICA_CALC) - 1;
+			if (points > 0 && attacker.buff(Bomb.BallisticaCalcTracker.class) != null)
+				damage = Math.round(damage * (1 + 0.15f * points));
 		}
 		return super.proc(attacker, defender, damage);
 	}
@@ -336,6 +341,12 @@ abstract public class MissileWeapon extends Weapon {
 	@Override
 	public float castDelay(Char user, int dst) {
 		return delayFactor( user );
+	}
+
+	@Override
+	public float delayFactor(Char owner) {
+		if (owner.buff(Bomb.BallisticaCalcTracker.class) != null) return 0;
+		else                                                      return super.delayFactor(owner);
 	}
 	
 	protected void rangedHit( Char enemy, int cell ){

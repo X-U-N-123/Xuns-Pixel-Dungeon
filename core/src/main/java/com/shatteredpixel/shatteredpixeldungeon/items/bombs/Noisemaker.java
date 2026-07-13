@@ -25,6 +25,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
@@ -103,7 +104,7 @@ public class Noisemaker extends Bomb {
 								for (Mob mob : Dungeon.level.mobs.toArray( new Mob[0] )) {
 									mob.beckon( heap.pos );
 								}
-								left = 6;
+								left = curUser.subClass == HeroSubClass.GRENADIER ? 3 : 6;
 							}
 						}
 

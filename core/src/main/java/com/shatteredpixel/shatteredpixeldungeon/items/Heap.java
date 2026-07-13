@@ -273,7 +273,7 @@ public class Heap implements Bundlable {
 	}
 
 	//Note: should not be called to initiate an explosion, but rather by an explosion that is happening.
-	public void explode() {
+	public void explode(Class src) {
 		hidden = false;
 
 		//breaks open most standard containers, mimics die.
@@ -296,6 +296,9 @@ public class Heap implements Bundlable {
 				if (item.unique || item.isUpgradable() || item instanceof EquipableItem){
 					continue;
 				}
+				if (src == Bomb.class && Dungeon.hero.pointsInTalent(Talent.EXPLOSION_PROOF) >= 2
+						&& !(item instanceof Bomb))
+					continue;
 
 				if (item instanceof Potion) {
 					items.remove(item);

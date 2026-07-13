@@ -46,7 +46,7 @@ public class ShrapnelBomb extends Bomb {
 
 	@Override
 	protected int explosionRange() {
-		return 8;
+		return super.explosionRange() + 7;
 	}
 
 	@Override

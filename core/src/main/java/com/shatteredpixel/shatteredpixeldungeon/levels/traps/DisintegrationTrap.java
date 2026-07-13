@@ -88,7 +88,7 @@ public class DisintegrationTrap extends Trap {
 		}
 		
 		Heap heap = Dungeon.level.heaps.get(pos);
-		if (heap != null) heap.explode();
+		if (heap != null) heap.explode(getClass());
 		
 		if (target != null) {
 			if (target instanceof Mob){

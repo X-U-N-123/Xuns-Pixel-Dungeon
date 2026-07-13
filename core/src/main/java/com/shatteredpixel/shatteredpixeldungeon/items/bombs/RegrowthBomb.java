@@ -54,7 +54,7 @@ public class RegrowthBomb extends Bomb {
 
 	@Override
 	protected int explosionRange() {
-		return 3;
+		return super.explosionRange() + 2;
 	}
 
 	@Override

@@ -25,53 +25,47 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
-import com.shatteredpixel.shatteredpixeldungeon.ui.HeroIcon;
 import com.watabou.noosa.Game;
 
 public enum HeroSubClass {
 
-	NONE(HeroIcon.NONE),
+	NONE,
 
-	BERSERKER(HeroIcon.BERSERKER),
-	GLADIATOR(HeroIcon.GLADIATOR),
-	GUARD(HeroIcon.GUARD),
+	BERSERKER,
+	GLADIATOR,
+	GUARD,
 
-	BATTLEMAGE(HeroIcon.BATTLEMAGE),
-	WARLOCK(HeroIcon.WARLOCK),
-	SWITCHER(HeroIcon.SWITCHER),
+	BATTLEMAGE,
+	WARLOCK,
+	SWITCHER,
 	
-	ASSASSIN(HeroIcon.ASSASSIN),
-	FREERUNNER(HeroIcon.FREERUNNER),
-	NINJA(HeroIcon.NINJA),
-	
-	SNIPER(HeroIcon.SNIPER),
-	WARDEN(HeroIcon.WARDEN),
-	SCOUT(HeroIcon.SCOUT),
+	ASSASSIN,
+	FREERUNNER,
+	NINJA,
 
-	CHAMPION(HeroIcon.CHAMPION),
-	MONK(HeroIcon.MONK),
-	PHANTOM(HeroIcon.PHANTOM),
+	SNIPER,
+	WARDEN,
+	SCOUT,
 
-	PRIEST(HeroIcon.PRIEST),
-	PALADIN(HeroIcon.PALADIN),
-	PREACHER(HeroIcon.PREACHER),
+	CHAMPION,
+	MONK,
+	PHANTOM,
 
-	WAVECHASER(HeroIcon.WAVECHASER),
-	TRAPPER(HeroIcon.TRAPPER),
-	ROCKSY(HeroIcon.ROCKSY),
+	PRIEST,
+	PALADIN,
+	PREACHER,
 
-    INCUBUS(HeroIcon.INCUBUS),
-	PLAGUEGOD(HeroIcon.PLAGUEGOD),
-	SOULHANDLER(HeroIcon.SOULHANDLER),
+	WAVECHASER,
+	TRAPPER,
+	ROCKSY,
 
-	CRAFTSMAN(HeroIcon.CRAFTSMAN),
-	HACKER(HeroIcon.HACKER);
+    INCUBUS,
+	PLAGUEGOD,
+	SOULHANDLER,
 
-	final int icon;
-
-	HeroSubClass(int icon){
-		this.icon = icon;
-	}
+	CRAFTSMAN,
+	HACKER,
+	GRENADIER;
 	
 	public String title() {
 		return Messages.get(this, name());
@@ -97,9 +91,4 @@ public enum HeroSubClass {
 			return Messages.get(this, name() + "_desc");
 		}
 	}
-
-	public int icon(){
-		return icon;
-	}
-
 }

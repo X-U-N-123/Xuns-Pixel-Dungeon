@@ -29,8 +29,8 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.FlameParticle;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
-import com.watabou.utils.BArray;
 import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.BArray;
 import com.watabou.utils.PathFinder;
 
 public class Firebomb extends Bomb {
@@ -41,7 +41,7 @@ public class Firebomb extends Bomb {
 
 	@Override
 	protected int explosionRange() {
-		return 2;
+		return super.explosionRange() + 1;
 	}
 
 	@Override

@@ -38,6 +38,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
+import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Dart;
@@ -721,12 +722,11 @@ public class Item implements Bundlable {
 							if (curUser.hasTalent(Talent.IMPROVISED_PROJECTILES)
 									&& !(Item.this instanceof MissileWeapon)
 									&& curUser.buff(Talent.ImprovisedProjectileCooldown.class) == null
-									&& !enemy.isImmune(Blindness.class)){
-								if (enemy.alignment != curUser.alignment){
-									Sample.INSTANCE.play(Assets.Sounds.HIT);
-									Buff.affect(enemy, Blindness.class, 1 + 2f * curUser.pointsInTalent(Talent.IMPROVISED_PROJECTILES));
-									Buff.affect(curUser, Talent.ImprovisedProjectileCooldown.class, 40f);
-								}
+									&& !enemy.isImmune(Blindness.class)
+									&& enemy.alignment != curUser.alignment){
+								Sample.INSTANCE.play(Assets.Sounds.HIT);
+								Buff.affect(enemy, Blindness.class, 1 + 2f * curUser.pointsInTalent(Talent.IMPROVISED_PROJECTILES));
+								Buff.affect(curUser, Talent.ImprovisedProjectileCooldown.class, 40f);
 							}
 
 							if (user.buff(Talent.LethalMomentumTracker.class) != null){
@@ -740,6 +740,10 @@ public class Item implements Bundlable {
 								}
 
 								user.spendAndNext(delay * multi);
+								if (curUser.hasTalent(Talent.BALLISTICA_CALC)
+										&& Item.this instanceof Bomb && ((Bomb) Item.this).grenadierThrown()) {
+									Buff.prolong(curUser, Bomb.BallisticaCalcTracker.class, curUser.cooldown());
+								}
 							}
 						}
 					});
@@ -748,16 +752,17 @@ public class Item implements Bundlable {
 					reset(user.sprite,
 							cell,
 							this,
-							new Callback() {
-						@Override
-						public void call() {
-							curUser = user;
-							Item i = Item.this.detach(user.belongings.backpack);
-							user.spend(delay);
-							if (i != null) i.onThrow(cell);
-							user.next();
-						}
-					});
+							() -> {
+								curUser = user;
+								Item i = Item.this.detach(user.belongings.backpack);
+								user.spend(delay);
+								if (i != null) i.onThrow(cell);
+								if (curUser.hasTalent(Talent.BALLISTICA_CALC)
+										&& Item.this instanceof Bomb && ((Bomb) Item.this).grenadierThrown()) {
+									Buff.prolong(curUser, Bomb.BallisticaCalcTracker.class, curUser.cooldown());
+								}
+								user.next();
+							});
 		}
 
 		boolean isBurdenEased = hero.STR() - hero.weight() > -0.001;
@@ -771,7 +776,7 @@ public class Item implements Bundlable {
 	}
 	
 	protected static Hero curUser = null;
-	protected static Item curItem = null;
+	public static Item curItem = null;
 	public void setCurrent( Hero hero ){
 		curUser = hero;
 		curItem = this;

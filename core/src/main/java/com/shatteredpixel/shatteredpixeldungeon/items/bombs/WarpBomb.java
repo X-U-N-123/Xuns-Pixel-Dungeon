@@ -40,7 +40,7 @@ public class WarpBomb extends Bomb {
 
 	@Override
 	protected int explosionRange() {
-		return 2;
+		return super.explosionRange() + 1;
 	}
 
 	@Override
