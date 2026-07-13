@@ -24,13 +24,17 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.blobs;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Roots;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Piranha;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BlobEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.WhirlpoolParticle;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.watabou.utils.PathFinder;
 
 public class Whirlpool extends Blob {
 
@@ -60,32 +64,31 @@ public class Whirlpool extends Blob {
                 continue;
             }
 
-            for (Mob m : Dungeon.level.mobs.toArray( new Mob[0])) {
-                if ((m.isFlying() && Dungeon.hero.pointsInTalent(Talent.UNDERCURRENT) < 3)
-						|| m.alignment == Char.Alignment.ALLY || m.properties().contains(Char.Property.IMMOVABLE))
-					continue;
+            //throws other chars around the center.
+            for (int i : PathFinder.NEIGHBOURS9){
+                Char ch = Actor.findChar(k + i);
 
-                if (m.pos == k){
-                    if (Dungeon.hero.hasTalent(Talent.DROWNING) && !(m instanceof Piranha))
-                        m.damage(Math.round(Dungeon.hero.lvl * Dungeon.hero.pointsInTalent(Talent.DROWNING) / 3f), this);
+                if (ch == null) continue;
+
+                if ((ch.isFlying() && Dungeon.hero.pointsInTalent(Talent.UNDERCURRENT) < 3)
+                        || ch.alignment == Char.Alignment.ALLY || Char.hasProp(ch, Char.Property.IMMOVABLE))
+                    continue;
+
+                if (i == 0){
+                    if (Dungeon.hero.hasTalent(Talent.DROWNING) && !(ch instanceof Piranha))
+                        ch.damage(Math.round(Dungeon.hero.lvl * Dungeon.hero.pointsInTalent(Talent.DROWNING) / 3f), this);
                     continue;
                 }
-                Ballistica trajectory = new Ballistica(m.pos, k, Ballistica.PROJECTILE);
 
-                int maxDist = Dungeon.hero.hasTalent(Talent.UNDERCURRENT) ? 2 : 1;
+				Ballistica trajectory = new Ballistica(k + i, k, Ballistica.MAGIC_BOLT);
+				WandOfBlastWave.throwChar(ch, trajectory, 1, false, true, this);
 
-                int dist = Math.min(Dungeon.level.distance(k, m.pos),
-                Dungeon.hero.pointsInTalent(Talent.UNDERCURRENT) >= 2 ? 2 : 1);
-                int pullPos = trajectory.path.get(dist);
-
-                if (trajectory.collisionPos == k && Dungeon.level.distance(m.pos, k) <= maxDist
-                && Dungeon.level.water[m.pos] && Actor.findChar(pullPos) == null
-                && (!m.properties().contains(Char.Property.LARGE) || Dungeon.level.openSpace[pullPos])){
-                    m.sprite.move(m.pos, pullPos);
-                    m.pos = pullPos;
-                    Dungeon.level.occupyCell(m);
+                switch (Dungeon.hero.pointsInTalent(Talent.UNDERCURRENT)){
+                    case 3: case 2: Buff.prolong(ch, Cripple.class, 2);
+                    case 1: Buff.prolong(ch, Roots.class, 1);
+                    default: break;
                 }
-            }
+			}
         }
     }
 

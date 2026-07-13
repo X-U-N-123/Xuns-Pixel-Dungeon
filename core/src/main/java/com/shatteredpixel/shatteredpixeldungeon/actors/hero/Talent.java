@@ -294,6 +294,8 @@ public enum Talent {
 	MECHANICAL_REFINEMENT(413, 4), MOMENTUM_TRANSFORM(414, 4), ACTIVE_DEFENSE(415, 4), REPAIR_ABILITY(416, 4),
 	//Summoning Beacon T4
 	POWERED_DEVICE(417, 4), SKYNET(418, 4), VIOLENT_LEAP(419, 4), ASSAULT(420, 4),
+	//Detonator T4
+	STACKED_CHARGE(421, 4), ALCHEMY_CRAFT(422, 4), DECOY(423, 4), PORTABLE_DETONATOR(424, 4),
 
 	//universal T4
 	HEROIC_ENERGY(41, 4), //See icon() and title() for special logic for this one

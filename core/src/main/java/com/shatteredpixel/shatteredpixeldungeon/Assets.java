@@ -351,5 +351,6 @@ public class Assets {
 		public static final String FUNGAL_CORE      = "sprites/fungal_core.png";
 		public static final String BARRICADE        = "sprites/barricade.png";
 		public static final String MIS_TOWER        = "sprites/missiletower.png";
+		public static final String DETONATOR        = "sprites/detonator.png";
 	}
 }

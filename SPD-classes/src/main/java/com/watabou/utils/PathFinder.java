@@ -94,11 +94,11 @@ public class PathFinder {
 		do {
 			int minD = distance[s];
 			int mins = s;
-			
-			for (int i=0; i < dir.length; i++) {
-				
-				int n = s + dir[i];
-				
+
+			for (int j : dir) {
+
+				int n = s + j;
+
 				int thisD = distance[n];
 				if (thisD < minD) {
 					minD = thisD;
@@ -123,10 +123,10 @@ public class PathFinder {
 		int best = from;
 		
 		int step, stepD;
-		
-		for (int i=0; i < dir.length; i++) {
 
-			if ((stepD = distance[step = from + dir[i]]) < minD) {
+		for (int j : dir) {
+
+			if ((stepD = distance[step = from + j]) < minD) {
 				minD = stepD;
 				best = step;
 			}
@@ -192,12 +192,12 @@ public class PathFinder {
 		// From the starting position we are making one step downwards
 		int minD = distance[s];
 		int mins = s;
-		
-		for (int i=0; i < dir.length; i++) {
 
-			int n = s + dir[i];
+		for (int j : dir) {
+
+			int n = s + j;
 			int thisD = distance[n];
-			
+
 			if (thisD < minD) {
 				minD = thisD;
 				mins = n;

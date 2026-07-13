@@ -143,7 +143,8 @@ public class Pulse extends Buff implements ActionIndicator.Action {
 
     @Override
     public void doAction(){
-        if (((Hero)target).belongings.getItem(MultiTool.class) == null){
+        MultiTool tool = ((Hero)target).belongings.getItem(MultiTool.class);
+        if (tool == null){
             GLog.w(Messages.get(this, "no_tool"));
             return;
         }
@@ -152,6 +153,7 @@ public class Pulse extends Buff implements ActionIndicator.Action {
             GameScene.show(new WndInfoBuff(this));
             return;
         }
+        tool.setCurrent((Hero)target);
         InventoryPane.useTargeting();
 
         GameScene.selectCell(new CellSelector.Listener() {

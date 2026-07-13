@@ -699,7 +699,8 @@ public abstract class Char extends Actor {
 					p.summon();
 					p.reduceCD(5*hero.pointsInTalent(Talent.FLEXIBLE_FOOTWORK));
 				}
-				if (((Hero) enemy).belongings.armor.modify == Armor.Modification.DEFLECTION)
+				if (((Hero) enemy).belongings.armor != null &&
+						((Hero) enemy).belongings.armor.modify == Armor.Modification.DEFLECTION)
 					((Hero) enemy).belongings.armor.decreaseModDurability();
 
 				MultiTool tool = Dungeon.hero.belongings.getItem(MultiTool.class);

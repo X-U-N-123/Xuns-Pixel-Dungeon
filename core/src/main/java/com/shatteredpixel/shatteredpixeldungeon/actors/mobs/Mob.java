@@ -1689,5 +1689,7 @@ public abstract class Mob extends Char {
 
 		return true;
 	}
+
+	public Char enemy(){return enemy;}
 }
 
