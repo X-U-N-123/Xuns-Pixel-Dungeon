@@ -189,31 +189,33 @@ public class MobSpawner extends Actor {
 
 			// Halls
 			case 21:
-				//1x succubus, 1x evil eye, 1x resentment
+				//1x succubus, 1x evil eye, 2x resentment
 				return new ArrayList<>(Arrays.asList(
 						Succubus.class,
 						Eye.class,
-						Resentment.class));
+						Resentment.class, Resentment.class));
 			case 22:
-				//1x succubus, 1x evil eye, 1x resentment
+				//1x succubus, 1x evil eye, 1x resentment, 1x sentry
 				return new ArrayList<>(Arrays.asList(
 						Succubus.class,
 						Eye.class,
-						Resentment.class));
+						Resentment.class,
+						DemonSentry.class));
 			case 23:
-				//1x succubus, 2x evil eye, 1x resentment, 1x scorpio
+				//1x succubus, 2x evil eye, 1x resentment, 1x sentry, 1x scorpio
 				return new ArrayList<>(Arrays.asList(
 						Succubus.class,
 						Eye.class, Eye.class,
 						Resentment.class,
+						DemonSentry.class,
 						Scorpio.class));
 			case 24: case 25: case 26:
-				//1x succubus, 2x evil eye, 1x resentment, 2x scorpio
+				//1x succubus, 2x evil eye, 2x scorpio, 2x sentry
 				return new ArrayList<>(Arrays.asList(
 						Succubus.class,
 						Eye.class, Eye.class,
 						Scorpio.class, Scorpio.class,
-						Resentment.class));
+						DemonSentry.class, DemonSentry.class));
 		}
 
 	}

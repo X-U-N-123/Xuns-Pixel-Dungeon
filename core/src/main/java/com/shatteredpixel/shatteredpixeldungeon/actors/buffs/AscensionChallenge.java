@@ -33,6 +33,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Brute;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Crab;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM100;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM200;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DemonSentry;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Elemental;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Engineer;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Eye;
@@ -101,6 +102,7 @@ public class AscensionChallenge extends Buff {
 
 		modifiers.put(RipperDemon.class,    1.2f);
 		modifiers.put(Succubus.class,       1.2f);
+		modifiers.put(DemonSentry.class,    1.2f);
 		modifiers.put(Resentment.class,     1.1f);
 		modifiers.put(Eye.class,            1.1f);
 		modifiers.put(Scorpio.class,        1.1f);

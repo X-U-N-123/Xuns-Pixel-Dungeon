@@ -21,18 +21,11 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
-import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Light;
-import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
-import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ResentmentSprite;
-import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
-import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Random;
 
 public class Resentment extends Mob {
@@ -45,7 +38,7 @@ public class Resentment extends Mob {
 		viewDistance = Light.DISTANCE;
 
 		EXP = 13;
-		maxLvl = 28;
+		maxLvl = 27;
 
 		flying = true;
 
@@ -53,6 +46,11 @@ public class Resentment extends Mob {
 		lootChance = 0.5f;
 
 		properties.add(Property.DEMONIC);
+	}
+
+	@Override
+	public float spawningWeight() {
+		return -1;
 	}
 
 	@Override
@@ -67,33 +65,8 @@ public class Resentment extends Mob {
 
 	@Override
 	public void die( Object cause ){
-
 		flying = false;
 		super.die(cause);
-
-		Char target = enemy;
-		while ((target == null || target.invisible > 0 || !fieldOfView[target.pos]) && !recentlyAttackedBy.isEmpty()){
-			target = recentlyAttackedBy.remove(0);
-		}
-		if (target == null) return;
-
-		Mob toCall = null;
-
-		for (Mob m : Dungeon.level.mobs.toArray(new Mob[0]))
-			if (m.alignment == alignment && m.state != m.HUNTING && m.state != m.FLEEING) {
-				if (toCall == null
-						|| Dungeon.level.distance(m.pos, target.pos) < Dungeon.level.distance(toCall.pos, target.pos))
-					toCall = m;
-
-			}
-
-		if (toCall != null){
-			toCall.beckon(target.pos);
-			Buff.affect(toCall, Haste.class, 3f);
-
-			sprite.centerEmitter().start(Speck.factory(Speck.SCREAM), 0.3f, 3);
-			Sample.INSTANCE.play(Assets.Sounds.CHALLENGE);
-			if (alignment == Alignment.ENEMY) GLog.n(Messages.get(this, "revenge"));
-		}
+		Dungeon.level.spawnMob(12);
 	}
 }
