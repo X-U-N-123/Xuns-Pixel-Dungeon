@@ -94,7 +94,7 @@ public class Jieniu extends MeleeWeapon {
 
     @Override
     public String upgradeStat(int level){
-        return Math.round(augment.damageFactor(min() + 1)) + "-" +
-                Math.round(augment.damageFactor((min() + 1) * 1.5f));
+        return Math.round(augment.damageFactor(min(level) + 1)) + "-" +
+                Math.round(augment.damageFactor((min(level) + 1) * 1.5f));
     }
 }

@@ -102,6 +102,10 @@ public class Detonator extends ArmorAbility {
 						detonator.die(Detonator.class);
 						GLog.h(Messages.get(this, "demolish"));
 					}
+					if (armor.charge < chargeUse(hero)){
+						GLog.w(Messages.get(ClassArmor.class, "low_charge"));
+						return;
+					}
 					armor.charge -= chargeUse(hero);
 
 					detonator = new DetonationMob();
