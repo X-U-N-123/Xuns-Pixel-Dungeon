@@ -349,6 +349,9 @@ public abstract class Wand extends Item {
 
 		dmg += Math.round(dmg * Statistics.elixirManaDrunk * 0.1f);
 
+		if (Dungeon.hero.hasTalent(Talent.STRONG_PULSE) && Dungeon.hero.heroClass != HeroClass.ENGINEER)
+			dmg += Math.min(Dungeon.energy, 4 + 4 * Dungeon.hero.pointsInTalent(Talent.STRONG_PULSE));
+
 		EvilUnfold.Evil evil = Dungeon.hero.buff(EvilUnfold.Evil.class);
 		if (evil != null) dmg = evil.proc(target, dmg);
 
