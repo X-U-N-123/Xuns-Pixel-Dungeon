@@ -120,13 +120,16 @@ public class Barricade extends Mob {
             && Actor.findChar(pos * 2 - c.pos ) == null){
 
             Sample.INSTANCE.play( Assets.Sounds.MISS, 1.5f);
-            c.sprite.jump(c.pos, pos * 2 - c.pos, ()->{
-				c.pos = pos * 2 - c.pos;
+            ((Hero)c).spend(1f/c.speed());
+            ((Hero)c).busy();
+
+            c.pos = pos * 2 - c.pos;
+            ((Hero)c).justMoved = true;
+            c.sprite.jump(pos * 2 - c.pos, c.pos, ()->{
 				Dungeon.level.occupyCell( c );
 				Dungeon.observe();
 				GameScene.updateFog();
 				//jump over the barricade if there is
-				((Hero)c).spendAndNext(1f/c.speed());
 			});
         } else if (c.buff(Roots.class) != null) {
             PixelScene.shake( 1, 1f );

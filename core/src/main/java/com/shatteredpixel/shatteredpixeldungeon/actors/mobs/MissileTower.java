@@ -51,12 +51,11 @@ public class MissileTower extends Mob {
 		properties.add(Property.IMMOVABLE);
 		properties.add(Property.MECHANICAL);
 
+		defenseSkill = 0;
 		useParry = true;
 
 		WANDERING = new Wandering();
 		state = WANDERING;
-
-		viewDistance = 12;
 
 		resistances.add(Grim.class);
 		immunities.add(Sleep.class);
@@ -66,9 +65,7 @@ public class MissileTower extends Mob {
 
 	public MissileTower() {
 		super();
-		
 		HP = HT = 15 + Dungeon.depth * 5;
-		defenseSkill = 4 + Dungeon.depth;
 	}
 
 	public void createWeapon( boolean useDecks ){

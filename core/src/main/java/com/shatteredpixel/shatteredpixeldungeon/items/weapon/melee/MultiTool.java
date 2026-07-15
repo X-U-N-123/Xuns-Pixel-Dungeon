@@ -83,7 +83,7 @@ public class MultiTool extends MeleeWeapon {
     @Override
     public int max(int lvl) {
         return  Math.round(2.5f*(tier+1)) +    //5 base, down from 10
-                lvl*(tier-1);                  //+1 scaling, down from +2
+                lvl*(tier);                  //+1 scaling, down from +2
     }
 
     @Override

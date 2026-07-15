@@ -44,7 +44,7 @@ public class DemonSentry extends Mob {
 		spriteClass = DemonSentrySprite.class;
 
 		HP = HT = 100;
-		defenseSkill = 25;
+		defenseSkill = 15;
 		useParry = true;
 		viewDistance = Light.DISTANCE;
 
@@ -66,13 +66,6 @@ public class DemonSentry extends Mob {
 	@Override
 	public int drRoll() {
 		return super.drRoll() + Random.NormalIntRange(5, 15);
-	}
-
-	@Override
-	public void die( Object cause ){
-		flying = false;
-		super.die(cause);
-		callEnemy();
 	}
 
 	@Override
@@ -132,7 +125,7 @@ public class DemonSentry extends Mob {
 			Sample.INSTANCE.play(Assets.Sounds.CHALLENGE);
 			if (alignment == Alignment.ENEMY) GLog.n(Messages.get(this, "call"));
 
-			callCD += Random.NormalFloat(6f, 8f);
+			callCD = Random.NormalFloat(6f, 8f);
 		}
 	}
 

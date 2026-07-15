@@ -82,6 +82,7 @@ public class Whirlpool extends Blob {
 
                     //throws other chars around the center.
                     throwDist = Math.min(throwDist, PathFinder.distance[i]);
+                    if (Actor.findChar(k) != null) throwDist --;
                     Ballistica trajectory = new Ballistica(i, k, Ballistica.MAGIC_BOLT);
                     WandOfBlastWave.throwChar(ch, trajectory, throwDist, false, true, this);
 
