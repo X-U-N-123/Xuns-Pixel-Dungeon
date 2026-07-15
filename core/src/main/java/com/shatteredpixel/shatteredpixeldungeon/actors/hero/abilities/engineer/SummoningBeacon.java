@@ -41,50 +41,51 @@ import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClassArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfSirensSong;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.RatSkull;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
+import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.ui.HeroIcon;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
+import com.watabou.utils.Reflection;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashMap;
 
 public class SummoningBeacon extends ArmorAbility {
+
+	static final HashMap<Class<? extends Mob>, Float> MACHINES = new HashMap<>();
 
 	@Override
 	protected void activate(ClassArmor armor, Hero hero, Integer target) {
 
 		hero.sprite.operate(hero.pos);
 		Sample.INSTANCE.play(Assets.Sounds.TELEPORT);
-		ArrayList<Integer> nonOpenSpawnPoints = new ArrayList<>();
-		ArrayList<Integer> openSpawnPoints = new ArrayList<>();
 
-		ArrayList<Mob> machines = new ArrayList<>(Arrays.asList(
-				new DM100(), new DM100(),
-				new DM200(), new DM200(),
-				new Golem(), new Golem())
-		);
-		for (int i = 0; i < hero.pointsInTalent(Talent.POWERED_DEVICE); i++) {
-			machines.add(new DM200());
-			machines.add(new Golem());
-			machines.add(new Golem());
-		}
-
-		for (int i = 0; i < PathFinder.NEIGHBOURS8.length; i++) {
-			int p = hero.pos + PathFinder.NEIGHBOURS8[i];
-
-			Char ch = Actor.findChar( p );
-			if (ch != null && ch.alignment != Char.Alignment.ALLY){
-				if (hero.hasTalent(Talent.VIOLENT_LEAP))
-					ch.damage(Random.IntRange(5 + 5 * hero.pointsInTalent(Talent.VIOLENT_LEAP),
+		if (hero.hasTalent(Talent.VIOLENT_LEAP))
+			for (int j : PathFinder.NEIGHBOURS8) {
+				Char c = Actor.findChar(hero.pos + j);
+				if (c != null && c.alignment != Char.Alignment.ALLY) {
+					c.damage(Random.IntRange(5 + 5 * hero.pointsInTalent(Talent.VIOLENT_LEAP),
 							5 + 10 * hero.pointsInTalent(Talent.VIOLENT_LEAP)), this);
 
-			} else if (Dungeon.level.passable[p]) {
-				if (Dungeon.level.openSpace[p]) openSpawnPoints.add(p);
-				else nonOpenSpawnPoints.add(p);
+					if (c.isAlive()){
+						//trace a ballistica to our target (which will also extend past them)
+						Ballistica trajectory = new Ballistica(hero.pos, c.pos, Ballistica.STOP_TARGET);
+						//trim it to just be the part that goes past them
+						trajectory = new Ballistica(trajectory.collisionPos, trajectory.path.get(trajectory.path.size() - 1), Ballistica.PROJECTILE);
+						//knock them back along that ballistica
+						WandOfBlastWave.throwChar(c, trajectory, 1, false, true, hero);
+					}
+
+				}
 			}
-		}
+
+		MACHINES.clear();
+		MACHINES.put(DM100.class, 10f - hero.pointsInTalent(Talent.POWERED_DEVICE));
+		MACHINES.put(DM200.class, 10f);
+		MACHINES.put(Golem.class, 10f + hero.pointsInTalent(Talent.POWERED_DEVICE));
 
 		int machinesToSapwn = 2;
 		float chance = hero.pointsInTalent(Talent.SKYNET) * 0.75f;
@@ -92,36 +93,38 @@ public class SummoningBeacon extends ArmorAbility {
 			machinesToSapwn ++;
 			chance --;
 		}
+		for (int i = 0; i < machinesToSapwn; i++) {
+			Mob machine = Reflection.newInstance(Random.chances(MACHINES));
+			if (Random.Float() < 1/50f * RatSkull.exoticChanceMultiplier() && machine instanceof DM200)
+				machine = new DM201();
 
-		Random.shuffle(machines);
-		while (machinesToSapwn > 0 && !machines.isEmpty()
-				&& (!nonOpenSpawnPoints.isEmpty() || !openSpawnPoints.isEmpty())) {
+			boolean haveSpace = false;
+			ArrayList<Integer> spawnPoints = new ArrayList<>();
+			for (int j : PathFinder.NEIGHBOURS8)
+				if (Dungeon.level.passable[hero.pos + j] && Actor.findChar(hero.pos + j) == null) {
+					if (!Char.hasProp(machine, Char.Property.LARGE) || Dungeon.level.openSpace[hero.pos + j])
+						spawnPoints.add(hero.pos + j);
+					haveSpace = true;
+				}
 
-			Mob mob = machines.remove(0);
-			if (Random.Float() < 1 / 50f * RatSkull.exoticChanceMultiplier() && mob instanceof DM200)
-				mob = new DM201();
-
-			int pos;
-			Random.shuffle(nonOpenSpawnPoints);
-			Random.shuffle(openSpawnPoints);
-			if (Char.hasProp(mob, Char.Property.LARGE) && !openSpawnPoints.isEmpty()) {
-				pos = openSpawnPoints.remove(0);
-			} else if (!nonOpenSpawnPoints.isEmpty()){
-				pos = nonOpenSpawnPoints.remove(0);
-			} else {
-				machinesToSapwn ++;
+			if (!haveSpace) {
+				i = machinesToSapwn;
 				continue;
 			}
+			if (spawnPoints.isEmpty()) {
+				i --;
+				continue;
+			}
+			int pos = Random.element(spawnPoints);
 
-			mob.state = mob.HUNTING;
-			Buff.affect(mob, AscensionChallenge.AscensionBuffBlocker.class);
-			GameScene.add( mob );
-			ScrollOfTeleportation.appear( mob, pos );
-			Buff.affect(mob, ScrollOfSirensSong.Enthralled.class);
+			machine.state = machine.HUNTING;
+			Buff.affect(machine, AscensionChallenge.AscensionBuffBlocker.class);
+			GameScene.add( machine );
+			ScrollOfTeleportation.appear( machine, pos );
+			Buff.affect(machine, ScrollOfSirensSong.Enthralled.class);
 			if (hero.hasTalent(Talent.ASSAULT))
-				Buff.affect(mob, Adrenaline.class, hero.pointsInTalent(Talent.ASSAULT) * 3f + 0.67f);
+				Buff.affect(machine, Adrenaline.class, hero.pointsInTalent(Talent.ASSAULT) * 1f + 1.67f);
 			//act priority problem
-			machinesToSapwn--;
 		}
 
 		armor.charge -= chargeUse(hero);

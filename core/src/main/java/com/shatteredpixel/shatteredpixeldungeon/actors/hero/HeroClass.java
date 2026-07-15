@@ -428,8 +428,9 @@ public enum HeroClass {
 			case EXPLORER:
 				return Assets.Sprites.EXPLORER;
             case WRAITH:
-                return Assets.Sprites.HEROWRAITH;
+                return Assets.Sprites.H_WRAITH;
 			case ENGINEER:
+				return Assets.Sprites.H_ENGINEER;
 			default:
 				return Assets.Sprites.MITA;
 		}
