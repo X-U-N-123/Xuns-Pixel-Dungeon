@@ -554,22 +554,20 @@ public abstract class Wand extends Item {
 			//inside staff, still need to apply degradation
 			if (charger.target == Dungeon.hero
 					&& !Dungeon.hero.belongings.contains(this)
-					&& Dungeon.hero.buff( Degrade.class ) != null){
+					&& Dungeon.hero.buff( Degrade.class ) != null)
 				lvl = Degrade.reduceLevel(lvl);
-			}
 
-			if (charger.target.buff(ScrollEmpower.class) != null){
-				lvl += 2;
-			}
+			Exhaustion e = charger.target.buff(Exhaustion.class);
+			if (e != null && e.cooldown() >= Exhaustion.LAYER) lvl -= 2;
 
-			if (curCharges <= 1 && charger.target instanceof Hero && ((Hero)charger.target).hasTalent(Talent.DESPERATE_POWER)){
+			if (charger.target.buff(ScrollEmpower.class) != null) lvl += 2;
+
+			if (curCharges <= 1 && charger.target instanceof Hero && ((Hero)charger.target).hasTalent(Talent.DESPERATE_POWER))
 				lvl += ((Hero)charger.target).pointsInTalent(Talent.DESPERATE_POWER);
-			}
 
 			if (charger.target instanceof Hero && ((Hero)charger.target).hasTalent(Talent.ARCANE_STEP)
-			&& charger.target.buff(Momentum.class)!=null && charger.target.buff(Momentum.class).freerunning()){
+			&& charger.target.buff(Momentum.class)!=null && charger.target.buff(Momentum.class).freerunning())
 				lvl += ((Hero)charger.target).pointsInTalent(Talent.ARCANE_STEP);
-			}
 
 			if (charger.target.buff(WildMagic.WildMagicTracker.class) != null){
 				int bonus = 4 + ((Hero)charger.target).pointsInTalent(Talent.WILD_POWER);
@@ -577,22 +575,17 @@ public abstract class Wand extends Item {
 				bonus /= 2; // +2/+2.5/+3/+3.5/+4 at 0/1/2/3/4 talent points
 
 				int maxBonusLevel = 3 + ((Hero)charger.target).pointsInTalent(Talent.WILD_POWER);
-				if (lvl < maxBonusLevel) {
-					lvl = Math.min(lvl + bonus, maxBonusLevel);
-				}
+				if (lvl < maxBonusLevel) lvl = Math.min(lvl + bonus, maxBonusLevel);
 			}
 
 			WandOfMagicMissile.MagicCharge buff = charger.target.buff(WandOfMagicMissile.MagicCharge.class);
-			if (buff != null && buff.level() > lvl){
-				return buff.level();
-			}
+			if (buff != null && buff.level() > lvl) return buff.level();
 
 			Switch s = charger.target.buff(Switch.class);
-			if (s != null && s.staffLevel > lvl){
+			if (s != null && s.staffLevel > lvl)
 				lvl = Math.min(lvl + 2 + Dungeon.hero.pointsInTalent(Talent.SHARED_ARCANA), s.staffLevel);
-			}
 		}
-		return lvl;
+		return Math.max(lvl, 0);
 	}
 
 	public void updateLevel() {
@@ -656,8 +649,7 @@ public abstract class Wand extends Item {
 		}
 
 		if (Dungeon.isChallenged(Challenges.MANA_EXHAUSTION))
-			for (int i = 0; i < (cursed ? 1 : chargesPerCast()); i++)
-				Exhaustion.stack(curUser);
+			for (int i = 0; i < (cursed ? 1 : chargesPerCast()); i++) Exhaustion.stack(curUser);
 		
 		curCharges -= cursed ? 1 : chargesPerCast();
 
@@ -765,6 +757,14 @@ public abstract class Wand extends Item {
 				timeModifier *= 1.5f;
 				tool.decreaseWandModDura();
 			}
+		}
+
+		Exhaustion e = Dungeon.hero.buff(Exhaustion.class);
+		if (e != null) {
+			if (e.cooldown() > 2 * Exhaustion.LAYER)
+				timeModifier *= 1.5f;
+			if (e.cooldown() > 3 * Exhaustion.LAYER)
+				Dungeon.hero.damage(Math.round(Dungeon.hero.lvl / 2f), this);
 		}
 
 		curUser.spendAndNext(TIME_TO_ZAP * timeModifier);
@@ -1164,7 +1164,7 @@ public abstract class Wand extends Item {
 				turnsToCharge /= 2f;
 			}
 
-			if (Regeneration.regenOn())
+			if (Regeneration.regenOn() && Dungeon.hero.buff(Exhaustion.class) == null)
 				partialCharge += (1f/turnsToCharge) * RingOfEnergy.wandChargeMultiplier(target);
 
 			for (Recharging bonus : target.buffs(Recharging.class)){

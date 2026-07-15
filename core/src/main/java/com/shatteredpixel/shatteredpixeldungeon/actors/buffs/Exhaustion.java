@@ -24,60 +24,38 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
-import com.watabou.utils.Bundle;
-import com.watabou.utils.Random;
 
 public class Exhaustion extends FlavourBuff {
 
-	private int level = 0;
+	public static final int LAYER = 12;
+
+	{
+		actPriority = HERO_PRIO + 1;
+		type = buffType.NEGATIVE;
+	}
 
 	@Override
 	public int icon() {
-		return BuffIndicator.EXHAUSTION_START + level;
+		return BuffIndicator.EXHAUSTION_START + Math.min((int)cooldown() / LAYER, 3);
 	}
 
 	public static void stack(Hero hero) {
 		Exhaustion e = hero.buff(Exhaustion.class);
-		if (e == null) Buff.prolong(hero, Exhaustion.class, 3).level = 1;
-		else {
-			Buff.prolong(hero, Exhaustion.class, e.level + 3);
-			e.level++;
-			if (e.level >= 4){
-				e.level = 2;
-				int chance = Random.Int(20);
-				if (chance < 6)       Buff.prolong(hero, Hex.class,        5);
-				else if (chance < 11) Buff.prolong(hero, Weakness.class,   5);
-				else if (chance < 15) Buff.prolong(hero, Vulnerable.class, 5);
-				else if (chance < 18) Buff.prolong(hero, Slow.class,       5);
-				else                  Buff.prolong(hero, Degrade.class,    5);
-			}
-		}
+		if (e == null) Buff.prolong(hero, Exhaustion.class, 4);
+		else e.spend(e.cooldown() - 1);
 		BuffIndicator.refreshHero();
 	}
 
 	@Override
-	public void detach() {
-		level --;
-		super.detach();
-		if (level > 0) Buff.prolong(target, Exhaustion.class, (int)Math.pow(2, level-1) + 1).level = level;
-	}
-
-	@Override
 	public String desc() {
-		return Messages.get(this, "desc", level, dispTurns());
-	}
-
-	private static final String LEVEL = "level";
-
-	@Override
-	public void storeInBundle(Bundle bundle){
-		super.storeInBundle(bundle);
-		bundle.put(LEVEL, level);
+		String desc = Messages.get(this, "desc");
+		for (int i = 0; i < Math.min(cooldown() / LAYER, 4); i++)
+			desc += "\n" + Messages.get(this, "desc" + i);
+		return desc + Messages.get(this, "turn", dispTurns(cooldown()));
 	}
 
 	@Override
-	public void restoreFromBundle(Bundle bundle){
-		super.restoreFromBundle(bundle);
-		level = bundle.getInt(LEVEL);
+	public String iconTextDisplay() {
+		return Integer.toString((int)cooldown());
 	}
 }
